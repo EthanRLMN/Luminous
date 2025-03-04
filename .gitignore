@@ -476,3 +476,15 @@ FodyWeavers.xsd
 *.sln.iml
 
 .idea
+
+# Others
+/Libs/
+!/Libs/CMakeLists.txt
+
+/Engine/Builds/
+/Engine/Libs/
+!/Engine/Libs/CMakeLists.txt
+
+/Editor/Builds/
+/Editor/Libs/
+!/Editor/Libs/CMakeLists.txt
