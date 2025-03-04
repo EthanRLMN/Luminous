@@ -1,0 +1,63 @@
+# --------------------------------------- #
+#               CMAKE CONFIG              #
+# --------------------------------------- #
+
+# Define minimum CMake version required
+cmake_minimum_required(VERSION 3.20)
+
+# Define Project Name
+project(Luminous
+        VERSION 1.0.0
+        LANGUAGES CXX)
+
+# Define output build folder
+set(L_OUTPUT_DIR "${CMAKE_SOURCE_DIR}/Builds/${CMAKE_CXX_COMPILER_ID}_$<CONFIG>")
+
+# Define Output Build path for libraries & executable
+set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY "${L_OUTPUT_DIR}/Libs")
+set(CMAKE_LIBRARY_OUTPUT_DIRECTORY "${L_OUTPUT_DIR}/Libs")
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${L_OUTPUT_DIR}")
+
+# Build position independent code.
+set(CMAKE_POSITION_INDEPENDENT_CODE ON)
+
+# Disable C and C++ compiler extensions.
+set(CMAKE_C_EXTENSIONS OFF)
+set(CMAKE_CXX_EXTENSIONS OFF)
+
+
+
+# --------------------------------------- #
+#              SUB DIRECTORIES            #
+# --------------------------------------- #
+
+add_subdirectory(Engine)
+add_subdirectory(Editor)
+
+
+
+# --------------------------------------- #
+#              FIND PACKAGES              #
+# --------------------------------------- #
+
+find_package(Vulkan 1.4.304 REQUIRED)
+
+add_subdirectory(Libs)
+
+
+
+# --------------------------------------- #
+#              SUB DIRECTORIES            #
+# --------------------------------------- #
+
+target_link_libraries(L_ENGINE PUBLIC Vulkan::Vulkan glfw)
+target_link_libraries(L_EDITOR PUBLIC Vulkan::Vulkan imgui) # ADD IMGUI
+
+
+
+# --------------------------------------- #
+#              ENABLE TESTING             #
+# --------------------------------------- #
+
+# Enable CTests
+enable_testing()
