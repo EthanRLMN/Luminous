@@ -478,6 +478,9 @@ FodyWeavers.xsd
 .idea
 
 # Others
+/Builds/
+/cmake-build-debug/
+
 /Libs/
 !/Libs/CMakeLists.txt
 
