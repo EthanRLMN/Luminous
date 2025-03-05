@@ -1,3 +1,9 @@
+# --------------------------------------- #
+#              FIND PACKAGES              #
+# --------------------------------------- #
+
+find_package(Vulkan 1.4.304 REQUIRED)
+
 #---------------------------------------#
 #                SOURCES                #
 #---------------------------------------#
@@ -33,6 +39,8 @@ set(CMAKE_POSITION_INDEPENDENT_CODE ON)
 # Disable C and C++ compiler extensions.
 set(CMAKE_C_EXTENSIONS OFF)
 set(CMAKE_CXX_EXTENSIONS OFF)
+
+target_link_libraries(L_ENGINE PUBLIC Vulkan::Vulkan glfw)
 
 #---------------------------------------#
 #        EXPORTS / IMPORTS FOR DLL      #

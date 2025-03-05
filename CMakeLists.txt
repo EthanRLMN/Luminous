@@ -31,27 +31,9 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 #              SUB DIRECTORIES            #
 # --------------------------------------- #
 
+add_subdirectory(Libs)
 add_subdirectory(Engine)
 add_subdirectory(Editor)
-
-
-
-# --------------------------------------- #
-#              FIND PACKAGES              #
-# --------------------------------------- #
-
-find_package(Vulkan 1.4.304 REQUIRED)
-
-add_subdirectory(Libs)
-
-
-
-# --------------------------------------- #
-#              SUB DIRECTORIES            #
-# --------------------------------------- #
-
-target_link_libraries(L_ENGINE PUBLIC Vulkan::Vulkan glfw)
-target_link_libraries(L_EDITOR PUBLIC Vulkan::Vulkan imgui) # ADD IMGUI
 
 
 

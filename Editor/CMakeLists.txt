@@ -43,3 +43,5 @@ file(GLOB IMGUI_SOURCES_FILES "${IMGUI_FILES_LOCATION}/*.cpp" "${IMGUI_FILES_LOC
 
 add_library(imgui STATIC ${IMGUI_SOURCES_FILES})
 target_include_directories(imgui PUBLIC ${IMGUI_FILES_LOCATION})
+
+target_link_libraries(L_EDITOR PUBLIC imgui) # ADD IMGUI
