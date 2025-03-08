@@ -6,6 +6,9 @@ void Window::Initialize(const std::string& a_name, const int a_width, const int 
 	glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
 	glfwWindowHint(GLFW_RESIZABLE, GLFW_TRUE);
 
+	if (glfwVulkanSupported())
+		std::cout << "Vulkan Support Working!\n";
+
 	m_Window = glfwCreateWindow(a_width, a_height, a_name.c_str(), nullptr, nullptr);
 
 	if (m_Window)
