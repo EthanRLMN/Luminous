@@ -1,8 +1,9 @@
-#include <iostream>
-#include "../Engine/Code/Include/Application.h"
+#include "Application.hpp"
 
 int main()
 {
-    Application application;
+    const Application application;
     application.Run();
+
+    return 0;
 }

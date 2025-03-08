@@ -35,7 +35,8 @@ add_subdirectory(Libs)
 add_subdirectory(Engine)
 add_subdirectory(Editor)
 
-
+target_link_libraries(L_ENGINE PUBLIC glfw)
+target_link_libraries(L_EDITOR PUBLIC glfw)
 
 # --------------------------------------- #
 #              ENABLE TESTING             #

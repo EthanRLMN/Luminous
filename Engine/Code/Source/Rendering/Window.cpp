@@ -1,36 +1,36 @@
-#include "../../Code/Include/Rendering/Window.h"
+#include "Rendering/Window.hpp"
 
-
-void Window::Initialize(const std::string name, const int width, const int height)
+void Window::Initialize(const std::string& a_name, const int a_width, const int a_height)
 {
 	glfwInit();
 	glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
 	glfwWindowHint(GLFW_RESIZABLE, GLFW_TRUE);
 
-	m_Window = glfwCreateWindow(width, height, name.c_str(), NULL, NULL);
+	m_Window = glfwCreateWindow(a_width, a_height, a_name.c_str(), nullptr, nullptr);
 
-	if (m_Window) {
-		std::cout << "Sucess windows" << std::endl;
+	if (m_Window)
+	{
+		std::cout << "Sucess windows" << "\n";
+	} else
+	{
+		std::cout << "Failed windows" << "\n";
 	}
-	else {
-		std::cout << "Failed windows" << std::endl;
-	}
-
 }
 
-void Window::Update()
+void Window::Update() const
 {
-	while (!glfwWindowShouldClose(m_Window)) {
+	while (!glfwWindowShouldClose(m_Window))
+	{
 		glfwPollEvents();
 	}
 }
 
-void Window::InputManager(GLFWkeyfun _input)
+void Window::InputManager(const GLFWkeyfun a_input) const
 {
-	glfwSetKeyCallback(m_Window, _input);
+	glfwSetKeyCallback(m_Window, a_input);
 }
 
-void Window::Shutdown()
+void Window::Shutdown() const
 {
 	glfwDestroyWindow(m_Window);
 	glfwTerminate();
