@@ -1,4 +1,8 @@
+#include <iostream>
+#include "../Engine/Code/Include/Application.h"
+
 int main()
 {
-    return 0;
+    Application application;
+    application.Run();
 }
