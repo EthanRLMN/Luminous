@@ -4,7 +4,7 @@
 
 Application::Application()
 {
-	std::cout << "iNIT\n";
+	std::cout << "Init\n";
 
 	s_Window.Initialize("Luminous Window", 800, 600);
 	//s_Window.InputManager(DebugInput);
