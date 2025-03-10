@@ -8,7 +8,7 @@
 
 #include "Exporter.hpp"
 
-class LUMINOUS_ENGINE_API Window
+class LUMINOUS_ENGINE_API MainWindow
 {
 public:
 	void Initialize(const std::string& a_name, int a_width, int a_height);
