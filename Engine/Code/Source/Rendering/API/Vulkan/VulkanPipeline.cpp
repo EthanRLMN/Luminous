@@ -1,9 +1,10 @@
-#include "LantualVkPipeline.h"
-#include "Utilities.h"
+#include "Rendering/API/Vulkan/VulkanPipeline.hpp"
 
-void LantualVkPipeline::Create()
+#include <iostream>
+
+void VulkanPipeline::Create()
 {
-	std::cout << "Create Graphic Pipeline" << std::endl;
+	std::cout << "Create Graphic Pipeline\n";
 	/*
 	//read in spir-v code of shaders
 	auto vertexShaderCode = readFile("Shaders/vert.spv");
@@ -90,7 +91,6 @@ void LantualVkPipeline::Create()
 	viewportStateCreateInfo.scissorCount = 1;
 	viewportStateCreateInfo.pScissors = &scissor;
 
-	/*
 	//dynamic states
 	std::vector<VkDynamicState> dynamicStateEnables;
 	dynamicStateEnables.push_back(VK_DYNAMIC_STATE_VIEWPORT);
@@ -189,7 +189,7 @@ void LantualVkPipeline::Create()
 	std::cout << "GraphicPipeline finish"<<std::endl;*/
 }
 
-void LantualVkPipeline::Destroy()
+void VulkanPipeline::Destroy()
 {
-	std::cout << "Destroy Graphic Pipeline" << std::endl;
+	std::cout << "Destroy Graphic Pipeline\n";
 }

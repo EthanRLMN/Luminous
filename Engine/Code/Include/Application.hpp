@@ -1,9 +1,10 @@
 #pragma once
 
 #include "Exporter.hpp"
+#include "Rendering/IBuffer.hpp"
+#include "Rendering/IRender.hpp"
+#include "Rendering/ISynchronisation.hpp"
 #include "Rendering/Window.hpp"
-
-#include "Rendering/LantualRenderHardwareInterface.h"
 
 class LUMINOUS_ENGINE_API Application
 {
@@ -13,17 +14,16 @@ public:
 
 	void Run() const;
 
-
 private:
-	Window s_Window{};
+	Window m_window{};
 
-	LantualRender* lantualRender;
-	LantualInstance* lantualInstance;
-	LantualSurface* lantualSurface;
-	LantualDevice* lantualDevice;
-	LantualSwapChain* lantualSwapChain;
-	LantualRenderPass* lantualRenderPass;
-	LantualPipeline* lantualPipeline;
-	LantualBuffer* lantualBuffer;
-	LantualSynchronisation* lantualSynchronisation;
+	IRender* m_render { nullptr };
+	IInstance* m_instance { nullptr };
+	ISurface* m_surface { nullptr };
+	IDevice* m_device { nullptr };
+	ISwapChain* m_swapChain { nullptr };
+	IRenderPass* m_renderPass { nullptr };
+	IPipeline* m_pipeline { nullptr };
+	IBuffer* m_buffer { nullptr };
+	ISynchronisation* m_synchronisation { nullptr };
 };

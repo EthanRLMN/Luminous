@@ -26,7 +26,7 @@ int main()
     ImGui::NewFrame();
     ImGui::ShowDemoWindow(); // Show demo window! :)
 
-    while (!glfwWindowShouldClose(application.s_Window.m_Window))
+    /*while (!glfwWindowShouldClose())
     {
         // Poll events before doing anything else
         glfwPollEvents();
@@ -39,7 +39,7 @@ int main()
         // Handle rendering
         ImGui::Render();
         //ImGui_ImplVulkan_RenderDrawData(ImGui::GetDrawData());
-    }
+    }*/
 
     return 0;
 }

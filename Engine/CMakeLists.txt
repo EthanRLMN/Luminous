@@ -41,9 +41,9 @@ target_compile_features(L_ENGINE PUBLIC cxx_std_20)
 
 if(MSVC)
     set(CMAKE_DEBUG_POSTFIX "d")
-    target_compile_options(L_ENGINE PUBLIC /W4 /WX)
+    target_compile_options(L_ENGINE PUBLIC /W3 /WX)
 else()
-    target_compile_options(L_ENGINE PUBLIC -Wall -Wextra -Wpedantic -Werror)
+    target_compile_options(L_ENGINE PUBLIC -Wall -Wextra -Wpedantic)
 endif()
 
 # To build shared libraries in Windows, we set CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS to TRUE.

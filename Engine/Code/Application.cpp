@@ -6,45 +6,45 @@ Application::Application()
 {
 	std::cout << "Init\n";
 
-	s_Window.Initialize("Luminous Window", 800, 600);
+	m_window.Initialize("Luminous Window", 800, 600);
 	//s_Window.InputManager(DebugInput);
 
-	lantualInstance = lantualRender->InstantiateContext();
-	lantualInstance->Create(&s_Window);
+	m_instance = m_render->InstantiateContext();
+	m_instance->Create(&m_window);
 
-	lantualSurface = lantualRender->InstantiateSurface();
-	lantualSurface->Create(lantualInstance, &s_Window);
+	m_surface = m_render->InstantiateSurface();
+	m_surface->Create(m_instance, &m_window);
 
-	lantualDevice = lantualRender->InstantiateDevice();
-	lantualDevice->Create(lantualInstance, &s_Window, lantualSurface);
+	m_device = m_render->InstantiateDevice();
+	m_device->Create(m_instance, &m_window, m_surface);
 
-	lantualSwapChain = lantualRender->InstantiateSwapChain();
-	lantualSwapChain->Create(&s_Window, lantualDevice, lantualSurface);
+	m_swapChain = m_render->InstantiateSwapChain();
+	m_swapChain->Create(&m_window, m_device, m_surface);
 
-	lantualRenderPass = lantualRender->InstantiateRenderPass();
-	lantualRenderPass->Create(lantualSwapChain, lantualDevice);
+	m_renderPass = m_render->InstantiateRenderPass();
+	m_renderPass->Create(m_swapChain, m_device);
 
-	lantualPipeline = lantualRender->InstantiatePipeline();
-	lantualPipeline->Create();
+	m_pipeline = m_render->InstantiatePipeline();
+	m_pipeline->Create();
 
 
-	lantualBuffer = lantualRender->InstantiateBuffer();
-	lantualBuffer->Create();
+	m_buffer = m_render->InstantiateBuffer();
+	m_buffer->Create();
 
-	lantualSynchronisation = lantualRender->InstantiateSynchronisation();
-	lantualSynchronisation->Create();
+	m_synchronisation = m_render->InstantiateSynchronisation();
+	m_synchronisation->Create();
 }
 
 Application::~Application() {
 
-	s_Window.Shutdown();
+	m_window.Shutdown();
 
-	lantualInstance->Destroy();
+	m_instance->Destroy();
 	//lantualRender->DeleteContext(lantualInstance);
 }
 
 void Application::Run() const
 {
-	s_Window.Update();
+	m_window.Update();
 }
 

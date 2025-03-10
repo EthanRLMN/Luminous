@@ -1,8 +1,10 @@
-#include "LantualVkRenderPass.h"
+#include "Rendering/API/Vulkan/VulkanRenderPass.hpp"
 
-void LantualVkRenderPass::Create(LantualSwapChain* _swapchain, LantualDevice* _device)
+#include "Rendering/ISwapChain.hpp"
+
+void VulkanRenderPass::Create(ISwapChain* a_swapchain, IDevice* a_device)
 {
-	std::cout <<"RenderPass Creation"<<std::endl ;
+	std::cout <<"RenderPass Creation\n" << a_swapchain << a_device;
 	/*VkAttachmentDescription colourAttachment = {};
 	colourAttachment.format = swapChainImageFormat;
 	colourAttachment.samples = VK_SAMPLE_COUNT_1_BIT;
@@ -72,7 +74,8 @@ void LantualVkRenderPass::Create(LantualSwapChain* _swapchain, LantualDevice* _d
 	std::cout << "RenderPass Creation Finish" << std::endl;*/
 }
 
-void LantualVkRenderPass::Destroy(LantualDevice* _device)
+void VulkanRenderPass::Destroy(IDevice* a_device)
 {
+	std::cout << a_device;
 }
 
