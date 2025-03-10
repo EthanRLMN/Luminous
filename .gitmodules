@@ -1,9 +1,10 @@
 [submodule "Libs/glfw"]
 	path = Libs/glfw
 	url = https://github.com/glfw/glfw.git
-[submodule "Editor/Libs/imgui"]
-	path = Editor/Libs/imgui
-	url = https://github.com/ocornut/imgui.git
 [submodule "Engine/Libs/assimp"]
 	path = Engine/Libs/assimp
 	url = https://github.com/assimp/assimp.git
+[submodule "Editor/Libs/imgui"]
+	path = Editor/Libs/imgui
+	url = https://github.com/ocornut/imgui.git
+	branch = docking
