@@ -1,7 +1,5 @@
 #include "MainWindow.hpp"
 
-#include <imgui.h>
-
 void MainWindow::SetupImGUIContext()
 {
     IMGUI_CHECKVERSION();
