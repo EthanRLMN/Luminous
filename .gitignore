@@ -482,3 +482,6 @@ FodyWeavers.xsd
 /cmake-build-debug/
 /Editor/Builds/
 TEMP
+Editor/Libs/imgui/
+Engine/Libs/assimp/
+Libs/glfw/
