@@ -13,7 +13,7 @@ void Window::Initialize(const std::string& a_name, const int a_width, const int 
 
 	if (m_Window)
 	{
-		std::cout << "Sucess windows" << "\n";
+		std::cout << "Sucess win dows" << "\n";
 	} else
 	{
 		std::cout << "Failed windows" << "\n";
