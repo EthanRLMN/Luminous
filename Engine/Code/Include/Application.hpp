@@ -1,7 +1,7 @@
 #pragma once
 
 #include "Exporter.hpp"
-#include "Rendering/MainWindow.hpp"
+#include "Rendering/Window.hpp"
 
 class LUMINOUS_ENGINE_API Application
 {
@@ -11,5 +11,5 @@ public:
 
 	void Run() const;
 
-	MainWindow s_Window{};
+	Window s_Window{};
 };

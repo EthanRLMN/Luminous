@@ -1,10 +1,12 @@
 #pragma once
 
+class Window;
+
 class MainWindow
 {
+public:
     MainWindow() = default;
     ~MainWindow() = default;
 
-    private:
-    void SetupImGUIContext();
+    void SetupImGUIContext(Window a_window);
 };
