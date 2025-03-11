@@ -3,6 +3,12 @@
 #include "backends/imgui_impl_glfw.h"
 #include "backends/imgui_impl_vulkan.h"
 
+void Destroy()
+{
+    ImGui::DestroyContext();
+
+}
+
 int main()
 {
     const Application application;
@@ -41,11 +47,8 @@ int main()
         //ImGui_ImplVulkan_RenderDrawData(ImGui::GetDrawData());
     }*/
 
+    getchar();
+
+    Destroy();
     return 0;
-}
-
-void Destroy()
-{
-    ImGui::DestroyContext();
-
 }

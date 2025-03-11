@@ -2,15 +2,16 @@
 
 #include <iostream>
 
-#include "Rendering/IInstance.hpp"
-#include "Rendering/Window.hpp"
+#include "IInstance.hpp"
+#include "IWindow.hpp"
 #include "Rendering/API/Vulkan/VulkanInstance.hpp"
+#include "Rendering/API/Vulkan/VulkanWindow.hpp"
 
-void VulkanSurface::Create(IInstance* a_instance, Window* a_window)
+void VulkanSurface::Create(IInstance* a_instance, IWindow* a_window)
 {
     std::cout << "Create Surface\n";
 
-    if (const VkResult l_result = glfwCreateWindowSurface(a_instance->CastVulkan()->GetInstance(), a_window->m_Window, nullptr,
+    if (const VkResult l_result = glfwCreateWindowSurface(a_instance->CastVulkan()->GetInstance(), a_window->CastVulkan()->GetGLFWWindow(), nullptr,
                                                           &m_surface); l_result != VK_SUCCESS)
     {
         std::cerr << "Failed to create surface, error code: " << l_result << "\n";
@@ -21,5 +22,5 @@ void VulkanSurface::Create(IInstance* a_instance, Window* a_window)
 
 void VulkanSurface::Destroy(IInstance* a_instance)
 {
-    std::cout << "Destroy Surface\n" << a_instance;
+    std::cout << "Destroy Surface\n";
 }

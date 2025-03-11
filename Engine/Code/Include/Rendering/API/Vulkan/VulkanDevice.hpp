@@ -2,16 +2,16 @@
 
 #include <vulkan/vulkan.h>
 
+#include "IDevice.hpp"
 #include "Utilities.hpp"
 #include "VulkanDevice.hpp"
-#include "Rendering/IDevice.hpp"
 
 class VulkanDevice : public IDevice
 {
 public:
 	~VulkanDevice() override = default;
 
-	void Create(IInstance* a_instance, Window* a_window, ISurface* a_surface) override;
+	void Create(IInstance* a_instance, IWindow* a_window, ISurface* a_surface) override;
 
 	void Destroy() override;
 	

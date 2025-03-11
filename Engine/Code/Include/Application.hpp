@@ -1,10 +1,12 @@
 #pragma once
 
 #include "Exporter.hpp"
-#include "Rendering/IBuffer.hpp"
-#include "Rendering/IRender.hpp"
-#include "Rendering/ISynchronisation.hpp"
-#include "Rendering/Window.hpp"
+#include "IBuffer.hpp"
+#include "IRender.hpp"
+#include "ISynchronisation.hpp"
+#include "Rendering/API/Vulkan/VulkanWindow.hpp"
+
+class VulkanRenderInterface;
 
 class LUMINOUS_ENGINE_API Application
 {
@@ -15,7 +17,8 @@ public:
 	void Run() const;
 
 private:
-	Window m_window{};
+	IRender* m_interface { nullptr };
+	IWindow* m_window { nullptr };
 
 	IRender* m_render { nullptr };
 	IInstance* m_instance { nullptr };

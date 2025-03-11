@@ -4,24 +4,24 @@
 #include <set>
 #include <vector>
 
-#include "Rendering/IInstance.hpp"
-#include "Rendering/ISurface.hpp"
+#include "IInstance.hpp"
+#include "ISurface.hpp"
 #include "Rendering/API/Vulkan/VulkanInstance.hpp"
 #include "Rendering/API/Vulkan/VulkanSurface.hpp"
 
-void VulkanDevice::Create(IInstance* a_instance, Window* a_window, ISurface* a_surface)
+void VulkanDevice::Create(IInstance* a_instance, IWindow* a_window, ISurface* a_surface)
 {
-	std::cout << "Create Device" << std::endl;
+	std::cout << "Create Device\n";
 
 	GetPhysicalDevice(a_instance->CastVulkan()->GetInstance(), a_surface->CastVulkan()->GetSurface());
 	CreateLogicalDevice(a_surface->CastVulkan()->GetSurface(), a_instance->CastVulkan()->GetInstance());
 
-	std::cout << "FinishDevice" << std::endl;
+	std::cout << "FinishDevice\n";
 }
 
 void VulkanDevice::Destroy()
 {
-	std::cout << "Destroy Device" << std::endl;
+	std::cout << "Destroy Device\n";
 }
 
 void VulkanDevice::CreateLogicalDevice(const VkSurfaceKHR a_surface, VkInstance a_instance)
@@ -51,8 +51,9 @@ void VulkanDevice::CreateLogicalDevice(const VkSurfaceKHR a_surface, VkInstance 
 	//information to create logicaldevice (sometimes called "device")
 	VkDeviceCreateInfo deviceCreateInfo = {};
 	deviceCreateInfo.sType = VK_STRUCTURE_TYPE_DEVICE_CREATE_INFO;
-	deviceCreateInfo.queueCreateInfoCount = static_cast<uint32_t>(queueCreateInfos.size());
+
 	// number of queue create info
+	deviceCreateInfo.queueCreateInfoCount = static_cast<uint32_t>(queueCreateInfos.size());
 	deviceCreateInfo.pQueueCreateInfos = queueCreateInfos.data();
 	// list of queue crete infos so device can create required queues
 	deviceCreateInfo.enabledExtensionCount = static_cast<uint32_t>(deviceExtensions.size());
@@ -72,7 +73,7 @@ void VulkanDevice::CreateLogicalDevice(const VkSurfaceKHR a_surface, VkInstance 
 		throw std::runtime_error("failed to create a logical device");
 	}
 
-	//queue are created at the same time as the device so we ahndle to queues from given logical device ,of given queue family ,of given index (0since only one queue), place reference in given vkqueue
+	//queue are created at the same time as the device so we handle to queues from given logical device ,of given queue family ,of given index (0since only one queue), place reference in given vkqueue
 	vkGetDeviceQueue(m_device, l_indices.graphicsFamily, 0, &m_graphicsQueue);
 	vkGetDeviceQueue(m_device, l_indices.presentationFamily, 0, &m_presentationQueue);
 }
@@ -91,7 +92,7 @@ void VulkanDevice::GetPhysicalDevice(const VkInstance a_instance, const VkSurfac
 	std::vector<VkPhysicalDevice> l_deviceList(l_deviceCount);
 	vkEnumeratePhysicalDevices(a_instance, &l_deviceCount, l_deviceList.data());
 
-	for (const VkPhysicalDevice& l_device: l_deviceList)
+	for (const auto& l_device: l_deviceList)
 	{
 		if (CheckDeviceSuitable(l_device, a_surface))
 		{
@@ -173,7 +174,6 @@ QueueFamilyIndices VulkanDevice::GetQueueFamilies(const VkPhysicalDevice a_devic
 	uint32_t l_queueFamilyCount = 0;
 	vkGetPhysicalDeviceQueueFamilyProperties(a_device, &l_queueFamilyCount, nullptr);
 
-
 	std::vector<VkQueueFamilyProperties> l_queueFamilyList(l_queueFamilyCount);
 	vkGetPhysicalDeviceQueueFamilyProperties(a_device, &l_queueFamilyCount, l_queueFamilyList.data());
 
@@ -183,25 +183,19 @@ QueueFamilyIndices VulkanDevice::GetQueueFamilies(const VkPhysicalDevice a_devic
 	{
 		//first check if queue family has at least 1 queue in that family (could have no queues) + queue can be multiple types defined through bitfield
 		if (l_queueFamily.queueCount > 0 && l_queueFamily.queueFlags & VK_QUEUE_GRAPHICS_BIT)
-		{
-			l_indices.graphicsFamily = i; // if queue family is valid ,ger index
-		}
+			l_indices.graphicsFamily = i; // if queue family is valid, get index
 
 		//checkqueuefamily support presentation
 		VkBool32 l_presentationSupport = false;
-		vkGetPhysicalDeviceSurfaceSupportKHR(a_device, 1, a_surface, &l_presentationSupport);
+		vkGetPhysicalDeviceSurfaceSupportKHR(a_device, i, a_surface, &l_presentationSupport);
 		//check if queue is rpresentation type (cna be graphic an presentation )
 		if (l_queueFamily.queueCount > 0 && l_presentationSupport)
-		{
 			l_indices.presentationFamily = 1;
-		}
 
 		if (l_indices.IsValid())
-		{
 			break;
-		}
 
-		i++;
+		++i;
 	}
 	return l_indices;
 }

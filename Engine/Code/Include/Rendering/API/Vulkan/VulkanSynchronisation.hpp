@@ -1,5 +1,5 @@
 #pragma once
-#include "Rendering/ISynchronisation.hpp"
+#include "ISynchronisation.hpp"
 
 class VulkanSynchronisation : public ISynchronisation
 {

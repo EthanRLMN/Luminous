@@ -1,4 +1,5 @@
 #pragma once
+
 #include "IBuffer.hpp"
 #include "IDevice.hpp"
 #include "IInstance.hpp"
@@ -7,6 +8,7 @@
 #include "ISurface.hpp"
 #include "ISwapChain.hpp"
 #include "ISynchronisation.hpp"
+#include "IWindow.hpp"
 
 class IRender
 {
@@ -21,7 +23,7 @@ public:
 	virtual IPipeline* InstantiatePipeline() = 0;
 	virtual IBuffer* InstantiateBuffer() = 0;
 	virtual ISynchronisation* InstantiateSynchronisation() = 0;
-
+	virtual IWindow* InstantiateWindow() = 0;
 
 	virtual void DeleteContext(IInstance* a_instance) { delete a_instance; }
 	virtual void DeleteSurface(ISurface* a_surface) { delete a_surface; }
@@ -31,4 +33,5 @@ public:
 	virtual void DeletePipeline(IPipeline* a_pipeline) { delete a_pipeline; }
 	virtual void DeleteBuffer(IBuffer* a_buffer) { delete a_buffer; }
 	virtual void DeleteSynchronisation(ISynchronisation* a_synchronisation) { delete a_synchronisation; }
+	virtual void DeleteWindow(IWindow* a_window) { delete a_window; }
 };

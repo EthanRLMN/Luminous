@@ -2,12 +2,12 @@
 
 #include <vulkan/vulkan.h>
 
-#include "Rendering/ISurface.hpp"
+#include "ISurface.hpp"
 
 class VulkanSurface : public ISurface
 {
 public:
-	void Create(IInstance* a_instance, Window* a_window) override;
+	void Create(IInstance* a_instance, IWindow* a_window) override;
 	void Destroy(IInstance* a_instance) override;
 
 	[[nodiscard]] VkSurfaceKHR GetSurface() const { return m_surface; }

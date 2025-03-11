@@ -55,9 +55,9 @@ void VulkanInstance::VkCreateInstance()
 	}
 
 	//Create Instance
-	//vkallocationcallback et pour g�r� la memoire , a implement� plus tard
+	//vkallocationcallback et pour gere la memoire , a implemente plus tard
 
-	if (VkResult l_result = vkCreateInstance(&l_createInfo, nullptr, &m_instance); l_result != VK_SUCCESS)
+	if (const VkResult l_result = vkCreateInstance(&l_createInfo, nullptr, &m_instance); l_result != VK_SUCCESS)
 	{
 		throw std::runtime_error("failed to create vulkan instance");
 	}
@@ -94,7 +94,7 @@ void VulkanInstance::VkDebugCallback()
 }
 
 
-void VulkanInstance::Create(Window* a_window)
+void VulkanInstance::Create(IWindow* a_window)
 {
 	std::cout << "Enter Vulkan Init\n";
 	VkCreateInstance();

@@ -1,24 +1,18 @@
 #pragma once
 
-
 #define VULKAN
-#include "IDevice.hpp"
-#include "IInstance.hpp"
-#include "IPipeline.hpp"
-#include "IRender.hpp"
-#include "ISurface.hpp"
-#include "ISwapChain.hpp"
-#include "ISynchronisation.hpp"
-#include "API/Vulkan/VulkanBuffer.hpp"
-#include "API/Vulkan/VulkanDevice.hpp"
-#include "API/Vulkan/VulkanInstance.hpp"
-#include "API/Vulkan/VulkanPipeline.hpp"
-#include "API/Vulkan/VulkanRenderPass.hpp"
-#include "API/Vulkan/VulkanSurface.hpp"
-#include "API/Vulkan/VulkanSwapChain.hpp"
-#include "API/Vulkan/VulkanSynchronisation.hpp"
 
-class IRenderHardwareInterface : public IRender
+#include "Rendering/API/Vulkan/VulkanBuffer.hpp"
+#include "Rendering/API/Vulkan/VulkanDevice.hpp"
+#include "Rendering/API/Vulkan/VulkanInstance.hpp"
+#include "Rendering/API/Vulkan/VulkanPipeline.hpp"
+#include "Rendering/API/Vulkan/VulkanRenderPass.hpp"
+#include "Rendering/API/Vulkan/VulkanSurface.hpp"
+#include "Rendering/API/Vulkan/VulkanSwapChain.hpp"
+#include "Rendering/API/Vulkan/VulkanSynchronisation.hpp"
+#include "Rendering/API/Vulkan/VulkanWindow.hpp"
+
+class VulkanRenderInterface : public IRender
 {
 public:
 #ifdef VULKAN
@@ -45,6 +39,9 @@ public:
 
 	ISynchronisation* InstantiateSynchronisation() override { return new VulkanSynchronisation(); }
 	void DeleteSynchronisation(ISynchronisation* a_synchronisation) override { delete a_synchronisation; }
+
+	IWindow* InstantiateWindow() override { return new VulkanWindow(); }
+	void DeleteWindow(IWindow* a_window) override { delete a_window; }
 
 #endif // VULKAN
 };

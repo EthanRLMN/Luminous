@@ -1,6 +1,5 @@
 #pragma once
 
-#include <fstream>
 #include <vector>
 
 //Indice (locations) of queue families (if they exist  at all)
@@ -30,7 +29,8 @@ const std::vector<const char*> deviceExtensions =
 };
 
 
-static std::vector<char> readFile(const std::string& filename)
+/*
+static std::vector<char> ReadFile(const std::string& filename)
 {
 	//open stream from given file 
 	//std binary  = tells stream to read file as binary
@@ -55,4 +55,4 @@ static std::vector<char> readFile(const std::string& filename)
 	file.close();
 
 	return fileBuffer;
-}
+}*/

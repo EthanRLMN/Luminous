@@ -30,7 +30,7 @@ add_library(L_ENGINE SHARED ${L_ENGINE_SOURCES})
 #---------------------------------------#
 #                INCLUDE                #
 #---------------------------------------#
-target_include_directories(L_ENGINE PUBLIC "Code/Include")
+target_include_directories(L_ENGINE PUBLIC "Code/Include" "Code/Interface")
 
 
 
@@ -56,7 +56,7 @@ set(CMAKE_POSITION_INDEPENDENT_CODE ON)
 set(CMAKE_C_EXTENSIONS OFF)
 set(CMAKE_CXX_EXTENSIONS OFF)
 
-target_link_libraries(L_ENGINE PUBLIC Vulkan::Vulkan)
+target_link_libraries(L_ENGINE PUBLIC Vulkan::Vulkan glfw)
 
 
 

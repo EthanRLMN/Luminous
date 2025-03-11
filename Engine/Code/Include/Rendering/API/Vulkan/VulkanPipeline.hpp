@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Rendering/IPipeline.hpp"
+#include "IPipeline.hpp"
 
 class VulkanPipeline : public IPipeline
 {

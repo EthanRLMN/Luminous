@@ -4,7 +4,7 @@
 #include <set>
 #include <vulkan/vulkan.h>
 
-#include "Rendering/IRenderPass.hpp"
+#include "IRenderPass.hpp"
 
 class VulkanRenderPass : public IRenderPass
 {

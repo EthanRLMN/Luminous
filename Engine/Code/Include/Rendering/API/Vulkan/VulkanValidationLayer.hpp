@@ -10,7 +10,6 @@ constexpr bool validationEnabled = true;
 const std::vector<const char*> validationLayers =
 {
 	"VK_LAYER_KHRONOS_validation"
-	//VK_LAYER_LUNARG_standard_validation doesn't work for me :[
 };
 
 // Callback function for validation debugging (will be called when validation information record)

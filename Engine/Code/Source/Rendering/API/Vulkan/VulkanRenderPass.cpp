@@ -1,10 +1,10 @@
 #include "Rendering/API/Vulkan/VulkanRenderPass.hpp"
 
-#include "Rendering/ISwapChain.hpp"
+#include "../../../../Interface/ISwapChain.hpp"
 
 void VulkanRenderPass::Create(ISwapChain* a_swapchain, IDevice* a_device)
 {
-	std::cout <<"RenderPass Creation\n" << a_swapchain << a_device;
+	std::cout <<"RenderPass Creation\n";
 	/*VkAttachmentDescription colourAttachment = {};
 	colourAttachment.format = swapChainImageFormat;
 	colourAttachment.samples = VK_SAMPLE_COUNT_1_BIT;
@@ -76,6 +76,5 @@ void VulkanRenderPass::Create(ISwapChain* a_swapchain, IDevice* a_device)
 
 void VulkanRenderPass::Destroy(IDevice* a_device)
 {
-	std::cout << a_device;
 }
 
