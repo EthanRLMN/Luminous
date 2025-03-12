@@ -482,8 +482,11 @@ FodyWeavers.xsd
 /cmake-build-debug/
 /Editor/Builds/
 TEMP
-Editor/Libs/imgui/
-Engine/Libs/assimp/
-Libs/glfw/
-Libs/logger/
-Engine/Libs/glfw/
+
+Libs/logger
+Libs/luminousmaths
+
+Engine/Libs/assimp
+Engine/Libs/glfw
+
+Editor/Libs/imgui

@@ -11,3 +11,6 @@
 [submodule "Libs/logger"]
 	path = Libs/logger
 	url = https://github.com/ZeBaananaa/LuminousLogger.git
+[submodule "Libs/luminousmaths"]
+	path = Libs/luminousmaths
+	url = https://gitlabstudents.isartintra.com/e.ruhlmann/enginemaths.git
