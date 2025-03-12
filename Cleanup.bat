@@ -1,8 +1,7 @@
 @echo off
 setlocal enabledelayedexpansion
 
-REM Folders to delete
-set folders=Builds Editor\Builds Editor\Libs\imgui Engine\Builds Engine\Libs\assimp Libs\glfw
+set folders=Builds Editor\Builds Editor\Libs\imgui Engine\Builds Engine\Libs\assimp Engine\Libs\glfw Libs\logger Libs\luminousmaths
 
 for %%d in (%folders%) do (
     if exist "%%d" (
@@ -13,5 +12,6 @@ for %%d in (%folders%) do (
     )
 )
 
-echo Cleanup Done.
-pause
+echo Cleanup Done!
+ping 127.0.0.1 -n 3 > nul
+call Build.bat
