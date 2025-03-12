@@ -7,7 +7,7 @@
 #include "Rendering/API/Vulkan/VulkanInstance.hpp"
 #include "Rendering/API/Vulkan/VulkanWindow.hpp"
 
-void VulkanSurface::Create(IInstance* a_instance, IWindow* a_window)
+void VulkanSurface::Create(IInstance* a_instance, EWindow* a_window)
 {
     std::cout << "Create Surface\n";
 

@@ -14,6 +14,9 @@ int main()
     const Application application;
     application.Run();
 
+
+    //IInput ejwn;
+
     IMGUI_CHECKVERSION();
 
     ImGui::CreateContext();

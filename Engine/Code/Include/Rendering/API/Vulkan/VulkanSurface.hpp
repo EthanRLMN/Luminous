@@ -7,7 +7,7 @@
 class VulkanSurface : public ISurface
 {
 public:
-	void Create(IInstance* a_instance, IWindow* a_window) override;
+	void Create(IInstance* a_instance, EWindow* a_window) override;
 	void Destroy(IInstance* a_instance) override;
 
 	[[nodiscard]] VkSurfaceKHR GetSurface() const { return m_surface; }

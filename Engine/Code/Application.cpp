@@ -36,7 +36,8 @@ Application::Application()
 
 Application::~Application()
 {
-	m_window->Destroy();
+	delete(m_window);
+	//m_window->Destroy();
 	m_instance->Destroy();
 }
 

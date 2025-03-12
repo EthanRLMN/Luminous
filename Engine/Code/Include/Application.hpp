@@ -5,6 +5,7 @@
 #include "IRender.hpp"
 #include "ISynchronisation.hpp"
 #include "Rendering/API/Vulkan/VulkanWindow.hpp"
+#include "Wrapper/EWindow.hpp"
 
 class VulkanRenderInterface;
 
@@ -18,7 +19,8 @@ public:
 
 private:
 	IRender* m_interface { nullptr };
-	IWindow* m_window { nullptr };
+	//IWindow* m_window { nullptr };
+	EWindow* m_window{ nullptr };
 
 	IRender* m_render { nullptr };
 	IInstance* m_instance { nullptr };
