@@ -9,7 +9,7 @@ echo 2 - Update Submodules
 echo 3 - Cleanup Project (Without rebuilding)
 echo 4 - Exit
 
-set /p choice="Please chose a number between 1 & 3 : "
+set /p choice="Please chose a number between 1 & 4 : "
 
 if "%choice%"=="1" (
     echo Building project...
