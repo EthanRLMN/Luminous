@@ -1,5 +1,6 @@
 #include "Application.hpp"
 #include "imgui.h"
+#include "Test.hpp"
 #include "backends/imgui_impl_glfw.h"
 #include "backends/imgui_impl_vulkan.h"
 
@@ -13,6 +14,9 @@ int main()
 {
     const Application application;
     application.Run();
+
+    Test* test = new Test;
+    test->PrintTest();
 
     IMGUI_CHECKVERSION();
 

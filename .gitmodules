@@ -1,4 +1,4 @@
-[submodule "Libs/glfw"]
+[submodule "Engine/Libs/glfw"]
 	path = Engine/Libs/glfw
 	url = https://github.com/glfw/glfw.git
 [submodule "Engine/Libs/assimp"]

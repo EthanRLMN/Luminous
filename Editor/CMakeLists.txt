@@ -16,10 +16,10 @@ target_include_directories(L_EDITOR PUBLIC "Code/Include")
 #---------------------------------------#
 #                COMPILE MODE           #
 #---------------------------------------#
-target_compile_features(L_EDITOR PUBLIC cxx_std_20)
+target_compile_features(L_EDITOR PUBLIC cxx_std_23)
 
 if(MSVC)
-    target_compile_options(L_EDITOR PUBLIC /W4 /WX)
+    target_compile_options(L_EDITOR PUBLIC /W3 /WX)
 else()
     target_compile_options(L_EDITOR PUBLIC -Wall -Wextra -Wpedantic -Werror)
 endif()
@@ -35,11 +35,5 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 #        EXPORTS / IMPORTS FOR DLL      #
 #---------------------------------------#
 add_subdirectory(Libs)
-
-set(IMGUI_FILES_LOCATION "${CMAKE_CURRENT_SOURCE_DIR}/Libs/imgui")
-file(GLOB IMGUI_SOURCES_FILES "${IMGUI_FILES_LOCATION}/*.cpp" "${IMGUI_FILES_LOCATION}/backends/vulkan/imgui_impl_vulkan.cpp")
-
-add_library(imgui STATIC ${IMGUI_SOURCES_FILES})
-target_include_directories(imgui PUBLIC ${IMGUI_FILES_LOCATION})
 
 target_link_libraries(L_EDITOR PUBLIC L_ENGINE imgui)

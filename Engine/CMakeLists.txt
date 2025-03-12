@@ -37,7 +37,7 @@ target_include_directories(L_ENGINE PUBLIC "Code/Include" "Code/Interface")
 #---------------------------------------#
 #                COMPILE MODE           #
 #---------------------------------------#
-target_compile_features(L_ENGINE PUBLIC cxx_std_20)
+target_compile_features(L_ENGINE PUBLIC cxx_std_23)
 
 if(MSVC)
     set(CMAKE_DEBUG_POSTFIX "d")
