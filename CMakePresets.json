@@ -12,6 +12,7 @@
         "lhs": "${hostSystemName}",
         "rhs": "Windows"
       },
+      "binaryDir": "${sourceDir}/TEMP/${presetName}",
       "cacheVariables": {
         "L_MATHS_UNITTEST": true
       }
