@@ -485,3 +485,5 @@ TEMP
 Editor/Libs/imgui/
 Engine/Libs/assimp/
 Libs/glfw/
+Libs/logger/
+Engine/Libs/glfw/

@@ -4,6 +4,7 @@
 #include <string>
 
 #include "Exporter.hpp"
+#include "Logger.hpp"
 
 class VulkanWindow;
 
@@ -18,7 +19,7 @@ public:
 
 	virtual VulkanWindow* CastVulkan()
 	{
-		std::cout << "Wrong cast\n";
+		DEBUG_LOG_INFO("Wrong Cast\n");
 		return nullptr;
 	}
 };

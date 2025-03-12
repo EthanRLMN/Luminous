@@ -4,6 +4,9 @@
 
 Application::Application()
 {
+	Debug::Logger& l_logger = Debug::Logger::GetInstance();
+	l_logger.Init("app", 1_MiB, 5, true);
+
 	m_interface = new VulkanRenderInterface();
 
 	m_window = m_interface->InstantiateWindow();

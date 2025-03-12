@@ -1,5 +1,5 @@
 [submodule "Libs/glfw"]
-	path = Libs/glfw
+	path = Engine/Libs/glfw
 	url = https://github.com/glfw/glfw.git
 [submodule "Engine/Libs/assimp"]
 	path = Engine/Libs/assimp
@@ -8,3 +8,6 @@
 	path = Editor/Libs/imgui
 	url = https://github.com/ocornut/imgui.git
 	branch = docking
+[submodule "Libs/logger"]
+	path = Libs/logger
+	url = https://github.com/ZeBaananaa/LuminousLogger.git
