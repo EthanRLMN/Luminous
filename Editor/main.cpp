@@ -1,8 +1,5 @@
 #include "Application.hpp"
 #include "imgui.h"
-#include "backends/imgui_impl_glfw.h"
-#include "backends/imgui_impl_vulkan.h"
-#include "Vector2.hpp"
 
 void Destroy()
 {
@@ -22,9 +19,6 @@ int main()
 
     io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;     // Enable Keyboard Controls
     io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;         // IF using Docking Branch
-
-    Maths::Vector2 test = Maths::Vector2{{5.f}, {13.f}};
-    DEBUG_LOG_INFO("{}", test);
 
     // Setup Platform/Renderer backends
 //    ImGui_ImplVulkan_InitInfo l_vulkanInfo{};
