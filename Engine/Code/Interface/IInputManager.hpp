@@ -21,6 +21,10 @@ public:
 	virtual int IsMouseButtonUp(IWindow* a_window, int a_button) = 0;
 	virtual int IsMouseButtonPressed(IWindow* a_window, int a_button) = 0;
 
+	virtual Vector2 GetCursorPosition(IWindow* a_window) = 0;
+	virtual void SetCursorPosition(IWindow* a_window, Vector2 a_pos) = 0;
+
+	virtual VulkanInputManager* CastVulkan()
 	virtual IInputManager* CastGLFW()
 	{
 		std::cout << "Wrong cast\n";

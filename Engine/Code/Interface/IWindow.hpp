@@ -26,7 +26,6 @@ public:
 	virtual void SetOpacity(const float a_alpha) = 0;
 	virtual const std::string GetTitle() = 0;
 	virtual void SetTitle(const std::string& a_name) = 0;
-	virtual Vector2 GetCursorPosition() = 0;
 
 	virtual VulkanWindow* CastVulkan()
 	{
