@@ -27,7 +27,7 @@ public:
 
 private:
     inline static int m_keyPressed[400];
-    inline static std::array<int, 400> m_keyStatus;
+    inline static int m_keyStatus[400];
 
     inline static int m_mouseButtonStatus[16];
     inline static int m_mouseButtonPressed[16];

@@ -36,22 +36,22 @@ void VulkanInputManager::KeyCallback(GLFWwindow* a_window, const int a_key, int 
 
 int VulkanInputManager::IsMouseButtonUp(IWindow* a_window, int a_button)
 {
-	return m_mouseButtonStatus[a_key] == GLFW_RELEASE;
+	return m_mouseButtonStatus[a_button] == GLFW_RELEASE;
 }
 
 int VulkanInputManager::IsMouseButtonDown(IWindow* a_window, int a_button)
 {
-	return m_mouseButtonStatus[a_key] == GLFW_PRESS || m_mouseButtonStatus[a_key] == GLFW_REPEAT;
+	return m_mouseButtonStatus[a_button] == GLFW_PRESS || m_mouseButtonStatus[a_button] == GLFW_REPEAT;
 }
 
 int VulkanInputManager::IsMouseButtonPressed(IWindow* a_window, int a_button)
 {
-	if (m_mouseButtonPressed[a_key] == 0)
+	if (m_mouseButtonPressed[a_button] == 0)
 	{
-		if (m_mouseButtonStatus[a_key] == GLFW_PRESS)
+		if (m_mouseButtonStatus[a_button] == GLFW_PRESS)
 		{
-			m_mouseButtonPressed[a_key] = 1;
-			return m_mouseButtonStatus[a_key] == GLFW_PRESS;
+			m_mouseButtonPressed[a_button] = 1;
+			return m_mouseButtonStatus[a_button] == GLFW_PRESS;
 		}
 		else
 		{
