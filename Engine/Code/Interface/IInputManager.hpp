@@ -14,9 +14,11 @@ class LUMINOUS_ENGINE_API IInputManager
 {
 public:
 	virtual ~IInputManager() = default;
+	virtual void Initialize(IWindow* a_window) = 0;
 
 	virtual int IsKeyDown(IWindow* a_window, int a_key) = 0;
 	virtual int IsKeyUp(IWindow* a_window, int a_key) = 0;
+	virtual int IsKeyPressed(IWindow* a_window, int a_key) = 0;
 
 	virtual VulkanInputManager* CastVulkan()
 	{
