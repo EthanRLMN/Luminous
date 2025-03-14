@@ -4,12 +4,12 @@
 #include "Rendering/API/Vulkan/VulkanWindow.hpp"
 
 std::array<int, 400> GLFWInputManager::m_keyPressed{};
-std::array<int, 400> GLFWInputManager::m_keyStatus;
+std::array<int, 400> GLFWInputManager::m_keyStatus{};
 
-std::array<int, 17> GLFWInputManager::m_mouseButtonStatus;
-std::array<int, 17> GLFWInputManager::m_mouseButtonPressed;
+std::array<int, 17> GLFWInputManager::m_mouseButtonStatus{};
+std::array<int, 17> GLFWInputManager::m_mouseButtonPressed{};
 
-std::array<int, 2> GLFWInputManager::m_mouseScroll;
+std::array<int, 2> GLFWInputManager::m_mouseScroll{};
 
 int GLFWInputManager::IsKeyDown(IWindow* a_window, const int a_key)
 {

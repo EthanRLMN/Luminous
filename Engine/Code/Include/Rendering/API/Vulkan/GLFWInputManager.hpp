@@ -27,8 +27,6 @@ public:
     Maths::Vector2 GetMouseScroll() override;
     void SetMouseScroll(Maths::Vector2 a_vec) override;
 
-
-
     GLFWInputManager* CastGLFW() override { return this; }
 
 private:
