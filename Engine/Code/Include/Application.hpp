@@ -5,6 +5,7 @@
 #include "IRender.hpp"
 #include "ISynchronisation.hpp"
 #include "Rendering/API/Vulkan/VulkanInputManager.hpp"
+#include "../Interface/IKeyCode.hpp"
 
 class VulkanRenderInterface;
 

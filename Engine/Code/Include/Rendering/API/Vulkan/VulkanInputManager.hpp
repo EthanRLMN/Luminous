@@ -16,6 +16,10 @@ public:
     int IsKeyPressed(IWindow* a_window, int a_key) override;
     static void KeyCallback(GLFWwindow* a_window, int a_key, int a_scancode, int a_action, int a_mods);
 
+    int IsMouseButtonDown(IWindow* a_window, int a_button) override;
+    int IsMouseButtonUp(IWindow* a_window, int a_button) override;
+    int IsMouseButtonPressed(IWindow* a_window, int a_button) override;
+
     VulkanInputManager* CastVulkan() override { return this; }
 
 private:

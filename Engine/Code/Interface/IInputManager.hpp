@@ -20,6 +20,10 @@ public:
 	virtual int IsKeyUp(IWindow* a_window, int a_key) = 0;
 	virtual int IsKeyPressed(IWindow* a_window, int a_key) = 0;
 
+	virtual int IsMouseButtonDown(IWindow* a_window, int a_button) = 0;
+	virtual int IsMouseButtonUp(IWindow* a_window, int a_button) = 0;
+	virtual int IsMouseButtonPressed(IWindow* a_window, int a_button) = 0;
+
 	virtual VulkanInputManager* CastVulkan()
 	{
 		std::cout << "Wrong cast\n";

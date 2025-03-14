@@ -56,7 +56,7 @@ void Application::Run() const
 	while (!m_window->ShouldClose())
 	{
 		m_window->PollEvents();
-		if (m_inputManager->IsKeyPressed(m_window, m_inputManager->KeyCode().E()))
+		if (m_inputManager->IsKeyDown(m_window, GLFW_KEY_A))
 			std::cout << "MEJK";
 
 	}
