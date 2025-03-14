@@ -6,6 +6,7 @@
 #include "Utilities.hpp"
 #include "VulkanDevice.hpp"
 
+
 class VulkanDevice : public IDevice
 {
 public:
@@ -22,15 +23,18 @@ public:
 	void CreateLogicalDevice(VkSurfaceKHR a_surface,VkInstance a_instance);
 	void GetPhysicalDevice(VkInstance a_instance, VkSurfaceKHR a_surface);
 
-	static bool CheckDeviceSuitable(VkPhysicalDevice _device, VkSurfaceKHR _surface);
-	static bool CheckDeviceExtensionSupport(VkPhysicalDevice a_device);
-
-	static QueueFamilyIndices GetQueueFamilies(VkPhysicalDevice a_device, VkSurfaceKHR a_surface);
-
-	static SwapChainDetails GetSwapChainDetails(VkPhysicalDevice _device, VkSurfaceKHR _surface);
-
 	[[nodiscard]] VkPhysicalDevice GetPhysicalDevice() const;
 	[[nodiscard]] VkQueue GetGraphicsQueue() const;
+
+	bool CheckDeviceSuitable(VkPhysicalDevice a_device, VkSurfaceKHR a_surface);
+
+	SwapChainDetails GetSwapChainDetails(VkPhysicalDevice a_device, VkSurfaceKHR a_surface);
+
+	bool CheckDeviceExtensionSupport(VkPhysicalDevice a_device);
+
+	QueueFamilyIndices GetQueueFamilies(VkPhysicalDevice a_device, VkSurfaceKHR a_surface);
+
+	
 
 private :
 	VkDevice m_device = VK_NULL_HANDLE;
