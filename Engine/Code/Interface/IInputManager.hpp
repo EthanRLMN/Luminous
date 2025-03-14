@@ -1,14 +1,11 @@
 #pragma once
 
+#include "Utils/Exporter.hpp"
+
 #include <iostream>
-#include <string>
 
-#include "Rendering/API/Vulkan/VulkanWindow.hpp"
-#include <unordered_map>
-#include "../Interface/IKeyCode.hpp"
-
-class VulkanInputManager;
-
+class GLFWInputManager;
+class IWindow;
 
 class LUMINOUS_ENGINE_API IInputManager
 {
@@ -24,15 +21,11 @@ public:
 	virtual int IsMouseButtonUp(IWindow* a_window, int a_button) = 0;
 	virtual int IsMouseButtonPressed(IWindow* a_window, int a_button) = 0;
 
-	virtual VulkanInputManager* CastVulkan()
+	virtual IInputManager* CastGLFW()
 	{
 		std::cout << "Wrong cast\n";
 		return nullptr;
 	}
-
-	IKeycode KeyCode() { return m_keycode; };
-
 private:
-	IKeycode m_keycode;
 };
 

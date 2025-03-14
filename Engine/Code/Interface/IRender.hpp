@@ -2,6 +2,7 @@
 
 #include "IBuffer.hpp"
 #include "IDevice.hpp"
+#include "IInputManager.hpp"
 #include "IInstance.hpp"
 #include "IPipeline.hpp"
 #include "IRenderPass.hpp"
@@ -9,7 +10,6 @@
 #include "ISwapChain.hpp"
 #include "ISynchronisation.hpp"
 #include "IWindow.hpp"
-#include "IInputManager.hpp"
 
 class IRender
 {
@@ -36,4 +36,5 @@ public:
 	virtual void DeleteBuffer(IBuffer* a_buffer) { delete a_buffer; }
 	virtual void DeleteSynchronisation(ISynchronisation* a_synchronisation) { delete a_synchronisation; }
 	virtual void DeleteWindow(IWindow* a_window) { delete a_window; }
+	virtual void DeleteInputManager(IInputManager* a_inputManager) { delete a_inputManager; }
 };

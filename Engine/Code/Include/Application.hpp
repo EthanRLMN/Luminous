@@ -1,11 +1,9 @@
 #pragma once
 
-#include "Exporter.hpp"
+#include "Utils/Exporter.hpp"
 #include "IBuffer.hpp"
 #include "IRender.hpp"
 #include "ISynchronisation.hpp"
-#include "Rendering/API/Vulkan/VulkanInputManager.hpp"
-#include "../Interface/IKeyCode.hpp"
 
 class VulkanRenderInterface;
 
@@ -19,7 +17,6 @@ public:
 
 private:
 	IRender* m_interface { nullptr };
-	//IWindow* m_window { nullptr };
 	IWindow* m_window{ nullptr };
 	IInputManager* m_inputManager{ nullptr };
 

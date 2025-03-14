@@ -2,6 +2,7 @@
 
 #define VULKAN
 
+#include "GLFWInputManager.hpp"
 #include "Rendering/API/Vulkan/VulkanBuffer.hpp"
 #include "Rendering/API/Vulkan/VulkanDevice.hpp"
 #include "Rendering/API/Vulkan/VulkanInstance.hpp"
@@ -41,9 +42,10 @@ public:
 	void DeleteSynchronisation(ISynchronisation* a_synchronisation) override { delete a_synchronisation; }
 
 	IWindow* InstantiateWindow() override { return new VulkanWindow(); }
-
-	IInputManager* InstantiateInputManager() override { return new VulkanInputManager(); }
 	void DeleteWindow(IWindow* a_window) override { delete a_window; }
+
+	IInputManager* InstantiateInputManager() override { return new GLFWInputManager(); }
+	void DeleteInputManager(IInputManager* a_inputManager) override { delete a_inputManager; }
 
 #endif // VULKAN
 };

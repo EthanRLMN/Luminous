@@ -9,8 +9,6 @@ Application::Application()
 
 	m_interface = new VulkanRenderInterface();
 
-	
-
 	m_window = m_interface->InstantiateWindow();
 	m_window->Initialize("Luminous Window", 800, 600);
 
