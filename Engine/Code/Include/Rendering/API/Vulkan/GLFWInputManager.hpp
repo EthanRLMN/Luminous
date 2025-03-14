@@ -1,12 +1,14 @@
 #pragma once
+
 #include "IInputManager.hpp"
 
+#include <array>
+
 #include "GLFW/glfw3.h"
-#include "Utils/Exporter.hpp"
 
 class IWindow;
 
-class LUMINOUS_ENGINE_API GLFWInputManager final : public IInputManager
+class GLFWInputManager final : public IInputManager
 {
 public:
     void Initialize(IWindow* a_window) override;
@@ -24,6 +26,6 @@ public:
 private:
     static void KeyCallback(GLFWwindow* a_window, int a_key, int a_scancode, int a_action, int a_mods);
 
-    inline static int m_keyPressed[400];
-    inline static std::array<int, 400> m_keyStatus;
+	static std::array<int, 400> m_keyPressed;
+	static std::array<int, 400> m_keyStatus;
 };

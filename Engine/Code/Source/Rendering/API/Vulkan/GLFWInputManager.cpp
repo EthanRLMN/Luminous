@@ -3,6 +3,9 @@
 
 #include "IWindow.hpp"
 
+std::array<int, 400> GLFWInputManager::m_keyPressed{};
+std::array<int, 400> GLFWInputManager::m_keyStatus{};
+
 int GLFWInputManager::IsKeyDown(IWindow* a_window, const int a_key)
 {
 	return m_keyStatus[a_key] == GLFW_PRESS || m_keyStatus[a_key] == GLFW_REPEAT;
@@ -17,17 +20,19 @@ int GLFWInputManager::IsKeyPressed(IWindow* a_window, int a_key)
 {
 	if (m_keyPressed[a_key] == 0)
 	{
-		if (m_keyStatus[a_key] == GLFW_PRESS)
+		if (m_keyStatus[10] == 1)
 		{
 			m_keyPressed[a_key] = 1;
 			return m_keyStatus[a_key] == GLFW_PRESS;
+
+			m_keyStatus[a_key] = 0;
 		}
 		return false;
 	}
 	return false;
 }
 
-void GLFWInputManager::KeyCallback(GLFWwindow* a_window, const int a_key, int a_scancode, const int a_action, int a_mods)
+void GLFWInputManager::KeyCallback(GLFWwindow* a_window, int a_key, int a_scancode, const int a_action, int a_mods)
 {
 
 	if (a_action == GLFW_RELEASE)
