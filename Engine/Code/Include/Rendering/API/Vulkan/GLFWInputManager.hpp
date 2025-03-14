@@ -32,7 +32,7 @@ public:
 private:
     static void KeyCallback(GLFWwindow* a_window, int a_key, int a_scancode, int a_action, int a_mods);
     static void MouseButtonCallback(GLFWwindow* a_window, int a_button, int a_action, int a_mods);
-    static void MouseScrollCallback(GLFWwindow* a_window, double a_xoffset, double a_yoffset);
+    static void MouseScrollCallback(GLFWwindow* a_window, double a_xOffset, double a_yOffset);
 
     static std::array<int, 400> m_keyPressed;
     static std::array<int, 400> m_keyStatus;
@@ -41,4 +41,6 @@ private:
     static std::array<int, 17> m_mouseButtonPressed;
 
     static std::array<int, 2> m_mouseScroll;
+
+    GLFWwindow* m_window = nullptr;
 };

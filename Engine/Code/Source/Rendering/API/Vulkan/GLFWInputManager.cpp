@@ -21,7 +21,7 @@ int GLFWInputManager::IsKeyUp(IWindow* a_window, const int a_key)
 	return m_keyStatus[a_key] == GLFW_RELEASE;
 }
 
-int GLFWInputManager::IsKeyPressed(IWindow* a_window, int a_key)
+int GLFWInputManager::IsKeyPressed(IWindow* a_window, const int a_key)
 {
 	if (m_keyPressed[a_key] == 0)
 	{
@@ -45,17 +45,17 @@ void GLFWInputManager::KeyCallback(GLFWwindow* a_window, const int a_key, int a_
 
 }
 
-int GLFWInputManager::IsMouseButtonUp(IWindow* a_window, int a_button)
+int GLFWInputManager::IsMouseButtonUp(IWindow* a_window, const int a_button)
 {
 	return m_mouseButtonStatus[a_button] == GLFW_RELEASE;
 }
 
-int GLFWInputManager::IsMouseButtonDown(IWindow* a_window, int a_button)
+int GLFWInputManager::IsMouseButtonDown(IWindow* a_window, const int a_button)
 {
 	return m_mouseButtonStatus[a_button] == GLFW_PRESS || m_mouseButtonStatus[a_button] == GLFW_REPEAT;
 }
 
-int GLFWInputManager::IsMouseButtonPressed(IWindow* a_window, int a_button)
+int GLFWInputManager::IsMouseButtonPressed(IWindow* a_window, const int a_button)
 {
 	if (m_mouseButtonPressed[a_button] == 0)
 	{
@@ -69,24 +69,20 @@ int GLFWInputManager::IsMouseButtonPressed(IWindow* a_window, int a_button)
 	return false;
 }
 
-void GLFWInputManager::MouseButtonCallback(GLFWwindow* a_window, int a_key, int a_action, int a_mods)
+void GLFWInputManager::MouseButtonCallback(GLFWwindow* a_window, const int a_button, const int a_action, int a_mods)
 {
 
 	if (a_action == GLFW_RELEASE)
-	{
-		m_mouseButtonPressed[a_key] = 0;
-	}
+		m_mouseButtonPressed[a_button] = 0;
 
-	m_mouseButtonStatus[a_key] = a_action;
+	m_mouseButtonStatus[a_button] = a_action;
 
 }
 
-void GLFWInputManager::MouseScrollCallback(GLFWwindow* a_window, double a_xoffset, double a_yoffset)
+void GLFWInputManager::MouseScrollCallback(GLFWwindow* a_window, const double a_xOffset, const double a_yOffset)
 {
-
-	m_mouseScroll[0] = static_cast<int>(a_xoffset);
-	m_mouseScroll[1] = static_cast<int>(a_yoffset);
-
+	m_mouseScroll[0] = static_cast<int>(a_xOffset);
+	m_mouseScroll[1] = static_cast<int>(a_yOffset);
 }
 
 void GLFWInputManager::SetMouseScroll(Maths::Vector2 a_vec)
@@ -96,13 +92,13 @@ void GLFWInputManager::SetMouseScroll(Maths::Vector2 a_vec)
 Maths::Vector2 GLFWInputManager::GetCursorPosition(IWindow* a_window)
 {
 	double t_x, t_y;
-	glfwGetCursorPos(a_window->CastVulkan()->GetGLFWWindow(), &t_x, &t_y);
+	glfwGetCursorPos(m_window, &t_x, &t_y);
 	return Maths::Vector2(static_cast<float>(t_x), static_cast<float>(t_y));
 }
 
 void GLFWInputManager::SetCursorPosition(IWindow* a_window, const Maths::Vector2 a_pos)
 {
-	glfwSetCursorPos(a_window->CastVulkan()->GetGLFWWindow(), a_pos.x, a_pos.y);
+	glfwSetCursorPos(m_window, a_pos.x, a_pos.y);
 }
 
 Maths::Vector2 GLFWInputManager::GetMouseScroll()
@@ -114,8 +110,9 @@ void GLFWInputManager::Initialize(IWindow* a_window)
 {
 	std::cout << GLFW_REPEAT << '\n';
 	std::cout << GLFW_RELEASE << '\n';
-	glfwSetKeyCallback(a_window->CastVulkan()->GetGLFWWindow(), KeyCallback);
-	glfwSetMouseButtonCallback(a_window->CastVulkan()->GetGLFWWindow(), MouseButtonCallback);
-	glfwSetScrollCallback(a_window->CastVulkan()->GetGLFWWindow(), MouseScrollCallback);
+	m_window = a_window->CastVulkan()->GetGLFWWindow();
 
+	glfwSetKeyCallback(m_window, KeyCallback);
+	glfwSetMouseButtonCallback(m_window, MouseButtonCallback);
+	glfwSetScrollCallback(m_window, MouseScrollCallback);
 }

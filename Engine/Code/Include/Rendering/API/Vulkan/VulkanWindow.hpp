@@ -11,7 +11,7 @@ public:
     void Initialize(const std::string& a_name, int a_width, int a_height) override;
     void Update() const override;
     void PollEvents() const override;
-    bool ShouldClose() const  override;
+    [[nodiscard]] bool ShouldClose() const  override;
     void Destroy() const override;
 
     Maths::Vector2 GetSize() override;
@@ -23,7 +23,7 @@ public:
 
     VulkanWindow* CastVulkan() override { return this; }
 
-    GLFWwindow* GetGLFWWindow() const { return m_window; }
+    [[nodiscard]] GLFWwindow* GetGLFWWindow() const { return m_window; }
 
 private:
     GLFWwindow* m_window = nullptr;
