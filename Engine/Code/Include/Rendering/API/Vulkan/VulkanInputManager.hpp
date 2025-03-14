@@ -4,9 +4,8 @@
 #define GLFW_INCLUDE_VULKAN
 #include <GLFW/glfw3.h>
 #include "Exporter.hpp"
-#include <vector>
 
-class LUMINOUS_ENGINE_API VulkanInputManager : public IInputManager
+class LUMINOUS_ENGINE_API VulkanInputManager final : public IInputManager
 {
 public:
     void Initialize(IWindow* a_window) override;
@@ -23,7 +22,6 @@ public:
     VulkanInputManager* CastVulkan() override { return this; }
 
 private:
-    inline static int m_keyStatus[400];
     inline static int m_keyPressed[400];
-    //std::vector<int> m_keyStatus;
+    inline static std::array<int, 400> m_keyStatus;
 };
