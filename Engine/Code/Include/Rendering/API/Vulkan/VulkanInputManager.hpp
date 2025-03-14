@@ -19,6 +19,11 @@ public:
     int IsMouseButtonUp(IWindow* a_window, int a_button) override;
     int IsMouseButtonPressed(IWindow* a_window, int a_button) override;
     static void MouseButtonCallback(GLFWwindow* a_window, int a_button, int a_action, int a_mods);
+    static void MouseScrollCallback(GLFWwindow* a_window, double a_xoffset, double a_yoffset);
+
+
+    Vector2 GetMouseScroll() override { return Vector2(m_mouseScroll[0],m_mouseScroll[1]); };
+    void SetMouseScroll(Vector2 a_vec) override;
 
     Vector2 GetCursorPosition(IWindow* a_window) override;
     void SetCursorPosition(IWindow* a_window, Vector2 a_pos) override;
@@ -31,6 +36,8 @@ private:
 
     inline static int m_mouseButtonStatus[16];
     inline static int m_mouseButtonPressed[16];
+
+    inline static float m_mouseScroll[2];
 
     //std::vector<int> m_keyStatus;
 };

@@ -77,6 +77,18 @@ void VulkanInputManager::MouseButtonCallback(GLFWwindow* a_window, int a_key, in
 
 }
 
+void VulkanInputManager::MouseScrollCallback(GLFWwindow* a_window, double a_xoffset, double a_yoffset)
+{
+
+	m_mouseScroll[0] = (float)a_xoffset;
+	m_mouseScroll[1] = (float)a_yoffset;
+
+}
+
+void VulkanInputManager::SetMouseScroll(Vector2 a_vec)
+{
+}
+
 Vector2 VulkanInputManager::GetCursorPosition(IWindow* a_window)
 {
 	double t_x, t_y;
@@ -95,5 +107,6 @@ void VulkanInputManager::Initialize(IWindow* a_window)
 	std::cout << GLFW_RELEASE << '\n';
 	glfwSetKeyCallback(a_window->CastVulkan()->GetGLFWWindow(), KeyCallback);
 	glfwSetMouseButtonCallback(a_window->CastVulkan()->GetGLFWWindow(), MouseButtonCallback);
+	glfwSetScrollCallback(a_window->CastVulkan()->GetGLFWWindow(), MouseScrollCallback);
 
 }
