@@ -19,7 +19,6 @@ public:
     void SetOpacity(const float a_alpha) override;
     const std::string GetTitle() override;
     void SetTitle(const std::string& a_name) override;
-    Vector2 GetCursorPosition() override;
 
     VulkanWindow* CastVulkan() override { return this; }
 
