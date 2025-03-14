@@ -1,5 +1,5 @@
 #include "Wrapper/EWindow.hpp"
-
+/*
 EWindow::EWindow(const int a_width, const int a_height, const char* a_title)
 {
 	m_window = glfwCreateWindow(a_width, a_height, a_title, nullptr, nullptr);
@@ -61,4 +61,4 @@ void EWindow::SetOpacity(const float a_alpha)
 VulkanWindow* EWindow::CastToVulkan()
 {
 	return nullptr;
-}
+}*/

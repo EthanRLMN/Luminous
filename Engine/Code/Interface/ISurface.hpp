@@ -4,13 +4,13 @@
 
 class VulkanSurface;
 class IInstance;
-class EWindow;
+class IWindow;
 
 class ISurface
 {
 public:
 	virtual ~ISurface() = default;
-	virtual void Create(IInstance* a_instance, EWindow* a_window) = 0;
+	virtual void Create(IInstance* a_instance, IWindow* a_window) = 0;
 	virtual void Destroy(IInstance* a_instance) = 0;
 
 	virtual VulkanSurface* CastVulkan()

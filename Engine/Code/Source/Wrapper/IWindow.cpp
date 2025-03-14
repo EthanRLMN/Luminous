@@ -16,12 +16,12 @@ Vector2 IWindow::GetSize()
 {
 	int t_x, t_y;
 	glfwGetWindowSize(m_window, &t_x, &t_y);
-	return Vector2(t_x,t_y);
+	return Vector2((float)t_x,(float)t_y);
 }
 
 void IWindow::SetSize(const Vector2 a_size)
 {
-	glfwSetWindowSize(m_window, a_size.x, a_size.y);
+	glfwSetWindowSize(m_window, (int)a_size.x, (int)a_size.y);
 }
 
 float IWindow::GetOpacity()

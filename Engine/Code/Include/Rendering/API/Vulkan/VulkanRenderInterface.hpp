@@ -40,7 +40,7 @@ public:
 	ISynchronisation* InstantiateSynchronisation() override { return new VulkanSynchronisation(); }
 	void DeleteSynchronisation(ISynchronisation* a_synchronisation) override { delete a_synchronisation; }
 
-	EWindow* InstantiateWindow() override { return new VulkanWindow(); }
+	IWindow* InstantiateWindow() override { return new VulkanWindow(); }
 	void DeleteWindow(IWindow* a_window) override { delete a_window; }
 
 #endif // VULKAN

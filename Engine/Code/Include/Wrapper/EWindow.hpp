@@ -1,5 +1,5 @@
 #pragma once
-
+/*
 #define GLFW_INCLUDE_VULKAN
 #include <GLFW/glfw3.h>
 #include "Exporter.hpp"
@@ -28,4 +28,4 @@ public:
 
 private:
 	GLFWwindow* m_window;
-};
+};*/

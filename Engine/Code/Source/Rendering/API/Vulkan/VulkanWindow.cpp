@@ -19,11 +19,21 @@ void VulkanWindow::Initialize(const std::string& a_name, const int a_width, cons
 
 void VulkanWindow::Update() const
 {
-    while (!glfwWindowShouldClose(m_window))
+    while (!ShouldClose())
     {
-        glfwPollEvents();
-
+        PollEvents();
     }
+    Destroy();
+}
+
+void VulkanWindow::PollEvents() const
+{
+    glfwPollEvents();
+}
+
+bool VulkanWindow::ShouldClose() const
+{
+    return glfwWindowShouldClose(m_window);
 }
 
 void VulkanWindow::Destroy() const
@@ -31,3 +41,37 @@ void VulkanWindow::Destroy() const
     glfwDestroyWindow(m_window);
     glfwTerminate();
 }
+
+Vector2 VulkanWindow::GetSize()
+{
+    int t_x, t_y;
+    glfwGetWindowSize(m_window, &t_x, &t_y);
+    return Vector2((float)t_x, (float)t_y);
+}
+
+void VulkanWindow::SetSize(const Vector2 a_size)
+{
+    glfwSetWindowSize(m_window, (int)a_size.x, (int)a_size.y);
+}
+
+float VulkanWindow::GetOpacity()
+{
+    return glfwGetWindowOpacity(m_window);
+}
+
+void VulkanWindow::SetOpacity(const float a_alpha)
+{
+    glfwSetWindowOpacity(m_window, a_alpha);
+}
+
+const std::string VulkanWindow::GetTitle()
+{
+    std::string t_str = glfwGetWindowTitle(m_window);
+    return t_str;
+}
+
+void VulkanWindow::SetTitle(const std::string& a_name)
+{
+    glfwSetWindowTitle(m_window,a_name.c_str());
+}
+

@@ -2,14 +2,14 @@
 #include <iostream>
 
 class VulkanInstance;
-class EWindow;
+class IWindow;
 
 class IInstance
 {
 public:
     virtual ~IInstance() = default;
 
-    virtual void Create(EWindow* a_window) = 0;
+    virtual void Create(IWindow* a_window) = 0;
     virtual void Destroy() = 0;
 
     virtual VulkanInstance* CastVulkan()

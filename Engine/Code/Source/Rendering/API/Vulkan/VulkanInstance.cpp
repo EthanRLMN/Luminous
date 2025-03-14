@@ -94,7 +94,7 @@ void VulkanInstance::VkDebugCallback()
 }
 
 
-void VulkanInstance::Create(EWindow* a_window)
+void VulkanInstance::Create(IWindow* a_window)
 {
 	std::cout << "Enter Vulkan Init\n";
 	VkCreateInstance();
