@@ -34,7 +34,7 @@ void VulkanInstance::VkCreateInstance()
 	for (size_t i = 0; i < l_glfwExtensionCount; i++)
 		l_instanceExtensions.push_back(l_glfwExtensions[i]);
 
-	if (validationEnabled)
+	if (useValidationLayers)
 		l_instanceExtensions.push_back(VK_EXT_DEBUG_REPORT_EXTENSION_NAME);
 
 	l_createInfo.enabledExtensionCount = static_cast<uint32_t>(l_instanceExtensions.size());
@@ -44,7 +44,7 @@ void VulkanInstance::VkCreateInstance()
 	l_createInfo.enabledLayerCount = 0;
 	l_createInfo.ppEnabledLayerNames = nullptr;
 
-	if (validationEnabled)
+	if (useValidationLayers)
 	{
 		l_createInfo.enabledLayerCount = static_cast<uint32_t>(validationLayers.size());
 		l_createInfo.ppEnabledLayerNames = validationLayers.data();
@@ -67,7 +67,7 @@ void VulkanInstance::VkCreateInstance()
 void VulkanInstance::VkDebugCallback()
 {
 	// Only create callback if validation is enabled
-	if constexpr (!validationEnabled) return;
+	if constexpr (!useValidationLayers) return;
 
 	// Retrieve the function pointer for vkCreateDebugReportCallbackEXT
 	const auto l_func = reinterpret_cast<PFN_vkCreateDebugReportCallbackEXT>(
@@ -82,7 +82,7 @@ void VulkanInstance::VkDebugCallback()
 	VkDebugReportCallbackCreateInfoEXT l_callbackCreateInfo = {};
 	l_callbackCreateInfo.sType = VK_STRUCTURE_TYPE_DEBUG_REPORT_CALLBACK_CREATE_INFO_EXT;
 	l_callbackCreateInfo.flags = VK_DEBUG_REPORT_ERROR_BIT_EXT | VK_DEBUG_REPORT_WARNING_BIT_EXT;
-	l_callbackCreateInfo.pfnCallback = debugCallback; // Set the callback function
+	//l_callbackCreateInfo.pfnCallback = DebugCallback; // Set the callback function
 
 	// Create the callback
 
