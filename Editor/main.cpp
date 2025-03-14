@@ -12,13 +12,17 @@ int main()
     const Application application;
     application.Run();
 
+
+    //IInput ejwn;
+
+    /*
     IMGUI_CHECKVERSION();
 
     ImGui::CreateContext();
     ImGuiIO& io = ImGui::GetIO();
 
     io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;     // Enable Keyboard Controls
-    io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;         // IF using Docking Branch
+    io.ConfigFlags |= ImGuiConfigFlags_DockingEnable; */        // IF using Docking Branch
 
     // Setup Platform/Renderer backends
 //    ImGui_ImplVulkan_InitInfo l_vulkanInfo{};
@@ -27,8 +31,8 @@ int main()
 //    ImGui_ImplVulkan_Init(&l_vulkanInfo);
 //    ImGui_ImplGlfw_InitForVulkan(application.s_Window.m_Window, false);
 
-    ImGui::NewFrame();
-    ImGui::ShowDemoWindow(); // Show demo window! :)
+    //ImGui::NewFrame();
+    //ImGui::ShowDemoWindow(); // Show demo window! :)
 
     /*while (!glfwWindowShouldClose())
     {
@@ -47,6 +51,6 @@ int main()
 
     getchar();
 
-    Destroy();
+    //Destroy();
     return 0;
 }

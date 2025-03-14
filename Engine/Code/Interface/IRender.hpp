@@ -9,6 +9,7 @@
 #include "ISwapChain.hpp"
 #include "ISynchronisation.hpp"
 #include "IWindow.hpp"
+#include "IInputManager.hpp"
 
 class IRender
 {
@@ -24,6 +25,7 @@ public:
 	virtual IBuffer* InstantiateBuffer() = 0;
 	virtual ISynchronisation* InstantiateSynchronisation() = 0;
 	virtual IWindow* InstantiateWindow() = 0;
+	virtual IInputManager* InstantiateInputManager() = 0;
 
 	virtual void DeleteContext(IInstance* a_instance) { delete a_instance; }
 	virtual void DeleteSurface(ISurface* a_surface) { delete a_surface; }
