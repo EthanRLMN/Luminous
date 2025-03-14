@@ -1,11 +1,10 @@
 #pragma once
 
-#include <cstdio>
+#include <Logger.hpp>
 #include <vector>
-#include <vulkan/vk_platform.h>
-#include <vulkan/vulkan_core.h>
+#include <vulkan/vulkan.h>
 
-constexpr bool validationEnabled = true;
+constexpr bool useValidationLayers = true;
 
 const std::vector<const char*> validationLayers =
 {
@@ -13,60 +12,34 @@ const std::vector<const char*> validationLayers =
 };
 
 // Callback function for validation debugging (will be called when validation information record)
-static VKAPI_ATTR VkBool32 VKAPI_CALL debugCallback(
-	VkDebugReportFlagsEXT flags, // Type of error
-	VkDebugReportObjectTypeEXT objType, // Type of object causing error
-	uint64_t obj, // ID of object
-	size_t location,
-	int32_t code,
-	const char* layerPrefix,
-	const char* message, // Validation Information
-	void* userData)
+static VkBool32 VKAPI_CALL DebugCallback(VkDebugUtilsMessageSeverityFlagBitsEXT a_messageSeverity,
+                                         VkDebugUtilsMessageTypeFlagsEXT a_messageTypes,
+                                         const VkDebugUtilsMessengerCallbackDataEXT* a_pCallbackData, void* a_pUserData)
 {
-	// If validation ERROR, then output error and return failure
-	if (flags & VK_DEBUG_REPORT_ERROR_BIT_EXT)
-	{
-		printf("VALIDATION ERROR: %s\n", message);
-		return VK_TRUE;
-	}
-
-	// If validation WARNING, then output warning and return okay
-	if (flags & VK_DEBUG_REPORT_WARNING_BIT_EXT)
-	{
-		printf("VALIDATION WARNING: %s\n", message);
-		return VK_FALSE;
-	}
-
+	DEBUG_LOG_INFO("validation Layer : {}", a_pCallbackData->pMessage);
 	return VK_FALSE;
 }
 
-static VkResult CreateDebugReportCallbackEXT(const VkInstance a_instance,
-                                             const VkDebugReportCallbackCreateInfoEXT* a_pCreateInfo,
+static VkResult CreateDebugUtilsMessengerEXT(const VkInstance a_instance,
+                                             const VkDebugUtilsMessengerCreateInfoEXT* a_pCreateInfo,
                                              const VkAllocationCallbacks* a_pAllocator,
-                                             VkDebugReportCallbackEXT* a_pCallback)
+                                             VkDebugUtilsMessengerEXT* a_pDebugMessenger)
 {
-	// vkGetInstanceProcAddr returns a function pointer to the requested function in the requested instance
-	// resulting function is cast as a function pointer with the header of "vkCreateDebugReportCallbackEXT"
-	const auto l_func = reinterpret_cast<PFN_vkCreateDebugReportCallbackEXT>(
-		vkGetInstanceProcAddr(a_instance, "vkCreateDebugReportCallbackEXT"));
+	const auto l_func = reinterpret_cast<PFN_vkCreateDebugUtilsMessengerEXT>(
+		vkGetInstanceProcAddr(a_instance, "vkCreateDebugUtilsMessengerEXT"));
 
-	// If function was found, executre if with given data and return result, otherwise, return error
-	if (l_func != nullptr)
-		return l_func(a_instance, a_pCreateInfo, a_pAllocator, a_pCallback);
+	if (l_func == nullptr)
+		return VK_ERROR_EXTENSION_NOT_PRESENT;
 
-	return VK_ERROR_EXTENSION_NOT_PRESENT;
+	return l_func(a_instance, a_pCreateInfo, a_pAllocator, a_pDebugMessenger);
 }
 
 static void DestroyDebugReportCallbackEXT(const VkInstance a_instance, const VkDebugReportCallbackEXT a_callback,
                                           const VkAllocationCallbacks* a_pAllocator)
 {
-	// get function pointer to requested function, then cast to function pointer for vkDestroyDebugReportCallbackEXT
-	const auto l_func = reinterpret_cast<PFN_vkDestroyDebugReportCallbackEXT>(
-		vkGetInstanceProcAddr(a_instance, "vkDestroyDebugReportCallbackEXT"));
+	const auto l_func = reinterpret_cast<PFN_vkDestroyDebugReportCallbackEXT>(vkGetInstanceProcAddr(
+		a_instance, "vkDestroyDebugReportCallbackEXT"));
 
-	// If function found, execute
 	if (l_func != nullptr)
-	{
 		l_func(a_instance, a_callback, a_pAllocator);
-	}
 }

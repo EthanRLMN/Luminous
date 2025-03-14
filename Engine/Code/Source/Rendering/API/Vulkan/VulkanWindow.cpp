@@ -7,7 +7,7 @@ void VulkanWindow::Initialize(const std::string& a_name, const int a_width, cons
     glfwWindowHint(GLFW_RESIZABLE, GLFW_TRUE);
 
     if (glfwVulkanSupported())
-        std::cout << "Vulkan Support Working!\n";
+        DEBUG_LOG_INFO("Vulkan Support Working!\n");
 
     m_window = glfwCreateWindow(a_width, a_height, a_name.c_str(), nullptr, nullptr);
 

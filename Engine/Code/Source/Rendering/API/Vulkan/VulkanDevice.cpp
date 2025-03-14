@@ -26,24 +26,24 @@ void VulkanDevice::Destroy()
 
 void VulkanDevice::CreateLogicalDevice(const VkSurfaceKHR a_surface, VkInstance a_instance)
 {
-	//get the queue family  indices for chosen physical device
+	//get the queue family indices for chosen physical device
 	QueueFamilyIndices l_indices = GetQueueFamilies(m_physicalDevice, a_surface);
 
 	std::vector<VkDeviceQueueCreateInfo> queueCreateInfos;
 	std::set<int> l_queueFamilyIndices = {l_indices.graphicsFamily, l_indices.presentationFamily};
 
-	//Queues the logical device eeet to create and info to do so (only 1 the rest i will do later)
+	//Queues the logical device and to create and info to do so (only 1 the rest i will do later)
 
 	for (int queueFamilyIndex: l_queueFamilyIndices)
 	{
 		VkDeviceQueueCreateInfo queueCreateInfo = {};
 		queueCreateInfo.sType = VK_STRUCTURE_TYPE_DEVICE_QUEUE_CREATE_INFO;
-		queueCreateInfo.queueFamilyIndex = queueFamilyIndex; //index of family to creata a queue from
+		queueCreateInfo.queueFamilyIndex = queueFamilyIndex; //index of family to create a queue from
 		queueCreateInfo.queueCount = 1; // number of queues to create
 
 		float priority = 1.0f;
 		queueCreateInfo.pQueuePriorities = &priority;
-		// vulkan need to know how to handle multiple queues, so decide property ( 1 = highest prioryty)
+		// vulkan need to know how to handle multiple queues, so decide property ( 1 = highest priority)
 
 		queueCreateInfos.push_back(queueCreateInfo);
 	}
@@ -55,13 +55,13 @@ void VulkanDevice::CreateLogicalDevice(const VkSurfaceKHR a_surface, VkInstance 
 	// number of queue create info
 	deviceCreateInfo.queueCreateInfoCount = static_cast<uint32_t>(queueCreateInfos.size());
 	deviceCreateInfo.pQueueCreateInfos = queueCreateInfos.data();
-	// list of queue crete infos so device can create required queues
+	// list of queue create infos so device can create required queues
 	deviceCreateInfo.enabledExtensionCount = static_cast<uint32_t>(deviceExtensions.size());
 	// number of enabled logical device extensions
 	deviceCreateInfo.ppEnabledExtensionNames = deviceExtensions.data();; // list of enable logical device
 	deviceCreateInfo.enabledLayerCount = 0; /// deprecate necessaire seulement a VK 1.0
 
-	//physical device features the logical device will using
+	//physical device features the logical device will use
 	VkPhysicalDeviceFeatures deviceFeatures = {};
 	deviceCreateInfo.pEnabledFeatures = &deviceFeatures; // physical device features logical device will use
 
@@ -84,7 +84,7 @@ void VulkanDevice::GetPhysicalDevice(const VkInstance a_instance, const VkSurfac
 	uint32_t l_deviceCount = 0;
 	vkEnumeratePhysicalDevices(a_instance, &l_deviceCount, nullptr);
 
-	//cehckk if device is avalaible
+	//check if device is available
 	if (l_deviceCount == 0)
 		throw std::runtime_error("can't find GPUs that support Vulkan Instance");
 
@@ -109,7 +109,7 @@ bool VulkanDevice::CheckDeviceSuitable(const VkPhysicalDevice a_device, const Vk
 	VkPhysicalDeviceProperties l_deviceProperties;
 	vkGetPhysicalDeviceProperties(a_device, &l_deviceProperties);
 
-	//information about what device can do (geo shader , tess shader , wide lines ,etc
+	//information about what device can do (geo shader , tess shader , wide lines ,etc)
 	VkPhysicalDeviceFeatures l_deviceFeatures;
 	vkGetPhysicalDeviceFeatures(a_device, &l_deviceFeatures);
 
@@ -177,7 +177,7 @@ QueueFamilyIndices VulkanDevice::GetQueueFamilies(const VkPhysicalDevice a_devic
 	std::vector<VkQueueFamilyProperties> l_queueFamilyList(l_queueFamilyCount);
 	vkGetPhysicalDeviceQueueFamilyProperties(a_device, &l_queueFamilyCount, l_queueFamilyList.data());
 
-	//go through each queue family and check if it has atleast 1 of the required types of queue
+	//go through each queue family and check if it has at least 1 of the required types of queue
 	int i = 0;
 	for (const auto& l_queueFamily: l_queueFamilyList)
 	{
@@ -188,7 +188,7 @@ QueueFamilyIndices VulkanDevice::GetQueueFamilies(const VkPhysicalDevice a_devic
 		//checkqueuefamily support presentation
 		VkBool32 l_presentationSupport = false;
 		vkGetPhysicalDeviceSurfaceSupportKHR(a_device, i, a_surface, &l_presentationSupport);
-		//check if queue is rpresentation type (cna be graphic an presentation )
+		//check if queue is representation type (cna be graphic an presentation )
 		if (l_queueFamily.queueCount > 0 && l_presentationSupport)
 			l_indices.presentationFamily = 1;
 
@@ -218,7 +218,7 @@ SwapChainDetails VulkanDevice::GetSwapChainDetails(const VkPhysicalDevice a_devi
 		vkGetPhysicalDeviceSurfaceFormatsKHR(a_device, a_surface, &l_formatCount, l_swapChainDetails.formats.data());
 	}
 
-	//presentaiton modes
+	//presentation modes
 
 	uint32_t l_presentationCount = 0;
 	vkGetPhysicalDeviceSurfacePresentModesKHR(a_device, a_surface, &l_presentationCount, nullptr);
