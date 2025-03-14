@@ -4,8 +4,7 @@
 #include "IBuffer.hpp"
 #include "IRender.hpp"
 #include "ISynchronisation.hpp"
-#include "Rendering/API/Vulkan/VulkanWindow.hpp"
-#include "Wrapper/EWindow.hpp"
+#include "Rendering/API/Vulkan/VulkanInputManager.hpp"
 
 class VulkanRenderInterface;
 
@@ -21,6 +20,7 @@ private:
 	IRender* m_interface { nullptr };
 	//IWindow* m_window { nullptr };
 	IWindow* m_window{ nullptr };
+	IInputManager* m_inputManager{ nullptr };
 
 	IRender* m_render { nullptr };
 	IInstance* m_instance { nullptr };

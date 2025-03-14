@@ -6,6 +6,8 @@ Application::Application()
 {
 	m_interface = new VulkanRenderInterface();
 
+	m_inputManager = m_interface->InstantiateInputManager();
+
 	m_window = m_interface->InstantiateWindow();
 	m_window->Initialize("Luminous Window", 800, 600);
 
@@ -32,6 +34,11 @@ Application::Application()
 
 	m_synchronisation = m_interface->InstantiateSynchronisation();
 	m_synchronisation->Create();
+
+	std::cout << m_window->GetSize().x << '\n';
+	std::cout << m_window->GetSize().y << '\n';
+	m_window->SetOpacity(0.5f);
+
 }
 
 Application::~Application()
@@ -43,6 +50,13 @@ Application::~Application()
 
 void Application::Run() const
 {
-	m_window->Update();
+	while (!m_window->ShouldClose())
+	{
+		m_window->PollEvents();
+		if (m_inputManager->IsKeyDown(m_window, m_inputManager->KeyCode().E()))
+			std::cout << "penis\n";
+
+	}
+	m_window->Destroy();
 }
 

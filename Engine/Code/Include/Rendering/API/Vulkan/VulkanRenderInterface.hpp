@@ -41,6 +41,8 @@ public:
 	void DeleteSynchronisation(ISynchronisation* a_synchronisation) override { delete a_synchronisation; }
 
 	IWindow* InstantiateWindow() override { return new VulkanWindow(); }
+
+	IInputManager* InstantiateInputManager() override { return new VulkanInputManager(); }
 	void DeleteWindow(IWindow* a_window) override { delete a_window; }
 
 #endif // VULKAN

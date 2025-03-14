@@ -75,3 +75,10 @@ void VulkanWindow::SetTitle(const std::string& a_name)
     glfwSetWindowTitle(m_window,a_name.c_str());
 }
 
+Vector2 VulkanWindow::GetCursorPosition()
+{
+    double t_x, t_y;
+    glfwGetCursorPos(m_window, &t_x, &t_y);
+    return Vector2((float)t_x, (float)t_y);
+}
+
