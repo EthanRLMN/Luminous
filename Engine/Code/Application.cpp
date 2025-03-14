@@ -57,7 +57,7 @@ void Application::Run() const
 	{
 		m_window->PollEvents();
 		if (m_inputManager->IsKeyPressed(m_window, m_inputManager->KeyCode().E()))
-			std::cout << "autrechose\n";
+			std::cout << "MEJK";
 
 	}
 	m_window->Destroy();

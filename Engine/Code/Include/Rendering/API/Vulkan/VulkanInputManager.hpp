@@ -20,5 +20,6 @@ public:
 
 private:
     inline static int m_keyStatus[400];
+    inline static int m_keyPressed[400];
     //std::vector<int> m_keyStatus;
 };
