@@ -14,6 +14,8 @@ public:
 
 	void Destroy(IDevice* a_device) override;
 
+	VulkanSwapChain* CastVulkan() override { return this; }
+
 	VkSwapchainKHR m_swapchain{ VK_NULL_HANDLE };
 
 	std::vector<VkImage> swapChainImages{ VK_NULL_HANDLE };
@@ -21,8 +23,12 @@ public:
 	std::vector<VkCommandBuffer> commandBuffers{ VK_NULL_HANDLE };
 	std::vector<VkImageView> swapChainImageViews{ VK_NULL_HANDLE };
 
-	VkFormat swapChainImageFormat;
-	VkExtent2D swapChainExtent;
+	VkFormat swapChainImageFormat = VK_FORMAT_UNDEFINED;
+	VkExtent2D swapChainExtent = { 0, 0 };
+
+	[[nodiscard]] VkFormat GetSwapChainImageFormat() const;
+	[[nodiscard]] VkExtent2D GetSwapChainExtent() const;
+
 private:
 	SwapChainDetails GetSwapChainDetails(VkPhysicalDevice a_device, VkSurfaceKHR a_surface);
 

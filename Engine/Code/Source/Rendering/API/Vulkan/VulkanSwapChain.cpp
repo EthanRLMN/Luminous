@@ -5,12 +5,11 @@
 
 void VulkanSwapChain::Create(IWindow* a_window, IDevice* a_device,ISurface* a_surface)
 {
-	SwapChainDetails l_swapChainDetails = GetSwapChainDetails(a_device->CastVulkan()->GetPhysicalDevice(),a_surface->CastVulkan()->GetSurface());
+	SwapChainDetails l_swapChainDetails = GetSwapChainDetails(a_device->CastVulkan()->GetPhysicalDevice(), a_surface->CastVulkan()->GetSurface());
 
 	VkSurfaceFormatKHR l_surfaceFormat = ChooseBestSurfaceFormat(l_swapChainDetails.formats);
 	VkPresentModeKHR l_presentMode = ChooseBestPresentationMode(l_swapChainDetails.presentationModes);
 	VkExtent2D l_extent = ChooseSwapExtend(l_swapChainDetails.surfaceCapabilities, static_cast<VulkanWindow*>(a_window)->GetGLFWWindow());
-
 
 	uint32_t l_imageCount = l_swapChainDetails.surfaceCapabilities.minImageCount + 1;
 	if (l_swapChainDetails.surfaceCapabilities.maxImageCount > 0 && l_swapChainDetails.surfaceCapabilities.maxImageCount < l_imageCount) {
@@ -74,6 +73,16 @@ void VulkanSwapChain::Destroy(IDevice* a_device)
 	std::cout << "DestroySwapChain\n";
 }
 
+
+VkFormat VulkanSwapChain::GetSwapChainImageFormat() const
+{
+	return swapChainImageFormat;
+}
+
+VkExtent2D VulkanSwapChain::GetSwapChainExtent() const
+{
+	return swapChainExtent;
+}
 
 SwapChainDetails VulkanSwapChain::GetSwapChainDetails(VkPhysicalDevice a_device , VkSurfaceKHR a_surface)
 {

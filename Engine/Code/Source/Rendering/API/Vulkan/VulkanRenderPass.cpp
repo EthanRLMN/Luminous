@@ -1,80 +1,97 @@
 #include "Rendering/API/Vulkan/VulkanRenderPass.hpp"
 
-#include "../../../../Interface/ISwapChain.hpp"
+#include <vector>
+#include <array>
+
 
 void VulkanRenderPass::Create(ISwapChain* a_swapchain, IDevice* a_device)
 {
-	std::cout <<"RenderPass Creation\n";
-	/*VkAttachmentDescription colourAttachment = {};
-	colourAttachment.format = swapChainImageFormat;
-	colourAttachment.samples = VK_SAMPLE_COUNT_1_BIT;
-	colourAttachment.loadOp = VK_ATTACHMENT_LOAD_OP_CLEAR;
-	colourAttachment.storeOp = VK_ATTACHMENT_STORE_OP_STORE;
-	colourAttachment.stencilLoadOp = VK_ATTACHMENT_LOAD_OP_DONT_CARE;
-	colourAttachment.stencilStoreOp = VK_ATTACHMENT_STORE_OP_DONT_CARE;
+	VkAttachmentDescription l_colorAttachment = {};
+	l_colorAttachment.format = a_swapchain->CastVulkan()->GetSwapChainImageFormat();
+	l_colorAttachment.samples = VK_SAMPLE_COUNT_1_BIT;
+	l_colorAttachment.loadOp = VK_ATTACHMENT_LOAD_OP_CLEAR;
+	l_colorAttachment.storeOp = VK_ATTACHMENT_STORE_OP_STORE;
+	l_colorAttachment.stencilLoadOp = VK_ATTACHMENT_LOAD_OP_DONT_CARE;
+	l_colorAttachment.stencilStoreOp = VK_ATTACHMENT_STORE_OP_DONT_CARE;
+	l_colorAttachment.initialLayout = VK_IMAGE_LAYOUT_UNDEFINED;
+	l_colorAttachment.finalLayout = VK_IMAGE_LAYOUT_PRESENT_SRC_KHR;
+
+	VkAttachmentDescription l_depthAttachment{};
+	l_depthAttachment.format = FindDepthFormat(a_device->CastVulkan()->GetPhysicalDevice());
+	l_depthAttachment.samples = VK_SAMPLE_COUNT_1_BIT;
+	l_depthAttachment.loadOp = VK_ATTACHMENT_LOAD_OP_CLEAR;
+	l_depthAttachment.storeOp = VK_ATTACHMENT_STORE_OP_DONT_CARE;
+	l_depthAttachment.stencilLoadOp = VK_ATTACHMENT_LOAD_OP_DONT_CARE;
+	l_depthAttachment.stencilStoreOp = VK_ATTACHMENT_STORE_OP_DONT_CARE;
+	l_depthAttachment.initialLayout = VK_IMAGE_LAYOUT_UNDEFINED;
+	l_depthAttachment.finalLayout = VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL;
 
 
-	colourAttachment.initialLayout = VK_IMAGE_LAYOUT_UNDEFINED;
-	colourAttachment.finalLayout = VK_IMAGE_LAYOUT_PRESENT_SRC_KHR;
+	VkAttachmentReference l_colorAttachementReference = {};
+	l_colorAttachementReference.attachment = 0;
+	l_colorAttachementReference.layout = VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL;
 
+	VkAttachmentReference l_depthAttachementReference = {};
+	l_depthAttachementReference.attachment = 1;
+	l_depthAttachementReference.layout = VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL;
 
-	//attachement reference usues an attachement index
-	VkAttachmentReference colourAttachementReference = {};
-	colourAttachementReference.attachment = 0;
-	colourAttachementReference.layout = VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL;
+	VkSubpassDescription l_subpass = {};
+	l_subpass.pipelineBindPoint = VK_PIPELINE_BIND_POINT_GRAPHICS;
+	l_subpass.colorAttachmentCount = 1;
+	l_subpass.pColorAttachments = &l_colorAttachementReference;
+	l_subpass.pDepthStencilAttachment = &l_depthAttachementReference;
 
-	//information avout a particular subpass the render pass
-	VkSubpassDescription subpass = {};
-	subpass.pipelineBindPoint = VK_PIPELINE_BIND_POINT_GRAPHICS;
-	subpass.colorAttachmentCount = 1;
-	subpass.pColorAttachments = &colourAttachementReference;
+	VkSubpassDependency l_dependency{};
+	l_dependency.srcSubpass = VK_SUBPASS_EXTERNAL;
+	l_dependency.dstSubpass = 0;
+	l_dependency.srcStageMask = VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT | VK_PIPELINE_STAGE_EARLY_FRAGMENT_TESTS_BIT;
+	l_dependency.srcAccessMask = 0;
+	l_dependency.dstStageMask = VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT | VK_PIPELINE_STAGE_EARLY_FRAGMENT_TESTS_BIT;
+	l_dependency.srcAccessMask = VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT | VK_ACCESS_DEPTH_STENCIL_ATTACHMENT_WRITE_BIT;
 
-	//Determinate when layout transition  using  subpass dependencies
-	std::array<VkSubpassDependency, 2 > subpassDependencies;
+	std::array<VkAttachmentDescription, 2> l_attachments = { l_colorAttachment, l_depthAttachment };
 
-	//conversion from vk_image_layout_undefined to vk_image_layout_color_attachement_optimal
-	subpassDependencies[0].srcSubpass = VK_SUBPASS_EXTERNAL;
-	subpassDependencies[0].srcStageMask = VK_PIPELINE_STAGE_BOTTOM_OF_PIPE_BIT;
-	subpassDependencies[0].srcAccessMask = VK_ACCESS_MEMORY_READ_BIT;
+	VkRenderPassCreateInfo l_renderPassCreateInfo = {};
+	l_renderPassCreateInfo.sType = VK_STRUCTURE_TYPE_RENDER_PASS_CREATE_INFO;
+	l_renderPassCreateInfo.attachmentCount = static_cast<uint32_t>(l_attachments.size());
+	l_renderPassCreateInfo.pAttachments = l_attachments.data();
+	l_renderPassCreateInfo.subpassCount = 1;
+	l_renderPassCreateInfo.pSubpasses = &l_subpass;
+	l_renderPassCreateInfo.dependencyCount = 1;
+	l_renderPassCreateInfo.pDependencies = &l_dependency;
 
-	subpassDependencies[0].dstSubpass = 0;
-	subpassDependencies[0].dstStageMask = VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT;
-	subpassDependencies[0].dstAccessMask = VK_ACCESS_COLOR_ATTACHMENT_READ_BIT | VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT;
-	subpassDependencies[0].dependencyFlags = 0;
-
-
-
-
-	//VK_image_layout_color_attachment_optimal to vk_image_layout_present_src_khr
-	subpassDependencies[1].srcSubpass = 0;
-	subpassDependencies[1].srcStageMask = VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT;
-	subpassDependencies[1].srcAccessMask = VK_ACCESS_COLOR_ATTACHMENT_READ_BIT | VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT;
-
-	subpassDependencies[1].dstSubpass = VK_SUBPASS_EXTERNAL;
-	subpassDependencies[1].dstStageMask = VK_PIPELINE_STAGE_BOTTOM_OF_PIPE_BIT;
-	subpassDependencies[1].dstAccessMask = VK_ACCESS_MEMORY_READ_BIT;
-	subpassDependencies[1].dependencyFlags = 0;
-
-	//create info for render
-	VkRenderPassCreateInfo renderPassCreateInfo = {};
-	renderPassCreateInfo.sType = VK_STRUCTURE_TYPE_RENDER_PASS_CREATE_INFO;
-	renderPassCreateInfo.attachmentCount = 1;
-	renderPassCreateInfo.pAttachments = &colourAttachment;
-	renderPassCreateInfo.subpassCount = 1;
-	renderPassCreateInfo.pSubpasses = &subpass;
-	renderPassCreateInfo.dependencyCount = static_cast<uint32_t>(subpassDependencies.size());
-	renderPassCreateInfo.pDependencies = subpassDependencies.data();
-
-
-	VkResult result = vkCreateRenderPass(mainDevice.logicalDevice, &renderPassCreateInfo, nullptr, &renderPass);
+	VkResult result = vkCreateRenderPass(a_device->CastVulkan()->GetDevice(), &l_renderPassCreateInfo, nullptr, &renderPass);
 
 	if (result != VK_SUCCESS) {
 		throw std::runtime_error("Failed to create a render pass");
 	}
-	std::cout << "RenderPass Creation Finish" << std::endl;*/
 }
 
 void VulkanRenderPass::Destroy(IDevice* a_device)
 {
+}
+
+
+VkFormat VulkanRenderPass::FindDepthFormat(VkPhysicalDevice a_physicalDevice)
+{
+	return FindSupportedFormat(a_physicalDevice, { VK_FORMAT_D32_SFLOAT,VK_FORMAT_D32_SFLOAT_S8_UINT , VK_FORMAT_D24_UNORM_S8_UINT }, VK_IMAGE_TILING_OPTIMAL, VK_FORMAT_FEATURE_DEPTH_STENCIL_ATTACHMENT_BIT);
+}
+
+
+VkFormat VulkanRenderPass::FindSupportedFormat(VkPhysicalDevice a_physicalDevice, const std::vector<VkFormat>& a_candidates, VkImageTiling a_tiling, VkFormatFeatureFlags a_features)
+{
+	for (VkFormat l_format : a_candidates) {
+		VkFormatProperties l_props;
+		vkGetPhysicalDeviceFormatProperties(a_physicalDevice, l_format, &l_props);
+
+		if (a_tiling == VK_IMAGE_TILING_LINEAR && (l_props.linearTilingFeatures & a_features) == a_features) {
+			return l_format;
+		}
+		else if (a_tiling == VK_IMAGE_TILING_OPTIMAL && (l_props.optimalTilingFeatures & a_features) == a_features) {
+			return l_format;
+		}
+	}
+	std::cout << " failed to find supported format" << std::endl;
+	return VK_FORMAT_UNDEFINED;
 }
 

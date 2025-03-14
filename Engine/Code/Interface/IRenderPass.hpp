@@ -12,4 +12,10 @@ public:
 	virtual void Create(ISwapChain* a_swapchain, IDevice* a_device) = 0;
 
 	virtual void Destroy(IDevice* _device) = 0;
+
+	virtual VulkanRenderPass* CastVulkan()
+	{
+		std::cout << "Vulkan RenderPass : Wrong cast\n";
+		return nullptr;
+	}
 };

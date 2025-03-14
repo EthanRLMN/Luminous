@@ -14,11 +14,6 @@ struct SwapChainDetails
     std::vector<VkPresentModeKHR> presentationModes{};
 };
 
-struct MainDevice
-{
-    VkPhysicalDevice physicalDevice{};
-    VkDevice logicalDevice{};
-};
 
 const std::vector deviceExtensions =
     {

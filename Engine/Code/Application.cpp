@@ -24,11 +24,14 @@ Application::Application()
 	m_device = m_interface->InstantiateDevice();
 	m_device->Create(m_instance, m_window, m_surface);
 
+	
 	m_swapChain = m_interface->InstantiateSwapChain();
 	m_swapChain->Create(m_window, m_device, m_surface);
 
+	
 	m_renderPass = m_interface->InstantiateRenderPass();
 	m_renderPass->Create(m_swapChain, m_device);
+	/*
 
 	m_pipeline = m_interface->InstantiatePipeline();
 	m_pipeline->Create();
@@ -37,7 +40,7 @@ Application::Application()
 	m_buffer->Create();
 
 	m_synchronisation = m_interface->InstantiateSynchronisation();
-	m_synchronisation->Create();
+	m_synchronisation->Create();*/
 
 	std::cout << m_window->GetSize().x << '\n';
 	std::cout << m_window->GetSize().y << '\n';
