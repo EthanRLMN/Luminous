@@ -1,5 +1,7 @@
 #include "Rendering/API/Vulkan/VulkanWindow.hpp"
 
+#include <iostream>
+
 void VulkanWindow::Initialize(const std::string& a_name, const int a_width, const int a_height)
 {
     glfwInit();
@@ -42,16 +44,16 @@ void VulkanWindow::Destroy() const
     glfwTerminate();
 }
 
-Vector2 VulkanWindow::GetSize()
+Maths::Vector2 VulkanWindow::GetSize()
 {
     int t_x, t_y;
     glfwGetWindowSize(m_window, &t_x, &t_y);
-    return Vector2((float)t_x, (float)t_y);
+    return Maths::Vector2(static_cast<float>(t_x), static_cast<float>(t_y));
 }
 
-void VulkanWindow::SetSize(const Vector2 a_size)
+void VulkanWindow::SetSize(const Maths::Vector2 a_size)
 {
-    glfwSetWindowSize(m_window, (int)a_size.x, (int)a_size.y);
+    glfwSetWindowSize(m_window, static_cast<int>(a_size.x), static_cast<int>(a_size.y));
 }
 
 float VulkanWindow::GetOpacity()
