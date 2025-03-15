@@ -26,6 +26,7 @@ private:
 	IDevice* m_device { nullptr };
 	ISwapChain* m_swapChain { nullptr };
 	IRenderPass* m_renderPass { nullptr };
+	IDescriptions* m_descriptions{ nullptr };
 	IPipeline* m_pipeline { nullptr };
 	IBuffer* m_buffer { nullptr };
 	ISynchronisation* m_synchronisation { nullptr };

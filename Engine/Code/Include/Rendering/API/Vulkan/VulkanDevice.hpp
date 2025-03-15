@@ -4,7 +4,7 @@
 
 #include "IDevice.hpp"
 #include "Utilities.hpp"
-#include "VulkanDevice.hpp"
+
 
 
 class VulkanDevice : public IDevice
@@ -37,8 +37,8 @@ public:
 	
 
 private :
-	VkDevice m_device = VK_NULL_HANDLE;
-	VkPhysicalDevice m_physicalDevice = VK_NULL_HANDLE;
-	VkQueue m_graphicsQueue = VK_NULL_HANDLE;
-	VkQueue m_presentationQueue = VK_NULL_HANDLE;
+	VkDevice m_device{ VK_NULL_HANDLE };
+	VkPhysicalDevice m_physicalDevice{ VK_NULL_HANDLE };
+	VkQueue m_graphicsQueue{ VK_NULL_HANDLE };
+	VkQueue m_presentationQueue{ VK_NULL_HANDLE };
 };

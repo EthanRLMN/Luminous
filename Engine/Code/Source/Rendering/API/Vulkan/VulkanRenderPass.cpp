@@ -6,6 +6,16 @@
 
 void VulkanRenderPass::Create(ISwapChain* a_swapchain, IDevice* a_device)
 {
+	CreateRenderPass(a_swapchain, a_device);
+}
+
+void VulkanRenderPass::Destroy(IDevice* a_device)
+{
+}
+
+
+void VulkanRenderPass::CreateRenderPass(ISwapChain* a_swapchain, IDevice* a_device) {
+
 	VkAttachmentDescription l_colorAttachment = {};
 	l_colorAttachment.format = a_swapchain->CastVulkan()->GetSwapChainImageFormat();
 	l_colorAttachment.samples = VK_SAMPLE_COUNT_1_BIT;
@@ -67,9 +77,6 @@ void VulkanRenderPass::Create(ISwapChain* a_swapchain, IDevice* a_device)
 	}
 }
 
-void VulkanRenderPass::Destroy(IDevice* a_device)
-{
-}
 
 
 VkFormat VulkanRenderPass::FindDepthFormat(VkPhysicalDevice a_physicalDevice)

@@ -31,6 +31,11 @@ Application::Application()
 	
 	m_renderPass = m_interface->InstantiateRenderPass();
 	m_renderPass->Create(m_swapChain, m_device);
+
+
+	m_descriptions = m_interface->InstantiateDescriptions();
+	m_descriptions->Create(m_device);
+
 	/*
 
 	m_pipeline = m_interface->InstantiatePipeline();
@@ -42,9 +47,11 @@ Application::Application()
 	m_synchronisation = m_interface->InstantiateSynchronisation();
 	m_synchronisation->Create();*/
 
+
+	/*
 	std::cout << m_window->GetSize().x << '\n';
 	std::cout << m_window->GetSize().y << '\n';
-	m_window->SetOpacity(0.5f);
+	m_window->SetOpacity(0.5f);*/
 }
 
 Application::~Application()
