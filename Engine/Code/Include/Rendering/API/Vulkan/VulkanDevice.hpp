@@ -3,6 +3,7 @@
 #include <vulkan/vulkan.h>
 
 #include "IDevice.hpp"
+#include "Struct/VulkanUtilities.hpp"
 #include "Utilities.hpp"
 
 

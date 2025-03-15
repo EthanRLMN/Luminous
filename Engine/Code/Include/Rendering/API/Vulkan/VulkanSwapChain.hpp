@@ -4,6 +4,7 @@
 #include "VulkanSurface.hpp"
 #include <GLFW/glfw3.h>
 #include <vector>
+#include "Struct/VulkanUtilities.hpp"
 #include "Utilities.hpp"
 
 

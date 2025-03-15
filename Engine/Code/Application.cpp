@@ -36,10 +36,10 @@ Application::Application()
 	m_descriptions = m_interface->InstantiateDescriptions();
 	m_descriptions->Create(m_device);
 
-	/*
-
 	m_pipeline = m_interface->InstantiatePipeline();
-	m_pipeline->Create();
+	m_pipeline->Create(m_device,m_renderPass,m_descriptions);
+
+	/*
 
 	m_buffer = m_interface->InstantiateBuffer();
 	m_buffer->Create();

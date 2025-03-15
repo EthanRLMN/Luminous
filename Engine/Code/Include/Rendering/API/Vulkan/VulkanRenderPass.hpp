@@ -22,8 +22,8 @@ public :
 
     VulkanRenderPass* CastVulkan() override { return this; }
 
-
+    [[nodiscard]] virtual VkRenderPass GetInstance() const { return m_renderPass; }
 
 private:
-    VkRenderPass renderPass = VK_NULL_HANDLE;
+    VkRenderPass m_renderPass = VK_NULL_HANDLE;
 };

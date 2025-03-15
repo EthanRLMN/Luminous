@@ -70,7 +70,7 @@ void VulkanRenderPass::CreateRenderPass(ISwapChain* a_swapchain, IDevice* a_devi
 	l_renderPassCreateInfo.dependencyCount = 1;
 	l_renderPassCreateInfo.pDependencies = &l_dependency;
 
-	VkResult result = vkCreateRenderPass(a_device->CastVulkan()->GetDevice(), &l_renderPassCreateInfo, nullptr, &renderPass);
+	VkResult result = vkCreateRenderPass(a_device->CastVulkan()->GetDevice(), &l_renderPassCreateInfo, nullptr, &m_renderPass);
 
 	if (result != VK_SUCCESS) {
 		throw std::runtime_error("Failed to create a render pass");

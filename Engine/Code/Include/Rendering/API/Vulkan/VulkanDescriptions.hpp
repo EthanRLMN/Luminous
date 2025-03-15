@@ -13,6 +13,7 @@ public:
 	void Destroy() override;
 
 	[[nodiscard]] virtual VkDescriptorSetLayout GetInstance() const { return m_descriptorSetLayout; }
+	
 
 	VulkanDescriptions* CastVulkan() override { return this; }
 private:

@@ -2,10 +2,12 @@
 #include <Matrix4.hpp>
 #include <Vector3.hpp>
 #include <vector>
+#include <glm/glm.hpp>
+#include <vulkan/vulkan.hpp>
 
-#include "Rendering/API/Vulkan/VulkanSurface.hpp"
 
 constexpr int MAX_FRAMES_IN_FLIGHT = 3;
+
 
 struct SwapChainDetails
 {
@@ -16,26 +18,21 @@ struct SwapChainDetails
 
 
 const std::vector deviceExtensions =
-    {
+{
     VK_KHR_SWAPCHAIN_EXTENSION_NAME
 };
 
-struct QueueFamilyIndices
-{
-    int graphicsFamily = -1;
-    int presentationFamily = -1;
 
-    bool isValid() const
-    {
-        return graphicsFamily >= 0 && presentationFamily >= 0;
-    }
-};
 
 struct Vertex
 {
+    /*
     Maths::Vector3 pos = Maths::Vector3::Zero;
     Maths::Vector3 color = Maths::Vector3::One;
-    Maths::Vector3 texCoord = Maths::Vector3::Zero;
+    Maths::Vector3 texCoord = Maths::Vector3::Zero;*/
+    glm::vec3 pos;
+    glm::vec3 color;
+    glm::vec2 texCoord;
 
     bool operator==(const Vertex& other) const noexcept
     {
@@ -66,9 +63,14 @@ struct VertexHasher
 
 struct UniformBufferObject
 {
+    /*
     alignas(16) Maths::Matrix4 model = Maths::Matrix4::identity;
     alignas(16) Maths::Matrix4 view = Maths::Matrix4::identity;
-    alignas(16) Maths::Matrix4 projection = Maths::Matrix4::identity;
+    alignas(16) Maths::Matrix4 projection = Maths::Matrix4::identity;*/
+
+    alignas(16) glm::mat4 model;
+    alignas(16) glm::mat4 view;
+    alignas(16) glm::mat4 proj;
 };
 
 
