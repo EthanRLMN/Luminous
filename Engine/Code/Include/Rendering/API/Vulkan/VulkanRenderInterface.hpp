@@ -13,6 +13,7 @@
 #include "Rendering/API/Vulkan/VulkanBuffer.hpp"
 #include "Rendering/API/Vulkan/VulkanPipeline.hpp"
 #include "Rendering/API/Vulkan/VulkanCommandPool.hpp"
+#include "Rendering/API/Vulkan/VulkanDepthRessource.hpp"
 #include "Rendering/API/Vulkan/VulkanSynchronisation.hpp"
 
 class VulkanRenderInterface : public IRender
@@ -43,6 +44,8 @@ public:
 	ICommandPool* InstantiateCommandPool() override { return new VulkanCommandPool(); }
 	void DeleteCommandPool(ICommandPool* a_commandPool) override { delete a_commandPool; }
 
+	IDepthRessource* InstantiateDepthRessource() override { return new VulkanDepthRessource(); }
+	void DeleteDepthRessource(IDepthRessource* a_depthRessource) override { delete a_depthRessource; }
 
 	IBuffer* InstantiateBuffer() override { return new VulkanBuffer(); }
 	void DeleteBuffer(IBuffer* a_buffer) override { delete a_buffer; }

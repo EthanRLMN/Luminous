@@ -30,6 +30,7 @@ public:
 	[[nodiscard]] VkFormat GetSwapChainImageFormat() const;
 	[[nodiscard]] VkExtent2D GetSwapChainExtent() const;
 
+	VkImageView CreateImageView(VkImage a_image, VkDevice a_device, VkFormat a_format, VkImageAspectFlags a_aspectFlags);
 private:
 	SwapChainDetails GetSwapChainDetails(VkPhysicalDevice a_device, VkSurfaceKHR a_surface);
 
@@ -41,6 +42,5 @@ private:
 
 	VkExtent2D ChooseSwapExtend(const VkSurfaceCapabilitiesKHR& a_surfaceCapabilities, GLFWwindow* a_window);
 
-	VkImageView CreateImageView(VkImage a_image, VkDevice a_device, VkFormat a_format, VkImageAspectFlags a_aspectFlags);
 
 };
