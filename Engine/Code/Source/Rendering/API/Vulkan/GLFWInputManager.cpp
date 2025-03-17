@@ -11,24 +11,27 @@ std::array<int, 17> GLFWInputManager::m_mouseButtonPressed{};
 
 std::array<int, 2> GLFWInputManager::m_mouseScroll{};
 
-int GLFWInputManager::IsKeyDown(IWindow* a_window, const int a_key)
+int GLFWInputManager::IsKeyDown(IWindow* a_window, const Key a_key)
 {
-	return m_keyStatus[a_key] == GLFW_PRESS || m_keyStatus[a_key] == GLFW_REPEAT;
+	int t_keyInt = static_cast<int>(a_key);
+	return m_keyStatus[t_keyInt] == GLFW_PRESS || m_keyStatus[t_keyInt] == GLFW_REPEAT;
 }
 
-int GLFWInputManager::IsKeyUp(IWindow* a_window, const int a_key)
+int GLFWInputManager::IsKeyUp(IWindow* a_window, const Key a_key)
 {
-	return m_keyStatus[a_key] == GLFW_RELEASE;
+	int t_keyInt = static_cast<int>(a_key);
+	return m_keyStatus[t_keyInt] == GLFW_RELEASE;
 }
 
-int GLFWInputManager::IsKeyPressed(IWindow* a_window, const int a_key)
+int GLFWInputManager::IsKeyPressed(IWindow* a_window, const Key a_key)
 {
-	if (m_keyPressed[a_key] == 0)
+	int t_keyInt = static_cast<int>(a_key);
+	if (m_keyPressed[t_keyInt] == 0)
 	{
-		if (m_keyStatus[a_key] == GLFW_PRESS)
+		if (m_keyStatus[t_keyInt] == GLFW_PRESS)
 		{
-			m_keyPressed[a_key] = 1;
-			return m_keyStatus[a_key] == GLFW_PRESS;
+			m_keyPressed[t_keyInt] = 1;
+			return m_keyStatus[t_keyInt] == GLFW_PRESS;
 		}
 		return false;
 	}
@@ -45,24 +48,27 @@ void GLFWInputManager::KeyCallback(GLFWwindow* a_window, const int a_key, int a_
 
 }
 
-int GLFWInputManager::IsMouseButtonUp(IWindow* a_window, const int a_button)
+int GLFWInputManager::IsMouseButtonUp(IWindow* a_window, const MouseButton a_button)
 {
-	return m_mouseButtonStatus[a_button] == GLFW_RELEASE;
+	int t_buttonInt = static_cast<int>(a_button);
+	return m_mouseButtonStatus[t_buttonInt] == GLFW_RELEASE;
 }
 
-int GLFWInputManager::IsMouseButtonDown(IWindow* a_window, const int a_button)
+int GLFWInputManager::IsMouseButtonDown(IWindow* a_window, const MouseButton a_button)
 {
-	return m_mouseButtonStatus[a_button] == GLFW_PRESS || m_mouseButtonStatus[a_button] == GLFW_REPEAT;
+	int t_buttonInt = static_cast<int>(a_button);
+	return m_mouseButtonStatus[t_buttonInt] == GLFW_PRESS || m_mouseButtonStatus[t_buttonInt] == GLFW_REPEAT;
 }
 
-int GLFWInputManager::IsMouseButtonPressed(IWindow* a_window, const int a_button)
+int GLFWInputManager::IsMouseButtonPressed(IWindow* a_window, const MouseButton a_button)
 {
-	if (m_mouseButtonPressed[a_button] == 0)
+	int t_buttonInt = static_cast<int>(a_button);
+	if (m_mouseButtonPressed[t_buttonInt] == 0)
 	{
-		if (m_mouseButtonStatus[a_button] == GLFW_PRESS)
+		if (m_mouseButtonStatus[t_buttonInt] == GLFW_PRESS)
 		{
-			m_mouseButtonPressed[a_button] = 1;
-			return m_mouseButtonStatus[a_button] == GLFW_PRESS;
+			m_mouseButtonPressed[t_buttonInt] = 1;
+			return m_mouseButtonStatus[t_buttonInt] == GLFW_PRESS;
 		}
 		return false;
 	}

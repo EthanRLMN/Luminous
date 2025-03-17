@@ -4,6 +4,7 @@
 
 #include <iostream>
 #include "Vector2.hpp"
+#include "Utils/InputWrapperUtils.hpp"
 
 class GLFWInputManager;
 class IWindow;
@@ -16,13 +17,13 @@ public:
 	virtual void Destroy(IWindow* a_window) = 0;
 	virtual void Update(IWindow* a_window) = 0;
 
-	virtual int IsKeyDown(IWindow* a_window, int a_key) = 0;
-	virtual int IsKeyUp(IWindow* a_window, int a_key) = 0;
-	virtual int IsKeyPressed(IWindow* a_window, int a_key) = 0;
+	virtual int IsKeyDown(IWindow* a_window, Key a_key) = 0;
+	virtual int IsKeyUp(IWindow* a_window, Key a_key) = 0;
+	virtual int IsKeyPressed(IWindow* a_window, Key a_key) = 0;
 
-	virtual int IsMouseButtonDown(IWindow* a_window, int a_button) = 0;
-	virtual int IsMouseButtonUp(IWindow* a_window, int a_button) = 0;
-	virtual int IsMouseButtonPressed(IWindow* a_window, int a_button) = 0;
+	virtual int IsMouseButtonDown(IWindow* a_window, MouseButton a_button) = 0;
+	virtual int IsMouseButtonUp(IWindow* a_window, MouseButton a_button) = 0;
+	virtual int IsMouseButtonPressed(IWindow* a_window, MouseButton a_button) = 0;
 
 	virtual Maths::Vector2 GetMouseScroll() = 0;
 	virtual void SetMouseScroll(Maths::Vector2 a_vec) = 0;

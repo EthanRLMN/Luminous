@@ -5,6 +5,7 @@
 #include "GLFW/glfw3.h"
 #include "Utils/Exporter.hpp"
 
+
 class IWindow;
 
 class GLFWInputManager final : public IInputManager
@@ -14,13 +15,13 @@ public:
     LUMINOUS_ENGINE_API void Destroy(IWindow* a_window) override;
     LUMINOUS_ENGINE_API void Update(IWindow* a_window) override;
 
-    LUMINOUS_ENGINE_API int IsKeyDown(IWindow* a_window, int a_key) override;
-    LUMINOUS_ENGINE_API int IsKeyUp(IWindow* a_window, int a_key) override;
-    LUMINOUS_ENGINE_API int IsKeyPressed(IWindow* a_window, int a_key) override;
+    LUMINOUS_ENGINE_API int IsKeyDown(IWindow* a_window, Key a_key) override;
+    LUMINOUS_ENGINE_API int IsKeyUp(IWindow* a_window, Key a_key) override;
+    LUMINOUS_ENGINE_API int IsKeyPressed(IWindow* a_window, Key a_key) override;
 
-    LUMINOUS_ENGINE_API int IsMouseButtonDown(IWindow* a_window, int a_button) override;
-    LUMINOUS_ENGINE_API int IsMouseButtonUp(IWindow* a_window, int a_button) override;
-    LUMINOUS_ENGINE_API int IsMouseButtonPressed(IWindow* a_window, int a_button) override;
+    LUMINOUS_ENGINE_API int IsMouseButtonDown(IWindow* a_window, MouseButton a_button) override;
+    LUMINOUS_ENGINE_API int IsMouseButtonUp(IWindow* a_window, MouseButton a_button) override;
+    LUMINOUS_ENGINE_API int IsMouseButtonPressed(IWindow* a_window, MouseButton a_button) override;
 
     LUMINOUS_ENGINE_API Maths::Vector2 GetCursorPosition(IWindow* a_window) override;
     LUMINOUS_ENGINE_API void SetCursorPosition(IWindow* a_window, Maths::Vector2 a_pos) override;

@@ -2,6 +2,7 @@
 
 #include "Rendering/API/Vulkan/VulkanRenderInterface.hpp"
 
+
 Application::Application()
 {
 	Debug::Logger& l_logger = Debug::Logger::GetInstance();
@@ -89,11 +90,12 @@ void Application::Run() const
 	while (!m_window->ShouldClose())
 	{
 		m_window->PollEvents();
-		if (m_inputManager->IsKeyDown(m_window, GLFW_KEY_A))
+		if (m_inputManager->IsKeyPressed(m_window, Key::KEY_A))
 			std::cout << "MEJK";
 
-		if (m_inputManager->IsMouseButtonDown(m_window, GLFW_MOUSE_BUTTON_2))
+		if (m_inputManager->IsMouseButtonDown(m_window, MouseButton::MOUSE_BUTTON_LEFT))
 			std::cout << m_inputManager->GetMouseScroll().x << ", " << m_inputManager->GetMouseScroll().y << '\n';
+
 
 		m_inputManager->Update(m_window);
 	}
