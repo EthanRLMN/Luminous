@@ -66,3 +66,18 @@ uint32_t VulkanDepthRessource::FindMemoryType(VkPhysicalDevice a_physicalDevice,
 	std::cout << " failed to find suitable memory type";
 	return 0;
 }
+
+VkImage VulkanDepthRessource::GetDepthImage() const
+{
+	return m_depthImage;
+}
+
+VkDeviceMemory VulkanDepthRessource::GetDepthImageMemory() const
+{
+	return m_depthImageMemory;
+}
+
+VkImageView VulkanDepthRessource::GetDepthImageView() const
+{
+	return m_depthImageView;
+}

@@ -21,6 +21,9 @@ public:
 
 	uint32_t FindMemoryType(VkPhysicalDevice a_physicalDevice, uint32_t a_typeFilter, VkMemoryPropertyFlags a_properties);
 
+	[[nodiscard]] virtual VkImage GetDepthImage() const;
+	[[nodiscard]] virtual VkDeviceMemory GetDepthImageMemory() const;
+	[[nodiscard]] virtual VkImageView GetDepthImageView() const;
 
 private:
 	VkImage m_depthImage{ VK_NULL_HANDLE };

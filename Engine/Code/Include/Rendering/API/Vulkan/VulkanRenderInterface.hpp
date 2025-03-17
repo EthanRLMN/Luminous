@@ -2,6 +2,7 @@
 
 #define VULKAN
 
+#include "IRender.hpp"
 #include "GLFWInputManager.hpp"
 #include "Rendering/API/Vulkan/VulkanWindow.hpp"
 #include "Rendering/API/Vulkan/VulkanInstance.hpp"
@@ -14,6 +15,9 @@
 #include "Rendering/API/Vulkan/VulkanPipeline.hpp"
 #include "Rendering/API/Vulkan/VulkanCommandPool.hpp"
 #include "Rendering/API/Vulkan/VulkanDepthRessource.hpp"
+#include "Rendering/API/Vulkan/VulkanFrameBuffer.hpp"
+
+
 #include "Rendering/API/Vulkan/VulkanSynchronisation.hpp"
 
 class VulkanRenderInterface : public IRender
@@ -46,6 +50,9 @@ public:
 
 	IDepthRessource* InstantiateDepthRessource() override { return new VulkanDepthRessource(); }
 	void DeleteDepthRessource(IDepthRessource* a_depthRessource) override { delete a_depthRessource; }
+
+	IFrameBuffer* InstantiateFrameBuffer() override { return new VulkanFrameBuffer(); }
+	void DeleteFrameBuffer(IFrameBuffer* a_frameBuffer) override { delete a_frameBuffer; }
 
 	IBuffer* InstantiateBuffer() override { return new VulkanBuffer(); }
 	void DeleteBuffer(IBuffer* a_buffer) override { delete a_buffer; }

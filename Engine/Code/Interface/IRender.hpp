@@ -10,6 +10,7 @@
 #include "IPipeline.hpp"
 #include "ICommandPool.hpp"
 #include "IDepthRessource.hpp"
+#include "IFrameBuffer.hpp"
 #include "IBuffer.hpp"
 #include "IInputManager.hpp"
 #include "ISynchronisation.hpp"
@@ -28,7 +29,7 @@ public:
 	virtual IPipeline* InstantiatePipeline() = 0;
 	virtual ICommandPool* InstantiateCommandPool() = 0;
 	virtual IDepthRessource* InstantiateDepthRessource() = 0;
-	//framebuffer
+	virtual IFrameBuffer* InstantiateFrameBuffer() = 0;
 	//texture
 	//loadmodel
 	virtual IBuffer* InstantiateBuffer() = 0;
@@ -46,6 +47,7 @@ public:
 	virtual void DeletePipeline(IPipeline* a_pipeline) { delete a_pipeline; }
 	virtual void DeleteCommandPool(ICommandPool* a_commandPool) { delete a_commandPool; }
 	virtual void DeleteDepthRessource(IDepthRessource* a_depthRessource) { delete a_depthRessource; }
+	virtual void DeleteFrameBuffer(IFrameBuffer* a_frameBuffer) { delete a_frameBuffer; }
 	virtual void DeleteBuffer(IBuffer* a_buffer) { delete a_buffer; }
 	virtual void DeleteSynchronisation(ISynchronisation* a_synchronisation) { delete a_synchronisation; }
 	virtual void DeleteWindow(IWindow* a_window) { delete a_window; }

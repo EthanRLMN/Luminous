@@ -30,6 +30,7 @@ private:
 	IPipeline* m_pipeline { nullptr };
 	ICommandPool* m_commandPool{ nullptr };
 	IDepthRessource* m_depthRessource{ nullptr };
+	IFrameBuffer* m_frameBuffer{ nullptr };
 
 
 
