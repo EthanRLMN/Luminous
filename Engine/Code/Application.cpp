@@ -36,6 +36,9 @@ Application::Application()
 	m_pipeline = m_interface->InstantiatePipeline();
 	m_pipeline->Create(m_device, m_renderPass, m_descriptor);
 
+	m_commandPool = m_interface->InstantiateCommandPool();
+	m_commandPool->Create(m_device, m_surface);
+
 	/*
 
 	m_buffer = m_interface->InstantiateBuffer();

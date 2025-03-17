@@ -8,10 +8,10 @@
 class VulkanRenderPass : public IRenderPass
 {
 public :
-    void Create(ISwapChain* a_swapchain, IDevice* a_device) override;
-    void Destroy(IDevice* _device) override;
+    void Create(ISwapChain* a_swapChain, IDevice* a_device) override;
+    void Destroy(IDevice* a_device) override;
 
-    void CreateRenderPass(ISwapChain* a_swapchain, IDevice* a_device);
+    void CreateRenderPass(ISwapChain* a_swapChain, IDevice* a_device);
 
     VkFormat FindDepthFormat(VkPhysicalDevice a_physicalDevice);
 

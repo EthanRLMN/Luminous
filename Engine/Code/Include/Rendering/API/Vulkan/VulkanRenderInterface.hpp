@@ -12,6 +12,7 @@
 #include "Rendering/API/Vulkan/VulkanDescriptor.hpp"
 #include "Rendering/API/Vulkan/VulkanBuffer.hpp"
 #include "Rendering/API/Vulkan/VulkanPipeline.hpp"
+#include "Rendering/API/Vulkan/VulkanCommandPool.hpp"
 #include "Rendering/API/Vulkan/VulkanSynchronisation.hpp"
 
 class VulkanRenderInterface : public IRender
@@ -38,6 +39,10 @@ public:
 
 	IPipeline* InstantiatePipeline() override { return new VulkanPipeline(); }
 	void DeletePipeline(IPipeline* a_pipeline) override { delete a_pipeline; }
+
+	ICommandPool* InstantiateCommandPool() override { return new VulkanCommandPool(); }
+	void DeleteCommandPool(ICommandPool* a_commandPool) override { delete a_commandPool; }
+
 
 	IBuffer* InstantiateBuffer() override { return new VulkanBuffer(); }
 	void DeleteBuffer(IBuffer* a_buffer) override { delete a_buffer; }

@@ -8,19 +8,19 @@
 #include "Rendering/API/Vulkan/VulkanDevice.hpp"
 #include "Rendering/API/Vulkan/VulkanSwapChain.hpp"
 
-void VulkanRenderPass::Create(ISwapChain* a_swapchain, IDevice* a_device)
+void VulkanRenderPass::Create(ISwapChain* a_swapChain, IDevice* a_device)
 {
-	CreateRenderPass(a_swapchain, a_device);
+	CreateRenderPass(a_swapChain, a_device);
 }
 
 void VulkanRenderPass::Destroy(IDevice* a_device)
 {
 }
 
-void VulkanRenderPass::CreateRenderPass(ISwapChain* a_swapchain, IDevice* a_device)
+void VulkanRenderPass::CreateRenderPass(ISwapChain* a_swapChain, IDevice* a_device)
 {
 	VkAttachmentDescription l_colorAttachment = {};
-	l_colorAttachment.format = a_swapchain->CastVulkan()->GetSwapChainImageFormat();
+	l_colorAttachment.format = a_swapChain->CastVulkan()->GetSwapChainImageFormat();
 	l_colorAttachment.samples = VK_SAMPLE_COUNT_1_BIT;
 	l_colorAttachment.loadOp = VK_ATTACHMENT_LOAD_OP_CLEAR;
 	l_colorAttachment.storeOp = VK_ATTACHMENT_STORE_OP_STORE;
@@ -81,7 +81,7 @@ void VulkanRenderPass::CreateRenderPass(ISwapChain* a_swapchain, IDevice* a_devi
 		throw std::runtime_error("Failed to create a render pass");
 }
 
-VkFormat VulkanRenderPass::FindDepthFormat(VkPhysicalDevice a_physicalDevice)
+VkFormat VulkanRenderPass::FindDepthFormat(const VkPhysicalDevice a_physicalDevice)
 {
 	return FindSupportedFormat(a_physicalDevice,
 	                           {VK_FORMAT_D32_SFLOAT, VK_FORMAT_D32_SFLOAT_S8_UINT, VK_FORMAT_D24_UNORM_S8_UINT},
@@ -89,9 +89,9 @@ VkFormat VulkanRenderPass::FindDepthFormat(VkPhysicalDevice a_physicalDevice)
 }
 
 
-VkFormat VulkanRenderPass::FindSupportedFormat(VkPhysicalDevice a_physicalDevice,
-                                               const std::vector<VkFormat>& a_candidates, VkImageTiling a_tiling,
-                                               VkFormatFeatureFlags a_features)
+VkFormat VulkanRenderPass::FindSupportedFormat(const VkPhysicalDevice a_physicalDevice,
+                                               const std::vector<VkFormat>& a_candidates, const VkImageTiling a_tiling,
+                                               const VkFormatFeatureFlags a_features)
 {
 	for (const VkFormat l_format: a_candidates)
 	{

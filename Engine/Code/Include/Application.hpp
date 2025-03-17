@@ -28,6 +28,7 @@ private:
 	IRenderPass* m_renderPass { nullptr };
 	IDescriptor* m_descriptor { nullptr };
 	IPipeline* m_pipeline { nullptr };
+	ICommandPool* m_commandPool{ nullptr };
 	IBuffer* m_buffer { nullptr };
 	ISynchronisation* m_synchronisation { nullptr };
 };
