@@ -29,6 +29,10 @@ private:
 	IDescriptor* m_descriptor { nullptr };
 	IPipeline* m_pipeline { nullptr };
 	ICommandPool* m_commandPool{ nullptr };
+	IDepthRessource* m_depthRessource{ nullptr };
+
+
+
 	IBuffer* m_buffer { nullptr };
 	ISynchronisation* m_synchronisation { nullptr };
 };
