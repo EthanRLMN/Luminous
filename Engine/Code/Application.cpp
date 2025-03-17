@@ -97,6 +97,8 @@ void Application::Run() const
 
 		if (m_inputManager->IsMouseButtonDown(m_window, GLFW_MOUSE_BUTTON_2))
 			std::cout << m_inputManager->GetMouseScroll().x << ", " << m_inputManager->GetMouseScroll().y << '\n';
+
+		m_inputManager->Update(m_window);
 	}
 	m_window->Destroy();
 }
