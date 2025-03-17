@@ -1,8 +1,9 @@
-#include "Rendering/API/Vulkan/VulkanDescriptions.hpp"
-#include "Rendering/API/Vulkan/VulkanDevice.hpp"
 #include <array>
 
-void VulkanDescriptions::Create(IDevice* a_device)
+#include "Rendering/API/Vulkan/VulkanDescriptor.hpp"
+#include "Rendering/API/Vulkan/VulkanDevice.hpp"
+
+void VulkanDescriptor::Create(IDevice* a_device)
 {
 	VkDescriptorSetLayoutBinding l_uboLayoutBinding = {};
 	l_uboLayoutBinding.binding = 0;
@@ -18,21 +19,20 @@ void VulkanDescriptions::Create(IDevice* a_device)
 	l_samplerLayoutBinding.pImmutableSamplers = nullptr;
 	l_samplerLayoutBinding.stageFlags = VK_SHADER_STAGE_FRAGMENT_BIT;
 
-
-	std::array<VkDescriptorSetLayoutBinding, 2> bindings = { l_uboLayoutBinding,l_samplerLayoutBinding };
+	const std::array<VkDescriptorSetLayoutBinding, 2> l_bindings = {l_uboLayoutBinding, l_samplerLayoutBinding};
 
 	VkDescriptorSetLayoutCreateInfo l_layoutInfo{};
 	l_layoutInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_LAYOUT_CREATE_INFO;
-	l_layoutInfo.bindingCount = static_cast<uint32_t>(bindings.size());
-	l_layoutInfo.pBindings = bindings.data();
+	l_layoutInfo.bindingCount = static_cast<uint32_t>(l_bindings.size());
+	l_layoutInfo.pBindings = l_bindings.data();
 
 	//Create Descriptor SetLayout
-	VkResult result = vkCreateDescriptorSetLayout(a_device->CastVulkan()->GetDevice(), &l_layoutInfo, nullptr, &m_descriptorSetLayout);
-
-	if (result != VK_SUCCESS)
+	const VkResult l_result = vkCreateDescriptorSetLayout(a_device->CastVulkan()->GetDevice(), &l_layoutInfo, nullptr,
+	                                                      &m_descriptorSetLayout);
+	if (l_result != VK_SUCCESS)
 		std::cout << "Failed to create a descriptor set layout";
 }
 
-void VulkanDescriptions::Destroy()
+void VulkanDescriptor::Destroy()
 {
 }

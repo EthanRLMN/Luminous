@@ -4,14 +4,14 @@
 
 #include "Rendering/API/Vulkan/VulkanDevice.hpp"
 #include "Rendering/API/Vulkan/VulkanRenderPass.hpp"
-#include "Rendering/API/Vulkan/VulkanDescriptions.hpp"
+#include "Rendering/API/Vulkan/VulkanDescriptor.hpp"
 
 #include <iostream>
 #include <fstream>
 #include <array>
 
 
-void VulkanPipeline::Create(IDevice* a_device, IRenderPass* a_renderpass, IDescriptions* a_descriptions)
+void VulkanPipeline::Create(IDevice* a_device, IRenderPass* a_renderpass, IDescriptor* a_descriptor)
 {
 	std::vector<char> l_vertexShaderCode = ReadFile("C:/Users/sheni/Documents/Code/2024_gp_2028_gp_2028_projet_moteur-luminousengine/Engine/Assets/Shaders/vert.spv");
 	std::vector<char> l_fragmentShaderCode = ReadFile("C:/Users/sheni/Documents/Code/2024_gp_2028_gp_2028_projet_moteur-luminousengine/Engine/Assets/Shaders/frag.spv");
@@ -142,7 +142,7 @@ void VulkanPipeline::Create(IDevice* a_device, IRenderPass* a_renderpass, IDescr
 	l_pipelineLayoutInfo.setLayoutCount = 1;
 	
 	
-    VkDescriptorSetLayout l_descriptorSetLayout = a_descriptions->CastVulkan()->GetInstance(); //create descriptionsetlayout has a local variable
+    VkDescriptorSetLayout l_descriptorSetLayout = a_descriptor->CastVulkan()->GetInstance(); //create descriptorSetLayout has a local variable
     l_pipelineLayoutInfo.pSetLayouts = &l_descriptorSetLayout;
 
 

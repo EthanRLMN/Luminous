@@ -22,7 +22,7 @@ public:
 	virtual IDevice* InstantiateDevice() = 0;
 	virtual ISwapChain* InstantiateSwapChain() = 0;
 	virtual IRenderPass* InstantiateRenderPass() = 0;
-	virtual IDescriptions* InstantiateDescriptions() = 0;
+	virtual IDescriptor* InstantiateDescriptor() = 0;
 	virtual IPipeline* InstantiatePipeline() = 0;
 	//commandpool
 	//depthressoiurce
@@ -40,7 +40,7 @@ public:
 	virtual void DeleteDevice(IDevice* a_device) { delete a_device; }
 	virtual void DeleteSwapChain(ISwapChain* a_swapchain) { delete a_swapchain; }
 	virtual void DeleteRenderPass(IRenderPass* a_renderpass) { delete a_renderpass; }
-	virtual void DeleteDescriptions(IDescriptions* a_descriptions) { delete a_descriptions; }
+	virtual void DeleteDescriptor(IDescriptor* a_descriptor) { delete a_descriptor; }
 	virtual void DeletePipeline(IPipeline* a_pipeline) { delete a_pipeline; }
 	virtual void DeleteBuffer(IBuffer* a_buffer) { delete a_buffer; }
 	virtual void DeleteSynchronisation(ISynchronisation* a_synchronisation) { delete a_synchronisation; }

@@ -23,21 +23,18 @@ Application::Application()
 
 	m_device = m_interface->InstantiateDevice();
 	m_device->Create(m_instance, m_window, m_surface);
-
 	
 	m_swapChain = m_interface->InstantiateSwapChain();
 	m_swapChain->Create(m_window, m_device, m_surface);
-
 	
 	m_renderPass = m_interface->InstantiateRenderPass();
 	m_renderPass->Create(m_swapChain, m_device);
 
-
-	m_descriptions = m_interface->InstantiateDescriptions();
-	m_descriptions->Create(m_device);
+	m_descriptor = m_interface->InstantiateDescriptor();
+	m_descriptor->Create(m_device);
 
 	m_pipeline = m_interface->InstantiatePipeline();
-	m_pipeline->Create(m_device,m_renderPass,m_descriptions);
+	m_pipeline->Create(m_device, m_renderPass, m_descriptor);
 
 	/*
 
@@ -56,9 +53,32 @@ Application::Application()
 
 Application::~Application()
 {
-	delete(m_window);
-	//m_window->Destroy();
+	m_pipeline->Destroy();
+	m_interface->DeletePipeline(m_pipeline);
+
+	m_descriptor->Destroy();
+	m_interface->DeleteDescriptor(m_descriptor);
+
+	m_renderPass->Destroy(m_device);
+	m_interface->DeleteRenderPass(m_renderPass);
+
+	m_swapChain->Destroy(m_device);
+	m_interface->DeleteSwapChain(m_swapChain);
+
+	m_device->Destroy();
+	m_interface->DeleteDevice(m_device);
+
+	m_surface->Destroy(m_instance);
+	m_interface->DeleteSurface(m_surface);
+
 	m_instance->Destroy();
+
+	m_inputManager->Destroy(m_window);
+	m_interface->DeleteInputManager(m_inputManager);
+
+	m_window->Destroy();
+
+	delete(m_window);
 }
 
 void Application::Run() const

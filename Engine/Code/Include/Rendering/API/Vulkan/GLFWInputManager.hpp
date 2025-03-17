@@ -12,6 +12,7 @@ class GLFWInputManager final : public IInputManager
 {
 public:
     void Initialize(IWindow* a_window) override;
+    void Destroy(IWindow* a_window) override;
 
     int IsKeyDown(IWindow* a_window, int a_key) override;
     int IsKeyUp(IWindow* a_window, int a_key) override;

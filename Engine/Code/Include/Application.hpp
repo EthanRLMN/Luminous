@@ -17,8 +17,8 @@ public:
 
 private:
 	IRender* m_interface { nullptr };
-	IWindow* m_window{ nullptr };
-	IInputManager* m_inputManager{ nullptr };
+	IWindow* m_window { nullptr };
+	IInputManager* m_inputManager { nullptr };
 
 	IRender* m_render { nullptr };
 	IInstance* m_instance { nullptr };
@@ -26,7 +26,7 @@ private:
 	IDevice* m_device { nullptr };
 	ISwapChain* m_swapChain { nullptr };
 	IRenderPass* m_renderPass { nullptr };
-	IDescriptions* m_descriptions{ nullptr };
+	IDescriptor* m_descriptor { nullptr };
 	IPipeline* m_pipeline { nullptr };
 	IBuffer* m_buffer { nullptr };
 	ISynchronisation* m_synchronisation { nullptr };

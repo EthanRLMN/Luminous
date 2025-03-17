@@ -1,11 +1,8 @@
 #pragma once
 
 #include <iostream>
-#include <set>
+#include <vector>
 #include <vulkan/vulkan.h>
-#include "Rendering/API/Vulkan/VulkanSurface.hpp"
-#include "Rendering/API/Vulkan/VulkanDevice.hpp"
-#include "Rendering/API/Vulkan/VulkanSwapChain.hpp"
 #include "IRenderPass.hpp"
 
 class VulkanRenderPass : public IRenderPass

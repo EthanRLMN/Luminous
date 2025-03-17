@@ -1,18 +1,18 @@
 #pragma once
 #include <iostream>
 
-class VulkanDescriptions;
+class VulkanDescriptor;
 class IDevice;
 
-class IDescriptions
+class IDescriptor
 {
 public:
-    virtual ~IDescriptions() = default;
+    virtual ~IDescriptor() = default;
 
     virtual void Create(IDevice* a_device) = 0;
     virtual void Destroy() = 0;
 
-    virtual VulkanDescriptions* CastVulkan()
+    virtual VulkanDescriptor* CastVulkan()
     {
         std::cout << "Wrong cast\n";
         return nullptr;

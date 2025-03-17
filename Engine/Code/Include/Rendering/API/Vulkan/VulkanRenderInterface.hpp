@@ -9,7 +9,7 @@
 #include "Rendering/API/Vulkan/VulkanDevice.hpp"
 #include "Rendering/API/Vulkan/VulkanSwapChain.hpp"
 #include "Rendering/API/Vulkan/VulkanRenderPass.hpp"
-#include "Rendering/API/Vulkan/VulkanDescriptions.hpp"
+#include "Rendering/API/Vulkan/VulkanDescriptor.hpp"
 #include "Rendering/API/Vulkan/VulkanBuffer.hpp"
 #include "Rendering/API/Vulkan/VulkanPipeline.hpp"
 #include "Rendering/API/Vulkan/VulkanSynchronisation.hpp"
@@ -33,8 +33,8 @@ public:
 	IRenderPass* InstantiateRenderPass() override { return new VulkanRenderPass(); }
 	void DeleteRenderPass(IRenderPass* a_renderpass) override { delete a_renderpass; }
 
-	IDescriptions* InstantiateDescriptions() override { return new VulkanDescriptions(); }
-	void DeleteDescriptions(IDescriptions* a_descriptions) override { delete a_descriptions; }
+	IDescriptor* InstantiateDescriptor() override { return new VulkanDescriptor(); }
+	void DeleteDescriptor(IDescriptor* a_descriptor) override { delete a_descriptor; }
 
 	IPipeline* InstantiatePipeline() override { return new VulkanPipeline(); }
 	void DeletePipeline(IPipeline* a_pipeline) override { delete a_pipeline; }

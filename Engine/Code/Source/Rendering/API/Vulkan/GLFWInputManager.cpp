@@ -116,3 +116,9 @@ void GLFWInputManager::Initialize(IWindow* a_window)
 	glfwSetMouseButtonCallback(m_window, MouseButtonCallback);
 	glfwSetScrollCallback(m_window, MouseScrollCallback);
 }
+
+void GLFWInputManager::Destroy(IWindow* a_window)
+{
+	glfwDestroyWindow(a_window->CastVulkan()->GetGLFWWindow());
+	glfwTerminate();
+}

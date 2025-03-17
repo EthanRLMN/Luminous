@@ -4,7 +4,7 @@
 class VulkanPipeline;
 class IDevice;
 class IRenderPass;
-class IDescriptions;
+class IDescriptor;
 
 
 class IPipeline
@@ -12,7 +12,7 @@ class IPipeline
 public:
 	virtual ~IPipeline() = default;
 
-	virtual void Create(IDevice* a_device,IRenderPass* a_renderpass, IDescriptions* a_descriptions) = 0;
+	virtual void Create(IDevice* a_device,IRenderPass* a_renderpass, IDescriptor* a_descriptor) = 0;
 	virtual void Destroy() = 0;
 
 	virtual VulkanPipeline* CastVulkan()
