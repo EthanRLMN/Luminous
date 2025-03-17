@@ -42,6 +42,9 @@ Application::Application()
 	m_commandPool = m_interface->InstantiateCommandPool();
 	m_commandPool->Create(m_device, m_surface);
 
+
+	m_depthRessource = m_interface->InstantiateDepthRessource();
+	m_depthRessource->Create(m_device, m_swapChain, m_renderPass);
 	/*
 
 	m_buffer = m_interface->InstantiateBuffer();
