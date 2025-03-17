@@ -4,7 +4,7 @@
 #include <vector>
 #include <vulkan/vulkan.h>
 
-constexpr bool useValidationLayers = true;
+constexpr bool validationEnabled = true;
 
 const std::vector<const char*> validationLayers =
 {

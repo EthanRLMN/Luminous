@@ -2,6 +2,8 @@
 
 #define GLFW_INCLUDE_VULKAN
 #include <GLFW/glfw3.h>
+#include <vector>
+#include <vulkan/vulkan.h> 
 
 #include "IInstance.hpp"
 
@@ -15,15 +17,17 @@ public :
 	void Create(IWindow* a_window) override;
 	void Destroy() override;
 
-	[[nodiscard]] VkInstance GetInstance() const { return m_instance; }
+	[[nodiscard]] virtual VkInstance GetInstance() const { return m_instance; }
 
 	VulkanInstance* CastVulkan() override { return this; }
 
 private:
-	void VkCreateInstance();
-	void VkDebugCallback();
+	void CreateInstance();
+	void Debug();
 
-	VkInstance m_instance = VK_NULL_HANDLE;
-	VkDebugReportCallbackEXT m_callback = VK_NULL_HANDLE;
+	bool CheckValidationLayerSupport();
+	bool CheckInstanceExtensionSupport(std::vector<const char*>* a_checkExtensions);
+
+	VkInstance m_instance { VK_NULL_HANDLE };
+	VkDebugUtilsMessengerEXT m_callback { VK_NULL_HANDLE };
 };
-

@@ -1,10 +1,28 @@
 #pragma once
 
 #include "IPipeline.hpp"
+#include <vulkan/vulkan.h>
+#include <vector>
+
+
 
 class VulkanPipeline : public IPipeline
 {
 public:
-	void Create() override;
+	void Create(IDevice* a_device, IRenderPass* a_renderpass, IDescriptions* a_descriptions) override;
 	void Destroy() override;
+
+
+	[[nodiscard]] virtual VkPipeline GetInstance() const { return m_graphicsPipeline; }
+
+	VulkanPipeline* CastVulkan() override { return this; }
+	[[nodiscard]] VkPipelineLayout GetPipelineLayout() const;
+
+	VkShaderModule CreateShaderModule(VkDevice a_device, const std::vector<char>& a_code);
+
+
+private:
+
+	VkPipeline m_graphicsPipeline{ VK_NULL_HANDLE };
+	VkPipelineLayout m_pipelineLayout{ VK_NULL_HANDLE };
 };

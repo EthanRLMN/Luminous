@@ -23,7 +23,7 @@ file(GLOB_RECURSE L_ENGINE_SOURCES "Code/*.cpp")
 #---------------------------------------#
 #            BUILD MODE                 #
 #---------------------------------------#
-add_library(L_ENGINE SHARED ${L_ENGINE_SOURCES})
+add_library(L_ENGINE SHARED ${L_ENGINE_SOURCES} "Code/Source/Rendering/API/Vulkan/VulkanDescriptions.cpp")
 
 
 

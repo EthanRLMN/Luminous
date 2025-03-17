@@ -9,15 +9,10 @@
 
 void VulkanSurface::Create(IInstance* a_instance, IWindow* a_window)
 {
-    std::cout << "Create Surface\n";
-
-    if (const VkResult l_result = glfwCreateWindowSurface(a_instance->CastVulkan()->GetInstance(), a_window->CastVulkan()->GetGLFWWindow(), nullptr,
-                                                          &m_surface); l_result != VK_SUCCESS)
-    {
-        std::cerr << "Failed to create surface, error code: " << l_result << "\n";
-        throw std::runtime_error("failed to create surface");
+    VkResult l_result = glfwCreateWindowSurface(a_instance->CastVulkan()->GetInstance(), a_window->CastVulkan()->GetGLFWWindow(), nullptr, &m_surface);
+    if (l_result != VK_SUCCESS) {
+        std::cout << "failed to create Surface";
     }
-    std::cout << "Finish Create Surface\n";
 }
 
 void VulkanSurface::Destroy(IInstance* a_instance)

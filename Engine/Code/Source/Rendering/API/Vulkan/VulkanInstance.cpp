@@ -6,99 +6,90 @@
 
 #include "Rendering/API/Vulkan/VulkanValidationLayer.hpp"
 
-void VulkanInstance::VkCreateInstance()
+void VulkanInstance::CreateInstance()
 {
-	//informaton du programme qu'on fait 
-	VkApplicationInfo l_applicationInfo = {};
-	l_applicationInfo.sType = VK_STRUCTURE_TYPE_APPLICATION_INFO;
-	l_applicationInfo.pApplicationName = "VulkanRendering";
-	l_applicationInfo.applicationVersion = VK_MAKE_VERSION(1, 0, 0);
-	l_applicationInfo.pEngineName = "NoEngine";
-	l_applicationInfo.engineVersion = VK_MAKE_VERSION(1, 0, 0);
-	l_applicationInfo.apiVersion = VK_API_VERSION_1_0;
+	if (validationEnabled && !CheckValidationLayerSupport()) {
+		std::cout << " validation layer not available";
+		return;
+	}
 
-	//create information for our vkInstance 
-	VkInstanceCreateInfo l_createInfo = {};
+	VkApplicationInfo l_applicationInfo{};
+	l_applicationInfo.sType = VK_STRUCTURE_TYPE_APPLICATION_INFO;
+	l_applicationInfo.pApplicationName = "Luminous";
+	l_applicationInfo.applicationVersion = VK_MAKE_VERSION(1, 0, 0);
+	l_applicationInfo.pEngineName = "Luminous";
+	l_applicationInfo.engineVersion = VK_MAKE_VERSION(1, 0, 0);
+	l_applicationInfo.apiVersion = VK_API_VERSION_1_3;
+
+	VkInstanceCreateInfo l_createInfo{};
 	l_createInfo.sType = VK_STRUCTURE_TYPE_INSTANCE_CREATE_INFO;
 	l_createInfo.pApplicationInfo = &l_applicationInfo;
 
-	//Create list to hold inctance extensions
-	std::vector<const char*> l_instanceExtensions = std::vector<const char*>();
+	const char** l_glfwExtensions;
+	uint32_t l_glfwExtensionCount{ 0 };
+	l_glfwExtensions = glfwGetRequiredInstanceExtensions(&l_glfwExtensionCount);
 
-	//Set up extensions Instance will use
-	uint32_t l_glfwExtensionCount = 0; //GLFW may require multiple extensions
-	//Extensions passed as array of cstrings , so need pointer (the array ) to pointer (the cstring)
+	std::vector<const char*> instanceExtensions(l_glfwExtensions, l_glfwExtensions + l_glfwExtensionCount);
 
-	const char** l_glfwExtensions = glfwGetRequiredInstanceExtensions(&l_glfwExtensionCount); //get glfw extensions
 
-	for (size_t i = 0; i < l_glfwExtensionCount; i++)
-		l_instanceExtensions.push_back(l_glfwExtensions[i]);
+	if (validationEnabled) {
+		instanceExtensions.push_back(VK_EXT_DEBUG_UTILS_EXTENSION_NAME);
+	}
 
-	if (useValidationLayers)
-		l_instanceExtensions.push_back(VK_EXT_DEBUG_REPORT_EXTENSION_NAME);
 
-	l_createInfo.enabledExtensionCount = static_cast<uint32_t>(l_instanceExtensions.size());
-	l_createInfo.ppEnabledExtensionNames = l_instanceExtensions.data();
+	if (!CheckInstanceExtensionSupport(&instanceExtensions)) {
+		std::cout << "vKInstance does not support ";
+		return;
+	}
 
-	//set up validation layers that instance will use
-	l_createInfo.enabledLayerCount = 0;
-	l_createInfo.ppEnabledLayerNames = nullptr;
+	l_createInfo.enabledExtensionCount = static_cast<uint32_t>(instanceExtensions.size());
+	l_createInfo.ppEnabledExtensionNames = instanceExtensions.data();
 
-	if (useValidationLayers)
-	{
+
+	VkDebugUtilsMessengerCreateInfoEXT l_debugCreateInfo{};
+
+	if (validationEnabled) {
 		l_createInfo.enabledLayerCount = static_cast<uint32_t>(validationLayers.size());
 		l_createInfo.ppEnabledLayerNames = validationLayers.data();
-	} else
-	{
+
+
+		l_debugCreateInfo.sType = VK_STRUCTURE_TYPE_DEBUG_UTILS_MESSENGER_CREATE_INFO_EXT;
+		l_debugCreateInfo.messageSeverity = VK_DEBUG_UTILS_MESSAGE_SEVERITY_VERBOSE_BIT_EXT | VK_DEBUG_UTILS_MESSAGE_SEVERITY_WARNING_BIT_EXT | VK_DEBUG_UTILS_MESSAGE_SEVERITY_ERROR_BIT_EXT;
+		l_debugCreateInfo.messageType = VK_DEBUG_UTILS_MESSAGE_TYPE_GENERAL_BIT_EXT | VK_DEBUG_UTILS_MESSAGE_TYPE_VALIDATION_BIT_EXT | VK_DEBUG_UTILS_MESSAGE_TYPE_PERFORMANCE_BIT_EXT;
+		l_debugCreateInfo.pfnUserCallback = DebugCallback;
+
+		l_createInfo.pNext = (VkDebugUtilsMessengerCreateInfoEXT*)&l_debugCreateInfo;
+	}
+	else {
 		l_createInfo.enabledLayerCount = 0;
-		l_createInfo.ppEnabledLayerNames = nullptr;
+		l_createInfo.pNext = nullptr;
 	}
 
-	//Create Instance
-	//vkallocationcallback et pour gere la memoire , a implemente plus tard
 
-	if (const VkResult l_result = vkCreateInstance(&l_createInfo, nullptr, &m_instance); l_result != VK_SUCCESS)
-	{
-		throw std::runtime_error("failed to create vulkan instance");
-	}
-	std::cout << "Finish VkInstance\n";
+	VkResult result = vkCreateInstance(&l_createInfo, nullptr, &m_instance);
+	if (result != VK_SUCCESS)
+		std::cout << "failed to create vulkan instance";
 }
 
-void VulkanInstance::VkDebugCallback()
+void VulkanInstance::Debug()
 {
-	// Only create callback if validation is enabled
-	if constexpr (!useValidationLayers) return;
+	if (!validationEnabled) return;
+	VkDebugUtilsMessengerCreateInfoEXT l_debugCreateInfo{};
 
-	// Retrieve the function pointer for vkCreateDebugReportCallbackEXT
-	const auto l_func = reinterpret_cast<PFN_vkCreateDebugReportCallbackEXT>(
-		vkGetInstanceProcAddr(m_instance, "vkCreateDebugReportCallbackEXT"));
+	l_debugCreateInfo.sType = VK_STRUCTURE_TYPE_DEBUG_UTILS_MESSENGER_CREATE_INFO_EXT;
+	l_debugCreateInfo.messageSeverity = VK_DEBUG_UTILS_MESSAGE_SEVERITY_VERBOSE_BIT_EXT | VK_DEBUG_UTILS_MESSAGE_SEVERITY_WARNING_BIT_EXT | VK_DEBUG_UTILS_MESSAGE_SEVERITY_ERROR_BIT_EXT;
+	l_debugCreateInfo.messageType = VK_DEBUG_UTILS_MESSAGE_TYPE_GENERAL_BIT_EXT | VK_DEBUG_UTILS_MESSAGE_TYPE_VALIDATION_BIT_EXT | VK_DEBUG_UTILS_MESSAGE_TYPE_PERFORMANCE_BIT_EXT;
+	l_debugCreateInfo.pfnUserCallback = DebugCallback;
 
-	if (!l_func)
-	{
-		throw std::runtime_error("Could not load vkCreateDebugReportCallbackEXT!");
-	}
-
-	// Create the callback information struct
-	VkDebugReportCallbackCreateInfoEXT l_callbackCreateInfo = {};
-	l_callbackCreateInfo.sType = VK_STRUCTURE_TYPE_DEBUG_REPORT_CALLBACK_CREATE_INFO_EXT;
-	l_callbackCreateInfo.flags = VK_DEBUG_REPORT_ERROR_BIT_EXT | VK_DEBUG_REPORT_WARNING_BIT_EXT;
-	//l_callbackCreateInfo.pfnCallback = DebugCallback; // Set the callback function
-
-	// Create the callback
-
-	if (const VkResult l_result = l_func(m_instance, &l_callbackCreateInfo, nullptr, &m_callback);
-		l_result != VK_SUCCESS)
-	{
-		throw std::runtime_error("Failed to create Debug Callback!");
-	}
+	if (CreateDebugUtilsMessengerEXT(m_instance, &l_debugCreateInfo, nullptr, &m_callback) != VK_SUCCESS)
+		std::cout << "failed to set up debug messenger";
 }
-
 
 void VulkanInstance::Create(IWindow* a_window)
 {
 	std::cout << "Enter Vulkan Init\n";
-	VkCreateInstance();
-	VkDebugCallback();
+	CreateInstance();
+	Debug();
 }
 
 void VulkanInstance::Destroy()
@@ -106,4 +97,56 @@ void VulkanInstance::Destroy()
 	std::cout << "Destroy Begin\n";
 	vkDestroyInstance(m_instance, nullptr);
 	std::cout << "Destroy complete\n";
+}
+
+bool VulkanInstance::CheckValidationLayerSupport()
+{
+	uint32_t l_validationLayerCount;
+	vkEnumerateInstanceLayerProperties(&l_validationLayerCount, nullptr);
+
+	if (l_validationLayerCount == 0 && validationLayers.size() > 0)
+		return false;
+
+	std::vector<VkLayerProperties> l_availableLayers(l_validationLayerCount);
+	vkEnumerateInstanceLayerProperties(&l_validationLayerCount, l_availableLayers.data());
+
+	for (const auto& l_validationLayer : validationLayers)
+	{
+		bool l_hasLayer = false;
+		for (const auto& l_availableLayer : l_availableLayers)
+		{
+			if (strcmp(l_validationLayer, l_availableLayer.layerName) == 0)
+			{
+				l_hasLayer = true;
+				break;
+			}
+		}
+
+		if (!l_hasLayer)
+			return false;
+	}
+	return true;
+}
+
+bool VulkanInstance::CheckInstanceExtensionSupport(std::vector<const char*>* a_checkExtensions)
+{
+	uint32_t l_extensionCount = 0;
+	vkEnumerateInstanceExtensionProperties(nullptr, &l_extensionCount, nullptr);
+
+	std::vector<VkExtensionProperties> l_extensions(l_extensionCount);
+	vkEnumerateInstanceExtensionProperties(nullptr, &l_extensionCount, l_extensions.data());
+
+	for (const auto& l_checkExtension : *a_checkExtensions) {
+		bool l_hasExtension = false;
+		for (const auto& l_extension : l_extensions) {
+			if (strcmp(l_checkExtension, l_extension.extensionName)) {
+				l_hasExtension = true;
+				break;
+			}
+		}
+		if (!l_hasExtension) {
+			return false;
+		}
+	}
+	return true;
 }

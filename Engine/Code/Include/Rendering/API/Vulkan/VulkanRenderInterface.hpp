@@ -3,15 +3,16 @@
 #define VULKAN
 
 #include "GLFWInputManager.hpp"
-#include "Rendering/API/Vulkan/VulkanBuffer.hpp"
-#include "Rendering/API/Vulkan/VulkanDevice.hpp"
-#include "Rendering/API/Vulkan/VulkanInstance.hpp"
-#include "Rendering/API/Vulkan/VulkanPipeline.hpp"
-#include "Rendering/API/Vulkan/VulkanRenderPass.hpp"
-#include "Rendering/API/Vulkan/VulkanSurface.hpp"
-#include "Rendering/API/Vulkan/VulkanSwapChain.hpp"
-#include "Rendering/API/Vulkan/VulkanSynchronisation.hpp"
 #include "Rendering/API/Vulkan/VulkanWindow.hpp"
+#include "Rendering/API/Vulkan/VulkanInstance.hpp"
+#include "Rendering/API/Vulkan/VulkanSurface.hpp"
+#include "Rendering/API/Vulkan/VulkanDevice.hpp"
+#include "Rendering/API/Vulkan/VulkanSwapChain.hpp"
+#include "Rendering/API/Vulkan/VulkanRenderPass.hpp"
+#include "Rendering/API/Vulkan/VulkanDescriptions.hpp"
+#include "Rendering/API/Vulkan/VulkanBuffer.hpp"
+#include "Rendering/API/Vulkan/VulkanPipeline.hpp"
+#include "Rendering/API/Vulkan/VulkanSynchronisation.hpp"
 
 class VulkanRenderInterface : public IRender
 {
@@ -31,6 +32,9 @@ public:
 
 	IRenderPass* InstantiateRenderPass() override { return new VulkanRenderPass(); }
 	void DeleteRenderPass(IRenderPass* a_renderpass) override { delete a_renderpass; }
+
+	IDescriptions* InstantiateDescriptions() override { return new VulkanDescriptions(); }
+	void DeleteDescriptions(IDescriptions* a_descriptions) override { delete a_descriptions; }
 
 	IPipeline* InstantiatePipeline() override { return new VulkanPipeline(); }
 	void DeletePipeline(IPipeline* a_pipeline) override { delete a_pipeline; }
