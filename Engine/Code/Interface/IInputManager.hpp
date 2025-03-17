@@ -14,6 +14,7 @@ public:
 	virtual ~IInputManager() = default;
 	virtual void Initialize(IWindow* a_window) = 0;
 	virtual void Destroy(IWindow* a_window) = 0;
+	virtual void Update(IWindow* a_window) = 0;
 
 	virtual int IsKeyDown(IWindow* a_window, int a_key) = 0;
 	virtual int IsKeyUp(IWindow* a_window, int a_key) = 0;

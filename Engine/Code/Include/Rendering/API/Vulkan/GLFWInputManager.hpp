@@ -12,6 +12,7 @@ class GLFWInputManager final : public IInputManager
 public:
     LUMINOUS_ENGINE_API void Initialize(IWindow* a_window) override;
     LUMINOUS_ENGINE_API void Destroy(IWindow* a_window) override;
+    LUMINOUS_ENGINE_API void Update(IWindow* a_window) override;
 
     LUMINOUS_ENGINE_API int IsKeyDown(IWindow* a_window, int a_key) override;
     LUMINOUS_ENGINE_API int IsKeyUp(IWindow* a_window, int a_key) override;

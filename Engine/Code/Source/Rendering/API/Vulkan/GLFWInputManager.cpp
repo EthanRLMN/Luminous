@@ -122,3 +122,9 @@ void GLFWInputManager::Destroy(IWindow* a_window)
 	glfwDestroyWindow(a_window->CastVulkan()->GetGLFWWindow());
 	glfwTerminate();
 }
+
+void GLFWInputManager::Update(IWindow* a_window)
+{
+	m_mouseScroll[0] = 0;
+	m_mouseScroll[1] = 0;
+}
