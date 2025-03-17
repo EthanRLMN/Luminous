@@ -35,7 +35,7 @@ add_subdirectory(Libs)
 add_subdirectory(Engine)
 add_subdirectory(Editor)
 
-
+file(COPY Engine/Assets DESTINATION ${CMAKE_BINARY_DIR})
 
 # --------------------------------------- #
 #              ENABLE TESTING             #

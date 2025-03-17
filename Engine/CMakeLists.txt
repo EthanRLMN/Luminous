@@ -70,3 +70,17 @@ set_target_properties(L_ENGINE PROPERTIES PREFIX "")
 
 # Set dll name
 set_target_properties(L_ENGINE PROPERTIES OUTPUT_NAME "${PROJECT_NAME}-${PROJECT_VERSION}")
+
+
+
+#---------------------------------------#
+#           COPY ASSETS FOLDER          #
+#---------------------------------------#
+# Copy resources dir command.
+add_custom_command(
+        TARGET L_ENGINE
+        POST_BUILD
+        COMMAND ${CMAKE_COMMAND} -E copy_directory
+        ${CMAKE_CURRENT_SOURCE_DIR}/Assets
+        $<TARGET_FILE_DIR:L_ENGINE>/Assets
+)

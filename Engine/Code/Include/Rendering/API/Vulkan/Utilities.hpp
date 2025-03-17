@@ -1,7 +1,7 @@
 #pragma once
-#include <vector>
-#include <string>
 #include <fstream>
+#include <string>
+#include <vector>
 
 //Indice (locations) of queue families (if they exist  at all)
 

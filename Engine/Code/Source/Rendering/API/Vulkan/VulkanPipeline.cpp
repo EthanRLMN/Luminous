@@ -13,8 +13,8 @@
 
 void VulkanPipeline::Create(IDevice* a_device, IRenderPass* a_renderpass, IDescriptor* a_descriptor)
 {
-	std::vector<char> l_vertexShaderCode = ReadFile("C:/Users/sheni/Documents/Code/2024_gp_2028_gp_2028_projet_moteur-luminousengine/Engine/Assets/Shaders/vert.spv");
-	std::vector<char> l_fragmentShaderCode = ReadFile("C:/Users/sheni/Documents/Code/2024_gp_2028_gp_2028_projet_moteur-luminousengine/Engine/Assets/Shaders/frag.spv");
+	std::vector<char> l_vertexShaderCode = ReadFile("Assets/Shaders/vert.spv");
+	std::vector<char> l_fragmentShaderCode = ReadFile("Assets/Shaders/frag.spv");
 
 	VkShaderModule vertexShaderModule = CreateShaderModule(a_device->CastVulkan()->GetDevice(), l_vertexShaderCode);
 	VkShaderModule fragmentShaderModule = CreateShaderModule(a_device->CastVulkan()->GetDevice(), l_fragmentShaderCode);
