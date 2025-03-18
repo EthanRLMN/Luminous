@@ -1,7 +1,8 @@
 #pragma once
-#include <iostream>
 
-class VulkanDepthRessource;
+#include "Logger.hpp"
+
+class VulkanDepthResource;
 
 class IDevice;
 class ISwapChain;
@@ -15,9 +16,9 @@ public:
 	virtual void Create(IDevice* a_device, ISwapChain* a_swapChain, IRenderPass* a_renderPass) = 0;
 	virtual void Destroy() = 0;
 
-	virtual VulkanDepthRessource* CastVulkan()
+	virtual VulkanDepthResource* CastVulkan()
 	{
-		std::cout << "Wrong cast\n";
+		DEBUG_LOG_ERROR("Vulkan Depth Resource : Cast is Wrong!\n");
 		return nullptr;
 	}
 };

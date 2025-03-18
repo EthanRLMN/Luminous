@@ -5,7 +5,7 @@
 
 #include "ITexture.hpp"
 
-class VulkanTexture : public ITexture
+class VulkanTexture final : public ITexture
 {
 public:
 	void Create(IDevice* a_device, ISwapChain* a_swapChain, IDepthResource* a_depthResource,

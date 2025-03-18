@@ -5,7 +5,7 @@
 #include "IDevice.hpp"
 #include "ISwapChain.hpp"
 #include "Rendering/API/Vulkan/VulkanCommandPool.hpp"
-#include "Rendering/API/Vulkan/VulkanDepthRessource.hpp"
+#include "Rendering/API/Vulkan/VulkanDepthResource.hpp"
 #include "Rendering/API/Vulkan/VulkanDevice.hpp"
 #include "Rendering/API/Vulkan/VulkanSwapChain.hpp"
 
@@ -38,7 +38,7 @@ void VulkanTexture::CreateTextureImage(IDevice* a_device, IDepthResource* a_dept
 	const VkDeviceSize l_imageSize = l_texWidth * l_texHeight * 4;
 
 	if (!l_pixels)
-		std::cout << ("failed to load texture image");
+		DEBUG_LOG_ERROR("Vulkan Texture : Failed to load Texture Image!\n");
 
 	VkBuffer l_stagingBuffer;
 	VkDeviceMemory l_stagingBufferMemory;
@@ -105,12 +105,12 @@ void VulkanTexture::CreateTextureSampler(IDevice* a_device)
 	l_samplerInfo.mipmapMode = VK_SAMPLER_MIPMAP_MODE_LINEAR;
 
 	if (vkCreateSampler(a_device->CastVulkan()->GetDevice(), &l_samplerInfo, nullptr, &m_textureSampler) != VK_SUCCESS)
-		std::cout << "Failed to create Texture Sampler";
+		DEBUG_LOG_ERROR("Vulkan Texture : Failed to create Texture Sampler!\n");
 }
 
 
-void VulkanTexture::CreateBuffer(VkDevice a_device, VkPhysicalDevice _physicalDevice, VkDeviceSize a_size,
-                                 VkBufferUsageFlags a_usage, VkMemoryPropertyFlags a_properties, VkBuffer& a_buffer,
+void VulkanTexture::CreateBuffer(const VkDevice a_device, const VkPhysicalDevice _physicalDevice, const VkDeviceSize a_size,
+                                 const VkBufferUsageFlags a_usage, const VkMemoryPropertyFlags a_properties, VkBuffer& a_buffer,
                                  VkDeviceMemory& a_bufferMemory, IDepthResource* a_depthResource)
 {
 	VkBufferCreateInfo l_bufferInfo{};
@@ -120,9 +120,7 @@ void VulkanTexture::CreateBuffer(VkDevice a_device, VkPhysicalDevice _physicalDe
 	l_bufferInfo.sharingMode = VK_SHARING_MODE_EXCLUSIVE;
 
 	if (vkCreateBuffer(a_device, &l_bufferInfo, nullptr, &a_buffer) != VK_SUCCESS)
-	{
-		std::cout << "Failed to load Buffer";
-	}
+		DEBUG_LOG_ERROR("Vulkan Texture : Failed to load buffer!\n");
 
 	VkMemoryRequirements l_memoryRequirements;
 	vkGetBufferMemoryRequirements(a_device, a_buffer, &l_memoryRequirements);
@@ -134,16 +132,16 @@ void VulkanTexture::CreateBuffer(VkDevice a_device, VkPhysicalDevice _physicalDe
 		_physicalDevice, l_memoryRequirements.memoryTypeBits, a_properties);
 
 	if (vkAllocateMemory(a_device, &l_allocateInfo, nullptr, &a_bufferMemory) != VK_SUCCESS)
-		std::cout << "Failed to allocateBuffer memory";
+		DEBUG_LOG_ERROR("Vulkan Texture : Failed to allocate Buffer Memory!\n");
 
 	vkBindBufferMemory(a_device, a_buffer, a_bufferMemory, 0);
 }
 
-void VulkanTexture::TransitionImageLayout(VkDevice a_device, VkQueue a_graphicsQueue, VkCommandPool a_commandPool,
-                                          VkImage a_image, VkFormat a_format, VkImageLayout a_oldLayout,
-                                          VkImageLayout a_newLayout)
+void VulkanTexture::TransitionImageLayout(const VkDevice a_device, const VkQueue a_graphicsQueue, const VkCommandPool a_commandPool,
+                                          const VkImage a_image, VkFormat a_format, const VkImageLayout a_oldLayout,
+                                          const VkImageLayout a_newLayout)
 {
-	VkCommandBuffer l_commandBuffer = BeginSingleTimeCommands(a_device, a_commandPool);
+	const VkCommandBuffer l_commandBuffer = BeginSingleTimeCommands(a_device, a_commandPool);
 
 	VkImageMemoryBarrier l_barrier{};
 
@@ -159,8 +157,8 @@ void VulkanTexture::TransitionImageLayout(VkDevice a_device, VkQueue a_graphicsQ
 	l_barrier.subresourceRange.baseArrayLayer = 0;
 	l_barrier.subresourceRange.layerCount = 1;
 
-	VkPipelineStageFlags l_sourceStage;
-	VkPipelineStageFlags l_destinationStage;
+	VkPipelineStageFlags l_sourceStage{};
+	VkPipelineStageFlags l_destinationStage{};
 
 	if (a_oldLayout == VK_IMAGE_LAYOUT_UNDEFINED && a_newLayout == VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL)
 	{
@@ -195,19 +193,16 @@ VkCommandBuffer VulkanTexture::BeginSingleTimeCommands(const VkDevice a_device, 
 	l_allocateInfo.commandPool = a_commandPool;
 	l_allocateInfo.commandBufferCount = 1;
 
-	VkCommandBuffer l_commandBuffer;
-
-
+	VkCommandBuffer l_commandBuffer{};
 	if (a_commandPool == VK_NULL_HANDLE)
 	{
-		std::cerr << "Erreur : commandPool est invalide" << std::endl;
+		DEBUG_LOG_ERROR("Vulkan Texture : Invalid Command Pool!\n");
 		return VK_NULL_HANDLE;
 	}
 
-	if (const VkResult result = vkAllocateCommandBuffers(a_device, &l_allocateInfo, &l_commandBuffer);
-		result != VK_SUCCESS)
+	if (const VkResult result = vkAllocateCommandBuffers(a_device, &l_allocateInfo, &l_commandBuffer); result != VK_SUCCESS)
 	{
-		std::cerr << "Erreur vkAllocateCommandBuffers: " << result << std::endl;
+		DEBUG_LOG_ERROR("Vulkan Texture : Error with vkAllocateCommandBuffers!\n");
 		return VK_NULL_HANDLE;
 	}
 
@@ -236,10 +231,10 @@ void VulkanTexture::EndSingleTimeCommands(const VkDevice a_device, const VkQueue
 	vkFreeCommandBuffers(a_device, a_commandPool, 1, &a_commandBuffer);
 }
 
-void VulkanTexture::CopyBufferToImage(VkDevice a_device, VkQueue a_graphicsQueue, VkCommandPool a_commandPool,
-                                      VkBuffer a_buffer, VkImage a_image, uint32_t a_width, uint32_t a_height)
+void VulkanTexture::CopyBufferToImage(const VkDevice a_device, const VkQueue a_graphicsQueue, const VkCommandPool a_commandPool,
+                                      const VkBuffer a_buffer, const VkImage a_image, const uint32_t a_width, const uint32_t a_height)
 {
-	VkCommandBuffer l_commandBuffer = BeginSingleTimeCommands(a_device, a_commandPool);
+	const VkCommandBuffer l_commandBuffer = BeginSingleTimeCommands(a_device, a_commandPool);
 
 	VkBufferImageCopy l_bufferImageCopy{};
 

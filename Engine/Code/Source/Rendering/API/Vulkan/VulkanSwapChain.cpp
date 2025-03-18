@@ -78,13 +78,12 @@ void VulkanSwapChain::Create(IWindow* a_window, IDevice* a_device, ISurface* a_s
 		m_swapChainImageViews[i] = CreateImageView(m_swapChainImages[i], l_vkDevice, m_swapChainImageFormat, VK_IMAGE_ASPECT_COLOR_BIT);
 	}
 
-	std::cout << "Images Size : " << m_swapChainImages.size() << std::endl;
-	std::cout << "Image Views Size : " << m_swapChainImageViews.size() << std::endl;
+	DEBUG_LOG_INFO("Vulkan SwapChain : SwapChain created!\n");
 }
 
 void VulkanSwapChain::Destroy(IDevice* a_device)
 {
-	std::cout << "DestroySwapChain\n";
+	DEBUG_LOG_INFO("Vulkan SwapChain : SwapChain destroyed!\n");
 }
 
 
@@ -121,9 +120,7 @@ QueueFamilyIndices VulkanSwapChain::GetQueueFamilies(const VkPhysicalDevice a_de
 
 	uint32_t l_queueFamilyCount = 0;
 	vkGetPhysicalDeviceQueueFamilyProperties(a_device, &l_queueFamilyCount, nullptr);
-
 	std::vector<VkQueueFamilyProperties> l_queueFamilyList(l_queueFamilyCount);
-
 	vkGetPhysicalDeviceQueueFamilyProperties(a_device, &l_queueFamilyCount, l_queueFamilyList.data());
 
 	int l_i = 0;
@@ -133,7 +130,6 @@ QueueFamilyIndices VulkanSwapChain::GetQueueFamilies(const VkPhysicalDevice a_de
 			l_indices.graphicsFamily = l_i;
 
 		VkBool32 l_presentationSupport = false;
-
 		vkGetPhysicalDeviceSurfaceSupportKHR(a_device, 1, a_surface, &l_presentationSupport);
 		if (l_queueFamily.queueCount > 0 && l_presentationSupport)
 			l_indices.presentationFamily = 1;

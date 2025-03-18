@@ -1,12 +1,14 @@
 #pragma once
-#include "IPipeline.hpp"
-#include <vulkan/vulkan.h>
-#include <vector>
 
-class VulkanPipeline : public IPipeline
+#include <vector>
+#include <vulkan/vulkan.h>
+
+#include "IPipeline.hpp"
+
+class VulkanPipeline final : public IPipeline
 {
 public:
-	void Create(IDevice* a_device, IRenderPass* a_renderpass, IDescriptor* a_descriptor) override;
+	void Create(IDevice* a_device, IRenderPass* a_renderPass, IDescriptor* a_descriptor) override;
 	void Destroy() override;
 
 

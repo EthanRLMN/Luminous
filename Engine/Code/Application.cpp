@@ -39,7 +39,7 @@ Application::Application()
 	m_commandPool = m_interface->InstantiateCommandPool();
 	m_commandPool->Create(m_device, m_surface);
 
-	m_depthResource = m_interface->InstantiateDepthRessource();
+	m_depthResource = m_interface->InstantiateDepthResource();
 	m_depthResource->Create(m_device, m_swapChain, m_renderPass);
 
 	m_frameBuffer = m_interface->InstantiateFrameBuffer();
@@ -55,12 +55,6 @@ Application::Application()
 
 	m_synchronisation = m_interface->InstantiateSynchronisation();
 	m_synchronisation->Create();*/
-
-
-	/*
-	std::cout << m_window->GetSize().x << '\n';
-	std::cout << m_window->GetSize().y << '\n';
-	m_window->SetOpacity(0.5f);*/
 }
 
 Application::~Application()
@@ -98,12 +92,11 @@ void Application::Run() const
 	while (!m_window->ShouldClose())
 	{
 		m_window->PollEvents();
-		if (m_inputManager->IsKeyPressed(m_window, Key::KEY_A))
-			std::cout << "MEJK";
+		/*if (m_inputManager->IsKeyPressed(m_window, Key::KEY_A))
+			DEBUG_LOG_VERBOSE("Key {} has been pressed!\n", Key::KEY_A);
 
 		if (m_inputManager->IsMouseButtonDown(m_window, MouseButton::MOUSE_BUTTON_LEFT))
-			std::cout << m_inputManager->GetMouseScroll().x << ", " << m_inputManager->GetMouseScroll().y << '\n';
-
+			DEBUG_LOG_VERBOSE("x={}, y={}\n", m_inputManager->GetMouseScroll().x, m_inputManager->GetMouseScroll().y);*/
 
 		m_inputManager->Update(m_window);
 	}

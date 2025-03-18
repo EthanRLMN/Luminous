@@ -1,13 +1,14 @@
 #pragma once
-#include "ISwapChain.hpp"
-#include "VulkanSurface.hpp"
-#include <GLFW/glfw3.h>
+
 #include <vector>
-#include "Struct/VulkanUtilities.hpp"
+#include <GLFW/glfw3.h>
+#include "ISwapChain.hpp"
 #include "Utilities.hpp"
+#include "VulkanSurface.hpp"
+#include "Struct/VulkanUtilities.hpp"
 
 
-class VulkanSwapChain : public ISwapChain
+class VulkanSwapChain final : public ISwapChain
 {
 public:
 

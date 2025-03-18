@@ -2,7 +2,7 @@
 
 #include "IDepthResource.hpp"
 #include "ISwapChain.hpp"
-#include "Rendering/API/Vulkan/VulkanDepthRessource.hpp"
+#include "Rendering/API/Vulkan/VulkanDepthResource.hpp"
 #include "Rendering/API/Vulkan/VulkanSwapChain.hpp"
 
 void VulkanFrameBuffer::Create(IDevice* a_device, ISwapChain* a_swapChain, IRenderPass* a_renderPass,

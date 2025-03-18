@@ -5,7 +5,7 @@
 #include <vulkan/vulkan.h>
 #include "IRenderPass.hpp"
 
-class VulkanRenderPass : public IRenderPass
+class VulkanRenderPass final : public IRenderPass
 {
 public :
     void Create(ISwapChain* a_swapChain, IDevice* a_device) override;

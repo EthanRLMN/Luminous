@@ -2,12 +2,14 @@
 
 #include <iostream>
 
+#include "Logger.hpp"
+
 void VulkanBuffer::Create()
 {
-	std::cout << "Create Buffer\n";
+	DEBUG_LOG_INFO("Vulkan Buffer : Buffer created!\n");
 }
 
 void VulkanBuffer::Destroy()
 {
-	std::cout << "Create Destroy\n";
+	DEBUG_LOG_ERROR("Vulkan Buffer : Buffer created!\n");
 }

@@ -2,10 +2,10 @@
 
 class IDevice;
 
-class ISynchronisation
+class ISynchronization
 {
 public:
-	virtual ~ISynchronisation() = default;
+	virtual ~ISynchronization() = default;
 
 	virtual void Create() = 0;
 	virtual void Destroy() = 0;

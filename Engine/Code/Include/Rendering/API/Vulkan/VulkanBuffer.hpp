@@ -2,7 +2,7 @@
 
 #include "IBuffer.hpp"
 
-class VulkanBuffer : public IBuffer
+class VulkanBuffer final : public IBuffer
 {
 public:
 	VulkanBuffer() = default;

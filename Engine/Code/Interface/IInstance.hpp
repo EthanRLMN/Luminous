@@ -1,5 +1,6 @@
 #pragma once
-#include <iostream>
+
+#include "Logger.hpp"
 
 class VulkanInstance;
 class IWindow;
@@ -14,7 +15,7 @@ public:
 
     virtual VulkanInstance* CastVulkan()
     {
-        std::cout << "Wrong cast\n";
+        DEBUG_LOG_ERROR("Vulkan Instance : Cast is Wrong!\n");
         return nullptr;
     }
 };

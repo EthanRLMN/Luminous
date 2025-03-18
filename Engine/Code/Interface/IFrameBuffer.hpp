@@ -1,5 +1,6 @@
 #pragma once
-#include <iostream>
+
+#include "Logger.hpp"
 
 class VulkanFrameBuffer;
 class IDevice;
@@ -16,7 +17,7 @@ public:
 
 	virtual VulkanFrameBuffer* CastVulkan()
 	{
-		std::cout << "Wrong cast\n";
+		DEBUG_LOG_ERROR("Vulkan Frame Buffer : Cast is Wrong!\n");
 		return nullptr;
 	}
 };

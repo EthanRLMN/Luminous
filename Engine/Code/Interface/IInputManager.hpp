@@ -3,6 +3,8 @@
 #include "Utils/Exporter.hpp"
 
 #include <iostream>
+
+#include "Logger.hpp"
 #include "Vector2.hpp"
 #include "Utils/InputWrapperUtils.hpp"
 
@@ -33,7 +35,7 @@ public:
 
 	virtual IInputManager* CastGLFW()
 	{
-		std::cout << "Wrong cast\n";
+		DEBUG_LOG_ERROR("Input Manager : Cast is Wrong!\n");
 		return nullptr;
 	}
 };

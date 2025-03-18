@@ -4,7 +4,7 @@
 
 #include "ISurface.hpp"
 
-class VulkanSurface : public ISurface
+class VulkanSurface final : public ISurface
 {
 public:
 	void Create(IInstance* a_instance, IWindow* a_window) override;

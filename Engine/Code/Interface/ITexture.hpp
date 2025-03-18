@@ -1,5 +1,6 @@
 #pragma once
-#include <iostream>
+
+#include "Logger.hpp"
 
 class VulkanTexture;
 
@@ -18,7 +19,7 @@ public:
 
 	virtual VulkanTexture* CastVulkan()
 	{
-		std::cout << "Wrong cast\n";
+		DEBUG_LOG_ERROR("Vulkan Texture : Cast is Wrong!\n");
 		return nullptr;
 	}
 

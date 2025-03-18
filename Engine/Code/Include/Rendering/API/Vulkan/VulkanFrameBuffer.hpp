@@ -1,7 +1,8 @@
 #pragma once
+
 #include "IFrameBuffer.hpp"
 
-class VulkanFrameBuffer : public IFrameBuffer
+class VulkanFrameBuffer final : public IFrameBuffer
 {
 public:
 	void Create(IDevice* a_device, ISwapChain* a_swapChain, IRenderPass* a_renderPass,

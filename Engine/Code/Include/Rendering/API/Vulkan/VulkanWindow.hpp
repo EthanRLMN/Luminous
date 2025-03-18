@@ -5,13 +5,13 @@
 #include <Vector2.hpp>
 #include <GLFW/glfw3.h>
 
-class VulkanWindow : public IWindow
+class VulkanWindow final : public IWindow
 {
 public:
     void Initialize(const std::string& a_name, int a_width, int a_height) override;
     void Update() const override;
     void PollEvents() const override;
-    [[nodiscard]] bool ShouldClose() const  override;
+    [[nodiscard]] bool ShouldClose() const override;
     void Destroy() const override;
 
     Maths::Vector2 GetSize() override;

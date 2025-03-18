@@ -7,7 +7,7 @@
 #include "VulkanDescriptor.hpp"
 #include "Rendering/API/Vulkan/VulkanBuffer.hpp"
 #include "Rendering/API/Vulkan/VulkanCommandPool.hpp"
-#include "Rendering/API/Vulkan/VulkanDepthRessource.hpp"
+#include "Rendering/API/Vulkan/VulkanDepthResource.hpp"
 #include "Rendering/API/Vulkan/VulkanDevice.hpp"
 #include "Rendering/API/Vulkan/VulkanFrameBuffer.hpp"
 #include "Rendering/API/Vulkan/VulkanInstance.hpp"
@@ -15,11 +15,11 @@
 #include "Rendering/API/Vulkan/VulkanRenderPass.hpp"
 #include "Rendering/API/Vulkan/VulkanSurface.hpp"
 #include "Rendering/API/Vulkan/VulkanSwapChain.hpp"
-#include "Rendering/API/Vulkan/VulkanSynchronisation.hpp"
+#include "Rendering/API/Vulkan/VulkanSynchronization.hpp"
 #include "Rendering/API/Vulkan/VulkanTexture.hpp"
 #include "Rendering/API/Vulkan/VulkanWindow.hpp"
 
-class VulkanRenderInterface : public IRender
+class VulkanRenderInterface final : public IRender
 {
 public:
 #ifdef VULKAN
@@ -33,10 +33,10 @@ public:
 	void DeleteDevice(IDevice* a_device) override { delete a_device; }
 
 	ISwapChain* InstantiateSwapChain() override { return new VulkanSwapChain(); }
-	void DeleteSwapChain(ISwapChain* a_swapchain) override { delete a_swapchain; }
+	void DeleteSwapChain(ISwapChain* a_swapChain) override { delete a_swapChain; }
 
 	IRenderPass* InstantiateRenderPass() override { return new VulkanRenderPass(); }
-	void DeleteRenderPass(IRenderPass* a_renderpass) override { delete a_renderpass; }
+	void DeleteRenderPass(IRenderPass* a_renderPass) override { delete a_renderPass; }
 
 	IDescriptor* InstantiateDescriptor() override { return new VulkanDescriptor(); }
 	void DeleteDescriptor(IDescriptor* a_descriptor) override { delete a_descriptor; }
@@ -47,8 +47,8 @@ public:
 	ICommandPool* InstantiateCommandPool() override { return new VulkanCommandPool(); }
 	void DeleteCommandPool(ICommandPool* a_commandPool) override { delete a_commandPool; }
 
-	IDepthResource* InstantiateDepthRessource() override { return new VulkanDepthRessource(); }
-	void DeleteDepthRessource(IDepthResource* a_depthRessource) override { delete a_depthRessource; }
+	IDepthResource* InstantiateDepthResource() override { return new VulkanDepthResource(); }
+	void DeleteDepthResource(IDepthResource* a_depthResource) override { delete a_depthResource; }
 
 	IFrameBuffer* InstantiateFrameBuffer() override { return new VulkanFrameBuffer(); }
 	void DeleteFrameBuffer(IFrameBuffer* a_frameBuffer) override { delete a_frameBuffer; }
@@ -59,8 +59,8 @@ public:
 	IBuffer* InstantiateBuffer() override { return new VulkanBuffer(); }
 	void DeleteBuffer(IBuffer* a_buffer) override { delete a_buffer; }
 
-	ISynchronisation* InstantiateSynchronisation() override { return new VulkanSynchronisation(); }
-	void DeleteSynchronisation(ISynchronisation* a_synchronisation) override { delete a_synchronisation; }
+	ISynchronization* InstantiateSynchronization() override { return new VulkanSynchronization(); }
+	void DeleteSynchronization(ISynchronization* a_synchronization) override { delete a_synchronization; }
 
 	IWindow* InstantiateWindow() override { return new VulkanWindow(); }
 	void DeleteWindow(IWindow* a_window) override { delete a_window; }

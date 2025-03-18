@@ -21,7 +21,7 @@ void VulkanDevice::Create(IInstance* a_instance, IWindow* a_window, ISurface* a_
 
 void VulkanDevice::Destroy()
 {
-	std::cout << "Destroy Device\n";
+	DEBUG_LOG_INFO("Vulkan Device : Device destroyed!\n");
 }
 
 void VulkanDevice::CreateLogicalDevice(const VkSurfaceKHR a_surface, VkInstance a_instance)
@@ -61,9 +61,6 @@ void VulkanDevice::CreateLogicalDevice(const VkSurfaceKHR a_surface, VkInstance 
 	{
 		l_deviceCreateInfo.enabledLayerCount = static_cast<uint32_t>(validationLayers.size());
 		l_deviceCreateInfo.ppEnabledLayerNames = validationLayers.data();
-	} else
-	{
-		l_deviceCreateInfo.enabledLayerCount = 0; // deprecate ,only for VK 1.0
 	}
 
 	if (VkResult l_result = vkCreateDevice(m_physicalDevice, &l_deviceCreateInfo, nullptr, &m_device); l_result != VK_SUCCESS)

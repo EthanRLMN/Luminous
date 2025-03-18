@@ -1,17 +1,19 @@
+#include "Logger.hpp"
+
 #include "Rendering/API/Vulkan/VulkanPipeline.hpp"
 #include "Rendering/API/Vulkan/Utilities.hpp"
 #include "Struct/VulkanUtilities.hpp"
 
+#include "Rendering/API/Vulkan/VulkanDescriptor.hpp"
 #include "Rendering/API/Vulkan/VulkanDevice.hpp"
 #include "Rendering/API/Vulkan/VulkanRenderPass.hpp"
-#include "Rendering/API/Vulkan/VulkanDescriptor.hpp"
 
-#include <iostream>
-#include <fstream>
 #include <array>
+#include <fstream>
+#include <iostream>
 
 
-void VulkanPipeline::Create(IDevice* a_device, IRenderPass* a_renderpass, IDescriptor* a_descriptor)
+void VulkanPipeline::Create(IDevice* a_device, IRenderPass* a_renderPass, IDescriptor* a_descriptor)
 {
 	std::vector<char> l_vertexShaderCode = ReadFile("Assets/Shaders/vert.spv");
 	std::vector<char> l_fragmentShaderCode = ReadFile("Assets/Shaders/frag.spv");
@@ -20,14 +22,14 @@ void VulkanPipeline::Create(IDevice* a_device, IRenderPass* a_renderpass, IDescr
 	VkShaderModule fragmentShaderModule = CreateShaderModule(a_device->CastVulkan()->GetDevice(), l_fragmentShaderCode);
 
 	//vertex stage creation
-	VkPipelineShaderStageCreateInfo l_vertexShaderCreateInfo = {};
+	VkPipelineShaderStageCreateInfo l_vertexShaderCreateInfo{};
 	l_vertexShaderCreateInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO;
 	l_vertexShaderCreateInfo.stage = VK_SHADER_STAGE_VERTEX_BIT;
 	l_vertexShaderCreateInfo.module = vertexShaderModule;
 	l_vertexShaderCreateInfo.pName = "main";
 
 	//fragment stage creation
-	VkPipelineShaderStageCreateInfo l_fragmentShaderCreateInfo = {};
+	VkPipelineShaderStageCreateInfo l_fragmentShaderCreateInfo{};
 	l_fragmentShaderCreateInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO;
 	l_fragmentShaderCreateInfo.stage = VK_SHADER_STAGE_FRAGMENT_BIT;
 	l_fragmentShaderCreateInfo.module = fragmentShaderModule;
@@ -36,14 +38,12 @@ void VulkanPipeline::Create(IDevice* a_device, IRenderPass* a_renderpass, IDescr
 	//graphics pipeline creation info requires array  of shader
 	VkPipelineShaderStageCreateInfo l_shaderStages[] = { l_vertexShaderCreateInfo ,l_fragmentShaderCreateInfo };
 
-
-	VkVertexInputBindingDescription l_bindingDescription = {};
+	VkVertexInputBindingDescription l_bindingDescription{};
 	l_bindingDescription.binding = 0;
 	l_bindingDescription.stride = sizeof(Vertex);
 	l_bindingDescription.inputRate = VK_VERTEX_INPUT_RATE_VERTEX;
 
-
-	std::array<VkVertexInputAttributeDescription, 3> l_attributeDescriptions;
+	std::array<VkVertexInputAttributeDescription, 3> l_attributeDescriptions{};
 	//Position Attributes
 	l_attributeDescriptions[0].binding = 0;   //which binding the data is at (should be same above)
 	l_attributeDescriptions[0].location = 0;  //location in shader where data will be reset
@@ -60,7 +60,6 @@ void VulkanPipeline::Create(IDevice* a_device, IRenderPass* a_renderpass, IDescr
 	l_attributeDescriptions[2].format = VK_FORMAT_R32G32B32_SFLOAT;
 	l_attributeDescriptions[2].offset = offsetof(Vertex, texCoord);
 
-
 	//--vertex Input
 	VkPipelineVertexInputStateCreateInfo l_vertexInputCreateInfo = {};
 	l_vertexInputCreateInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_VERTEX_INPUT_STATE_CREATE_INFO;
@@ -68,7 +67,6 @@ void VulkanPipeline::Create(IDevice* a_device, IRenderPass* a_renderpass, IDescr
 	l_vertexInputCreateInfo.pVertexBindingDescriptions = &l_bindingDescription;
 	l_vertexInputCreateInfo.vertexAttributeDescriptionCount = static_cast<uint32_t>(l_attributeDescriptions.size());
 	l_vertexInputCreateInfo.pVertexAttributeDescriptions = l_attributeDescriptions.data();
-
 
 	//Input Assembly
 	VkPipelineInputAssemblyStateCreateInfo l_inputAssembly = {};
@@ -81,8 +79,7 @@ void VulkanPipeline::Create(IDevice* a_device, IRenderPass* a_renderpass, IDescr
 	l_viewportStateCreateInfo.viewportCount = 1;
 	l_viewportStateCreateInfo.scissorCount = 1;
 
-	//rasterizer 
-
+	//rasterizer
 	VkPipelineRasterizationStateCreateInfo l_rasterizerCreateInfo = {};
 	l_rasterizerCreateInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_RASTERIZATION_STATE_CREATE_INFO;
 	l_rasterizerCreateInfo.depthClampEnable = VK_FALSE;
@@ -99,7 +96,6 @@ void VulkanPipeline::Create(IDevice* a_device, IRenderPass* a_renderpass, IDescr
 	l_multisamplingCreateInfo.sampleShadingEnable = VK_FALSE;
 	l_multisamplingCreateInfo.rasterizationSamples = VK_SAMPLE_COUNT_1_BIT;
 
-
 	VkPipelineDepthStencilStateCreateInfo l_depthStencil{};
 	l_depthStencil.sType = VK_STRUCTURE_TYPE_PIPELINE_DEPTH_STENCIL_STATE_CREATE_INFO;
 	l_depthStencil.depthTestEnable = VK_TRUE;
@@ -108,16 +104,16 @@ void VulkanPipeline::Create(IDevice* a_device, IRenderPass* a_renderpass, IDescr
 	l_depthStencil.depthBoundsTestEnable = VK_FALSE;
 	l_depthStencil.stencilTestEnable = VK_FALSE;
 
-	VkPipelineColorBlendAttachmentState l_colorBlendAttachement{};
-	l_colorBlendAttachement.colorWriteMask = VK_COLOR_COMPONENT_R_BIT | VK_COLOR_COMPONENT_G_BIT | VK_COLOR_COMPONENT_B_BIT | VK_COLOR_COMPONENT_A_BIT;
-	l_colorBlendAttachement.blendEnable = VK_FALSE;
+	VkPipelineColorBlendAttachmentState l_colorBlendAttachment{};
+	l_colorBlendAttachment.colorWriteMask = VK_COLOR_COMPONENT_R_BIT | VK_COLOR_COMPONENT_G_BIT | VK_COLOR_COMPONENT_B_BIT | VK_COLOR_COMPONENT_A_BIT;
+	l_colorBlendAttachment.blendEnable = VK_FALSE;
 
 	VkPipelineColorBlendStateCreateInfo l_colorBlending{};
 	l_colorBlending.sType = VK_STRUCTURE_TYPE_PIPELINE_COLOR_BLEND_STATE_CREATE_INFO;
 	l_colorBlending.logicOpEnable = VK_FALSE;
 	l_colorBlending.logicOp = VK_LOGIC_OP_COPY;
 	l_colorBlending.attachmentCount = 1;
-	l_colorBlending.pAttachments = &l_colorBlendAttachement;
+	l_colorBlending.pAttachments = &l_colorBlendAttachment;
 	l_colorBlending.blendConstants[0] = 0.0f;
 	l_colorBlending.blendConstants[1] = 0.0f;
 	l_colorBlending.blendConstants[2] = 0.0f;
@@ -129,10 +125,8 @@ void VulkanPipeline::Create(IDevice* a_device, IRenderPass* a_renderpass, IDescr
 		VK_DYNAMIC_STATE_SCISSOR
 	};
 
-
-
 	//Dynamic state creation info
-	VkPipelineDynamicStateCreateInfo l_dynamicStateCreationInfo = {};
+	VkPipelineDynamicStateCreateInfo l_dynamicStateCreationInfo{};
 	l_dynamicStateCreationInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_DYNAMIC_STATE_CREATE_INFO;
 	l_dynamicStateCreationInfo.dynamicStateCount = static_cast<uint32_t>(l_dynamicStates.size());
 	l_dynamicStateCreationInfo.pDynamicStates = l_dynamicStates.data();
@@ -141,22 +135,16 @@ void VulkanPipeline::Create(IDevice* a_device, IRenderPass* a_renderpass, IDescr
 	l_pipelineLayoutInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO;
 	l_pipelineLayoutInfo.setLayoutCount = 1;
 	
-	
     VkDescriptorSetLayout l_descriptorSetLayout = a_descriptor->CastVulkan()->GetInstance(); //create descriptorSetLayout has a local variable
     l_pipelineLayoutInfo.pSetLayouts = &l_descriptorSetLayout;
 
-
 	//Create pipeline layout 
-	VkResult result = vkCreatePipelineLayout(a_device->CastVulkan()->GetDevice(), &l_pipelineLayoutInfo, nullptr, &m_pipelineLayout);
-
-	if (result != VK_SUCCESS) {
+	VkResult l_result = vkCreatePipelineLayout(a_device->CastVulkan()->GetDevice(), &l_pipelineLayoutInfo, nullptr, &m_pipelineLayout);
+	if (l_result != VK_SUCCESS)
 		throw std::runtime_error("Failed to create Pipeline layout");
-	}
-
 
 	//Graphic pipeline creation
-
-	VkGraphicsPipelineCreateInfo l_pipelineCreateInfo = {};
+	VkGraphicsPipelineCreateInfo l_pipelineCreateInfo{};
 	l_pipelineCreateInfo.sType = VK_STRUCTURE_TYPE_GRAPHICS_PIPELINE_CREATE_INFO;
 	l_pipelineCreateInfo.stageCount = 2;
 	l_pipelineCreateInfo.pStages = l_shaderStages;
@@ -169,16 +157,15 @@ void VulkanPipeline::Create(IDevice* a_device, IRenderPass* a_renderpass, IDescr
 	l_pipelineCreateInfo.pColorBlendState = &l_colorBlending;
 	l_pipelineCreateInfo.pDynamicState = &l_dynamicStateCreationInfo;
 	l_pipelineCreateInfo.layout = m_pipelineLayout;
-	l_pipelineCreateInfo.renderPass = a_renderpass->CastVulkan()->GetInstance();
+	l_pipelineCreateInfo.renderPass = a_renderPass->CastVulkan()->GetInstance();
 	l_pipelineCreateInfo.subpass = 0;
 	l_pipelineCreateInfo.basePipelineHandle = VK_NULL_HANDLE;
 	l_pipelineCreateInfo.basePipelineIndex = -1;
 
-	result = vkCreateGraphicsPipelines(a_device->CastVulkan()->GetDevice(), VK_NULL_HANDLE, 1, &l_pipelineCreateInfo, nullptr, &m_graphicsPipeline);
-	if (result != VK_SUCCESS)
-	{
+	l_result = vkCreateGraphicsPipelines(a_device->CastVulkan()->GetDevice(), VK_NULL_HANDLE, 1, &l_pipelineCreateInfo, nullptr, &m_graphicsPipeline);
+	if (l_result != VK_SUCCESS)
 		throw std::runtime_error("Failed to create a Graphics Pipeline!");
-	}
+
 	//destroy sahder module no longer needed after pipeline created
 	vkDestroyShaderModule(a_device->CastVulkan()->GetDevice(), fragmentShaderModule, nullptr);
 	vkDestroyShaderModule(a_device->CastVulkan()->GetDevice(), vertexShaderModule, nullptr);
@@ -186,21 +173,20 @@ void VulkanPipeline::Create(IDevice* a_device, IRenderPass* a_renderpass, IDescr
 
 void VulkanPipeline::Destroy()
 {
-	std::cout << "Destroy Graphic Pipeline\n";
+	DEBUG_LOG_INFO("Vulkan Pipeline : Pipeline destroyed!\n");
 }
 
 VkShaderModule VulkanPipeline::CreateShaderModule(VkDevice a_device, const std::vector<char>& a_code)
 {
-	VkShaderModuleCreateInfo l_shaderModuleCreateInfo = {};
-
+	VkShaderModuleCreateInfo l_shaderModuleCreateInfo{};
 	l_shaderModuleCreateInfo.sType = VK_STRUCTURE_TYPE_SHADER_MODULE_CREATE_INFO;
 	l_shaderModuleCreateInfo.codeSize = a_code.size();
 	l_shaderModuleCreateInfo.pCode = reinterpret_cast<const uint32_t*>(a_code.data());
 
-	VkShaderModule l_shaderModule;
-	VkResult result = vkCreateShaderModule(a_device, &l_shaderModuleCreateInfo, nullptr, &l_shaderModule);
-	if (result != VK_SUCCESS) {
-		std::cout << ("Failed to create a shader module");
-	}
+	VkShaderModule l_shaderModule{};
+	const VkResult l_result = vkCreateShaderModule(a_device, &l_shaderModuleCreateInfo, nullptr, &l_shaderModule);
+	if (l_result != VK_SUCCESS)
+		DEBUG_LOG_ERROR("Vulkan Pipeline : Shader Module creating failed!\n");
+
 	return l_shaderModule;
 }

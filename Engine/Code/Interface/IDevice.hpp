@@ -1,6 +1,6 @@
 #pragma once
 
-#include <iostream>
+#include "Logger.hpp"
 
 class VulkanDevice;
 class IInstance;
@@ -17,7 +17,7 @@ public:
 
     virtual VulkanDevice* CastVulkan()
     {
-        std::cout << "Vulkan Device : Wrong cast\n";
+        DEBUG_LOG_ERROR("Vulkan Device : Cast is Wrong!\n");
         return nullptr;
     }
 };

@@ -11,13 +11,13 @@
 
 
 
-class VulkanDepthRessource : public IDepthResource
+class VulkanDepthResource : public IDepthResource
 {
 public:
 	void Create(IDevice* a_device, ISwapChain* a_swapChain, IRenderPass* a_renderPass) override;
 	void Destroy() override;
 
-	VulkanDepthRessource* CastVulkan() override { return this; }
+	VulkanDepthResource* CastVulkan() override { return this; }
 
 	void CreateImage(VkDevice a_device, VkPhysicalDevice a_physicalDevice, uint32_t a_width, uint32_t a_height, VkFormat a_format, VkImageTiling a_tiling, VkImageUsageFlags a_usage, VkMemoryPropertyFlags a_properties, VkImage& a_image, VkDeviceMemory& a_imageMemory);
 

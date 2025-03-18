@@ -1,5 +1,6 @@
 #pragma once
-#include <iostream>
+
+#include "Logger.hpp"
 
 class VulkanDescriptor;
 class IDevice;
@@ -14,7 +15,7 @@ public:
 
     virtual VulkanDescriptor* CastVulkan()
     {
-        std::cout << "Wrong cast\n";
+        DEBUG_LOG_ERROR("Vulkan Descriptor : Cast is Wrong!\n");
         return nullptr;
     }
 };

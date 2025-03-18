@@ -19,7 +19,7 @@ public:
 
 	virtual VulkanSwapChain* CastVulkan()
 	{
-		std::cout << "Vulkan SwapChain : Wrong cast\n";
+		DEBUG_LOG_ERROR("Vulkan SwapChain : Cast is Wrong!\n");
 		return nullptr;
 	}
 };

@@ -104,7 +104,8 @@ VkFormat VulkanRenderPass::FindSupportedFormat(const VkPhysicalDevice a_physical
 		if (a_tiling == VK_IMAGE_TILING_OPTIMAL && (l_props.optimalTilingFeatures & a_features) == a_features)
 			return l_format;
 	}
-	std::cout << " failed to find supported format" << std::endl;
+
+	DEBUG_LOG_ERROR("Vulkan RenderPass : Failed to find supported file format!\n");
 	return VK_FORMAT_UNDEFINED;
 }
 

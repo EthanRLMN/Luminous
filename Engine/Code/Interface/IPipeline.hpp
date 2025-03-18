@@ -1,5 +1,6 @@
 #pragma once
-#include <iostream>
+
+#include "Logger.hpp"
 
 class VulkanPipeline;
 class IDevice;
@@ -17,7 +18,7 @@ public:
 
 	virtual VulkanPipeline* CastVulkan()
 	{
-		std::cout << "Wrong cast\n";
+		DEBUG_LOG_ERROR("Vulkan Pipeline : Cast is Wrong!\n");
 		return nullptr;
 	}
 };

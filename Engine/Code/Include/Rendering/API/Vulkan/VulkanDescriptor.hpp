@@ -1,10 +1,10 @@
 #pragma once
 
 #define GLFW_INCLUDE_VULKAN
-#include "IDescriptions.hpp"
 #include <vulkan/vulkan.h>
+#include "IDescriptions.hpp"
 
-class VulkanDescriptor : public IDescriptor
+class VulkanDescriptor final : public IDescriptor
 {
 public:
 	~VulkanDescriptor() override = default;

@@ -1,15 +1,15 @@
 #pragma once
 
 #define GLFW_INCLUDE_VULKAN
-#include <vector>
 #include <GLFW/glfw3.h>
-#include <vulkan/vulkan.h> 
+#include <vulkan/vulkan.h>
 
+#include <vector>
 #include "IInstance.hpp"
 
 class Window;
 
-class VulkanInstance : public IInstance
+class VulkanInstance final : public IInstance
 {
 public :
 	~VulkanInstance() override = default;
@@ -17,7 +17,7 @@ public :
 	void Create(IWindow* a_window) override;
 	void Destroy() override;
 
-	[[nodiscard]] virtual VkInstance GetInstance() const { return m_instance; }
+	[[nodiscard]] VkInstance GetInstance() const { return m_instance; }
 
 	VulkanInstance* CastVulkan() override { return this; }
 
@@ -26,7 +26,7 @@ private:
 	void Debug();
 
 	bool CheckValidationLayerSupport();
-	bool CheckInstanceExtensionSupport(std::vector<const char*>* a_checkExtensions);
+	bool CheckInstanceExtensionSupport(const std::vector<const char*>* a_checkExtensions);
 
 	VkInstance m_instance { VK_NULL_HANDLE };
 	VkDebugUtilsMessengerEXT m_callback { VK_NULL_HANDLE };

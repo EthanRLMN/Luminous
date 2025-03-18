@@ -1,6 +1,6 @@
 #pragma once
 
-#include <iostream>
+#include "Logger.hpp"
 
 class VulkanSurface;
 class IInstance;
@@ -15,7 +15,7 @@ public:
 
 	virtual VulkanSurface* CastVulkan()
 	{
-		std::cout << "Vulkan Surface : Wrong cast\n";
+		DEBUG_LOG_ERROR("Vulkan Surface : Cast is Wrong!\n");
 		return nullptr;
 	}
 };

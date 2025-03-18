@@ -3,12 +3,10 @@
 #include <vulkan/vulkan.h>
 
 #include "IDevice.hpp"
-#include "Struct/VulkanUtilities.hpp"
 #include "Utilities.hpp"
+#include "Struct/VulkanUtilities.hpp"
 
-
-
-class VulkanDevice : public IDevice
+class VulkanDevice final : public IDevice
 {
 public:
 	~VulkanDevice() override = default;

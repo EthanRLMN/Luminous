@@ -9,7 +9,7 @@
 
 class IWindow;
 
-class GLFWInputManager : public IInputManager
+class GLFWInputManager final : public IInputManager
 {
 public:
     LUMINOUS_ENGINE_API void Initialize(IWindow* a_window) override;
