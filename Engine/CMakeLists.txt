@@ -30,7 +30,7 @@ add_library(L_ENGINE SHARED ${L_ENGINE_SOURCES})
 #---------------------------------------#
 #                INCLUDE                #
 #---------------------------------------#
-target_include_directories(L_ENGINE PUBLIC "Code/Include" "Code/Interface")
+target_include_directories(L_ENGINE PUBLIC "Code/Include" "Code/Interface" "Libs/stb_image")
 
 
 
