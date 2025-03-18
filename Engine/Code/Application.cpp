@@ -2,7 +2,6 @@
 
 #include "Rendering/API/Vulkan/VulkanRenderInterface.hpp"
 
-
 Application::Application()
 {
 	Debug::Logger& l_logger = Debug::Logger::GetInstance();
@@ -24,10 +23,10 @@ Application::Application()
 
 	m_device = m_interface->InstantiateDevice();
 	m_device->Create(m_instance, m_window, m_surface);
-	
+
 	m_swapChain = m_interface->InstantiateSwapChain();
 	m_swapChain->Create(m_window, m_device, m_surface);
-	
+
 	m_renderPass = m_interface->InstantiateRenderPass();
 	m_renderPass->Create(m_swapChain, m_device);
 
@@ -40,15 +39,14 @@ Application::Application()
 	m_commandPool = m_interface->InstantiateCommandPool();
 	m_commandPool->Create(m_device, m_surface);
 
-
-	m_depthRessource = m_interface->InstantiateDepthRessource();
-	m_depthRessource->Create(m_device, m_swapChain, m_renderPass);
+	m_depthResource = m_interface->InstantiateDepthRessource();
+	m_depthResource->Create(m_device, m_swapChain, m_renderPass);
 
 	m_frameBuffer = m_interface->InstantiateFrameBuffer();
-	m_frameBuffer->Create(m_device, m_swapChain, m_renderPass, m_depthRessource);
+	m_frameBuffer->Create(m_device, m_swapChain, m_renderPass, m_depthResource);
 
 	m_texture = m_interface->InstantiateTexture();
-	m_texture->Create(m_device, m_swapChain, m_depthRessource, m_commandPool);
+	m_texture->Create(m_device, m_swapChain, m_depthResource, m_commandPool);
 
 	/*
 

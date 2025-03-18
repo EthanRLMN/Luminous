@@ -1,7 +1,7 @@
 #pragma once
 #include <vulkan/vulkan.h>
 
-#include "IDepthRessource.hpp"
+#include "IDepthResource.hpp"
 #include <Rendering/API/Vulkan/VulkanDevice.hpp>
 #include <Rendering/API/Vulkan/VulkanSwapChain.hpp>
 #include <Rendering/API/Vulkan/VulkanRenderPass.hpp>
@@ -11,7 +11,7 @@
 
 
 
-class VulkanDepthRessource : public IDepthRessource
+class VulkanDepthRessource : public IDepthResource
 {
 public:
 	void Create(IDevice* a_device, ISwapChain* a_swapChain, IRenderPass* a_renderPass) override;

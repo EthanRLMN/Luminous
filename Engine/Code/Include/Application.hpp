@@ -1,9 +1,9 @@
 #pragma once
 
-#include "Utils/Exporter.hpp"
 #include "IBuffer.hpp"
 #include "IRender.hpp"
 #include "ISynchronisation.hpp"
+#include "Utils/Exporter.hpp"
 
 class VulkanRenderInterface;
 
@@ -29,10 +29,9 @@ private:
 	IDescriptor* m_descriptor { nullptr };
 	IPipeline* m_pipeline { nullptr };
 	ICommandPool* m_commandPool{ nullptr };
-	IDepthRessource* m_depthRessource{ nullptr };
+	IDepthResource* m_depthResource{ nullptr };
 	IFrameBuffer* m_frameBuffer{ nullptr };
 	ITexture* m_texture{ nullptr };
-
 
 	IBuffer* m_buffer { nullptr };
 	ISynchronisation* m_synchronisation { nullptr };

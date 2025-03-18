@@ -9,7 +9,7 @@
 #include "IDescriptions.hpp"
 #include "IPipeline.hpp"
 #include "ICommandPool.hpp"
-#include "IDepthRessource.hpp"
+#include "IDepthResource.hpp"
 #include "IFrameBuffer.hpp"
 #include "ITexture.hpp"
 #include "IBuffer.hpp"
@@ -29,7 +29,7 @@ public:
 	virtual IDescriptor* InstantiateDescriptor() = 0;
 	virtual IPipeline* InstantiatePipeline() = 0;
 	virtual ICommandPool* InstantiateCommandPool() = 0;
-	virtual IDepthRessource* InstantiateDepthRessource() = 0;
+	virtual IDepthResource* InstantiateDepthRessource() = 0;
 	virtual IFrameBuffer* InstantiateFrameBuffer() = 0;
 	virtual ITexture* InstantiateTexture() = 0;
 	//loadmodel
@@ -47,7 +47,7 @@ public:
 	virtual void DeleteDescriptor(IDescriptor* a_descriptor) { delete a_descriptor; }
 	virtual void DeletePipeline(IPipeline* a_pipeline) { delete a_pipeline; }
 	virtual void DeleteCommandPool(ICommandPool* a_commandPool) { delete a_commandPool; }
-	virtual void DeleteDepthRessource(IDepthRessource* a_depthRessource) { delete a_depthRessource; }
+	virtual void DeleteDepthRessource(IDepthResource* a_depthRessource) { delete a_depthRessource; }
 	virtual void DeleteFrameBuffer(IFrameBuffer* a_frameBuffer) { delete a_frameBuffer; }
 	virtual void DeleteTexture(ITexture* a_texture) { delete a_texture; }
 	virtual void DeleteBuffer(IBuffer* a_buffer) { delete a_buffer; }

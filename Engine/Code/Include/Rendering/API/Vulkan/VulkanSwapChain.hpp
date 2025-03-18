@@ -16,7 +16,6 @@ public:
 
 	VulkanSwapChain* CastVulkan() override { return this; }
 
-
 	[[nodiscard]] VkSwapchainKHR GetSwapChain() const { return m_swapChain; }
 
 	[[nodiscard]] VkFormat GetSwapChainImageFormat() const { return swapChainImageFormat; }
@@ -32,7 +31,7 @@ private:
 	SwapChainDetails GetSwapChainDetails(VkPhysicalDevice a_device, VkSurfaceKHR a_surface);
 	QueueFamilyIndices GetQueueFamilies(VkPhysicalDevice a_device, VkSurfaceKHR a_surface);
 	VkSurfaceFormatKHR ChooseBestSurfaceFormat(const std::vector<VkSurfaceFormatKHR>& a_formats);
-	VkPresentModeKHR ChooseBestPresentationMode(const std::vector<VkPresentModeKHR> a_presentationModes);
+	VkPresentModeKHR ChooseBestPresentationMode(const std::vector<VkPresentModeKHR>& a_presentationModes);
 	VkExtent2D ChooseSwapExtend(const VkSurfaceCapabilitiesKHR& a_surfaceCapabilities, GLFWwindow* a_window);
 
 	VkSwapchainKHR m_swapChain{ VK_NULL_HANDLE };
