@@ -108,11 +108,6 @@ Maths::Vector2 GLFWInputManager::GetMouseScroll()
 	return Maths::Vector2(static_cast<float>(m_mouseScroll[0]),static_cast<float>(m_mouseScroll[1]));
 }
 
-void GLFWInputManager::SetMouseScroll(Maths::Vector2 a_vec)
-{
-}
-
-
 void GLFWInputManager::Initialize(IWindow* a_window)
 {
 	//std::cout << Action::REPEAT << '\n';
