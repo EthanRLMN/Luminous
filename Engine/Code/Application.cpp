@@ -43,6 +43,13 @@ Application::Application()
 
 	m_depthRessource = m_interface->InstantiateDepthRessource();
 	m_depthRessource->Create(m_device, m_swapChain, m_renderPass);
+
+	m_frameBuffer = m_interface->InstantiateFrameBuffer();
+	m_frameBuffer->Create(m_device, m_swapChain, m_renderPass, m_depthRessource);
+
+	m_texture = m_interface->InstantiateTexture();
+	m_texture->Create(m_device, m_swapChain, m_depthRessource, m_commandPool);
+
 	/*
 
 	m_buffer = m_interface->InstantiateBuffer();

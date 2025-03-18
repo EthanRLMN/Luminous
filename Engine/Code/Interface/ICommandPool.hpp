@@ -16,4 +16,10 @@ public:
 	virtual void Destroy() = 0;
 
 
+	virtual VulkanCommandPool* CastVulkan()
+	{
+		std::cout << "Vulkan Device : Wrong cast\n";
+		return nullptr;
+	}
+
 };

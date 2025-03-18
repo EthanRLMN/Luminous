@@ -2,19 +2,24 @@
 
 #define VULKAN
 
+#include "IRender.hpp"
 #include "GLFWInputManager.hpp"
+#include "Rendering/API/Vulkan/VulkanWindow.hpp"
+#include "Rendering/API/Vulkan/VulkanInstance.hpp"
+#include "Rendering/API/Vulkan/VulkanSurface.hpp"
+#include "Rendering/API/Vulkan/VulkanDevice.hpp"
+#include "Rendering/API/Vulkan/VulkanSwapChain.hpp"
+#include "Rendering/API/Vulkan/VulkanRenderPass.hpp"
+#include "Rendering/API/Vulkan/VulkanDescriptions.hpp"
 #include "Rendering/API/Vulkan/VulkanBuffer.hpp"
+#include "Rendering/API/Vulkan/VulkanPipeline.hpp"
 #include "Rendering/API/Vulkan/VulkanCommandPool.hpp"
 #include "Rendering/API/Vulkan/VulkanDepthRessource.hpp"
-#include "Rendering/API/Vulkan/VulkanDescriptor.hpp"
-#include "Rendering/API/Vulkan/VulkanDevice.hpp"
-#include "Rendering/API/Vulkan/VulkanInstance.hpp"
-#include "Rendering/API/Vulkan/VulkanPipeline.hpp"
-#include "Rendering/API/Vulkan/VulkanRenderPass.hpp"
-#include "Rendering/API/Vulkan/VulkanSurface.hpp"
-#include "Rendering/API/Vulkan/VulkanSwapChain.hpp"
+#include "Rendering/API/Vulkan/VulkanFrameBuffer.hpp"
+#include "Rendering/API/Vulkan/VulkanTexture.hpp"
+
+
 #include "Rendering/API/Vulkan/VulkanSynchronisation.hpp"
-#include "Rendering/API/Vulkan/VulkanWindow.hpp"
 
 class VulkanRenderInterface : public IRender
 {
@@ -35,8 +40,8 @@ public:
 	IRenderPass* InstantiateRenderPass() override { return new VulkanRenderPass(); }
 	void DeleteRenderPass(IRenderPass* a_renderpass) override { delete a_renderpass; }
 
-	IDescriptor* InstantiateDescriptor() override { return new VulkanDescriptor(); }
-	void DeleteDescriptor(IDescriptor* a_descriptor) override { delete a_descriptor; }
+	IDescriptions* InstantiateDescriptions() override { return new VulkanDescriptions(); }
+	void DeleteDescriptions(IDescriptions* a_descriptions) override { delete a_descriptions; }
 
 	IPipeline* InstantiatePipeline() override { return new VulkanPipeline(); }
 	void DeletePipeline(IPipeline* a_pipeline) override { delete a_pipeline; }
@@ -46,6 +51,12 @@ public:
 
 	IDepthRessource* InstantiateDepthRessource() override { return new VulkanDepthRessource(); }
 	void DeleteDepthRessource(IDepthRessource* a_depthRessource) override { delete a_depthRessource; }
+
+	IFrameBuffer* InstantiateFrameBuffer() override { return new VulkanFrameBuffer(); }
+	void DeleteFrameBuffer(IFrameBuffer* a_frameBuffer) override { delete a_frameBuffer; }
+
+	ITexture* InstantiateTexture() override { return new VulkanTexture(); }
+	void DeleteTexture(ITexture* a_texture) override { delete a_texture; }
 
 	IBuffer* InstantiateBuffer() override { return new VulkanBuffer(); }
 	void DeleteBuffer(IBuffer* a_buffer) override { delete a_buffer; }

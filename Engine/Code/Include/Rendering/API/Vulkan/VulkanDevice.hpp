@@ -12,30 +12,24 @@ class VulkanDevice : public IDevice
 {
 public:
 	~VulkanDevice() override = default;
-
 	void Create(IInstance* a_instance, IWindow* a_window, ISurface* a_surface) override;
-
 	void Destroy() override;
 	
-	[[nodiscard]] virtual VkDevice GetDevice() const { return m_device; }
+	[[nodiscard]] VkDevice GetDevice() const { return m_device; }
+	[[nodiscard]] VkPhysicalDevice GetPhysicalDevice() const { return m_physicalDevice; }
+	[[nodiscard]] VkQueue GetGraphicsQueue() const { return m_graphicsQueue; }
+	[[nodiscard]] VkQueue GetPresentationQueue() const { return m_presentationQueue; }
+
 
 	VulkanDevice* CastVulkan() override { return this; }
 	
 	void CreateLogicalDevice(VkSurfaceKHR a_surface,VkInstance a_instance);
 	void GetPhysicalDevice(VkInstance a_instance, VkSurfaceKHR a_surface);
-
-	[[nodiscard]] VkPhysicalDevice GetPhysicalDevice() const;
-	[[nodiscard]] VkQueue GetGraphicsQueue() const;
-
 	bool CheckDeviceSuitable(VkPhysicalDevice a_device, VkSurfaceKHR a_surface);
-
 	SwapChainDetails GetSwapChainDetails(VkPhysicalDevice a_device, VkSurfaceKHR a_surface);
-
 	bool CheckDeviceExtensionSupport(VkPhysicalDevice a_device);
-
 	QueueFamilyIndices GetQueueFamilies(VkPhysicalDevice a_device, VkSurfaceKHR a_surface);
 
-	
 
 private :
 	VkDevice m_device{ VK_NULL_HANDLE };

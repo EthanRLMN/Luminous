@@ -1,10 +1,7 @@
 #pragma once
-
 #include "IPipeline.hpp"
 #include <vulkan/vulkan.h>
 #include <vector>
-
-
 
 class VulkanPipeline : public IPipeline
 {
@@ -13,13 +10,11 @@ public:
 	void Destroy() override;
 
 
-	[[nodiscard]] virtual VkPipeline GetInstance() const { return m_graphicsPipeline; }
+	[[nodiscard]] VkPipeline GetInstance() const { return m_graphicsPipeline; }
+	[[nodiscard]] VkPipelineLayout GetPipelineLayout() const { return m_pipelineLayout; };
 
 	VulkanPipeline* CastVulkan() override { return this; }
-	[[nodiscard]] VkPipelineLayout GetPipelineLayout() const;
-
 	VkShaderModule CreateShaderModule(VkDevice a_device, const std::vector<char>& a_code);
-
 
 private:
 

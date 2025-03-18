@@ -20,4 +20,9 @@ void VulkanCommandPool::Destroy()
 {
 }
 
+VkCommandPool VulkanCommandPool::GetCommandPool() const
+{
+	return m_graphicsCommandPool;
+}
+
 

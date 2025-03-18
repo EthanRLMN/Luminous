@@ -50,14 +50,14 @@ void VulkanSwapChain::Create(IWindow* a_window, IDevice* a_device,ISurface* a_su
 	l_swapChainCreateInfo.clipped = VK_TRUE;
 	l_swapChainCreateInfo.oldSwapchain = VK_NULL_HANDLE;
 
-	VkResult result = vkCreateSwapchainKHR(a_device->CastVulkan()->GetDevice(), &l_swapChainCreateInfo, nullptr, &m_swapchain);
+	VkResult result = vkCreateSwapchainKHR(a_device->CastVulkan()->GetDevice(), &l_swapChainCreateInfo, nullptr, &m_swapChain);
 	if (result != VK_SUCCESS) {
 		throw std::runtime_error("Failed to create a SwapChain");
 	}
 
-	vkGetSwapchainImagesKHR(a_device->CastVulkan()->GetDevice(), m_swapchain, &l_imageCount, nullptr);
+	vkGetSwapchainImagesKHR(a_device->CastVulkan()->GetDevice(), m_swapChain, &l_imageCount, nullptr);
 	swapChainImages.resize(l_imageCount);
-	vkGetSwapchainImagesKHR(a_device->CastVulkan()->GetDevice(), m_swapchain, &l_imageCount, swapChainImages.data());
+	vkGetSwapchainImagesKHR(a_device->CastVulkan()->GetDevice(), m_swapChain, &l_imageCount, swapChainImages.data());
 	swapChainImageFormat = l_surfaceFormat.format;
 	swapChainExtent = l_extent;
 
@@ -73,16 +73,6 @@ void VulkanSwapChain::Destroy(IDevice* a_device)
 	std::cout << "DestroySwapChain\n";
 }
 
-
-VkFormat VulkanSwapChain::GetSwapChainImageFormat() const
-{
-	return swapChainImageFormat;
-}
-
-VkExtent2D VulkanSwapChain::GetSwapChainExtent() const
-{
-	return swapChainExtent;
-}
 
 SwapChainDetails VulkanSwapChain::GetSwapChainDetails(VkPhysicalDevice a_device , VkSurfaceKHR a_surface)
 {
