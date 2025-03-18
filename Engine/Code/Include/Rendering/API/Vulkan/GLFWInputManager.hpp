@@ -27,7 +27,7 @@ public:
     LUMINOUS_ENGINE_API void SetCursorPosition(IWindow* a_window, Maths::Vector2 a_pos) override;
 
     LUMINOUS_ENGINE_API Maths::Vector2 GetMouseScroll() override;
-    LUMINOUS_ENGINE_API void SetMouseScroll(Maths::Vector2 a_vec) = 0;
+    LUMINOUS_ENGINE_API void SetMouseScroll(Maths::Vector2 a_vec) override {};
 
     LUMINOUS_ENGINE_API GLFWInputManager* CastGLFW() override { return this; }
 
