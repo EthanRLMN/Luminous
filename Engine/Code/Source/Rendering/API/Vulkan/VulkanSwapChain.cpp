@@ -1,6 +1,7 @@
+#include "IWindow.hpp"
+
 #include "Rendering/API/Vulkan/VulkanSwapChain.hpp"
 #include "Rendering/API/Vulkan/VulkanDevice.hpp"
-#include "../Interface/IWindow.hpp"
 #include "Rendering/API/Vulkan/VulkanWindow.hpp"
 
 void VulkanSwapChain::Create(IWindow* a_window, IDevice* a_device, ISurface* a_surface)
@@ -64,19 +65,21 @@ void VulkanSwapChain::Create(IWindow* a_window, IDevice* a_device, ISurface* a_s
 		throw std::runtime_error("Failed to create a SwapChain");
 
 	vkGetSwapchainImagesKHR(l_vkDevice, m_swapChain, &l_imageCount, nullptr);
-	swapChainImages.resize(l_imageCount);
+	m_swapChainImages.resize(l_imageCount);
 
-	vkGetSwapchainImagesKHR(l_vkDevice, m_swapChain, &l_imageCount, swapChainImages.data());
-	swapChainImageFormat = l_surfaceFormat.format;
-	swapChainExtent = l_extent;
+	vkGetSwapchainImagesKHR(l_vkDevice, m_swapChain, &l_imageCount, m_swapChainImages.data());
+	m_swapChainImageFormat = l_surfaceFormat.format;
+	m_swapChainExtent = l_extent;
 
-	swapChainImageViews.resize(swapChainImages.size());
+	m_swapChainImageViews.resize(m_swapChainImages.size());
 
-	for (uint32_t i = 0; i < swapChainImages.size(); ++i)
+	for (uint32_t i = 0; i < m_swapChainImages.size(); ++i)
 	{
-		swapChainImageViews[i] = CreateImageView(swapChainImages[i], l_vkDevice,
-		                                         swapChainImageFormat, VK_IMAGE_ASPECT_COLOR_BIT);
+		m_swapChainImageViews[i] = CreateImageView(m_swapChainImages[i], l_vkDevice, m_swapChainImageFormat, VK_IMAGE_ASPECT_COLOR_BIT);
 	}
+
+	std::cout << "Images Size : " << m_swapChainImages.size() << std::endl;
+	std::cout << "Image Views Size : " << m_swapChainImageViews.size() << std::endl;
 }
 
 void VulkanSwapChain::Destroy(IDevice* a_device)
@@ -186,6 +189,11 @@ VkExtent2D VulkanSwapChain::ChooseSwapExtend(const VkSurfaceCapabilitiesKHR& a_s
 	                             std::min(a_surfaceCapabilities.maxImageExtent.height, l_newExtend.height));
 
 	return l_newExtend;
+}
+
+void VulkanSwapChain::SetSwapChainFrameBufferSize(const size_t a_size)
+{
+	m_swapChainFrameBuffers.resize(a_size);
 }
 
 VkImageView VulkanSwapChain::CreateImageView(const VkImage a_image, const VkDevice a_device, const VkFormat a_format,

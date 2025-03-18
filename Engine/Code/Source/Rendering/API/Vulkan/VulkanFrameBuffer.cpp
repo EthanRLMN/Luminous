@@ -8,10 +8,9 @@
 void VulkanFrameBuffer::Create(IDevice* a_device, ISwapChain* a_swapChain, IRenderPass* a_renderPass,
                                IDepthResource* a_depthResource)
 {
+	a_swapChain->CastVulkan()->SetSwapChainFrameBufferSize(a_swapChain->CastVulkan()->GetSwapChainImageViews().size());
+
 	const VulkanSwapChain* l_vulkanSwapChain = a_swapChain->CastVulkan();
-
-	l_vulkanSwapChain->GetSwapChainFrameBuffers().resize(l_vulkanSwapChain->GetSwapChainImageViews().size());
-
 	for (size_t i = 0; i < l_vulkanSwapChain->GetSwapChainImageViews().size(); ++i)
 	{
 		std::array<VkImageView, 2> l_attachments = {
@@ -28,10 +27,8 @@ void VulkanFrameBuffer::Create(IDevice* a_device, ISwapChain* a_swapChain, IRend
 		l_framebufferCreateInfo.height = l_vulkanSwapChain->GetSwapChainExtent().height;
 		l_framebufferCreateInfo.layers = 1;
 
-		if (const VkResult l_result = vkCreateFramebuffer(a_device->CastVulkan()->GetDevice(), &l_framebufferCreateInfo,
-		                                                  nullptr,
-		                                                  &l_vulkanSwapChain->GetSwapChainFrameBuffers()[i]);
-			l_result != VK_SUCCESS)
+		const VkResult l_result = vkCreateFramebuffer(a_device->CastVulkan()->GetDevice(), &l_framebufferCreateInfo, nullptr, &l_vulkanSwapChain->GetSwapChainFrameBuffers()[i]);;
+		if (l_result != VK_SUCCESS)
 			throw std::runtime_error("Failed to create framebuffer");
 	}
 }
