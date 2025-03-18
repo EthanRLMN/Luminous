@@ -189,12 +189,6 @@ void VulkanPipeline::Destroy()
 	std::cout << "Destroy Graphic Pipeline\n";
 }
 
-
-VkPipelineLayout VulkanPipeline::GetPipelineLayout() const
-{
-	return m_pipelineLayout;
-}
-
 VkShaderModule VulkanPipeline::CreateShaderModule(VkDevice a_device, const std::vector<char>& a_code)
 {
 	VkShaderModuleCreateInfo l_shaderModuleCreateInfo = {};

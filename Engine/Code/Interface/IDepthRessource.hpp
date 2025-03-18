@@ -2,6 +2,7 @@
 #include <iostream>
 
 class VulkanDepthRessource;
+
 class IDevice;
 class ISwapChain;
 class IRenderPass;

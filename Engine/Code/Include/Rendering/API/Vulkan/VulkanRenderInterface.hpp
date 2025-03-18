@@ -16,6 +16,7 @@
 #include "Rendering/API/Vulkan/VulkanCommandPool.hpp"
 #include "Rendering/API/Vulkan/VulkanDepthRessource.hpp"
 #include "Rendering/API/Vulkan/VulkanFrameBuffer.hpp"
+#include "Rendering/API/Vulkan/VulkanTexture.hpp"
 
 
 #include "Rendering/API/Vulkan/VulkanSynchronisation.hpp"
@@ -53,6 +54,9 @@ public:
 
 	IFrameBuffer* InstantiateFrameBuffer() override { return new VulkanFrameBuffer(); }
 	void DeleteFrameBuffer(IFrameBuffer* a_frameBuffer) override { delete a_frameBuffer; }
+
+	ITexture* InstantiateTexture() override { return new VulkanTexture(); }
+	void DeleteTexture(ITexture* a_texture) override { delete a_texture; }
 
 	IBuffer* InstantiateBuffer() override { return new VulkanBuffer(); }
 	void DeleteBuffer(IBuffer* a_buffer) override { delete a_buffer; }

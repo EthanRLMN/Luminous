@@ -14,7 +14,7 @@ public:
 	void Create(IDevice* a_device, ISwapChain* a_swapChain, IRenderPass* a_renderPass, IDepthRessource* a_depthRessource) override;
 	void Destroy() override;
 
-	
+	VulkanFrameBuffer* CastVulkan() override { return this; }
 
 private:
 };

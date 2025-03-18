@@ -11,6 +11,7 @@
 #include "ICommandPool.hpp"
 #include "IDepthRessource.hpp"
 #include "IFrameBuffer.hpp"
+#include "ITexture.hpp"
 #include "IBuffer.hpp"
 #include "IInputManager.hpp"
 #include "ISynchronisation.hpp"
@@ -30,7 +31,7 @@ public:
 	virtual ICommandPool* InstantiateCommandPool() = 0;
 	virtual IDepthRessource* InstantiateDepthRessource() = 0;
 	virtual IFrameBuffer* InstantiateFrameBuffer() = 0;
-	//texture
+	virtual ITexture* InstantiateTexture() = 0;
 	//loadmodel
 	virtual IBuffer* InstantiateBuffer() = 0;
 	//descriptor
@@ -48,6 +49,7 @@ public:
 	virtual void DeleteCommandPool(ICommandPool* a_commandPool) { delete a_commandPool; }
 	virtual void DeleteDepthRessource(IDepthRessource* a_depthRessource) { delete a_depthRessource; }
 	virtual void DeleteFrameBuffer(IFrameBuffer* a_frameBuffer) { delete a_frameBuffer; }
+	virtual void DeleteTexture(ITexture* a_texture) { delete a_texture; }
 	virtual void DeleteBuffer(IBuffer* a_buffer) { delete a_buffer; }
 	virtual void DeleteSynchronisation(ISynchronisation* a_synchronisation) { delete a_synchronisation; }
 	virtual void DeleteWindow(IWindow* a_window) { delete a_window; }

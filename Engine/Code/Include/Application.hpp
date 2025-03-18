@@ -31,7 +31,7 @@ private:
 	ICommandPool* m_commandPool{ nullptr };
 	IDepthRessource* m_depthRessource{ nullptr };
 	IFrameBuffer* m_frameBuffer{ nullptr };
-
+	ITexture* m_texture{ nullptr };
 
 
 	IBuffer* m_buffer { nullptr };

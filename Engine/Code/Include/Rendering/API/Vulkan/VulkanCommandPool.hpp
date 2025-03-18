@@ -16,11 +16,10 @@ public:
 	void Create(IDevice* a_device , ISurface* a_surface) override;
 	void Destroy() override;
 
-	virtual VulkanCommandPool* CastVulkan()
-	{
-		std::cout << "Wrong cast\n";
-		return nullptr;
-	}
+	VulkanCommandPool* CastVulkan() override { return this; }
+
+	[[nodiscard]] VkCommandPool GetCommandPool() const;
+
 private:
 	VkCommandPool m_graphicsCommandPool{ VK_NULL_HANDLE };
 };

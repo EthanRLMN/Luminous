@@ -94,18 +94,6 @@ void VulkanDevice::GetPhysicalDevice(const VkInstance a_instance, const VkSurfac
 }
 
 
-
-
-VkPhysicalDevice VulkanDevice::GetPhysicalDevice() const
-{
-	return m_physicalDevice;
-}
-
-VkQueue VulkanDevice::GetGraphicsQueue() const
-{
-	return m_graphicsQueue;
-}
-
 bool VulkanDevice::CheckDeviceSuitable(VkPhysicalDevice a_device, VkSurfaceKHR a_surface)
 {
 	VkPhysicalDeviceProperties l_deviceProperties;
