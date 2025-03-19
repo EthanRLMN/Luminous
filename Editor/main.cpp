@@ -8,22 +8,22 @@ void Destroy()
 {
     /*ImGui_ImplVulkan_Shutdown();
     ImGui_ImplGlfw_Shutdown();*/
-    ImGui::DestroyContext();
+    //ImGui::DestroyContext();
 }
 
 int main()
 {
-    const Application* l_application = new Application();
-    l_application->Run();
+    const Application l_application;
+    l_application.Run();
 
     IMGUI_CHECKVERSION();
 
-    ImGui::CreateContext();
-    ImGuiIO& io = ImGui::GetIO();
+    //ImGui::CreateContext();
+    //ImGuiIO& io = ImGui::GetIO();
     /*ImGui_ImplGlfw_InitForVulkan(l_application->GetWindow()->CastVulkan()->GetGLFWWindow(), true);*/
 
-    io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;     // Enable Keyboard Controls
-    io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;         // IF using Docking Branch
+    //io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;     // Enable Keyboard Controls
+    //io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;         // IF using Docking Branch
 
     // Setup Platform/Renderer backends
     /*ImGui_ImplVulkan_InitInfo l_vulkanInfo{};
@@ -33,21 +33,19 @@ int main()
 
     //ImGui::ShowDemoWindow(); // Show demo window! :)
 
-    while (!l_application->GetWindow()->ShouldClose())
+    while (!l_application.GetWindow()->ShouldClose())
     {
         // Poll events before doing anything else
         /*glfwPollEvents();
 
         ImGui_ImplVulkan_NewFrame();
         ImGui_ImplGlfw_NewFrame();*/
-        ImGui::NewFrame();
+        //ImGui::NewFrame();
 
         // Handle rendering
-        ImGui::Render();
+        //ImGui::Render();
         //ImGui_ImplVulkan_RenderDrawData(ImGui::GetDrawData(), l_application.GetCo);
     }
-
-    getchar();
 
     //Destroy();
     return 0;

@@ -11,14 +11,12 @@ void VulkanWindow::Initialize(const std::string& a_name, const int a_width, cons
     if (glfwVulkanSupported())
         DEBUG_LOG_INFO("Vulkan Window : GLFW Vulkan Support enabled!\n");
 
-    try
-    {
-        m_window = glfwCreateWindow(a_width, a_height, a_name.c_str(), nullptr, nullptr);
+    m_window = glfwCreateWindow(a_width, a_height, a_name.c_str(), nullptr, nullptr);
+
+    if (m_window)
         DEBUG_LOG_INFO("Vulkan Window : Creation successful!\n");
-    } catch (std::exception& ex)
-    {
+    else
         DEBUG_LOG_ERROR("Vulkan Window : Creation failed!\n");
-    }
 }
 
 void VulkanWindow::Update() const
