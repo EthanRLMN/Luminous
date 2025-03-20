@@ -9,6 +9,7 @@
 #include "GLFW/../../../Libs/assimp/include/assimp/Importer.hpp"
 #include "GLFW/../../../Libs/assimp/include/assimp/scene.h"
 #include "GLFW/../../../Libs/assimp/include/assimp/postprocess.h"
+#include "GLFW/../../../Libs/assimp/include/assimp/BaseImporter.h"
 
 class LUMINOUS_ENGINE_API IModelLoader
 {

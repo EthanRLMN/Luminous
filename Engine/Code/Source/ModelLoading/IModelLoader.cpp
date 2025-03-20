@@ -8,7 +8,19 @@ void IModelLoader::LoadModel(const char* a_file)
 		// print the current working directory
 		std::cout << "Current working directory: " << buffer << '\n';
 	}
-	const aiScene* scene = importer.ReadFile("/Assets/Models/sphere.obj", aiProcess_CalcTangentSpace | aiProcess_Triangulate | aiProcess_JoinIdenticalVertices | aiProcess_SortByPType);
+	const aiScene* scene = importer.ReadFile("cube.obj",
+		aiProcess_CalcTangentSpace |
+		aiProcess_Triangulate |
+		aiProcess_JoinIdenticalVertices |
+		aiProcess_SortByPType);
+
+	if (!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode) // if is Not Zero
+	{
+		std::cout << "\tERROR::ASSIMP: " << importer.GetErrorString() << std::endl;
+		return;
+	}
+
+
 
 	if (scene != nullptr)
 	{
