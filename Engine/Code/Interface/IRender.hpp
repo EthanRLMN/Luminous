@@ -14,6 +14,7 @@
 #include "ISwapChain.hpp"
 #include "ISynchronization.hpp"
 #include "ITexture.hpp"
+#include "IModel.hpp"
 #include "IWindow.hpp"
 
 class IRender
@@ -32,7 +33,7 @@ public:
 	virtual IDepthResource* InstantiateDepthResource() = 0;
 	virtual IFrameBuffer* InstantiateFrameBuffer() = 0;
 	virtual ITexture* InstantiateTexture() = 0;
-	//loadmodel
+	virtual IModel* InstantiateModel() = 0;
 	virtual IBuffer* InstantiateBuffer() = 0;
 	//descriptor
 	virtual ISynchronization* InstantiateSynchronization() = 0;
@@ -50,6 +51,7 @@ public:
 	virtual void DeleteDepthResource(IDepthResource* a_depthResource) { delete a_depthResource; }
 	virtual void DeleteFrameBuffer(IFrameBuffer* a_frameBuffer) { delete a_frameBuffer; }
 	virtual void DeleteTexture(ITexture* a_texture) { delete a_texture; }
+	virtual void DeleteModel(IModel* a_model) { delete a_model; }
 	virtual void DeleteBuffer(IBuffer* a_buffer) { delete a_buffer; }
 	virtual void DeleteSynchronization(ISynchronization* a_synchronization) { delete a_synchronization; }
 	virtual void DeleteWindow(IWindow* a_window) { delete a_window; }

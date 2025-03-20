@@ -48,6 +48,11 @@ Application::Application()
 	m_texture = m_interface->InstantiateTexture();
 	m_texture->Create(m_device, m_swapChain, m_depthResource, m_commandPool);
 
+	m_model = m_interface->InstantiateModel();
+	m_model->Create();
+
+
+
 	/*
 
 	m_buffer = m_interface->InstantiateBuffer();
