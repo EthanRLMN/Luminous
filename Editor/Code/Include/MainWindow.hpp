@@ -8,5 +8,19 @@ public:
     MainWindow() = default;
     ~MainWindow() = default;
 
-    void SetupImGUIContext(Window a_window);
+    void Open()
+    {
+        isOpen = true;
+    }
+
+    void Close()
+    {
+        isOpen = false;
+    }
+    void Draw();
+
+    //void SetupImGUIContext(Window a_window);
+
+private:
+    bool isOpen = true;
 };

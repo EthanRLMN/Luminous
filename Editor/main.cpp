@@ -1,5 +1,6 @@
 #include "Application.hpp"
 #include "imgui.h"
+#include "MainWindow.hpp"
 /*#include "backends/imgui_impl_glfw.h"
 #include "backends/imgui_impl_vulkan.h"
 #include "Rendering/API/Vulkan/VulkanWindow.hpp"*/
@@ -13,6 +14,7 @@ void Destroy()
 
 int main()
 {
+    MainWindow mainWindow;
     const Application l_application;
     l_application.Run();
 
@@ -32,6 +34,7 @@ int main()
     ImGui_ImplVulkan_Init(&l_vulkanInfo);*/
 
     //ImGui::ShowDemoWindow(); // Show demo window! :)
+    //mainWindow.Open();
 
     while (!l_application.GetWindow()->ShouldClose())
     {
@@ -45,6 +48,7 @@ int main()
         // Handle rendering
         //ImGui::Render();
         //ImGui_ImplVulkan_RenderDrawData(ImGui::GetDrawData(), l_application.GetCo);
+        //mainWindow.Draw();
     }
 
     //Destroy();
