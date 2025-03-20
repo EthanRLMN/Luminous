@@ -2,10 +2,10 @@
 
 void MainWindow::Draw()
 {
-    auto* ioUserData = ImGui::GetIO().UserData;
     ImGui::PushStyleColor(ImGuiCol_WindowBg, 0xff323432);
     ImGui::SetNextWindowSize({ 640, 480 }, ImGuiCond_FirstUseEver);
-    if (isOpen && ImGui::Begin("Luminous###LuminousUI", &isOpen, ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_MenuBar))
+
+    if (m_isOpen && ImGui::Begin("Luminous###LuminousUI", &m_isOpen, ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_MenuBar))
     {
         // TODO: Add Draw calls of dependent popup windows here
         if (ImGui::BeginMenuBar())
@@ -99,30 +99,25 @@ void MainWindow::Draw()
             ImGui::TableSetupColumn("spacing2", ImGuiTableColumnFlags_WidthFixed, 8);
             ImGui::TableSetupColumn("item3", ImGuiTableColumnFlags_WidthStretch, 0);
             ImGui::TableNextRow(0, 0);
+
             ImGui::TableSetColumnIndex(0);
-            
+            ImGui::BeginChild("child1", { -1, 255 }, true);
+            ImGui::EndChild();
 
-            ImGui::BeginChild("child1", { -1, 255 }, ImGuiChildFlags_Border | ImGuiChildFlags_AlwaysUseWindowPadding | ImGuiChildFlags_NavFlattened, ImGuiWindowFlags_NoSavedSettings);
-            {               
-                ImGui::EndChild();
-            }
+            ImGui::TableNextColumn();
+            ImGui::BeginChild("child2", { -1, 255 }, true);
+            ImGui::EndChild();
 
-            ImGui::BeginChild("child2", { -1, 255 }, ImGuiChildFlags_Border | ImGuiChildFlags_AlwaysUseWindowPadding | ImGuiChildFlags_NavFlattened, ImGuiWindowFlags_NoSavedSettings);
-            {
-                ImGui::EndChild();
-            }
+            ImGui::TableNextColumn();
+            ImGui::BeginChild("child3", { -1, 255 }, true);
+            ImGui::EndChild();
 
-            ImGui::BeginChild("child3", { -1, 255 }, ImGuiChildFlags_Border | ImGuiChildFlags_AlwaysUseWindowPadding | ImGuiChildFlags_NavFlattened, ImGuiWindowFlags_NoSavedSettings);
-            {
-                ImGui::EndChild();
-            }
             ImGui::EndTable();
         }
 
-        ImGui::BeginChild("child5", { -1, 255 }, ImGuiChildFlags_Border | ImGuiChildFlags_AlwaysUseWindowPadding | ImGuiChildFlags_NavFlattened, ImGuiWindowFlags_NoSavedSettings);
-        {
-            ImGui::EndChild();
-        }
+        ImGui::BeginChild("child4", { -1, 255 }, true);
+        ImGui::EndChild();
+
         ImGui::End();
     }
     ImGui::PopStyleColor();

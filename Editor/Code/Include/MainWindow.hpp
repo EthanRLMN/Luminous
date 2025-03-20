@@ -10,17 +10,17 @@ public:
 
     void Open()
     {
-        isOpen = true;
+        m_isOpen = true;
     }
 
     void Close()
     {
-        isOpen = false;
+        m_isOpen = false;
     }
     void Draw();
 
     //void SetupImGUIContext(Window a_window);
 
 private:
-    bool isOpen = true;
+    bool m_isOpen = true;
 };
