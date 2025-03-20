@@ -51,6 +51,9 @@ Application::Application()
 	m_model = m_interface->InstantiateModel();
 	m_model->Create();
 
+	m_buffer = m_interface->InstantiateBuffer();
+	m_buffer->Create(m_device,m_texture,m_commandPool,m_depthResource);
+
 
 
 	/*
