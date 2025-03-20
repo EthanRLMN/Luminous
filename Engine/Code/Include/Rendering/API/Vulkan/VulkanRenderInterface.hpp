@@ -24,52 +24,52 @@ class VulkanRenderInterface final : public IRender
 {
 public:
 #ifdef VULKAN
-	IInstance* InstantiateContext() override { return new VulkanInstance(); }
+	inline IInstance* InstantiateContext() override { return new VulkanInstance(); }
 	void DeleteContext(IInstance* a_instance) override { delete a_instance; }
 
-	ISurface* InstantiateSurface() override { return new VulkanSurface(); }
+	inline ISurface* InstantiateSurface() override { return new VulkanSurface(); }
 	void DeleteSurface(ISurface* a_surface) override { delete a_surface; }
 
-	IDevice* InstantiateDevice() override { return new VulkanDevice(); }
+	inline IDevice* InstantiateDevice() override { return new VulkanDevice(); }
 	void DeleteDevice(IDevice* a_device) override { delete a_device; }
 
-	ISwapChain* InstantiateSwapChain() override { return new VulkanSwapChain(); }
+	inline ISwapChain* InstantiateSwapChain() override { return new VulkanSwapChain(); }
 	void DeleteSwapChain(ISwapChain* a_swapChain) override { delete a_swapChain; }
 
-	IRenderPass* InstantiateRenderPass() override { return new VulkanRenderPass(); }
+	inline IRenderPass* InstantiateRenderPass() override { return new VulkanRenderPass(); }
 	void DeleteRenderPass(IRenderPass* a_renderPass) override { delete a_renderPass; }
 
-	IDescriptor* InstantiateDescriptor() override { return new VulkanDescriptor(); }
+	inline IDescriptor* InstantiateDescriptor() override { return new VulkanDescriptor(); }
 	void DeleteDescriptor(IDescriptor* a_descriptor) override { delete a_descriptor; }
 
-	IPipeline* InstantiatePipeline() override { return new VulkanPipeline(); }
+	inline IPipeline* InstantiatePipeline() override { return new VulkanPipeline(); }
 	void DeletePipeline(IPipeline* a_pipeline) override { delete a_pipeline; }
 
-	ICommandPool* InstantiateCommandPool() override { return new VulkanCommandPool(); }
+	inline ICommandPool* InstantiateCommandPool() override { return new VulkanCommandPool(); }
 	void DeleteCommandPool(ICommandPool* a_commandPool) override { delete a_commandPool; }
 
-	IDepthResource* InstantiateDepthResource() override { return new VulkanDepthResource(); }
+	inline IDepthResource* InstantiateDepthResource() override { return new VulkanDepthResource(); }
 	void DeleteDepthResource(IDepthResource* a_depthResource) override { delete a_depthResource; }
 
-	IFrameBuffer* InstantiateFrameBuffer() override { return new VulkanFrameBuffer(); }
+	inline IFrameBuffer* InstantiateFrameBuffer() override { return new VulkanFrameBuffer(); }
 	void DeleteFrameBuffer(IFrameBuffer* a_frameBuffer) override { delete a_frameBuffer; }
 
-	ITexture* InstantiateTexture() override { return new VulkanTexture(); }
+	inline ITexture* InstantiateTexture() override { return new VulkanTexture(); }
 	void DeleteTexture(ITexture* a_texture) override { delete a_texture; }
 
-	IModel* InstantiateModel() override { return new VulkanModel(); }
+	inline IModel* InstantiateModel() override { return new VulkanModel(); }
 	void DeleteModel(IModel* a_model) override { delete a_model; }
 
-	IBuffer* InstantiateBuffer() override { return new VulkanBuffer(); }
+	inline IBuffer* InstantiateBuffer() override { return new VulkanBuffer(); }
 	void DeleteBuffer(IBuffer* a_buffer) override { delete a_buffer; }
 
-	ISynchronization* InstantiateSynchronization() override { return new VulkanSynchronization(); }
+	inline ISynchronization* InstantiateSynchronization() override { return new VulkanSynchronization(); }
 	void DeleteSynchronization(ISynchronization* a_synchronization) override { delete a_synchronization; }
 
-	IWindow* InstantiateWindow() override { return new VulkanWindow(); }
+	inline IWindow* InstantiateWindow() override { return new VulkanWindow(); }
 	void DeleteWindow(IWindow* a_window) override { delete a_window; }
 
-	IInputManager* InstantiateInputManager() override { return new GLFWInputManager(); }
+	inline IInputManager* InstantiateInputManager() override { return new GLFWInputManager(); }
 	void DeleteInputManager(IInputManager* a_inputManager) override { delete a_inputManager; }
 
 #endif // VULKAN
