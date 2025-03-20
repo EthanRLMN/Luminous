@@ -5,6 +5,7 @@
 #include "IBuffer.hpp"
 #include "IRender.hpp"
 #include "ISynchronization.hpp"
+#include "ModelLoading/IModelLoader.hpp"
 
 class VulkanRenderInterface;
 
