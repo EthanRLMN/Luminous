@@ -3,7 +3,7 @@
 void MainWindow::Draw()
 {
     ImGui::PushStyleColor(ImGuiCol_WindowBg, 0xff323432);
-    ImGui::SetNextWindowSize({ 640, 480 }, ImGuiCond_FirstUseEver);
+    ImGui::SetNextWindowSize({ 1920, 1080 }, ImGuiCond_FirstUseEver);
 
     if (m_isOpen && ImGui::Begin("Luminous###LuminousUI", &m_isOpen, ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_MenuBar))
     {
@@ -101,22 +101,18 @@ void MainWindow::Draw()
             ImGui::TableNextRow(0, 0);
 
             ImGui::TableSetColumnIndex(0);
-            ImGui::BeginChild("child1", { -1, 255 }, true);
-            ImGui::EndChild();
+            ImGui::Begin("tab1", { -1, 255 }, true);
+            ImGui::End();
 
             ImGui::TableNextColumn();
-            ImGui::BeginChild("child2", { -1, 255 }, true);
-            ImGui::EndChild();
-
-            ImGui::TableNextColumn();
-            ImGui::BeginChild("child3", { -1, 255 }, true);
-            ImGui::EndChild();
+            ImGui::Begin("tab2", { -1, 255 }, true);
+            ImGui::End();
 
             ImGui::EndTable();
         }
 
-        ImGui::BeginChild("child4", { -1, 255 }, true);
-        ImGui::EndChild();
+        ImGui::Begin("tab2", { -1, -1 }, true);
+        ImGui::End();
 
         ImGui::End();
     }
