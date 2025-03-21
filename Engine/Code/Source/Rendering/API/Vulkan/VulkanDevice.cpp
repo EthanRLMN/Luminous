@@ -1,5 +1,6 @@
 #include "Rendering/API/Vulkan/VulkanDevice.hpp"
 
+#include <iostream>
 #include <set>
 #include <vector>
 
@@ -28,7 +29,7 @@ void VulkanDevice::CreateLogicalDevice(const VkSurfaceKHR a_surface, VkInstance 
 {
 	QueueFamilyIndices l_indices = GetQueueFamilies(m_physicalDevice, a_surface);
 
-	std::vector<VkDeviceQueueCreateInfo> l_queueCreateInfos;
+	std::vector<VkDeviceQueueCreateInfo> l_queueCreateInfos{};
 	std::set<int> l_queueFamilyIndices = {l_indices.graphicsFamily, l_indices.presentationFamily};
 
 
@@ -75,11 +76,10 @@ void VulkanDevice::GetPhysicalDevice(const VkInstance a_instance, const VkSurfac
 	uint32_t l_deviceCount = 0;
 	vkEnumeratePhysicalDevices(a_instance, &l_deviceCount, nullptr);
 
-
 	if (l_deviceCount == 0)
 		throw std::runtime_error("can't find GPUs that support Vulkan Instance");
 
-	std::vector<VkPhysicalDevice> l_deviceList(l_deviceCount);
+	std::vector<VkPhysicalDevice> l_deviceList{l_deviceCount};
 	vkEnumeratePhysicalDevices(a_instance, &l_deviceCount, l_deviceList.data());
 
 	for (const VkPhysicalDevice& l_device: l_deviceList)
@@ -181,7 +181,7 @@ QueueFamilyIndices VulkanDevice::GetQueueFamilies(const VkPhysicalDevice a_devic
 	uint32_t l_queueFamilyCount = 0;
 	vkGetPhysicalDeviceQueueFamilyProperties(a_device, &l_queueFamilyCount, nullptr);
 
-	std::vector<VkQueueFamilyProperties> l_queueFamilyList(l_queueFamilyCount);
+	std::vector<VkQueueFamilyProperties> l_queueFamilyList { l_queueFamilyCount };
 
 	vkGetPhysicalDeviceQueueFamilyProperties(a_device, &l_queueFamilyCount, l_queueFamilyList.data());
 

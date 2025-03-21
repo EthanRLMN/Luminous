@@ -7,8 +7,8 @@
 
 struct QueueFamilyIndices
 {
-	int graphicsFamily{-1}; //location of graphics Queue Family
-	int presentationFamily{-1}; //presentation queue family
+	int graphicsFamily{0}; //location of graphics Queue Family
+	int presentationFamily{0}; //presentation queue family
 
 	//check if queue families are valid
 	[[nodiscard]] bool IsValid() const

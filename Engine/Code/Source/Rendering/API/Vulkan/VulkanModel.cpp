@@ -10,14 +10,18 @@ void VulkanModel::Create()
 	std::vector<tinyobj::material_t> materials;
 	std::string warn, err;
 
-	if (!tinyobj::LoadObj(&attrib, &shapes, &materials, &warn, &err, MODEL_PATH.c_str())) {
-		throw std::runtime_error(warn + err);
+	if (!LoadObj(&attrib, &shapes, &materials, &warn, &err, MODEL_PATH.c_str()))
+	{
+		DEBUG_LOG_ERROR("{}{}", warn, err);
+		return;
 	}
 
 	std::unordered_map<Vertex, uint32_t, VertexHasher> uniqueVertices{};
 
-	for (const auto& shape : shapes) {
-		for (const auto& index : shape.mesh.indices) {
+	for (const auto& shape : shapes)
+	{
+		for (const auto& index : shape.mesh.indices)
+		{
 			Vertex vertex{};
 
 			vertex.pos = {
@@ -31,9 +35,10 @@ void VulkanModel::Create()
 				1.0f - attrib.texcoords[2 * index.texcoord_index + 1]
 			};
 
-			vertex.color = { 1.0f, 1.0f, 1.0f };
+			vertex.color = {1.0f, 1.0f, 1.0f};
 
-			if (uniqueVertices.count(vertex) == 0) {
+			if (!uniqueVertices.contains(vertex))
+			{
 				uniqueVertices[vertex] = static_cast<uint32_t>(vertices.size());
 				vertices.push_back(vertex);
 			}
