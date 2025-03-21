@@ -6,10 +6,9 @@
 
 void VulkanSynchronization::Create(IDevice* a_device)
 {
-	/*
-	imageAvailableSemaphores.resize(MAX_FRAMES_IN_FLIGHT);
-	renderFinishedSemaphores.resize(MAX_FRAMES_IN_FLIGHT);
-	fences.resize(MAX_FRAMES_IN_FLIGHT);
+	m_imageAvailableSemaphores.resize(MAX_FRAMES_IN_FLIGHT);
+	m_renderFinishedSemaphores.resize(MAX_FRAMES_IN_FLIGHT);
+	m_fences.resize(MAX_FRAMES_IN_FLIGHT);
 
 	VkSemaphoreCreateInfo l_semaphoreInfo{};
 	l_semaphoreInfo.sType = VK_STRUCTURE_TYPE_SEMAPHORE_CREATE_INFO;
@@ -19,13 +18,13 @@ void VulkanSynchronization::Create(IDevice* a_device)
 	l_fenceInfo.flags = VK_FENCE_CREATE_SIGNALED_BIT;
 
 	for (size_t i = 0; i < MAX_FRAMES_IN_FLIGHT; ++i) {
-		if (vkCreateSemaphore(mainDevice.logicalDevice, &l_semaphoreInfo, nullptr, &imageAvailableSemaphores[i]) != VK_SUCCESS ||
-			vkCreateSemaphore(mainDevice.logicalDevice, &l_semaphoreInfo, nullptr, &renderFinishedSemaphores[i]) != VK_SUCCESS ||
-			vkCreateFence(mainDevice.logicalDevice, &l_fenceInfo, nullptr, &fences[i]) != VK_SUCCESS) {
+		if (vkCreateSemaphore(a_device->CastVulkan()->GetDevice(), &l_semaphoreInfo, nullptr, &m_imageAvailableSemaphores[i]) != VK_SUCCESS ||
+			vkCreateSemaphore(a_device->CastVulkan()->GetDevice(), &l_semaphoreInfo, nullptr, &m_renderFinishedSemaphores[i]) != VK_SUCCESS ||
+			vkCreateFence(a_device->CastVulkan()->GetDevice(), &l_fenceInfo, nullptr, &m_fences[i]) != VK_SUCCESS) {
 			std::cout << "failed to create synchronization objects for a frame";
 		}
 	}
-	DEBUG_LOG_INFO("Vulkan Synchronization : Synchronization created!\n");*/
+	DEBUG_LOG_INFO("Vulkan Synchronization : Synchronization created!\n");
 }
 
 void VulkanSynchronization::Destroy()
