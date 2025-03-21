@@ -1,9 +1,9 @@
 #include "Rendering/API/Vulkan/VulkanDescriptor.hpp"
 
-void VulkanDescriptor::Create(IDevice* a_device, IDescriptionSetLayout* a_descriptionSetLayout)
+void VulkanDescriptor::Create(IDevice* a_device, IDescriptionSetLayout* a_descriptionSetLayout, ITexture* a_texture)
 {
 	CreateDescriptorPool(a_device);
-	CreateDescriptorSets(a_device , a_descriptionSetLayout);
+	CreateDescriptorSets(a_device , a_descriptionSetLayout,a_texture);
 }
 
 void VulkanDescriptor::Destroy()
@@ -31,9 +31,9 @@ void VulkanDescriptor::CreateDescriptorPool(IDevice* a_device)
 	}
 }
 
-void VulkanDescriptor::CreateDescriptorSets(IDevice* a_device, IDescriptionSetLayout* a_descriptionSetLayout)
+void VulkanDescriptor::CreateDescriptorSets(IDevice* a_device, IDescriptionSetLayout* a_descriptionSetLayout,ITexture* a_texture)
 {
-	/*
+	
 	std::vector<VkDescriptorSetLayout> l_layouts(MAX_FRAMES_IN_FLIGHT, a_descriptionSetLayout);
 
 	VkDescriptorSetAllocateInfo l_allocateInfo{};
@@ -44,7 +44,7 @@ void VulkanDescriptor::CreateDescriptorSets(IDevice* a_device, IDescriptionSetLa
 	l_allocateInfo.pSetLayouts = l_layouts.data();
 
 	m_descriptorSets.resize(MAX_FRAMES_IN_FLIGHT);
-	if (vkAllocateDescriptorSets(mainDevice.logicalDevice, &l_allocateInfo, m_descriptorSets.data()) != VK_SUCCESS) {
+	if (vkAllocateDescriptorSets(a_device->CastVulkan()->GetDevice(), &l_allocateInfo, m_descriptorSets.data()) != VK_SUCCESS) {
 		DEBUG_LOG_ERROR("failed to allocate descriptor sets !\n");
 	}
 
@@ -56,12 +56,12 @@ void VulkanDescriptor::CreateDescriptorSets(IDevice* a_device, IDescriptionSetLa
 
 		VkDescriptorImageInfo l_imageInfo{};
 		l_imageInfo.imageLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
-		l_imageInfo.imageView = textureImageView;
-		l_imageInfo.sampler = textureSampler;
+		l_imageInfo.imageView = a_texture->CastVulkan()->GetTextureImageView();
+		l_imageInfo.sampler = a_texture->CastVulkan()->GetTextureSampler();
 
 		std::array<VkWriteDescriptorSet, 2> l_descriptorWrites{};
 		l_descriptorWrites[0].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
-		l_descriptorWrites[0].dstSet = descriptorSets[i];
+		l_descriptorWrites[0].dstSet = m_descriptorSets[i];
 		l_descriptorWrites[0].dstBinding = 0;
 		l_descriptorWrites[0].dstArrayElement = 0;
 		l_descriptorWrites[0].descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
@@ -69,13 +69,13 @@ void VulkanDescriptor::CreateDescriptorSets(IDevice* a_device, IDescriptionSetLa
 		l_descriptorWrites[0].pBufferInfo = &l_bufferInfo;
 
 		l_descriptorWrites[1].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
-		l_descriptorWrites[1].dstSet = descriptorSets[i];
+		l_descriptorWrites[1].dstSet = m_descriptorSets[i];
 		l_descriptorWrites[1].dstBinding = 1;
 		l_descriptorWrites[1].dstArrayElement = 0;
 		l_descriptorWrites[1].descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
 		l_descriptorWrites[1].descriptorCount = 1;
 		l_descriptorWrites[1].pImageInfo = &l_imageInfo;
 
-		vkUpdateDescriptorSets(mainDevice.logicalDevice, static_cast<uint32_t>(l_descriptorWrites.size()), l_descriptorWrites.data(), 0, nullptr);
-	}*/
+		vkUpdateDescriptorSets(a_device->CastVulkan()->GetDevice(), static_cast<uint32_t>(l_descriptorWrites.size()), l_descriptorWrites.data(), 0, nullptr);
+	}
 }
