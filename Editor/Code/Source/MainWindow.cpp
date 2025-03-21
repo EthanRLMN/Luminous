@@ -113,8 +113,6 @@ void MainWindow::Draw()
 
         ImGui::Begin("tab2", { -1, -1 }, true);
         ImGui::End();
-
-        ImGui::End();
     }
     ImGui::PopStyleColor();
 }
