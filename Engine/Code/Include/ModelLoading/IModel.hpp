@@ -9,7 +9,7 @@ public:
 	IModel() = default;
 	~IModel() = default;
 
-	virtual void Initialize() = 0;
+	//virtual void Initialize() = 0;
 
 private:
 	std::vector<IVertex> m_vertices;

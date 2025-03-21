@@ -9,7 +9,7 @@ Application::Application()
 
 
 	IModelLoader t_loader;
-	t_loader.LoadModel("bite");
+	t_loader.LoadModel("cube.obj");
 
 	m_interface = new VulkanRenderInterface();
 
