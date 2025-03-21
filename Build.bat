@@ -37,7 +37,7 @@ if "%choice%"=="1" (
 
 rem Function to cleanup files
 :cleanup
-set folders=Builds Editor\Builds Editor\Libs\imgui Engine\Builds Engine\Libs\assimp Engine\Libs\glfw Libs\logger Libs\luminousmaths
+set folders=Builds Editor\Builds Engine\Builds Engine\Libs\assimp Engine\Libs\glfw Engine\Libs\logger Engine\Libs\luminousmaths
 
 for %%d in (%folders%) do (
     if exist "%%d" (
