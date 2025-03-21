@@ -34,6 +34,7 @@ IModel IModelLoader::LoadModel(const char* a_file)
 			l_model.m_vertices = SetupVertices(l_mesh);
 			l_model.m_indices = SetupIndices(l_mesh);
 			std::string l_info = std::string(a_file) + " has been successfully parsed.";
+			DEBUG_LOG_INFO("{}", l_info);
 			return l_model;
 		}
 		else

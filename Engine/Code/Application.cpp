@@ -9,13 +9,14 @@ Application::Application()
 
 
 	IModelLoader t_loader;
-	IModel l_cube = t_loader.LoadModel("cube.obj");
+	IModel l_cube = t_loader.LoadModel("Assets/Models/cube.fbx");
 	l_cube.DebugVertices();
 	l_cube.DebugIndices();
 
+	/*
 	IModel l_sphere = t_loader.LoadModel("sphere.obj");
 	l_sphere.DebugVertices();
-	l_sphere.DebugIndices();
+	l_sphere.DebugIndices();*/
 
 	m_interface = new VulkanRenderInterface();
 
