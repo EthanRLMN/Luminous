@@ -34,7 +34,7 @@ void VulkanDescriptor::CreateDescriptorPool(IDevice* a_device)
 void VulkanDescriptor::CreateDescriptorSets(IDevice* a_device, IDescriptionSetLayout* a_descriptionSetLayout,ITexture* a_texture)
 {
 	
-	std::vector<VkDescriptorSetLayout> l_layouts(MAX_FRAMES_IN_FLIGHT, a_descriptionSetLayout);
+	std::vector<VkDescriptorSetLayout> l_layouts(MAX_FRAMES_IN_FLIGHT, a_descriptionSetLayout->CastVulkan()->GetDescriptorSetLayout());
 
 	VkDescriptorSetAllocateInfo l_allocateInfo{};
 
