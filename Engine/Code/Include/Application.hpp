@@ -46,6 +46,7 @@ private:
 	IDepthResource* m_depthResource{ nullptr };
 	IFrameBuffer* m_frameBuffer{ nullptr };
 	ITexture* m_texture{ nullptr };
+	IModel* m_model{ nullptr };
 
 	IBuffer* m_buffer { nullptr };
 	ISynchronization* m_synchronization { nullptr };
