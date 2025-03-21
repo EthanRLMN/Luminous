@@ -57,7 +57,7 @@ goto :welcome
 echo Cleaning up project before building!
 ping 127.0.0.1 -n 1 > nul
 
-set folders=Builds Editor\Builds Editor\Libs\imgui Engine\Builds Engine\Libs\assimp Engine\Libs\glfw Libs\logger Libs\luminousmaths
+set folders=Builds Editor\Builds Engine\Builds Engine\Libs\assimp Engine\Libs\glfw Engine\Libs\logger Engine\Libs\luminousmaths
 
 for %%d in (%folders%) do (
     if exist "%%d" (
