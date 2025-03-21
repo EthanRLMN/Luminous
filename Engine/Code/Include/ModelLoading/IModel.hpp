@@ -9,9 +9,9 @@ public:
 	IModel() = default;
 	~IModel() = default;
 
-	//virtual void Initialize() = 0;
-
-private:
+	void DebugVertices();
+	void DebugIndices();
+	
 	std::vector<IVertex> m_vertices;
 	std::vector<unsigned int> m_indices;
 };

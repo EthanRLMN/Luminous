@@ -11,6 +11,8 @@
 #include "GLFW/../../../Libs/assimp/include/assimp/BaseImporter.h"
 #include "Logger.hpp"
 #include "ModelLoading/IModel.hpp"
+#include "Vector3.hpp"
+#include "Vector2.hpp"
 
 class LUMINOUS_ENGINE_API IModelLoader
 {
@@ -19,5 +21,6 @@ public:
 	~IModelLoader() = default;
 
 	IModel LoadModel(const char* a_file);
+	std::vector<IVertex> SetupVertices(aiMesh* a_mesh);
 	void DebugExtensionsList(Assimp::Importer* a_importer);
 };
