@@ -30,11 +30,11 @@ Application::Application()
 	m_renderPass = m_interface->InstantiateRenderPass();
 	m_renderPass->Create(m_swapChain, m_device);
 
-	m_descriptor = m_interface->InstantiateDescriptor();
-	m_descriptor->Create(m_device);
+	m_descriptionSetLayout = m_interface->InstantiateDescriptionSetLayout();
+	m_descriptionSetLayout->Create(m_device);
 
 	m_pipeline = m_interface->InstantiatePipeline();
-	m_pipeline->Create(m_device, m_renderPass, m_descriptor);
+	m_pipeline->Create(m_device, m_renderPass, m_descriptionSetLayout);
 
 	m_commandPool = m_interface->InstantiateCommandPool();
 	m_commandPool->Create(m_device, m_surface);
@@ -70,8 +70,8 @@ Application::~Application()
 	m_pipeline->Destroy();
 	m_interface->DeletePipeline(m_pipeline);
 
-	m_descriptor->Destroy();
-	m_interface->DeleteDescriptor(m_descriptor);
+	m_descriptionSetLayout->Destroy();
+	m_interface->DeleteDescriptionSetLayout(m_descriptionSetLayout);
 
 	m_renderPass->Destroy(m_device);
 	m_interface->DeleteRenderPass(m_renderPass);

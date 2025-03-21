@@ -1,9 +1,9 @@
 #include <array>
 
-#include "Rendering/API/Vulkan/VulkanDescriptor.hpp"
+#include "Rendering/API/Vulkan/VulkanDescriptionSetLayout.hpp"
 #include "Rendering/API/Vulkan/VulkanDevice.hpp"
 
-void VulkanDescriptor::Create(IDevice* a_device)
+void VulkanDescriptionSetLayout::Create(IDevice* a_device)
 {
 	VkDescriptorSetLayoutBinding l_uboLayoutBinding = {};
 	l_uboLayoutBinding.binding = 0;
@@ -33,6 +33,6 @@ void VulkanDescriptor::Create(IDevice* a_device)
 		DEBUG_LOG_ERROR("Vulkan Descriptor : Failed to create a descriptor set layout!\n");
 }
 
-void VulkanDescriptor::Destroy()
+void VulkanDescriptionSetLayout::Destroy()
 {
 }
