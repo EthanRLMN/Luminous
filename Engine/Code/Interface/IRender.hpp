@@ -1,26 +1,31 @@
 #pragma once
+#include "IWindow.hpp"
+#include "IInputManager.hpp"
 
-#include "IBuffer.hpp"
+#include "IInstance.hpp"
+#include "ISurface.hpp"
+#include "IDevice.hpp"
+#include "ISwapChain.hpp"
+#include "IRenderPass.hpp"
+#include "IDescriptionSetLayout.hpp"
+#include "IPipeline.hpp"
 #include "ICommandPool.hpp"
 #include "IDepthResource.hpp"
-#include "IDescriptionSetLayout.hpp"
-#include "IDevice.hpp"
 #include "IFrameBuffer.hpp"
-#include "IInputManager.hpp"
-#include "IInstance.hpp"
-#include "IPipeline.hpp"
-#include "IRenderPass.hpp"
-#include "ISurface.hpp"
-#include "ISwapChain.hpp"
-#include "ISynchronization.hpp"
 #include "ITexture.hpp"
 #include "IModel.hpp"
-#include "IWindow.hpp"
+#include "IBuffer.hpp"
+#include "IDescriptor.hpp"
+#include "ICommandBuffer.hpp"
+#include "ISynchronization.hpp"
 
 class IRender
 {
 public:
 	virtual ~IRender() = default;
+
+	virtual IWindow* InstantiateWindow() = 0;
+	virtual IInputManager* InstantiateInputManager() = 0;
 
 	virtual IInstance* InstantiateContext() = 0;
 	virtual ISurface* InstantiateSurface() = 0;
@@ -35,10 +40,14 @@ public:
 	virtual ITexture* InstantiateTexture() = 0;
 	virtual IModel* InstantiateModel() = 0;
 	virtual IBuffer* InstantiateBuffer() = 0;
-	//descriptor
+	virtual IDescriptor* InstantiateDescriptor() = 0;
+	virtual ICommandPool* InstantiateCommandPool() = 0;
 	virtual ISynchronization* InstantiateSynchronization() = 0;
-	virtual IWindow* InstantiateWindow() = 0;
-	virtual IInputManager* InstantiateInputManager() = 0;
+
+
+
+	virtual void DeleteWindow(IWindow* a_window) { delete a_window; }
+	virtual void DeleteInputManager(IInputManager* a_inputManager) { delete a_inputManager; }
 
 	virtual void DeleteContext(IInstance* a_instance) { delete a_instance; }
 	virtual void DeleteSurface(ISurface* a_surface) { delete a_surface; }
@@ -53,7 +62,7 @@ public:
 	virtual void DeleteTexture(ITexture* a_texture) { delete a_texture; }
 	virtual void DeleteModel(IModel* a_model) { delete a_model; }
 	virtual void DeleteBuffer(IBuffer* a_buffer) { delete a_buffer; }
+	virtual void DeleteDescriptor(IDescriptor* a_descriptor) { delete a_descriptor; }
+	virtual void DeleteCommandPool(ICommandPool* a_commandPool) { delete a_commandPool; }
 	virtual void DeleteSynchronization(ISynchronization* a_synchronization) { delete a_synchronization; }
-	virtual void DeleteWindow(IWindow* a_window) { delete a_window; }
-	virtual void DeleteInputManager(IInputManager* a_inputManager) { delete a_inputManager; }
 };
