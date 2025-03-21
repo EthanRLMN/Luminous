@@ -9,5 +9,5 @@
 	path = Engine/Libs/logger
 	url = https://github.com/ZeBaananaa/LuminousLogger.git
 [submodule "Libs/luminousmaths"]
-	path = Engine/libs/luminousmaths
+	path = Engine/Libs/luminousmaths
 	url = git@gitlabstudents.isartintra.com:e.ruhlmann/enginemaths.git
