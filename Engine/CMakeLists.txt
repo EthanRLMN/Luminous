@@ -25,7 +25,7 @@ set(L_TARGET_NAME L_ENGINE)
 #---------------------------------------#
 #            BUILD MODE                 #
 #---------------------------------------#
-add_library(${L_TARGET_NAME} SHARED ${L_ENGINE_SOURCES})
+add_library(${L_TARGET_NAME} STATIC ${L_ENGINE_SOURCES})
 
 
 
@@ -85,4 +85,5 @@ add_custom_command(
         COMMAND ${CMAKE_COMMAND} -E copy_directory
         ${CMAKE_CURRENT_SOURCE_DIR}/Assets
         $<TARGET_FILE_DIR:${L_TARGET_NAME}>/Assets
+        ${L_OUTPUT_DIR}/Assets
 )
