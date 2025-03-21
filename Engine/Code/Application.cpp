@@ -65,15 +65,14 @@ Application::Application()
 	m_buffer = m_interface->InstantiateBuffer();
 	m_buffer->Create(m_device,m_texture,m_commandPool,m_depthResource);
 
+	m_descriptor = m_interface->InstantiateDescriptor();
+	m_descriptor->Create(m_device, m_descriptionSetLayout, m_texture);
 
+	m_commandBuffer = m_interface->InstantiateCommandBuffer();
+	m_commandBuffer->Create(m_device, m_swapChain, m_commandPool);
 
-	/*
-
-	m_buffer = m_interface->InstantiateBuffer();
-	m_buffer->Create();
-
-	m_synchronisation = m_interface->InstantiateSynchronisation();
-	m_synchronisation->Create();*/
+	m_synchronization = m_interface->InstantiateSynchronization();
+	m_synchronization->Create(m_device);
 }
 
 Application::~Application()

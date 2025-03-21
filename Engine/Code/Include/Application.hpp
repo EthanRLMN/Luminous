@@ -1,6 +1,5 @@
 #pragma once
 
-#include "IBuffer.hpp"
 #include "IRender.hpp"
 #include "ISynchronization.hpp"
 #include "ModelLoading/AssimpModelLoader.hpp"
@@ -29,6 +28,8 @@ public:
 	[[nodiscard]] IFrameBuffer* GetFrameBuffer() const { return m_frameBuffer; }
 	[[nodiscard]] ITexture* GetTexture() const { return m_texture; }
 	[[nodiscard]] IBuffer* GetBuffer() const { return m_buffer; }
+	[[nodiscard]] IDescriptor* GetDescriptor() const { return m_descriptor; }
+	[[nodiscard]] ICommandBuffer* GetCommandBuffer() const { return m_commandBuffer; }
 	[[nodiscard]] ISynchronization* GetSynchronization() const { return m_synchronization; }
 
 private:
@@ -48,7 +49,8 @@ private:
 	IFrameBuffer* m_frameBuffer{ nullptr };
 	ITexture* m_texture{ nullptr };
 	IModel* m_model{ nullptr };
-
 	IBuffer* m_buffer { nullptr };
+	IDescriptor* m_descriptor{ nullptr };
+	ICommandBuffer* m_commandBuffer{ nullptr };
 	ISynchronization* m_synchronization { nullptr };
 };

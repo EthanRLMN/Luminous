@@ -135,7 +135,7 @@ void VulkanPipeline::Create(IDevice* a_device, IRenderPass* a_renderPass, IDescr
 	l_pipelineLayoutInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO;
 	l_pipelineLayoutInfo.setLayoutCount = 1;
 	
-    VkDescriptorSetLayout l_descriptorSetLayout = a_descriptionSetLayout->CastVulkan()->GetInstance(); //create descriptorSetLayout has a local variable
+    VkDescriptorSetLayout l_descriptorSetLayout = a_descriptionSetLayout->CastVulkan()->GetDescriptorSetLayout(); //create descriptorSetLayout has a local variable
     l_pipelineLayoutInfo.pSetLayouts = &l_descriptorSetLayout;
 
 	//Create pipeline layout 

@@ -1,9 +1,27 @@
 #pragma once
 
 #include "ISynchronization.hpp"
+#include <vulkan/vulkan.hpp>
+#include "Struct/VulkanUtilities.hpp"
+#include "Rendering/API/Vulkan/VulkanDevice.hpp"
+#include <vector>
 
 class VulkanSynchronization final : public ISynchronization
 {
-	void Create() override;
+public:
+	void Create(IDevice* a_device) override;
 	void Destroy() override;
+
+	VulkanSynchronization* CastVulkan() override { return this; }
+
+	[[nodiscard]] std::vector<VkSemaphore> GetImageAvailableSemaphores() const { return m_imageAvailableSemaphores; }
+	[[nodiscard]] std::vector<VkSemaphore> GetRenderFinishedSemaphores() const { return m_renderFinishedSemaphores; }
+	[[nodiscard]] std::vector<VkFence>  GetFences() const { return m_fences; }
+
+private:
+
+	std::vector<VkSemaphore> m_imageAvailableSemaphores{ VK_NULL_HANDLE };
+	std::vector<VkSemaphore> m_renderFinishedSemaphores{ VK_NULL_HANDLE };
+	std::vector<VkFence> m_fences{ VK_NULL_HANDLE };
+
 };

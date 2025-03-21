@@ -33,6 +33,8 @@ public:
 	                       VkImage a_image, uint32_t a_width, uint32_t a_height);
 
 
+	VulkanTexture* CastVulkan() override { return this; }
+
 	const std::string TEXTURE_PATH{
 		"Engine/Assets/Textures/Untitled312.png"
 	};

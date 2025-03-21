@@ -12,7 +12,7 @@ public:
 	void Create(IDevice* a_device) override;
 	void Destroy() override;
 
-	[[nodiscard]] virtual VkDescriptorSetLayout GetInstance() const { return m_descriptorSetLayout; }
+	[[nodiscard]] virtual VkDescriptorSetLayout GetDescriptorSetLayout() const { return m_descriptorSetLayout; }
 
 	VulkanDescriptionSetLayout* CastVulkan() override { return this; }
 
