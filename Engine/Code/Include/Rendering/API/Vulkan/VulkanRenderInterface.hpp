@@ -1,10 +1,8 @@
 #pragma once
 
-#define VULKAN
-
 #include "GLFWInputManager.hpp"
 #include "IRender.hpp"
-#include "VulkanDescriptor.hpp"
+#include "VulkanDescriptionSetLayout.hpp"
 #include "Rendering/API/Vulkan/VulkanBuffer.hpp"
 #include "Rendering/API/Vulkan/VulkanCommandPool.hpp"
 #include "Rendering/API/Vulkan/VulkanDepthResource.hpp"
@@ -23,7 +21,7 @@
 class VulkanRenderInterface final : public IRender
 {
 public:
-#ifdef VULKAN
+
 	inline IInstance* InstantiateContext() override { return new VulkanInstance(); }
 	void DeleteContext(IInstance* a_instance) override { delete a_instance; }
 
@@ -39,8 +37,8 @@ public:
 	inline IRenderPass* InstantiateRenderPass() override { return new VulkanRenderPass(); }
 	void DeleteRenderPass(IRenderPass* a_renderPass) override { delete a_renderPass; }
 
-	inline IDescriptor* InstantiateDescriptor() override { return new VulkanDescriptor(); }
-	void DeleteDescriptor(IDescriptor* a_descriptor) override { delete a_descriptor; }
+	inline IDescriptionSetLayout* InstantiateDescriptionSetLayout() override { return new VulkanDescriptionSetLayout(); }
+	void DeleteDescriptionSetLayout(IDescriptionSetLayout* a_descriptionSetLayout) override { delete a_descriptionSetLayout; }
 
 	inline IPipeline* InstantiatePipeline() override { return new VulkanPipeline(); }
 	void DeletePipeline(IPipeline* a_pipeline) override { delete a_pipeline; }
@@ -71,6 +69,4 @@ public:
 
 	inline IInputManager* InstantiateInputManager() override { return new GLFWInputManager(); }
 	void DeleteInputManager(IInputManager* a_inputManager) override { delete a_inputManager; }
-
-#endif // VULKAN
 };

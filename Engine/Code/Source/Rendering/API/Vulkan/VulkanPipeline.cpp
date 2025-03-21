@@ -4,7 +4,7 @@
 #include "Rendering/API/Vulkan/Utilities.hpp"
 #include "Struct/VulkanUtilities.hpp"
 
-#include "Rendering/API/Vulkan/VulkanDescriptor.hpp"
+#include "Rendering/API/Vulkan/VulkanDescriptionSetLayout.hpp"
 #include "Rendering/API/Vulkan/VulkanDevice.hpp"
 #include "Rendering/API/Vulkan/VulkanRenderPass.hpp"
 
@@ -13,7 +13,7 @@
 #include <iostream>
 
 
-void VulkanPipeline::Create(IDevice* a_device, IRenderPass* a_renderPass, IDescriptor* a_descriptor)
+void VulkanPipeline::Create(IDevice* a_device, IRenderPass* a_renderPass, IDescriptionSetLayout* a_descriptionSetLayout)
 {
 	std::vector<char> l_vertexShaderCode = ReadFile("Assets/Shaders/vert.spv");
 	std::vector<char> l_fragmentShaderCode = ReadFile("Assets/Shaders/frag.spv");
@@ -135,7 +135,7 @@ void VulkanPipeline::Create(IDevice* a_device, IRenderPass* a_renderPass, IDescr
 	l_pipelineLayoutInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO;
 	l_pipelineLayoutInfo.setLayoutCount = 1;
 	
-    VkDescriptorSetLayout l_descriptorSetLayout = a_descriptor->CastVulkan()->GetInstance(); //create descriptorSetLayout has a local variable
+    VkDescriptorSetLayout l_descriptorSetLayout = a_descriptionSetLayout->CastVulkan()->GetInstance(); //create descriptorSetLayout has a local variable
     l_pipelineLayoutInfo.pSetLayouts = &l_descriptorSetLayout;
 
 	//Create pipeline layout 
