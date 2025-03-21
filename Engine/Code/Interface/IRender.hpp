@@ -41,7 +41,7 @@ public:
 	virtual IModel* InstantiateModel() = 0;
 	virtual IBuffer* InstantiateBuffer() = 0;
 	virtual IDescriptor* InstantiateDescriptor() = 0;
-	virtual ICommandPool* InstantiateCommandPool() = 0;
+	virtual ICommandBuffer* InstantiateCommandBuffer() = 0;
 	virtual ISynchronization* InstantiateSynchronization() = 0;
 
 
@@ -63,6 +63,6 @@ public:
 	virtual void DeleteModel(IModel* a_model) { delete a_model; }
 	virtual void DeleteBuffer(IBuffer* a_buffer) { delete a_buffer; }
 	virtual void DeleteDescriptor(IDescriptor* a_descriptor) { delete a_descriptor; }
-	virtual void DeleteCommandPool(ICommandPool* a_commandPool) { delete a_commandPool; }
+	virtual void DeleteCommandBuffer(ICommandBuffer* a_commandBuffer) { delete a_commandBuffer; }
 	virtual void DeleteSynchronization(ISynchronization* a_synchronization) { delete a_synchronization; }
 };
