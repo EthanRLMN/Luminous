@@ -10,4 +10,4 @@
 	url = https://github.com/ZeBaananaa/LuminousLogger.git
 [submodule "Libs/luminousmaths"]
 	path = Engine/libs/luminousmaths
-	url = https://gitlabstudents.isartintra.com/e.ruhlmann/enginemaths.git
+	url = git@gitlabstudents.isartintra.com:e.ruhlmann/enginemaths.git
