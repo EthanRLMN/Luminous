@@ -4,7 +4,6 @@
 
 IModel IModelLoader::LoadModel(const char* a_file)
 {
-	
 	Assimp::Importer l_importer;
 	char l_buffer[1024];
 	if (_getcwd(l_buffer, 1024) != NULL) {
@@ -12,13 +11,13 @@ IModel IModelLoader::LoadModel(const char* a_file)
 	}
 	DebugExtensionsList(&l_importer);
 
-	const aiScene* scene = l_importer.ReadFile(a_file,
+	const aiScene* l_scene = l_importer.ReadFile(a_file,
 		aiProcess_CalcTangentSpace |
 		aiProcess_Triangulate |
 		aiProcess_JoinIdenticalVertices |
 		aiProcess_SortByPType);
 
-	if (!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode) // if is Not Zero
+	if (!l_scene || l_scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !l_scene->mRootNode) // if is Not Zero
 	{
 		std::string l_info = "ASSIMP : " + std::string(l_importer.GetErrorString());
 		DEBUG_LOG_ERROR("{}", l_info);
@@ -26,69 +25,72 @@ IModel IModelLoader::LoadModel(const char* a_file)
 	}else
 	{
 		IModel l_model;
-		aiMesh* mesh = scene->mMeshes[0];
+		aiMesh* l_mesh = l_scene->mMeshes[0];
 		std::string l_info = std::string(a_file) + " file has been red by the parser.";
 		DEBUG_LOG_INFO("{}", l_info);
 		
-		if (mesh)
+		if (l_mesh)
 		{
-			for (unsigned int i = 0; i < mesh->mNumVertices; i++) //SetupVertices
-			{
-				IVertex l_currentVertex;
-				Maths::Vector3 l_vertPosition;
-
-				l_vertPosition.x = mesh->mVertices[i].x;
-				l_vertPosition.y = mesh->mVertices[i].y;
-				l_vertPosition.z = mesh->mVertices[i].z;
-
-				std::string l_pos = std::to_string(mesh->mVertices[i].x) + ", "
-					+ std::to_string(mesh->mVertices[i].y) + ", "
-					+ std::to_string(mesh->mVertices[i].z);
-				DEBUG_LOG_INFO("{}", l_pos);
-
-				l_currentVertex.m_position = l_vertPosition;
-
-				Maths::Vector2 l_vertTexCoords;
-				if (mesh->mTextureCoords[0])
-				{
-					l_vertTexCoords.x = mesh->mTextureCoords[0][i].x;
-					l_vertTexCoords.y = mesh->mTextureCoords[0][i].y;
-				}
-				else
-				{
-					l_vertTexCoords.x = 0;
-					l_vertTexCoords.y = 0;
-				}
-				l_currentVertex.m_texcoord = l_vertTexCoords;
-
-				Maths::Vector3 l_vertNormals;
-				l_vertNormals.x = mesh->mNormals[i].x;
-				l_vertNormals.y = mesh->mNormals[i].y;
-				l_vertNormals.z = mesh->mNormals[i].z;
-
-				l_currentVertex.m_normal = l_vertNormals;
-
-				l_model.m_vertices.push_back(l_currentVertex);
-
-			}
-
-			for (unsigned int i = 0; i < mesh->mNumFaces; i++)
-			{
-				aiFace face = mesh->mFaces[i];
-				for (unsigned int j = 0; j < face.mNumIndices; j++)
-					l_model.m_indices.push_back(face.mIndices[j]);
-			}
-
+			l_model.m_vertices = SetupVertices(l_mesh);
+			l_model.m_indices = SetupIndices(l_mesh);
+			std::string l_info = std::string(a_file) + " has been successfully parsed.";
 			return l_model;
-
-		}else
+		}
+		else
 		{
 			return l_model;
 		}
+	}
+}
+
+std::vector<IVertex> IModelLoader::SetupVertices(aiMesh* a_mesh)
+{
+	std::vector<IVertex> l_vertices;
+	for (unsigned int i = 0; i < a_mesh->mNumVertices; i++)
+	{
+		IVertex l_currentVertex;
+
+		Maths::Vector3 l_vertPosition;
+		l_vertPosition.x = a_mesh->mVertices[i].x;
+		l_vertPosition.y = a_mesh->mVertices[i].y;
+		l_vertPosition.z = a_mesh->mVertices[i].z;
+		l_currentVertex.m_position = l_vertPosition;
+
+		Maths::Vector2 l_vertTexCoords;
+		if (a_mesh->mTextureCoords[0])
+		{
+			l_vertTexCoords.x = a_mesh->mTextureCoords[0][i].x;
+			l_vertTexCoords.y = a_mesh->mTextureCoords[0][i].y;
+		}
+		else
+		{
+			l_vertTexCoords.x = 0;
+			l_vertTexCoords.y = 0;
+		}
+		l_currentVertex.m_texcoord = l_vertTexCoords;
+
+		Maths::Vector3 l_vertNormals;
+		l_vertNormals.x = a_mesh->mNormals[i].x;
+		l_vertNormals.y = a_mesh->mNormals[i].y;
+		l_vertNormals.z = a_mesh->mNormals[i].z;
+		l_currentVertex.m_normal = l_vertNormals;
+
+		l_vertices.push_back(l_currentVertex);
 
 	}
+	return l_vertices;
+}
 
-
+std::vector<unsigned int> IModelLoader::SetupIndices(aiMesh* a_mesh)
+{
+	std::vector<unsigned int> l_indices;
+	for (unsigned int i = 0; i < a_mesh->mNumFaces; i++)
+	{
+		aiFace l_face = a_mesh->mFaces[i];
+		for (unsigned int j = 0; j < l_face.mNumIndices; j++)
+			l_indices.push_back(l_face.mIndices[j]);
+	}
+	return l_indices;
 }
 
 void IModelLoader::DebugExtensionsList(Assimp::Importer* a_importer)

@@ -22,5 +22,6 @@ public:
 
 	IModel LoadModel(const char* a_file);
 	std::vector<IVertex> SetupVertices(aiMesh* a_mesh);
+	std::vector<unsigned int> SetupIndices(aiMesh* a_mesh);
 	void DebugExtensionsList(Assimp::Importer* a_importer);
 };
