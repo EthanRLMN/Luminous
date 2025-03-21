@@ -1,14 +1,12 @@
 #pragma once
 
-#include "Utils/Exporter.hpp"
-
 #include "IBuffer.hpp"
 #include "IRender.hpp"
 #include "ISynchronization.hpp"
 
 class VulkanRenderInterface;
 
-class LUMINOUS_ENGINE_API Application
+class Application
 {
 public:
 	Application();

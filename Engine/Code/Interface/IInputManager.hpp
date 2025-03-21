@@ -1,7 +1,5 @@
 #pragma once
 
-#include "Utils/Exporter.hpp"
-
 #include <iostream>
 
 #include "Logger.hpp"
@@ -11,7 +9,7 @@
 class GLFWInputManager;
 class IWindow;
 
-class LUMINOUS_ENGINE_API IInputManager
+class IInputManager
 {
 public:
 	virtual ~IInputManager() = default;
