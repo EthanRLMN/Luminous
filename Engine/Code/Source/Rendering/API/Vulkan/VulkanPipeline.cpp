@@ -4,7 +4,7 @@
 #include "Rendering/API/Vulkan/Utilities.hpp"
 #include "Struct/VulkanUtilities.hpp"
 
-#include "Rendering/API/Vulkan/VulkanDescriptionSetLayout.hpp"
+#include "Rendering/API/Vulkan/VulkanDescriptorSetLayout.hpp"
 #include "Rendering/API/Vulkan/VulkanDevice.hpp"
 #include "Rendering/API/Vulkan/VulkanRenderPass.hpp"
 

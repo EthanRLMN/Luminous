@@ -7,11 +7,11 @@ Application::Application()
 	Debug::Logger& l_logger = Debug::Logger::GetInstance();
 	l_logger.Init("app", 1_MiB, 5, true);
 
-
+	/*
 	AssimpModelLoader t_loader;
 	AssimpModelDebugger l_cube = t_loader.LoadModel("Assets/Models/cube.fbx");
 	l_cube.DebugVertices();
-	l_cube.DebugIndices();
+	l_cube.DebugIndices();*/
 
 	/*
 	IModel l_sphere = t_loader.LoadModel("sphere.obj");

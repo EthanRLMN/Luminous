@@ -32,7 +32,6 @@ void VulkanInstance::CreateInstance()
 	if (validationEnabled)
 		instanceExtensions.push_back(VK_EXT_DEBUG_UTILS_EXTENSION_NAME);
 
-
 	if (!CheckInstanceExtensionSupport(&instanceExtensions))
 	{
 		DEBUG_LOG_ERROR("Vulkan Instance : Instance extensions is not supported!\n");
@@ -48,7 +47,6 @@ void VulkanInstance::CreateInstance()
 	{
 		l_createInfo.enabledLayerCount = static_cast<uint32_t>(validationLayers.size());
 		l_createInfo.ppEnabledLayerNames = validationLayers.data();
-
 
 		l_debugCreateInfo.sType = VK_STRUCTURE_TYPE_DEBUG_UTILS_MESSENGER_CREATE_INFO_EXT;
 		l_debugCreateInfo.messageSeverity = VK_DEBUG_UTILS_MESSAGE_SEVERITY_VERBOSE_BIT_EXT |
@@ -110,10 +108,10 @@ bool VulkanInstance::CheckValidationLayerSupport()
 	std::vector<VkLayerProperties> l_availableLayers(l_validationLayerCount);
 	vkEnumerateInstanceLayerProperties(&l_validationLayerCount, l_availableLayers.data());
 
-	for (const auto& l_validationLayer: validationLayers)
+	for (const auto& l_validationLayer : validationLayers)
 	{
 		bool l_hasLayer = false;
-		for (const auto& l_availableLayer: l_availableLayers)
+		for (const auto& l_availableLayer : l_availableLayers)
 		{
 			if (strcmp(l_validationLayer, l_availableLayer.layerName) == 0)
 			{
@@ -136,10 +134,10 @@ bool VulkanInstance::CheckInstanceExtensionSupport(const std::vector<const char*
 	std::vector<VkExtensionProperties> l_extensions(l_extensionCount);
 	vkEnumerateInstanceExtensionProperties(nullptr, &l_extensionCount, l_extensions.data());
 
-	for (const auto& l_checkExtension: *a_checkExtensions)
+	for (const auto& l_checkExtension : *a_checkExtensions)
 	{
 		bool l_hasExtension = false;
-		for (const auto& l_extension: l_extensions)
+		for (const auto& l_extension : l_extensions)
 		{
 			if (strcmp(l_checkExtension, l_extension.extensionName) != 0)
 			{

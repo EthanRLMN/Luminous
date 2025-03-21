@@ -1,7 +1,7 @@
 #pragma once
 #include "Logger.hpp"
 
-class VulkanDescriptionSetLayout;
+class VulkanDescriptorSetLayout;
 class IDevice;
 
 class IDescriptionSetLayout
@@ -12,7 +12,7 @@ public:
     virtual void Create(IDevice* a_device) = 0;
     virtual void Destroy() = 0;
 
-    virtual VulkanDescriptionSetLayout* CastVulkan()
+    virtual VulkanDescriptorSetLayout* CastVulkan()
     {
         DEBUG_LOG_ERROR("Vulkan DescriptorSetLayout : Cast is Wrong!\n");
         return nullptr;

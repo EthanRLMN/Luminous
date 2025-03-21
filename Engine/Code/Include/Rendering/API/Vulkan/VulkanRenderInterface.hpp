@@ -2,18 +2,16 @@
 
 #include "IRender.hpp"
 
-#include "Rendering/API/Vulkan/VulkanWindow.hpp"
 #include "GLFWInputManager.hpp"
+#include "Rendering/API/Vulkan/VulkanWindow.hpp"
 
-#include "Rendering/API/Vulkan/VulkanInstance.hpp"
-#include "Rendering/API/Vulkan/VulkanSurface.hpp"
-#include "Rendering/API/Vulkan/VulkanDevice.hpp"
-#include "Rendering/API/Vulkan/VulkanSwapChain.hpp"
-#include "Rendering/API/Vulkan/VulkanRenderPass.hpp"
-#include "VulkanDescriptionSetLayout.hpp"
-#include "Rendering/API/Vulkan/VulkanPipeline.hpp"
+#include "VulkanDescriptorSetLayout.hpp"
+#include "Rendering/API/Vulkan/VulkanBuffer.hpp"
+#include "Rendering/API/Vulkan/VulkanCommandBuffer.hpp"
 #include "Rendering/API/Vulkan/VulkanCommandPool.hpp"
 #include "Rendering/API/Vulkan/VulkanDepthResource.hpp"
+#include "Rendering/API/Vulkan/VulkanDescriptor.hpp"
+#include "Rendering/API/Vulkan/VulkanDevice.hpp"
 #include "Rendering/API/Vulkan/VulkanFrameBuffer.hpp"
 #include "Rendering/API/Vulkan/VulkanInstance.hpp"
 #include "Rendering/API/Vulkan/VulkanModel.hpp"
@@ -23,13 +21,6 @@
 #include "Rendering/API/Vulkan/VulkanSwapChain.hpp"
 #include "Rendering/API/Vulkan/VulkanSynchronization.hpp"
 #include "Rendering/API/Vulkan/VulkanTexture.hpp"
-#include "Rendering/API/Vulkan/VulkanWindow.hpp"
-#include "Rendering/API/Vulkan/VulkanTexture.hpp"
-#include "Rendering/API/Vulkan/VulkanModel.hpp"
-#include "Rendering/API/Vulkan/VulkanBuffer.hpp"
-#include "Rendering/API/Vulkan/VulkanDescriptor.hpp"
-#include "Rendering/API/Vulkan/VulkanCommandBuffer.hpp"
-#include "Rendering/API/Vulkan/VulkanSynchronization.hpp"
 
 class VulkanRenderInterface final : public IRender
 {
@@ -40,7 +31,6 @@ public:
 
 	inline IInputManager* InstantiateInputManager() override { return new GLFWInputManager(); }
 	void DeleteInputManager(IInputManager* a_inputManager) override { delete a_inputManager; }
-
 
 	inline IInstance* InstantiateContext() override { return new VulkanInstance(); }
 	void DeleteContext(IInstance* a_instance) override { delete a_instance; }
@@ -57,7 +47,7 @@ public:
 	inline IRenderPass* InstantiateRenderPass() override { return new VulkanRenderPass(); }
 	void DeleteRenderPass(IRenderPass* a_renderPass) override { delete a_renderPass; }
 
-	inline IDescriptionSetLayout* InstantiateDescriptionSetLayout() override { return new VulkanDescriptionSetLayout(); }
+	inline IDescriptionSetLayout* InstantiateDescriptionSetLayout() override { return new VulkanDescriptorSetLayout(); }
 	void DeleteDescriptionSetLayout(IDescriptionSetLayout* a_descriptionSetLayout) override { delete a_descriptionSetLayout; }
 
 	inline IPipeline* InstantiatePipeline() override { return new VulkanPipeline(); }
@@ -86,7 +76,6 @@ public:
 
 	inline ICommandBuffer* InstantiateCommandBuffer() override { return new VulkanCommandBuffer(); }
 	void DeleteCommandBuffer(ICommandBuffer* a_commandBuffer) override { delete a_commandBuffer; }
-
 
 	inline ISynchronization* InstantiateSynchronization() override { return new VulkanSynchronization(); }
 	void DeleteSynchronization(ISynchronization* a_synchronization) override { delete a_synchronization; }

@@ -6,7 +6,6 @@ class IDevice;
 class IDescriptionSetLayout;
 class ITexture;
 
-
 class IDescriptor
 {
 public:
