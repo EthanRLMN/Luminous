@@ -8,3 +8,6 @@
 [submodule "Libs/logger"]
 	path = Engine/Libs/logger
 	url = https://github.com/ZeBaananaa/LuminousLogger.git
+[submodule "Engine/Libs/luminousmaths"]
+	path = Engine/Libs/luminousmaths
+	url = git@gitlabstudents.isartintra.com:e.ruhlmann/enginemaths.git
