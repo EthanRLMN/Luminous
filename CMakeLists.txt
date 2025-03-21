@@ -31,7 +31,6 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 #              SUB DIRECTORIES            #
 # --------------------------------------- #
 
-add_subdirectory(Libs)
 add_subdirectory(Engine)
 add_subdirectory(Editor)
 

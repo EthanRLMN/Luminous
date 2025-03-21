@@ -20,4 +20,5 @@ set(ASSIMP_BUILD_ASSBIN_EXPORTER ON CACHE BOOL "" FORCE)
 set(ASSIMP_BUILD_ASSXML_EXPORTER ON CACHE BOOL "" FORCE)
 add_subdirectory(assimp)
 
-add_subdirectory(tinyobj)
+add_subdirectory(logger)
+add_subdirectory(luminousmaths)

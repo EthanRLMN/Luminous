@@ -5,16 +5,9 @@
 [submodule "Engine/Libs/assimp"]
 	path = Engine/Libs/assimp
 	url = https://github.com/assimp/assimp.git
-[submodule "Editor/Libs/imgui"]
-	path = Editor/Libs/imgui
-	url = https://github.com/ocornut/imgui.git
-	branch = docking
 [submodule "Libs/logger"]
-	path = Libs/logger
+	path = Engine/Libs/logger
 	url = https://github.com/ZeBaananaa/LuminousLogger.git
 [submodule "Libs/luminousmaths"]
-	path = Libs/luminousmaths
-	url = https://gitlabstudents.isartintra.com/e.ruhlmann/enginemaths.git
-[submodule "Engine/Libs/tinyobj"]
-	path = Engine/Libs/tinyobj
-	url = https://github.com/tinyobjloader/tinyobjloader
+	path = Engine/Libs/luminousmaths
+	url = git@gitlabstudents.isartintra.com:e.ruhlmann/enginemaths.git

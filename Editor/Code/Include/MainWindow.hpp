@@ -7,6 +7,4 @@ class MainWindow
 public:
     MainWindow() = default;
     ~MainWindow() = default;
-
-    void SetupImGUIContext(Window a_window);
 };
