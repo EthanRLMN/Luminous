@@ -22,6 +22,7 @@ file(GLOB_RECURSE L_ENGINE_SOURCES "Code/*.cpp")
 set(L_TARGET_NAME L_ENGINE)
 
 
+
 #---------------------------------------#
 #            BUILD MODE                 #
 #---------------------------------------#
@@ -65,8 +66,6 @@ target_link_libraries(${L_TARGET_NAME} PUBLIC Vulkan::Vulkan glfw assimp L_LOGGE
 #---------------------------------------#
 #        EXPORTS / IMPORTS FOR DLL      #
 #---------------------------------------#
-target_compile_definitions(${L_TARGET_NAME} PRIVATE LUMINOUS_ENGINE_EXPORTS)
-
 # Disable lib prefix
 set_target_properties(${L_TARGET_NAME} PROPERTIES PREFIX "")
 
