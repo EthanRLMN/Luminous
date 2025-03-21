@@ -68,3 +68,6 @@ add_custom_command(
         ${CMAKE_CURRENT_SOURCE_DIR}/Assets
         $<TARGET_FILE_DIR:${LE_TARGET_NAME}>/Editor/Assets
 )
+
+# Force copy assets folder when building for visual studio because of issues caused by single-repository project
+file(COPY Assets DESTINATION ${CMAKE_BINARY_DIR}/Editor)

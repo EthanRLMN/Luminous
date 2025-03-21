@@ -57,7 +57,7 @@ goto :welcome
 echo Cleaning up project before building!
 ping 127.0.0.1 -n 1 > nul
 
-set folders=Builds Editor\Builds Engine\Builds Engine\Libs\assimp Engine\Libs\glfw Engine\Libs\logger Engine\Libs\luminousmaths
+set folders=Builds Editor\Builds Engine\Builds Engine\Libs\assimp Engine\Libs\glfw Engine\Libs\logger Engine\Libs\luminousmaths TEMP
 
 for %%d in (%folders%) do (
     if exist "%%d" (
@@ -82,10 +82,6 @@ ping 127.0.0.1 -n 1 > nul
 
 echo Generating Files!
 cmake --preset "VS_2022"
-echo File Generation Complete!
-ping 127.0.0.1 -n 1 > nul
-echo Building Files!
-cmake --build . --preset "VS_2022 Release"
 echo File Generation Complete!
 ping 127.0.0.1 -n 1 > nul
 echo Testing Executable!
