@@ -15,7 +15,7 @@ void VulkanSwapChain::Create(IWindow* a_window, IDevice* a_device, ISurface* a_s
 	const VkSurfaceFormatKHR l_surfaceFormat = ChooseBestSurfaceFormat(l_swapChainDetails.formats);
 	const VkPresentModeKHR l_presentMode = ChooseBestPresentationMode(l_swapChainDetails.presentationModes);
 	const VkExtent2D l_extent = ChooseSwapExtend(l_swapChainDetails.surfaceCapabilities,
-	                                             static_cast<VulkanWindow*>(a_window)->GetGLFWWindow());
+	                                             dynamic_cast<VulkanWindow*>(a_window)->GetGLFWWindow());
 
 	uint32_t l_imageCount = l_swapChainDetails.surfaceCapabilities.minImageCount + 1;
 	if (l_swapChainDetails.surfaceCapabilities.maxImageCount > 0 && l_swapChainDetails.surfaceCapabilities.maxImageCount

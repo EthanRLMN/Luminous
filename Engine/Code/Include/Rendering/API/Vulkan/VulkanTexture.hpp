@@ -34,7 +34,7 @@ public:
 
 
 	const std::string TEXTURE_PATH{
-		"Assets/Textures/Untitled312.png"
+		"Engine/Assets/Textures/Untitled312.png"
 	};
 
 	[[nodiscard]] VkImage GetTextureImage() const;

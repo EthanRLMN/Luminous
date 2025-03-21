@@ -32,7 +32,7 @@ add_library(${L_TARGET_NAME} STATIC ${L_ENGINE_SOURCES})
 #---------------------------------------#
 #                INCLUDE                #
 #---------------------------------------#
-target_include_directories(${L_TARGET_NAME} PUBLIC "Code/Include" "Code/Interface" "Libs/stb_image")
+target_include_directories(${L_TARGET_NAME} PUBLIC "Code/Include" "Code/Interface" "Libs/stb_image" "Libs/tinyobj")
 
 
 
@@ -84,6 +84,5 @@ add_custom_command(
         POST_BUILD
         COMMAND ${CMAKE_COMMAND} -E copy_directory
         ${CMAKE_CURRENT_SOURCE_DIR}/Assets
-        $<TARGET_FILE_DIR:${L_TARGET_NAME}>/Assets
-        ${L_OUTPUT_DIR}/Assets
+        ${L_OUTPUT_DIR}/Engine/Assets
 )

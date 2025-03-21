@@ -1,7 +1,5 @@
 #include "Rendering/API/Vulkan/VulkanInstance.hpp"
 
-#include <iostream>
-#include <stdexcept>
 #include <vector>
 
 #include "Rendering/API/Vulkan/VulkanValidationLayer.hpp"

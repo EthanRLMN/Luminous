@@ -1,7 +1,8 @@
+#pragma once
+
 #include "IModel.hpp"
 #include "tiny_obj_loader.h"
 #include "Struct/VulkanUtilities.hpp"
-#include <unordered_map>
 
 class VulkanModel final : public IModel {
 
@@ -11,7 +12,7 @@ public:
 
 	VulkanModel* CastVulkan() override { return this; }
 
-	const std::string MODEL_PATH{ "Assets/Models/metalSonic.obj" };
+	const std::string MODEL_PATH{ "Engine/Assets/Models/metalSonic.obj" };
 private:
 	std::vector<Vertex> vertices;
 	std::vector<uint32_t> indices;

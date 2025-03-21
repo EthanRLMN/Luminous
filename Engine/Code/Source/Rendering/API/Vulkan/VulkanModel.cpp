@@ -1,6 +1,8 @@
 #define TINYOBJLOADER_IMPLEMENTATION
 #include "Rendering/API/Vulkan/VulkanModel.hpp"
 
+#include <unordered_map>
+
 void VulkanModel::Create()
 {
 	tinyobj::attrib_t attrib;

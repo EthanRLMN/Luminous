@@ -7,8 +7,6 @@
 #include "Vector2.hpp"
 #include "Vector3.hpp"
 
-#include "glm/glm.hpp"
-
 /**
  * @brief How many frames should be rendererd ahead
  */
@@ -82,9 +80,9 @@ struct UniformBufferObject
 
 
 struct Vertex {
-    glm::vec3 pos;
-    glm::vec3 color;
-    glm::vec2 texCoord;
+    Maths::Vector3 pos = Maths::Vector3::Zero;
+    Maths::Vector3 color = Maths::Vector3::One;
+    Maths::Vector2 texCoord = Maths::Vector2::One;
 
     bool operator==(const Vertex& other) const noexcept {
         return pos == other.pos && texCoord == other.texCoord && color == other.color;
@@ -112,7 +110,7 @@ struct VertexHasher {
 
 struct UniformBufferObject
 {
-    alignas(16) glm::mat4 model;
-    alignas(16) glm::mat4 view;
-    alignas(16) glm::mat4 proj;
+    alignas(16) Maths::Matrix4 model;
+    alignas(16) Maths::Matrix4 view;
+    alignas(16) Maths::Matrix4 proj;
 };
