@@ -8,8 +8,8 @@ Application::Application()
 	l_logger.Init("app", 1_MiB, 5, true);
 
 
-	IModelLoader t_loader;
-	IModel l_cube = t_loader.LoadModel("Assets/Models/cube.fbx");
+	AssimpModelLoader t_loader;
+	AssimpModelDebugger l_cube = t_loader.LoadModel("Assets/Models/cube.fbx");
 	l_cube.DebugVertices();
 	l_cube.DebugIndices();
 

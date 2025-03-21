@@ -9,13 +9,13 @@
 #include "Rendering/API/Vulkan/VulkanDevice.hpp"
 #include "Rendering/API/Vulkan/VulkanFrameBuffer.hpp"
 #include "Rendering/API/Vulkan/VulkanInstance.hpp"
+#include "Rendering/API/Vulkan/VulkanModel.hpp"
 #include "Rendering/API/Vulkan/VulkanPipeline.hpp"
 #include "Rendering/API/Vulkan/VulkanRenderPass.hpp"
 #include "Rendering/API/Vulkan/VulkanSurface.hpp"
 #include "Rendering/API/Vulkan/VulkanSwapChain.hpp"
 #include "Rendering/API/Vulkan/VulkanSynchronization.hpp"
 #include "Rendering/API/Vulkan/VulkanTexture.hpp"
-#include "Rendering/API/Vulkan/VulkanModel.hpp"
 #include "Rendering/API/Vulkan/VulkanWindow.hpp"
 
 class VulkanRenderInterface final : public IRender

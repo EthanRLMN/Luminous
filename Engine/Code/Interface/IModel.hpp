@@ -4,7 +4,6 @@
 
 class VulkanModel;
 
-
 class IModel
 {
 public:
@@ -14,7 +13,7 @@ public:
 
 	virtual VulkanModel* CastVulkan()
 	{
-		DEBUG_LOG_ERROR("Vulkan Surface : Cast is Wrong!\n");
+		DEBUG_LOG_ERROR("Vulkan Model : Cast is Wrong!\n");
 		return nullptr;
 	}
 };

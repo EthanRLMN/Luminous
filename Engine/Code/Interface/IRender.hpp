@@ -8,13 +8,13 @@
 #include "IFrameBuffer.hpp"
 #include "IInputManager.hpp"
 #include "IInstance.hpp"
+#include "IModel.hpp"
 #include "IPipeline.hpp"
 #include "IRenderPass.hpp"
 #include "ISurface.hpp"
 #include "ISwapChain.hpp"
 #include "ISynchronization.hpp"
 #include "ITexture.hpp"
-#include "IModel.hpp"
 #include "IWindow.hpp"
 
 class IRender

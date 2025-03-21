@@ -58,7 +58,7 @@ set(CMAKE_POSITION_INDEPENDENT_CODE ON)
 set(CMAKE_C_EXTENSIONS OFF)
 set(CMAKE_CXX_EXTENSIONS OFF)
 
-target_link_libraries(${L_TARGET_NAME} PUBLIC Vulkan::Vulkan glfw L_LOGGER L_MATHS)
+target_link_libraries(${L_TARGET_NAME} PUBLIC Vulkan::Vulkan glfw assimp L_LOGGER L_MATHS)
 
 
 

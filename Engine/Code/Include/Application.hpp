@@ -3,7 +3,7 @@
 #include "IBuffer.hpp"
 #include "IRender.hpp"
 #include "ISynchronization.hpp"
-#include "ModelLoading/IModelLoader.hpp"
+#include "ModelLoading/AssimpModelLoader.hpp"
 
 class VulkanRenderInterface;
 
