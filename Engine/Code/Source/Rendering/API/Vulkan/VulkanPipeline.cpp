@@ -13,7 +13,7 @@
 #include <iostream>
 
 
-void VulkanPipeline::Create(IDevice* a_device, IRenderPass* a_renderPass, IDescriptionSetLayout* a_descriptionSetLayout)
+void VulkanPipeline::Create(IDevice* a_device, IRenderPass* a_renderPass, IDescriptorSetLayout* a_descriptionSetLayout)
 {
 	std::vector<char> l_vertexShaderCode = ReadFile("Engine/Assets/Shaders/vert.spv");
 	std::vector<char> l_fragmentShaderCode = ReadFile("Engine/Assets/Shaders/frag.spv");

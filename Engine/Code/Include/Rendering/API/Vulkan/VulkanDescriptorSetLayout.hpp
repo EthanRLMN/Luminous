@@ -3,9 +3,9 @@
 #define GLFW_INCLUDE_VULKAN
 #include <vulkan/vulkan.h>
 
-#include "IDescriptionSetLayout.hpp"
+#include "IDescriptorSetLayout.hpp"
 
-class VulkanDescriptorSetLayout final : public IDescriptionSetLayout
+class VulkanDescriptorSetLayout final : public IDescriptorSetLayout
 {
 public:
 	~VulkanDescriptorSetLayout() override = default;

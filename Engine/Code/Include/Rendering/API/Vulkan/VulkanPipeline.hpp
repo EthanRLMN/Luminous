@@ -8,7 +8,7 @@
 class VulkanPipeline final : public IPipeline
 {
 public:
-	void Create(IDevice* a_device, IRenderPass* a_renderPass, IDescriptionSetLayout* a_descriptionSetLayout) override;
+	void Create(IDevice* a_device, IRenderPass* a_renderPass, IDescriptorSetLayout* a_descriptionSetLayout) override;
 	void Destroy() override;
 
 

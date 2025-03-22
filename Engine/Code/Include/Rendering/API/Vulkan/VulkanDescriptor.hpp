@@ -9,7 +9,7 @@
 class VulkanDescriptor final : public IDescriptor
 {
 public:
-	void Create(IDevice* a_device, IDescriptionSetLayout* a_descriptionSetLayout, ITexture* a_texture) override;
+	void Create(IDevice* a_device, IDescriptorSetLayout* a_descriptorSetLayout, ITexture* a_texture) override;
 	void Destroy() override;
 
 	[[nodiscard]] VkDescriptorPool GetDescriptorPool() const { return m_descriptorPool; }
@@ -20,7 +20,7 @@ public:
 
 private:
 	void CreateDescriptorPool(IDevice* a_device);
-	void CreateDescriptorSets(IDevice* a_device, IDescriptionSetLayout* a_descriptionSetLayout, ITexture* a_texture);
+	void CreateDescriptorSets(IDevice* a_device, IDescriptorSetLayout* a_descriptorSetLayout, ITexture* a_texture);
 
 	VkDescriptorPool m_descriptorPool{VK_NULL_HANDLE};
 	std::vector<VkDescriptorSet> m_descriptorSets{VK_NULL_HANDLE};

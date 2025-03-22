@@ -4,10 +4,10 @@
 class VulkanDescriptorSetLayout;
 class IDevice;
 
-class IDescriptionSetLayout
+class IDescriptorSetLayout
 {
 public:
-    virtual ~IDescriptionSetLayout() = default;
+    virtual ~IDescriptorSetLayout() = default;
 
     virtual void Create(IDevice* a_device) = 0;
     virtual void Destroy() = 0;

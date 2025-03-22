@@ -14,6 +14,7 @@ public:
 	virtual ~IBuffer() = default;
 
 	virtual void Create(IDevice* a_device, ITexture* a_texture, ICommandPool* a_commandPool, IDepthResource* a_depthResource) = 0;
+	virtual void SendData(const void* a_data, size_t a_size) = 0;
 	virtual void Destroy() = 0;
 
 	virtual VulkanBuffer* CastVulkan()

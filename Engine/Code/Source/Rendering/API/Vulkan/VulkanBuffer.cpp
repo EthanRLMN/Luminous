@@ -7,12 +7,35 @@ void VulkanBuffer::Create(IDevice* a_device, ITexture* a_texture, ICommandPool* 
 	CreateVertexBuffers(a_device, a_texture, a_commandPool, a_depthResource);
 	CreateIndexBuffers(a_device, a_texture, a_commandPool, a_depthResource);
 	CreateUniformBuffers(a_device, a_texture, a_depthResource);
+}
 
+void VulkanBuffer::Init(const size_t a_size, const VkBufferUsageFlags a_usage, const VmaMemoryUsage a_memUsage, const VmaAllocator a_memAllocator)
+{
+	VkBufferCreateInfo l_bufferInfo{};
+	l_bufferInfo.sType = VK_STRUCTURE_TYPE_BUFFER_CREATE_INFO;
+	l_bufferInfo.size = a_size;
+	l_bufferInfo.usage = a_usage;
+	l_bufferInfo.sharingMode = VK_SHARING_MODE_EXCLUSIVE;
+
+	VmaAllocationCreateInfo l_allocInfo{};
+	l_allocInfo.usage = a_memUsage;
+
+	if (vmaCreateBuffer(a_memAllocator, &l_bufferInfo, &l_allocInfo, &m_buffer, &m_allocation, nullptr) != VK_SUCCESS)
+		DEBUG_LOG_ERROR("Vulkan Buffer : Buffer creation failed!\n");
+}
+
+void VulkanBuffer::SendData(const void* a_data, const size_t a_size)
+{
+	void* l_mappedData = nullptr;
+	vmaMapMemory(m_allocator, m_allocation, &l_mappedData);
+	memcpy(l_mappedData, a_data, a_size);
+	vmaUnmapMemory(m_allocator, m_allocation);
 }
 
 void VulkanBuffer::Destroy()
 {
-	DEBUG_LOG_ERROR("Vulkan Buffer : Buffer created!\n");
+	vmaDestroyBuffer(m_allocator, m_buffer, m_allocation);
+	DEBUG_LOG_ERROR("Vulkan Buffer : Buffer destroyed!\n");
 }
 
 void VulkanBuffer::CreateVertexBuffers(IDevice* a_device, ITexture* a_texture, ICommandPool* a_commandPool, IDepthResource* a_depthResource)

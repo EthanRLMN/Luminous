@@ -3,10 +3,10 @@
 #include "ITexture.hpp"
 #include "Rendering/API/Vulkan/VulkanTexture.hpp"
 
-void VulkanDescriptor::Create(IDevice* a_device, IDescriptionSetLayout* a_descriptionSetLayout, ITexture* a_texture)
+void VulkanDescriptor::Create(IDevice* a_device, IDescriptorSetLayout* a_descriptorSetLayout, ITexture* a_texture)
 {
 	CreateDescriptorPool(a_device);
-	CreateDescriptorSets(a_device, a_descriptionSetLayout, a_texture);
+	CreateDescriptorSets(a_device, a_descriptorSetLayout, a_texture);
 }
 
 void VulkanDescriptor::Destroy()
@@ -32,11 +32,9 @@ void VulkanDescriptor::CreateDescriptorPool(IDevice* a_device)
 		DEBUG_LOG_ERROR("Failed to create descriptor pool\n");
 }
 
-void VulkanDescriptor::CreateDescriptorSets(IDevice* a_device, IDescriptionSetLayout* a_descriptionSetLayout,
-                                            ITexture* a_texture)
+void VulkanDescriptor::CreateDescriptorSets(IDevice* a_device, IDescriptorSetLayout* a_descriptorSetLayout, ITexture* a_texture)
 {
-	const std::vector<VkDescriptorSetLayout> l_layouts(MAX_FRAMES_IN_FLIGHT,
-	                                             a_descriptionSetLayout->CastVulkan()->GetDescriptorSetLayout());
+	const std::vector<VkDescriptorSetLayout> l_layouts(MAX_FRAMES_IN_FLIGHT, a_descriptorSetLayout->CastVulkan()->GetDescriptorSetLayout());
 
 	VkDescriptorSetAllocateInfo l_allocateInfo{};
 

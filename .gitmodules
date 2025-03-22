@@ -11,3 +11,6 @@
 [submodule "Engine/Libs/luminousmaths"]
 	path = Engine/Libs/luminousmaths
 	url = git@gitlabstudents.isartintra.com:e.ruhlmann/enginemaths.git
+[submodule "Engine/Libs/vulkanmemoryallocator"]
+	path = Engine/Libs/vulkanmemoryallocator
+	url = https://github.com/GPUOpen-LibrariesAndSDKs/VulkanMemoryAllocator.git

@@ -27,8 +27,7 @@ void VulkanDescriptorSetLayout::Create(IDevice* a_device)
 	l_layoutInfo.pBindings = l_bindings.data();
 
 	//Create Descriptor SetLayout
-	const VkResult l_result = vkCreateDescriptorSetLayout(a_device->CastVulkan()->GetDevice(), &l_layoutInfo, nullptr,
-	                                                      &m_descriptorSetLayout);
+	const VkResult l_result = vkCreateDescriptorSetLayout(a_device->CastVulkan()->GetDevice(), &l_layoutInfo, nullptr, &m_descriptorSetLayout);
 	if (l_result != VK_SUCCESS)
 		DEBUG_LOG_ERROR("Vulkan Descriptor : Failed to create a descriptor set layout!\n");
 }

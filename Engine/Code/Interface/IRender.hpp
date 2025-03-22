@@ -7,7 +7,7 @@
 #include "IDevice.hpp"
 #include "ISwapChain.hpp"
 #include "IRenderPass.hpp"
-#include "IDescriptionSetLayout.hpp"
+#include "IDescriptorSetLayout.hpp"
 #include "IPipeline.hpp"
 #include "ICommandPool.hpp"
 #include "IDepthResource.hpp"
@@ -42,7 +42,7 @@ public:
 	virtual IDevice* InstantiateDevice() = 0;
 	virtual ISwapChain* InstantiateSwapChain() = 0;
 	virtual IRenderPass* InstantiateRenderPass() = 0;
-	virtual IDescriptionSetLayout* InstantiateDescriptionSetLayout() = 0;
+	virtual IDescriptorSetLayout* InstantiateDescriptorSetLayout() = 0;
 	virtual IPipeline* InstantiatePipeline() = 0;
 	virtual ICommandPool* InstantiateCommandPool() = 0;
 	virtual IDepthResource* InstantiateDepthResource() = 0;
@@ -64,7 +64,7 @@ public:
 	virtual void DeleteDevice(IDevice* a_device) { delete a_device; }
 	virtual void DeleteSwapChain(ISwapChain* a_swapChain) { delete a_swapChain; }
 	virtual void DeleteRenderPass(IRenderPass* a_renderPass) { delete a_renderPass; }
-	virtual void DeleteDescriptionSetLayout(IDescriptionSetLayout* a_descriptionSetLayout) { delete a_descriptionSetLayout; }
+	virtual void DeleteDescriptionSetLayout(IDescriptorSetLayout* a_descriptionSetLayout) { delete a_descriptionSetLayout; }
 	virtual void DeletePipeline(IPipeline* a_pipeline) { delete a_pipeline; }
 	virtual void DeleteCommandPool(ICommandPool* a_commandPool) { delete a_commandPool; }
 	virtual void DeleteDepthResource(IDepthResource* a_depthResource) { delete a_depthResource; }
