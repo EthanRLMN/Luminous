@@ -9,7 +9,7 @@ static std::vector<char> ReadFile(const std::string& filename)
     std::ifstream file(filename, std::ios::binary | std::ios::ate);
 
     if (!file.is_open())
-        throw std::runtime_error("Failed to open file");
+        throw std::runtime_error("Failed to open file " + filename);
 
     const size_t fileSize = static_cast<size_t>(file.tellg());
     std::vector<char> fileBuffer(fileSize);
@@ -17,6 +17,8 @@ static std::vector<char> ReadFile(const std::string& filename)
     file.seekg(0);
     file.read(fileBuffer.data(), fileSize);
     file.close();
+
+    DEBUG_LOG_VERBOSE("File {} opened successfully!", filename);
 
     return fileBuffer;
 }
