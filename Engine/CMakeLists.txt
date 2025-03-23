@@ -33,7 +33,7 @@ add_library(${L_TARGET_NAME} STATIC ${L_ENGINE_SOURCES})
 #---------------------------------------#
 #                INCLUDE                #
 #---------------------------------------#
-target_include_directories(${L_TARGET_NAME} PUBLIC "Code/Include" "Code/Interface" "Libs/stb_image" "Libs/tinyobj")
+target_include_directories(${L_TARGET_NAME} PUBLIC "Code/Include" "Code/Interface" "Libs/stb_image" "Libs/tinyobj" "Libs/vulkanmemoryallocator/include")
 
 
 
@@ -71,7 +71,6 @@ set_target_properties(${L_TARGET_NAME} PROPERTIES PREFIX "")
 
 # Set dll name
 set_target_properties(${L_TARGET_NAME} PROPERTIES OUTPUT_NAME "${PROJECT_NAME}-${PROJECT_VERSION}")
-
 
 
 #---------------------------------------#
