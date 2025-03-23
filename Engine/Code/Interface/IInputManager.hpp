@@ -1,7 +1,5 @@
 #pragma once
 
-#include <iostream>
-
 #include "Logger.hpp"
 #include "Vector2.hpp"
 #include "Utils/InputWrapperUtils.hpp"

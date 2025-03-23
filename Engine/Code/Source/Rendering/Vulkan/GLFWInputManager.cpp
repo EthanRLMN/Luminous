@@ -3,11 +3,11 @@
 #include "IWindow.hpp"
 #include "Rendering/Vulkan/VulkanWindow.hpp"
 
-std::array<int, 400> GLFWInputManager::m_keyPressed{};
-std::array<Action, 400> GLFWInputManager::m_keyStatus{};
+std::array<int, 120> GLFWInputManager::m_keyPressed{};
+std::array<Action, 3> GLFWInputManager::m_keyStatus{};
 
-std::array<Action, 17> GLFWInputManager::m_mouseButtonStatus{};
-std::array<int, 17> GLFWInputManager::m_mouseButtonPressed{};
+std::array<int, 12> GLFWInputManager::m_mouseButtonPressed{};
+std::array<Action, 3> GLFWInputManager::m_mouseButtonStatus{};
 
 std::array<int, 2> GLFWInputManager::m_mouseScroll{};
 
@@ -38,13 +38,13 @@ int GLFWInputManager::IsKeyPressed(IWindow* a_window, const Key a_key)
 	return false;
 }
 
-void GLFWInputManager::KeyCallback(GLFWwindow* a_window, const int a_key, int a_scancode, const int a_action,
-                                   int a_mods)
+void GLFWInputManager::KeyCallback(GLFWwindow* a_window, const int a_key, int a_scancode, const int a_action, int a_mods)
 {
-	if (static_cast<Action>(a_action) == Action::RELEASE)
+	const Action l_keyAction = static_cast<Action>(a_action);
+	if (l_keyAction == Action::RELEASE)
 		m_keyPressed[a_key] = 0;
 
-	m_keyStatus[a_key] = static_cast<Action>(a_action);
+	m_keyStatus[a_key] = l_keyAction;
 }
 
 int GLFWInputManager::IsMouseButtonUp(IWindow* a_window, const MouseButton a_button)
@@ -76,9 +76,11 @@ int GLFWInputManager::IsMouseButtonPressed(IWindow* a_window, const MouseButton 
 
 void GLFWInputManager::MouseButtonCallback(GLFWwindow* a_window, const int a_button, const int a_action, int a_mods)
 {
-	if (static_cast<Action>(a_action) == Action::RELEASE)
+	const Action l_buttonAction = static_cast<Action>(a_action);
+	if (l_buttonAction == Action::RELEASE)
 		m_mouseButtonPressed[a_button] = 0;
-	m_mouseButtonStatus[a_button] = static_cast<Action>(a_action);
+
+	m_mouseButtonStatus[a_button] = l_buttonAction;
 }
 
 void GLFWInputManager::MouseScrollCallback(GLFWwindow* a_window, const double a_xOffset, const double a_yOffset)
@@ -86,7 +88,6 @@ void GLFWInputManager::MouseScrollCallback(GLFWwindow* a_window, const double a_
 	m_mouseScroll[0] = static_cast<int>(a_xOffset);
 	m_mouseScroll[1] = static_cast<int>(a_yOffset);
 }
-
 
 Maths::Vector2 GLFWInputManager::GetCursorPosition(IWindow* a_window)
 {

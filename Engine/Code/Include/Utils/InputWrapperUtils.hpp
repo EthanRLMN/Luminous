@@ -75,8 +75,6 @@ enum class Key
     KEY_GRAVE_ACCENT = 96, /* ` */
     KEY_WORLD_1 = 161, /* non-US #1 */
     KEY_WORLD_2 = 162, /* non-US #2 */
-
-    /* Function keys */
     KEY_ESCAPE = 256,
     KEY_ENTER = 257,
     KEY_TAB = 258,
@@ -147,5 +145,4 @@ enum class Key
     KEY_RIGHT_ALT = 346,
     KEY_RIGHT_SUPER = 347,
     KEY_MENU = 348,
-    KEY_COUNT
 };
