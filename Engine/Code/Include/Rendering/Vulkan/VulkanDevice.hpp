@@ -3,8 +3,10 @@
 #include <vulkan/vulkan.h>
 
 #include "IDevice.hpp"
-#include "Utilities.hpp"
+
 #include "Struct/VulkanUtilities.hpp"
+
+#include "Utils/QueueFamilyIndiceUtils.hpp"
 
 class VulkanDevice final : public IDevice
 {

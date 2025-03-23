@@ -1,8 +1,8 @@
 #include "IWindow.hpp"
 
 #include "Rendering/Vulkan/VulkanSwapChain.hpp"
+#include "Rendering/GLFW/GLFWWindow.hpp"
 #include "Rendering/Vulkan/VulkanDevice.hpp"
-#include "Rendering/Vulkan/VulkanWindow.hpp"
 
 void VulkanSwapChain::Create(IWindow* a_window, IDevice* a_device, ISurface* a_surface)
 {
@@ -15,14 +15,11 @@ void VulkanSwapChain::Create(IWindow* a_window, IDevice* a_device, ISurface* a_s
 	const VkSurfaceFormatKHR l_surfaceFormat = ChooseBestSurfaceFormat(l_swapChainDetails.formats);
 	const VkPresentModeKHR l_presentMode = ChooseBestPresentationMode(l_swapChainDetails.presentationModes);
 	const VkExtent2D l_extent = ChooseSwapExtend(l_swapChainDetails.surfaceCapabilities,
-	                                             dynamic_cast<VulkanWindow*>(a_window)->GetGLFWWindow());
+	                                             dynamic_cast<GLFWWindow*>(a_window)->GetGLFWWindow());
 
 	uint32_t l_imageCount = l_swapChainDetails.surfaceCapabilities.minImageCount + 1;
-	if (l_swapChainDetails.surfaceCapabilities.maxImageCount > 0 && l_swapChainDetails.surfaceCapabilities.maxImageCount
-	    < l_imageCount)
-	{
+	if (l_swapChainDetails.surfaceCapabilities.maxImageCount > 0 && l_swapChainDetails.surfaceCapabilities.maxImageCount < l_imageCount)
 		l_imageCount = l_swapChainDetails.surfaceCapabilities.maxImageCount;
-	}
 
 	VkSwapchainCreateInfoKHR l_swapChainCreateInfo = {};
 	l_swapChainCreateInfo.sType = VK_STRUCTURE_TYPE_SWAPCHAIN_CREATE_INFO_KHR;
@@ -74,9 +71,7 @@ void VulkanSwapChain::Create(IWindow* a_window, IDevice* a_device, ISurface* a_s
 	m_swapChainImageViews.resize(m_swapChainImages.size());
 
 	for (uint32_t i = 0; i < m_swapChainImages.size(); ++i)
-	{
 		m_swapChainImageViews[i] = CreateImageView(m_swapChainImages[i], l_vkDevice, m_swapChainImageFormat, VK_IMAGE_ASPECT_COLOR_BIT);
-	}
 
 	DEBUG_LOG_INFO("Vulkan SwapChain : SwapChain created!\n");
 }
@@ -85,7 +80,6 @@ void VulkanSwapChain::Destroy(IDevice* a_device)
 {
 	DEBUG_LOG_INFO("Vulkan SwapChain : SwapChain destroyed!\n");
 }
-
 
 SwapChainDetails VulkanSwapChain::GetSwapChainDetails(const VkPhysicalDevice a_device, const VkSurfaceKHR a_surface)
 {
@@ -214,8 +208,8 @@ VkImageView VulkanSwapChain::CreateImageView(const VkImage a_image, const VkDevi
 
 
 	VkImageView l_imageView{};
-	if (const VkResult l_result = vkCreateImageView(a_device, &l_viewCreateInfo, nullptr, &l_imageView);
-		l_result != VK_SUCCESS)
+	const VkResult l_result = vkCreateImageView(a_device, &l_viewCreateInfo, nullptr, &l_imageView);
+	if (l_result != VK_SUCCESS)
 		throw std::runtime_error("Failed to create an image View!");
 
 	return l_imageView;

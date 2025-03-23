@@ -3,8 +3,9 @@
 #include "Logger.hpp"
 #include "Struct/VulkanUtilities.hpp"
 
+#include "Utils/FileReaderUtils.hpp"
+
 #include "Rendering/Vulkan/VulkanPipeline.hpp"
-#include "Rendering/Vulkan/Utilities.hpp"
 #include "Rendering/Vulkan/VulkanDescriptorSetLayout.hpp"
 #include "Rendering/Vulkan/VulkanDevice.hpp"
 #include "Rendering/Vulkan/VulkanRenderPass.hpp"

@@ -5,7 +5,7 @@
 #include "imgui/backends/imgui_impl_glfw.h"
 #include "imgui/backends/imgui_impl_vulkan.h"
 
-#include "Rendering/Vulkan/VulkanWindow.hpp"
+#include "Rendering/GLFW/GLFWWindow.hpp"
 
 void Destroy()
 {

@@ -5,7 +5,7 @@
 #include "Vector2.hpp"
 #include "Logger.hpp"
 
-class VulkanWindow;
+class GLFWWindow;
 
 class IWindow
 {
@@ -25,7 +25,7 @@ public:
 	virtual const std::string GetTitle() = 0;
 	virtual void SetTitle(const std::string& a_name) = 0;
 
-	virtual VulkanWindow* CastVulkan()
+	virtual GLFWWindow* CastVulkan()
 	{
 		DEBUG_LOG_INFO("Wrong Cast\n");
 		return nullptr;

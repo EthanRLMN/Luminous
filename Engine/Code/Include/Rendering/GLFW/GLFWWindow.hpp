@@ -5,7 +5,7 @@
 #include <Vector2.hpp>
 #include <GLFW/glfw3.h>
 
-class VulkanWindow final : public IWindow
+class GLFWWindow final : public IWindow
 {
 public:
     void Initialize(const std::string& a_name, int a_width, int a_height) override;
@@ -21,7 +21,7 @@ public:
     const std::string GetTitle() override;
     void SetTitle(const std::string& a_name) override;
 
-    VulkanWindow* CastVulkan() override { return this; }
+    GLFWWindow* CastVulkan() override { return this; }
 
     [[nodiscard]] GLFWwindow* GetGLFWWindow() const { return m_window; }
 

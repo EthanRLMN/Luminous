@@ -2,8 +2,8 @@
 
 #include "IRender.hpp"
 
-#include "GLFWInputManager.hpp"
-#include "Rendering/Vulkan/VulkanWindow.hpp"
+#include "Rendering/GLFW/GLFWInputManager.hpp"
+#include "Rendering/GLFW/GLFWWindow.hpp"
 
 #include "VulkanDescriptorSetLayout.hpp"
 #include "Rendering/Vulkan/VulkanBuffer.hpp"
@@ -26,7 +26,7 @@ class VulkanRenderInterface final : public IRender
 {
 public:
 
-	inline IWindow* InstantiateWindow() override { return new VulkanWindow(); }
+	__forceinline IWindow* InstantiateWindow() override { return new GLFWWindow(); }
 	void DeleteWindow(IWindow* a_window) override { delete a_window; }
 
 	inline IInputManager* InstantiateInputManager() override { return new GLFWInputManager(); }

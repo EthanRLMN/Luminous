@@ -1,9 +1,7 @@
+#include "IDevice.hpp"
 #include "ISurface.hpp"
 
 #include "Rendering/Vulkan/VulkanCommandPool.hpp"
-
-#include "IDevice.hpp"
-#include "Rendering/Vulkan/Utilities.hpp"
 #include "Rendering/Vulkan/VulkanDevice.hpp"
 #include "Rendering/Vulkan/VulkanSurface.hpp"
 

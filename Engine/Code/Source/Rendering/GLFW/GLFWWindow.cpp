@@ -1,8 +1,8 @@
 #include <iostream>
 
-#include "Rendering/Vulkan/VulkanWindow.hpp"
+#include "Rendering/GLFW/GLFWWindow.hpp"
 
-void VulkanWindow::Initialize(const std::string& a_name, const int a_width, const int a_height)
+void GLFWWindow::Initialize(const std::string& a_name, const int a_width, const int a_height)
 {
     glfwInit();
     glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
@@ -19,61 +19,61 @@ void VulkanWindow::Initialize(const std::string& a_name, const int a_width, cons
         DEBUG_LOG_ERROR("Vulkan Window : Creation failed!\n");
 }
 
-void VulkanWindow::Update() const
+void GLFWWindow::Update() const
 {
     while (!ShouldClose())
     {
         PollEvents();
     }
+
     Destroy();
 }
 
-void VulkanWindow::PollEvents() const
+void GLFWWindow::PollEvents() const
 {
     glfwPollEvents();
 }
 
-bool VulkanWindow::ShouldClose() const
+bool GLFWWindow::ShouldClose() const
 {
     return glfwWindowShouldClose(m_window);
 }
 
-void VulkanWindow::Destroy() const
+void GLFWWindow::Destroy() const
 {
     glfwDestroyWindow(m_window);
     glfwTerminate();
 }
 
-Maths::Vector2 VulkanWindow::GetSize()
+Maths::Vector2 GLFWWindow::GetSize()
 {
     int t_x, t_y;
     glfwGetWindowSize(m_window, &t_x, &t_y);
     return Maths::Vector2(static_cast<float>(t_x), static_cast<float>(t_y));
 }
 
-void VulkanWindow::SetSize(const Maths::Vector2 a_size)
+void GLFWWindow::SetSize(const Maths::Vector2 a_size)
 {
     glfwSetWindowSize(m_window, static_cast<int>(a_size.x), static_cast<int>(a_size.y));
 }
 
-float VulkanWindow::GetOpacity()
+float GLFWWindow::GetOpacity()
 {
     return glfwGetWindowOpacity(m_window);
 }
 
-void VulkanWindow::SetOpacity(const float a_alpha)
+void GLFWWindow::SetOpacity(const float a_alpha)
 {
     glfwSetWindowOpacity(m_window, a_alpha);
 }
 
-const std::string VulkanWindow::GetTitle()
+const std::string GLFWWindow::GetTitle()
 {
     std::string t_str = glfwGetWindowTitle(m_window);
     return t_str;
 }
 
-void VulkanWindow::SetTitle(const std::string& a_name)
+void GLFWWindow::SetTitle(const std::string& a_name)
 {
     glfwSetWindowTitle(m_window,a_name.c_str());
 }
-
