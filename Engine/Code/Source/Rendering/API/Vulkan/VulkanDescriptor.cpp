@@ -47,6 +47,8 @@ void VulkanDescriptor::CreateDescriptorSets(IDevice* a_device, IDescriptorSetLay
 	if (vkAllocateDescriptorSets(a_device->CastVulkan()->GetDevice(), &l_allocateInfo, m_descriptorSets.data()) != VK_SUCCESS)
 		DEBUG_LOG_ERROR("failed to allocate descriptor sets !\n");
 
+
+	// TODO : Fix buffer implementation using VulkanMemoryAllocator
 	for (size_t i = 0; i < MAX_FRAMES_IN_FLIGHT; ++i)
 	{
 		VkDescriptorBufferInfo l_bufferInfo{};
