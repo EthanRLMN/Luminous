@@ -1,6 +1,6 @@
-#include "Rendering/API/Vulkan/VulkanWindow.hpp"
-
 #include <iostream>
+
+#include "Rendering/Vulkan/VulkanWindow.hpp"
 
 void VulkanWindow::Initialize(const std::string& a_name, const int a_width, const int a_height)
 {

@@ -1,12 +1,12 @@
-#include "Rendering/API/Vulkan/VulkanRenderPass.hpp"
-
 #include <array>
 #include <vector>
 
 #include "IDevice.hpp"
 #include "ISwapChain.hpp"
-#include "Rendering/API/Vulkan/VulkanDevice.hpp"
-#include "Rendering/API/Vulkan/VulkanSwapChain.hpp"
+
+#include "Rendering/Vulkan/VulkanRenderPass.hpp"
+#include "Rendering/Vulkan/VulkanDevice.hpp"
+#include "Rendering/Vulkan/VulkanSwapChain.hpp"
 
 void VulkanRenderPass::Create(ISwapChain* a_swapChain, IDevice* a_device)
 {

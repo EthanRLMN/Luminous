@@ -1,10 +1,9 @@
 #pragma once
 
-#include "ISynchronization.hpp"
-#include <vulkan/vulkan.hpp>
-#include "Struct/VulkanUtilities.hpp"
-#include "Rendering/API/Vulkan/VulkanDevice.hpp"
 #include <vector>
+#include <vulkan/vulkan.h>
+
+#include "ISynchronization.hpp"
 
 class VulkanSynchronization final : public ISynchronization
 {
@@ -19,7 +18,6 @@ public:
 	[[nodiscard]] std::vector<VkFence>  GetFences() const { return m_fences; }
 
 private:
-
 	std::vector<VkSemaphore> m_imageAvailableSemaphores{ VK_NULL_HANDLE };
 	std::vector<VkSemaphore> m_renderFinishedSemaphores{ VK_NULL_HANDLE };
 	std::vector<VkFence> m_fences{ VK_NULL_HANDLE };

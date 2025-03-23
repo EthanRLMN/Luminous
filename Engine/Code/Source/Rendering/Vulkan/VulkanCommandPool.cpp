@@ -1,12 +1,15 @@
-#include "Rendering/API/Vulkan/VulkanCommandPool.hpp"
-
 #include "ISurface.hpp"
-#include "Rendering/API/Vulkan/VulkanSurface.hpp"
+
+#include "Rendering/Vulkan/VulkanCommandPool.hpp"
+
+#include "IDevice.hpp"
+#include "Rendering/Vulkan/Utilities.hpp"
+#include "Rendering/Vulkan/VulkanDevice.hpp"
+#include "Rendering/Vulkan/VulkanSurface.hpp"
 
 void VulkanCommandPool::Create(IDevice* a_device, ISurface* a_surface)
 {
 	const QueueFamilyIndices l_queueFamilyIndices = a_device->CastVulkan()->GetQueueFamilies(a_device->CastVulkan()->GetPhysicalDevice(), a_surface->CastVulkan()->GetSurface());
-
 	VkCommandPoolCreateInfo l_poolInfo = {};
 	l_poolInfo.sType = VK_STRUCTURE_TYPE_COMMAND_POOL_CREATE_INFO;
 	l_poolInfo.queueFamilyIndex = l_queueFamilyIndices.graphicsFamily;

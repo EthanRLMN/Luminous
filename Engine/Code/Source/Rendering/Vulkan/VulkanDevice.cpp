@@ -1,15 +1,14 @@
-#include "Rendering/API/Vulkan/VulkanDevice.hpp"
-
 #include <iostream>
 #include <set>
 #include <vector>
 
 #include "IInstance.hpp"
 #include "ISurface.hpp"
-#include "Rendering/API/Vulkan/VulkanInstance.hpp"
-#include "Rendering/API/Vulkan/VulkanSurface.hpp"
 
-#include "Rendering/API/Vulkan/VulkanValidationLayer.hpp"
+#include "Rendering/Vulkan/VulkanDevice.hpp"
+#include "Rendering/Vulkan/VulkanInstance.hpp"
+#include "Rendering/Vulkan/VulkanSurface.hpp"
+#include "Rendering/Vulkan/VulkanValidationLayer.hpp"
 
 void VulkanDevice::Create(IInstance* a_instance, IWindow* a_window, ISurface* a_surface)
 {
@@ -34,7 +33,6 @@ void VulkanDevice::CreateLogicalDevice(const VkSurfaceKHR a_surface, VkInstance 
 
 
 	float l_priority = 1.0f;
-
 	for (int l_queueFamilyIndex: l_queueFamilyIndices)
 	{
 		VkDeviceQueueCreateInfo l_queueCreateInfo = {};

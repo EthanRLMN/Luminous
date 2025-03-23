@@ -1,8 +1,8 @@
 #include "IWindow.hpp"
 
-#include "Rendering/API/Vulkan/VulkanSwapChain.hpp"
-#include "Rendering/API/Vulkan/VulkanDevice.hpp"
-#include "Rendering/API/Vulkan/VulkanWindow.hpp"
+#include "Rendering/Vulkan/VulkanSwapChain.hpp"
+#include "Rendering/Vulkan/VulkanDevice.hpp"
+#include "Rendering/Vulkan/VulkanWindow.hpp"
 
 void VulkanSwapChain::Create(IWindow* a_window, IDevice* a_device, ISurface* a_surface)
 {

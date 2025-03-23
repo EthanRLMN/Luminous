@@ -1,4 +1,4 @@
-#include "Rendering/API/Vulkan/VulkanCommandBuffer.hpp"
+#include "Rendering/Vulkan/VulkanCommandBuffer.hpp"
 
 void VulkanCommandBuffer::Create(IDevice* a_device, ISwapChain* a_swapChain, ICommandPool* a_commandPool)
 {

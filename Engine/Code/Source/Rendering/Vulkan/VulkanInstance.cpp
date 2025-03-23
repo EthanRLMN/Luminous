@@ -1,8 +1,7 @@
-#include "Rendering/API/Vulkan/VulkanInstance.hpp"
-
 #include <vector>
 
-#include "Rendering/API/Vulkan/VulkanValidationLayer.hpp"
+#include "Rendering/Vulkan/VulkanInstance.hpp"
+#include "Rendering/Vulkan/VulkanValidationLayer.hpp"
 
 void VulkanInstance::CreateInstance()
 {

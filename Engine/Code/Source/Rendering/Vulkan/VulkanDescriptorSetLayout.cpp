@@ -1,7 +1,7 @@
 #include <array>
 
-#include "Rendering/API/Vulkan/VulkanDescriptorSetLayout.hpp"
-#include "Rendering/API/Vulkan/VulkanDevice.hpp"
+#include "Rendering/Vulkan/VulkanDescriptorSetLayout.hpp"
+#include "Rendering/Vulkan/VulkanDevice.hpp"
 
 void VulkanDescriptorSetLayout::Create(IDevice* a_device)
 {

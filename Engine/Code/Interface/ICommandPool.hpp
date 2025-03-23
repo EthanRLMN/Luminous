@@ -1,13 +1,10 @@
 #pragma once
-#include <iostream>
 
 #include "Logger.hpp"
-
 
 class VulkanCommandPool;
 class IDevice;
 class ISurface;
-
 
 class ICommandPool
 {

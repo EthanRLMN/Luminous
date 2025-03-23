@@ -1,7 +1,11 @@
-#include "Rendering/API/Vulkan/VulkanDescriptor.hpp"
-
 #include "ITexture.hpp"
-#include "Rendering/API/Vulkan/VulkanTexture.hpp"
+
+#include "Rendering/Vulkan/VulkanDescriptor.hpp"
+
+#include "IDevice.hpp"
+#include "Rendering/Vulkan/VulkanDevice.hpp"
+#include "Rendering/Vulkan/VulkanTexture.hpp"
+#include "Struct/VulkanUtilities.hpp"
 
 void VulkanDescriptor::Create(IDevice* a_device, IDescriptorSetLayout* a_descriptorSetLayout, ITexture* a_texture)
 {

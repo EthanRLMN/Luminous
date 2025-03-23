@@ -1,28 +1,35 @@
-#include "Rendering/API/Vulkan/VulkanDepthResource.hpp"
+#include "Rendering/Vulkan/VulkanDepthResource.hpp"
+
+#include "IDevice.hpp"
+#include "IRenderPass.hpp"
+#include "ISwapChain.hpp"
+#include "Rendering/Vulkan/VulkanDevice.hpp"
+#include "Rendering/Vulkan/VulkanRenderPass.hpp"
+#include "Rendering/Vulkan/VulkanSwapChain.hpp"
 
 
 void VulkanDepthResource::Create(IDevice* a_device, ISwapChain* a_swapChain, IRenderPass* a_renderPass)
 {
-	const VkFormat l_depthFormat = a_renderPass->CastVulkan()->FindDepthFormat(
-		a_device->CastVulkan()->GetPhysicalDevice());
+	const VkFormat l_depthFormat = a_renderPass->CastVulkan()->FindDepthFormat(a_device->CastVulkan()->GetPhysicalDevice());
 
 	CreateImage(a_device->CastVulkan()->GetDevice(), a_device->CastVulkan()->GetPhysicalDevice(),
 	            a_swapChain->CastVulkan()->GetSwapChainExtent().width,
 	            a_swapChain->CastVulkan()->GetSwapChainExtent().height, l_depthFormat, VK_IMAGE_TILING_OPTIMAL,
 	            VK_IMAGE_USAGE_DEPTH_STENCIL_ATTACHMENT_BIT, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT, m_depthImage,
 	            m_depthImageMemory);
-	m_depthImageView = a_swapChain->CastVulkan()->CreateImageView(m_depthImage, a_device->CastVulkan()->GetDevice(),
-	                                                              l_depthFormat, VK_IMAGE_ASPECT_DEPTH_BIT);
+
+	m_depthImageView = a_swapChain->CastVulkan()->CreateImageView(m_depthImage, a_device->CastVulkan()->GetDevice(), l_depthFormat, VK_IMAGE_ASPECT_DEPTH_BIT);
 }
 
 void VulkanDepthResource::Destroy()
 {
 }
 
-
-void VulkanDepthResource::CreateImage(VkDevice a_device, VkPhysicalDevice a_physicalDevice, uint32_t a_width,
-                                      uint32_t a_height, VkFormat a_format, VkImageTiling a_tiling,
-                                      VkImageUsageFlags a_usage, VkMemoryPropertyFlags a_properties, VkImage& a_image,
+void VulkanDepthResource::CreateImage(const VkDevice a_device, const VkPhysicalDevice a_physicalDevice,
+                                      const uint32_t a_width,
+                                      const uint32_t a_height, const VkFormat a_format, const VkImageTiling a_tiling,
+                                      const VkImageUsageFlags a_usage, const VkMemoryPropertyFlags a_properties,
+                                      VkImage& a_image,
                                       VkDeviceMemory& a_imageMemory)
 {
 	VkImageCreateInfo l_imageInfo{};
@@ -40,13 +47,10 @@ void VulkanDepthResource::CreateImage(VkDevice a_device, VkPhysicalDevice a_phys
 	l_imageInfo.samples = VK_SAMPLE_COUNT_1_BIT;
 	l_imageInfo.sharingMode = VK_SHARING_MODE_EXCLUSIVE;
 
-
 	if (vkCreateImage(a_device, &l_imageInfo, nullptr, &a_image) != VK_SUCCESS)
-	{
 		DEBUG_LOG_ERROR("Vulkan DepthResource : Failed to create Image!\n");
-	}
 
-	VkMemoryRequirements l_memoryRequirement;
+	VkMemoryRequirements l_memoryRequirement{};
 	vkGetImageMemoryRequirements(a_device, a_image, &l_memoryRequirement);
 
 	VkMemoryAllocateInfo l_allocateInfo{};
@@ -60,10 +64,9 @@ void VulkanDepthResource::CreateImage(VkDevice a_device, VkPhysicalDevice a_phys
 	vkBindImageMemory(a_device, a_image, a_imageMemory, 0);
 }
 
-uint32_t VulkanDepthResource::FindMemoryType(const VkPhysicalDevice a_physicalDevice, const uint32_t a_typeFilter,
-                                             const VkMemoryPropertyFlags a_properties)
+uint32_t VulkanDepthResource::FindMemoryType(const VkPhysicalDevice a_physicalDevice, const uint32_t a_typeFilter, const VkMemoryPropertyFlags a_properties)
 {
-	VkPhysicalDeviceMemoryProperties l_memoryProperties;
+	VkPhysicalDeviceMemoryProperties l_memoryProperties{};
 	vkGetPhysicalDeviceMemoryProperties(a_physicalDevice, &l_memoryProperties);
 
 	for (uint32_t i = 0; i < l_memoryProperties.memoryTypeCount; ++i)

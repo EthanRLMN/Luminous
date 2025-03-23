@@ -1,10 +1,11 @@
-#include "Application.hpp"
+#include "Engine.hpp"
 
-#include "Libs/imgui/imgui.h"
+#include "imgui/imgui.h"
+
 #include "imgui/backends/imgui_impl_glfw.h"
 #include "imgui/backends/imgui_impl_vulkan.h"
 
-#include "Rendering/API/Vulkan/VulkanWindow.hpp"
+#include "Rendering/Vulkan/VulkanWindow.hpp"
 
 void Destroy()
 {
@@ -15,8 +16,8 @@ void Destroy()
 
 int main()
 {
-    const Application l_application;
-    l_application.Run();
+    const Engine l_Engine;
+    l_Engine.Run();
 
     IMGUI_CHECKVERSION();
 
@@ -35,7 +36,7 @@ int main()
 
     //ImGui::ShowDemoWindow(); // Show demo window! :)
 
-    while (!l_application.GetWindow()->ShouldClose())
+    while (!l_Engine.GetWindow()->ShouldClose())
     {
         // Poll events before doing anything else
         /*glfwPollEvents();

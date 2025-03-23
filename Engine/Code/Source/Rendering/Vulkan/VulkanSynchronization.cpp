@@ -1,8 +1,13 @@
-#include "Rendering/API/Vulkan/VulkanSynchronization.hpp"
-
 #include <iostream>
 
+#include "IDevice.hpp"
+
 #include "Logger.hpp"
+
+#include "Struct/VulkanUtilities.hpp"
+
+#include "Rendering/Vulkan/VulkanSynchronization.hpp"
+#include "Rendering/Vulkan/VulkanDevice.hpp"
 
 void VulkanSynchronization::Create(IDevice* a_device)
 {

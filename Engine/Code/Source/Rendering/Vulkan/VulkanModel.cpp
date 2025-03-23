@@ -1,7 +1,7 @@
-#define TINYOBJLOADER_IMPLEMENTATION
-#include "Rendering/API/Vulkan/VulkanModel.hpp"
-
 #include <unordered_map>
+
+#define TINYOBJLOADER_IMPLEMENTATION
+#include "Rendering/Vulkan/VulkanModel.hpp"
 
 void VulkanModel::Create()
 {

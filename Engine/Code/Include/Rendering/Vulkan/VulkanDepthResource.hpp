@@ -1,15 +1,8 @@
 #pragma once
+
 #include <vulkan/vulkan.h>
 
 #include "IDepthResource.hpp"
-#include <Rendering/API/Vulkan/VulkanDevice.hpp>
-#include <Rendering/API/Vulkan/VulkanSwapChain.hpp>
-#include <Rendering/API/Vulkan/VulkanRenderPass.hpp>
-
-#include "Struct/VulkanUtilities.hpp"
-#include "Utilities.hpp"
-
-
 
 class VulkanDepthResource : public IDepthResource
 {
@@ -26,8 +19,6 @@ public:
 	[[nodiscard]] virtual VkImage GetDepthImage() const;
 	[[nodiscard]] virtual VkDeviceMemory GetDepthImageMemory() const;
 	[[nodiscard]] virtual VkImageView GetDepthImageView() const;
-
-
 
 private:
 	VkImage m_depthImage{ VK_NULL_HANDLE };

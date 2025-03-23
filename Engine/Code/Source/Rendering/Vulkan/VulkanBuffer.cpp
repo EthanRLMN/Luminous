@@ -1,4 +1,4 @@
-#include "Rendering/API/Vulkan/VulkanBuffer.hpp"
+#include "Rendering/Vulkan/VulkanBuffer.hpp"
 #include "Logger.hpp"
 
 void VulkanBuffer::Create(IDevice* a_device, ITexture* a_texture, ICommandPool* a_commandPool, IDepthResource* a_depthResource)

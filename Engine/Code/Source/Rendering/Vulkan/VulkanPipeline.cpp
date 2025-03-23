@@ -1,16 +1,13 @@
-#include "Logger.hpp"
+#include <array>
 
-#include "Rendering/API/Vulkan/VulkanPipeline.hpp"
-#include "Rendering/API/Vulkan/Utilities.hpp"
+#include "Logger.hpp"
 #include "Struct/VulkanUtilities.hpp"
 
-#include "Rendering/API/Vulkan/VulkanDescriptorSetLayout.hpp"
-#include "Rendering/API/Vulkan/VulkanDevice.hpp"
-#include "Rendering/API/Vulkan/VulkanRenderPass.hpp"
-
-#include <array>
-#include <fstream>
-#include <iostream>
+#include "Rendering/Vulkan/VulkanPipeline.hpp"
+#include "Rendering/Vulkan/Utilities.hpp"
+#include "Rendering/Vulkan/VulkanDescriptorSetLayout.hpp"
+#include "Rendering/Vulkan/VulkanDevice.hpp"
+#include "Rendering/Vulkan/VulkanRenderPass.hpp"
 
 
 void VulkanPipeline::Create(IDevice* a_device, IRenderPass* a_renderPass, IDescriptorSetLayout* a_descriptionSetLayout)

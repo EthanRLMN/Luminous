@@ -1,7 +1,7 @@
-#include "Rendering/API/Vulkan/GLFWInputManager.hpp"
+#include "Rendering/Vulkan/GLFWInputManager.hpp"
 
 #include "IWindow.hpp"
-#include "Rendering/API/Vulkan/VulkanWindow.hpp"
+#include "Rendering/Vulkan/VulkanWindow.hpp"
 
 std::array<int, 400> GLFWInputManager::m_keyPressed{};
 std::array<Action, 400> GLFWInputManager::m_keyStatus{};

@@ -2,9 +2,10 @@
 
 #include <array>
 #include <vulkan/vulkan.hpp>
+
 #include "IDescriptor.hpp"
-#include "Rendering/API/Vulkan/VulkanDescriptorSetLayout.hpp"
-#include "Rendering/API/Vulkan/VulkanDevice.hpp"
+
+#include "Rendering/Vulkan/VulkanDescriptorSetLayout.hpp"
 
 class VulkanDescriptor final : public IDescriptor
 {
@@ -13,7 +14,6 @@ public:
 	void Destroy() override;
 
 	[[nodiscard]] VkDescriptorPool GetDescriptorPool() const { return m_descriptorPool; }
-
 	[[nodiscard]] std::vector<VkDescriptorSet> GetDescriptorSet() const { return m_descriptorSets; };
 
 	VulkanDescriptor* CastVulkan() override { return this; }

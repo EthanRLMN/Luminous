@@ -2,15 +2,14 @@
 
 #include "IRender.hpp"
 #include "ISynchronization.hpp"
-#include "ModelLoading/AssimpModelLoader.hpp"
 
 class VulkanRenderInterface;
 
-class Application
+class Engine
 {
 public:
-	Application();
-	~Application();
+	Engine();
+	~Engine();
 
 	void Run() const;
 

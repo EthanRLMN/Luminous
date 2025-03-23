@@ -1,9 +1,9 @@
-#include "Rendering/API/Vulkan/VulkanMemoryAllocator.hpp"
-
 #include "IDevice.hpp"
 #include "IInstance.hpp"
-#include "Rendering/API/Vulkan/VulkanDevice.hpp"
-#include "Rendering/API/Vulkan/VulkanInstance.hpp"
+
+#include "Rendering/Vulkan/VulkanMemoryAllocator.hpp"
+#include "Rendering/Vulkan/VulkanDevice.hpp"
+#include "Rendering/Vulkan/VulkanInstance.hpp"
 
 void VulkanMemoryAllocator::Init(IInstance* a_instance, IDevice* a_device)
 {

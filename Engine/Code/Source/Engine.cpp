@@ -1,11 +1,11 @@
-#include "Application.hpp"
+#include "Engine.hpp"
 
-#include "Rendering/API/Vulkan/VulkanRenderInterface.hpp"
+#include "Rendering/Vulkan/VulkanRenderInterface.hpp"
 
-Application::Application()
+Engine::Engine()
 {
 	Debug::Logger& l_logger = Debug::Logger::GetInstance();
-	l_logger.Init("app", 1_MiB, 5, true);
+	l_logger.Init("Engine", 1_MiB, 5, true);
 
 	/*
 	AssimpModelLoader t_loader;
@@ -75,7 +75,7 @@ Application::Application()
 	m_synchronization->Create(m_device);
 }
 
-Application::~Application()
+Engine::~Engine()
 {
 	m_pipeline->Destroy();
 	m_interface->DeletePipeline(m_pipeline);
@@ -105,7 +105,7 @@ Application::~Application()
 	delete(m_window);
 }
 
-void Application::Run() const
+void Engine::Run() const
 {
 	while (!m_window->ShouldClose())
 	{

@@ -1,9 +1,13 @@
-#include "Rendering/API/Vulkan/VulkanFrameBuffer.hpp"
-
 #include "IDepthResource.hpp"
+#include "IDevice.hpp"
+#include "IRenderPass.hpp"
 #include "ISwapChain.hpp"
-#include "Rendering/API/Vulkan/VulkanDepthResource.hpp"
-#include "Rendering/API/Vulkan/VulkanSwapChain.hpp"
+
+#include "Rendering/Vulkan/VulkanFrameBuffer.hpp"
+#include "Rendering/Vulkan/VulkanDepthResource.hpp"
+#include "Rendering/Vulkan/VulkanDevice.hpp"
+#include "Rendering/Vulkan/VulkanRenderPass.hpp"
+#include "Rendering/Vulkan/VulkanSwapChain.hpp"
 
 void VulkanFrameBuffer::Create(IDevice* a_device, ISwapChain* a_swapChain, IRenderPass* a_renderPass,
                                IDepthResource* a_depthResource)
@@ -27,7 +31,8 @@ void VulkanFrameBuffer::Create(IDevice* a_device, ISwapChain* a_swapChain, IRend
 		l_framebufferCreateInfo.height = l_vulkanSwapChain->GetSwapChainExtent().height;
 		l_framebufferCreateInfo.layers = 1;
 
-		const VkResult l_result = vkCreateFramebuffer(a_device->CastVulkan()->GetDevice(), &l_framebufferCreateInfo, nullptr, &l_vulkanSwapChain->GetSwapChainFrameBuffers()[i]);;
+		const VkResult l_result = vkCreateFramebuffer(a_device->CastVulkan()->GetDevice(), &l_framebufferCreateInfo,
+		                                              nullptr, &l_vulkanSwapChain->GetSwapChainFrameBuffers()[i]);;
 		if (l_result != VK_SUCCESS)
 			throw std::runtime_error("Failed to create framebuffer");
 	}

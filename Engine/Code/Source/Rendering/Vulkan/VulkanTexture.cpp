@@ -1,16 +1,16 @@
-#include "Rendering/API/Vulkan/VulkanTexture.hpp"
+#define STB_IMAGE_IMPLEMENTATION
+#include "stb_image.h"
 
 #include "ICommandPool.hpp"
 #include "IDepthResource.hpp"
 #include "IDevice.hpp"
 #include "ISwapChain.hpp"
-#include "Rendering/API/Vulkan/VulkanCommandPool.hpp"
-#include "Rendering/API/Vulkan/VulkanDepthResource.hpp"
-#include "Rendering/API/Vulkan/VulkanDevice.hpp"
-#include "Rendering/API/Vulkan/VulkanSwapChain.hpp"
 
-#define STB_IMAGE_IMPLEMENTATION
-#include "stb_image.h"
+#include "Rendering/Vulkan/VulkanTexture.hpp"
+#include "Rendering/Vulkan/VulkanCommandPool.hpp"
+#include "Rendering/Vulkan/VulkanDepthResource.hpp"
+#include "Rendering/Vulkan/VulkanDevice.hpp"
+#include "Rendering/Vulkan/VulkanSwapChain.hpp"
 
 void VulkanTexture::Create(IDevice* a_device, ISwapChain* a_swapChain, IDepthResource* a_depthResource,
                            ICommandPool* a_commandPool)

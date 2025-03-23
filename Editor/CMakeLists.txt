@@ -7,7 +7,7 @@ project(Editor
 #---------------------------------------#
 #                SOURCES                #
 #---------------------------------------#
-file(GLOB_RECURSE L_EDITOR_SOURCES "main.cpp" "Code/Source/*.cpp" "Libs/imgui/*.cpp" "Libs/imgui/backends/*.cpp")
+file(GLOB_RECURSE L_EDITOR_SOURCES "Code/Editor.cpp" "Code/Source/*.cpp" "Libs/imgui/*.cpp" "Libs/imgui/backends/*.cpp")
 
 # Define the lib name for easy modification
 set(LE_TARGET_NAME L_EDITOR)
@@ -24,7 +24,8 @@ add_executable(${LE_TARGET_NAME} ${L_EDITOR_SOURCES})
 #---------------------------------------#
 #                INCLUDE                #
 #---------------------------------------#
-target_include_directories(${LE_TARGET_NAME} PUBLIC "Code/Include" "Libs" "Libs/imgui")
+# Both "Libs/imgui" and "Libs" folders must be included as ismgui uses the path of the first one and we use the path of the second one
+target_include_directories(${LE_TARGET_NAME} PUBLIC "Code/Include" "Libs/imgui" "Libs")
 
 
 

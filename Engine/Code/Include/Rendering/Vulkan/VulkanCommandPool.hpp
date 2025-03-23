@@ -1,11 +1,8 @@
 #pragma once
 
-#include "ICommandPool.hpp"
-
 #include <vulkan/vulkan.h>
 
-#include <Rendering/API/Vulkan/VulkanDevice.hpp>
-
+#include "ICommandPool.hpp"
 
 class VulkanCommandPool final : public ICommandPool
 {

@@ -3,9 +3,9 @@
 #include "IInstance.hpp"
 #include "IWindow.hpp"
 
-#include "Rendering/API/Vulkan/VulkanSurface.hpp"
-#include "Rendering/API/Vulkan/VulkanInstance.hpp"
-#include "Rendering/API/Vulkan/VulkanWindow.hpp"
+#include "Rendering/Vulkan/VulkanSurface.hpp"
+#include "Rendering/Vulkan/VulkanInstance.hpp"
+#include "Rendering/Vulkan/VulkanWindow.hpp"
 
 void VulkanSurface::Create(IInstance* a_instance, IWindow* a_window)
 {
