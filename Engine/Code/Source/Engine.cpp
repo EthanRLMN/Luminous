@@ -66,7 +66,7 @@ Engine::Engine()
 	m_buffer->Create(m_device,m_texture,m_commandPool,m_depthResource);
 
 	m_descriptor = m_interface->InstantiateDescriptor();
-	m_descriptor->Create(m_device, m_descriptorSetLayout, m_texture);
+	//m_descriptor->Create(m_device, m_descriptorSetLayout, m_texture);
 
 	m_commandBuffer = m_interface->InstantiateCommandBuffer();
 	m_commandBuffer->Create(m_device, m_swapChain, m_commandPool);
