@@ -10,6 +10,9 @@ public:
 	void Create() override;
 	void Destroy() override;
 
+	[[nodiscard]] std::vector<Vertex> GetVertices() const { return m_vertices; }
+	[[nodiscard]] std::vector<uint32_t> GetIndices() const { return m_indices; }
+
 	VulkanModel* CastVulkan() override
 	{
 		return this;
@@ -18,6 +21,6 @@ public:
 	const std::string MODEL_PATH{"Engine/Assets/Models/metalSonic.obj"};
 
 private:
-	std::vector<Vertex> vertices;
-	std::vector<uint32_t> indices;
+	std::vector<Vertex> m_vertices;
+	std::vector<uint32_t> m_indices;
 };

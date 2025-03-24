@@ -3,14 +3,23 @@
 #include "Rendering/Vulkan/VulkanDescriptor.hpp"
 
 #include "IDevice.hpp"
+#include "Rendering/Vulkan/VulkanBuffer.hpp"
 #include "Rendering/Vulkan/VulkanDevice.hpp"
 #include "Rendering/Vulkan/VulkanTexture.hpp"
 #include "Struct/VulkanUtilities.hpp"
 
-void VulkanDescriptor::Create(IDevice* a_device, IDescriptorSetLayout* a_descriptorSetLayout, ITexture* a_texture)
+void VulkanDescriptor::Create(IDevice* a_device, IDescriptorSetLayout* a_descriptorSetLayout, ITexture* a_texture, IBuffer* a_buffer)
 {
+	FillBuffers(a_buffer);
 	CreateDescriptorPool(a_device);
 	CreateDescriptorSets(a_device, a_descriptorSetLayout, a_texture);
+}
+
+void VulkanDescriptor::FillBuffers(IBuffer* a_buffer)
+{
+	m_uniformBuffer = a_buffer->CastVulkan()->GetUniformBuffer();
+	m_uniformBuffersMemory = a_buffer->CastVulkan()->GetUniformBuffersMemory();
+	m_uniformBuffersMapped = a_buffer->CastVulkan()->GetUniformBuffersMapped();
 }
 
 void VulkanDescriptor::Destroy()
@@ -19,7 +28,7 @@ void VulkanDescriptor::Destroy()
 
 void VulkanDescriptor::CreateDescriptorPool(IDevice* a_device)
 {
-	std::array<VkDescriptorPoolSize, 2> l_poolSizes{};
+	std::array<VkDescriptorPoolSize, 2> l_poolSizes {};
 
 	l_poolSizes[0].type = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
 	l_poolSizes[0].descriptorCount = static_cast<uint32_t>(MAX_FRAMES_IN_FLIGHT);
@@ -40,7 +49,7 @@ void VulkanDescriptor::CreateDescriptorSets(IDevice* a_device, IDescriptorSetLay
 {
 	const std::vector<VkDescriptorSetLayout> l_layouts(MAX_FRAMES_IN_FLIGHT, a_descriptorSetLayout->CastVulkan()->GetDescriptorSetLayout());
 
-	VkDescriptorSetAllocateInfo l_allocateInfo{};
+	VkDescriptorSetAllocateInfo l_allocateInfo {};
 
 	l_allocateInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_ALLOCATE_INFO;
 	l_allocateInfo.descriptorPool = m_descriptorPool;
@@ -56,7 +65,7 @@ void VulkanDescriptor::CreateDescriptorSets(IDevice* a_device, IDescriptorSetLay
 	for (size_t i = 0; i < MAX_FRAMES_IN_FLIGHT; ++i)
 	{
 		VkDescriptorBufferInfo l_bufferInfo{};
-		l_bufferInfo.buffer = uniformBuffer[i];
+		l_bufferInfo.buffer = m_uniformBuffer[i];
 		l_bufferInfo.offset = 0;
 		l_bufferInfo.range = sizeof(UniformBufferObject);
 

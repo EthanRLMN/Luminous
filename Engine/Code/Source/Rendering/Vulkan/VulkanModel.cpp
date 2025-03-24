@@ -18,9 +18,9 @@ void VulkanModel::Create()
 
 	std::unordered_map<Vertex, uint32_t, VertexHasher> uniqueVertices{};
 
-	for (const auto& shape : shapes)
+	for (const auto& shape: shapes)
 	{
-		for (const auto& index : shape.mesh.indices)
+		for (const auto& index: shape.mesh.indices)
 		{
 			Vertex vertex{};
 
@@ -39,11 +39,11 @@ void VulkanModel::Create()
 
 			if (!uniqueVertices.contains(vertex))
 			{
-				uniqueVertices[vertex] = static_cast<uint32_t>(vertices.size());
-				vertices.push_back(vertex);
+				uniqueVertices[vertex] = static_cast<uint32_t>(m_vertices.size());
+				m_vertices.push_back(vertex);
 			}
 
-			indices.push_back(uniqueVertices[vertex]);
+			m_indices.push_back(uniqueVertices[vertex]);
 		}
 	}
 }

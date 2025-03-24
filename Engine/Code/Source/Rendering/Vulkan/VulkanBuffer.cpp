@@ -1,100 +1,115 @@
 #include "Rendering/Vulkan/VulkanBuffer.hpp"
+
+#include "IDevice.hpp"
+#include "IModel.hpp"
+#include "ITexture.hpp"
 #include "Logger.hpp"
+#include "Rendering/Vulkan/VulkanDevice.hpp"
+#include "Rendering/Vulkan/VulkanModel.hpp"
+#include "Rendering/Vulkan/VulkanTexture.hpp"
+#include "Struct/VulkanUtilities.hpp"
 
-void VulkanBuffer::Create(IDevice* a_device, ITexture* a_texture, ICommandPool* a_commandPool, IDepthResource* a_depthResource)
+void VulkanBuffer::Create(IDevice* a_device, ITexture* a_texture, ICommandPool* a_commandPool,
+                          IDepthResource* a_depthResource, IModel* a_model)
 {
-	DEBUG_LOG_INFO("Vulkan Buffer : Buffer created!\n");
-	CreateVertexBuffers(a_device, a_texture, a_commandPool, a_depthResource);
-	CreateIndexBuffers(a_device, a_texture, a_commandPool, a_depthResource);
+	CreateVertexBuffers(a_device, a_texture, a_commandPool, a_depthResource, a_model);
+	CreateIndexBuffers(a_device, a_texture, a_commandPool, a_depthResource, a_model);
 	CreateUniformBuffers(a_device, a_texture, a_depthResource);
+	DEBUG_LOG_INFO("Vulkan Buffer : Buffer created!\n");
 }
 
-void VulkanBuffer::Init(const size_t a_size, const VkBufferUsageFlags a_usage, const VmaMemoryUsage a_memUsage, const VmaAllocator a_memAllocator)
+void VulkanBuffer::CreateVertexBuffers(IDevice* a_device, ITexture* a_texture, ICommandPool* a_commandPool,
+                                       IDepthResource* a_depthResource, IModel* a_model)
 {
-	VkBufferCreateInfo l_bufferInfo{};
-	l_bufferInfo.sType = VK_STRUCTURE_TYPE_BUFFER_CREATE_INFO;
-	l_bufferInfo.size = a_size;
-	l_bufferInfo.usage = a_usage;
-	l_bufferInfo.sharingMode = VK_SHARING_MODE_EXCLUSIVE;
+	const std::vector<Vertex> l_vertices = a_model->CastVulkan()->GetVertices();
 
-	VmaAllocationCreateInfo l_allocInfo{};
-	l_allocInfo.usage = a_memUsage;
+	const VkDeviceSize l_bufferSize = sizeof(l_vertices.at(0)) * l_vertices.size();
+	VkBuffer l_stagingBuffer { VK_NULL_HANDLE };
+	VkDeviceMemory l_stagingBufferMemory { VK_NULL_HANDLE };
 
-	if (vmaCreateBuffer(a_memAllocator, &l_bufferInfo, &l_allocInfo, &m_buffer, &m_allocation, nullptr) != VK_SUCCESS)
-		DEBUG_LOG_ERROR("Vulkan Buffer : Buffer creation failed!\n");
-}
-
-void VulkanBuffer::SendData(const void* a_data, const size_t a_size)
-{
-	void* l_mappedData = nullptr;
-	vmaMapMemory(m_allocator, m_allocation, &l_mappedData);
-	memcpy(l_mappedData, a_data, a_size);
-	vmaUnmapMemory(m_allocator, m_allocation);
-}
-
-void VulkanBuffer::Destroy()
-{
-	vmaDestroyBuffer(m_allocator, m_buffer, m_allocation);
-	DEBUG_LOG_ERROR("Vulkan Buffer : Buffer destroyed!\n");
-}
-
-void VulkanBuffer::CreateVertexBuffers(IDevice* a_device, ITexture* a_texture, ICommandPool* a_commandPool, IDepthResource* a_depthResource)
-{
-	/*
-	VkDeviceSize l_bufferSize = sizeof(vulkanVertices[0]) * vulkanVertices.size();
-	VkBuffer l_stagingBuffer;
-	VkDeviceMemory l_stagingBufferMemory;
-
-
-	a_texture->CastVulkan()->CreateBuffer(a_device->CastVulkan()->GetDevice(), a_device->CastVulkan()->GetPhysicalDevice(), l_bufferSize, VK_BUFFER_USAGE_TRANSFER_SRC_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT, l_stagingBuffer, l_stagingBufferMemory, a_depthResource);
+	a_texture->CastVulkan()->CreateBuffer(a_device->CastVulkan()->GetDevice(),
+	                                      a_device->CastVulkan()->GetPhysicalDevice(), l_bufferSize,
+	                                      VK_BUFFER_USAGE_TRANSFER_SRC_BIT,
+	                                      VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT,
+	                                      l_stagingBuffer, l_stagingBufferMemory, a_depthResource);
 
 	void* l_data;
 	vkMapMemory(a_device->CastVulkan()->GetDevice(), l_stagingBufferMemory, 0, l_bufferSize, 0, &l_data);
-	memcpy(l_data, vulkanVertices.data(), (size_t)l_bufferSize);
+	memcpy(l_data, l_vertices.data(), l_bufferSize);
 	vkUnmapMemory(a_device->CastVulkan()->GetDevice(), l_stagingBufferMemory);
 
-	a_texture->CastVulkan()->CreateBuffer(a_device->CastVulkan()->GetDevice(), a_device->CastVulkan()->GetPhysicalDevice(), l_bufferSize, VK_BUFFER_USAGE_TRANSFER_DST_BIT | VK_BUFFER_USAGE_VERTEX_BUFFER_BIT, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT, vertexBuffer, vertexBufferMemory, a_depthResource);
+	a_texture->CastVulkan()->CreateBuffer(a_device->CastVulkan()->GetDevice(),
+	                                      a_device->CastVulkan()->GetPhysicalDevice(), l_bufferSize,
+	                                      VK_BUFFER_USAGE_TRANSFER_DST_BIT | VK_BUFFER_USAGE_VERTEX_BUFFER_BIT,
+	                                      VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT, m_vertexBuffer, m_vertexBufferMemory,
+	                                      a_depthResource);
 
-	CopyBuffer(a_device->CastVulkan()->GetDevice(), a_device->CastVulkan()->GetGraphicsQueue(), a_commandPool->CastVulkan()->GetCommandPool(), l_stagingBuffer, vertexBuffer, l_bufferSize, a_texture);
+	CopyBuffer(a_device->CastVulkan()->GetDevice(), a_device->CastVulkan()->GetGraphicsQueue(),
+	           a_commandPool->CastVulkan()->GetCommandPool(), l_stagingBuffer, m_vertexBuffer, l_bufferSize, a_texture);
 
 
 	vkDestroyBuffer(a_device->CastVulkan()->GetDevice(), l_stagingBuffer, nullptr);
-	vkFreeMemory(a_device->CastVulkan()->GetDevice(), l_stagingBufferMemory, nullptr);*/
+	vkFreeMemory(a_device->CastVulkan()->GetDevice(), l_stagingBufferMemory, nullptr);
 }
 
-void VulkanBuffer::CreateIndexBuffers(IDevice* a_device, ITexture* a_texture, ICommandPool* a_commandPool, IDepthResource* a_depthResource)
+void VulkanBuffer::CreateIndexBuffers(IDevice* a_device, ITexture* a_texture, ICommandPool* a_commandPool,
+                                      IDepthResource* a_depthResource, IModel* a_model)
 {
-	/*
-	VkDeviceSize l_bufferSize = sizeof(vulkanIndices[0]) * vulkanIndices.size();
-	VkBuffer l_stagingBuffer;
-	VkDeviceMemory l_stagingBufferMemory;
+	const std::vector<uint32_t> l_indices = a_model->CastVulkan()->GetIndices();
 
-	a_texture->CastVulkan()->CreateBuffer(a_device->CastVulkan()->GetDevice(), a_device->CastVulkan()->GetPhysicalDevice(), l_bufferSize, VK_BUFFER_USAGE_TRANSFER_SRC_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT, l_stagingBuffer, l_stagingBufferMemory, a_depthResource);
+	const VkDeviceSize l_bufferSize = sizeof(l_indices.at(0)) * l_indices.size();
+	VkBuffer l_stagingBuffer{VK_NULL_HANDLE};
+	VkDeviceMemory l_stagingBufferMemory{VK_NULL_HANDLE};
+
+	a_texture->CastVulkan()->CreateBuffer(a_device->CastVulkan()->GetDevice(),
+	                                      a_device->CastVulkan()->GetPhysicalDevice(), l_bufferSize,
+	                                      VK_BUFFER_USAGE_TRANSFER_SRC_BIT,
+	                                      VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT,
+	                                      l_stagingBuffer, l_stagingBufferMemory, a_depthResource);
 
 	void* l_data;
 	vkMapMemory(a_device->CastVulkan()->GetDevice(), l_stagingBufferMemory, 0, l_bufferSize, 0, &l_data);
-	memcpy(l_data, vulkanIndices.data(), (size_t)l_bufferSize);
+	memcpy(l_data, l_indices.data(), l_bufferSize);
 	vkUnmapMemory(a_device->CastVulkan()->GetDevice(), l_stagingBufferMemory);
 
-	a_texture->CastVulkan()->CreateBuffer(a_device->CastVulkan()->GetDevice(), a_device->CastVulkan()->GetPhysicalDevice(), l_bufferSize, VK_BUFFER_USAGE_TRANSFER_DST_BIT | VK_BUFFER_USAGE_INDEX_BUFFER_BIT, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT, indexBuffer, indexBufferMemory, a_depthResource);
+	a_texture->CastVulkan()->CreateBuffer(a_device->CastVulkan()->GetDevice(),
+	                                      a_device->CastVulkan()->GetPhysicalDevice(), l_bufferSize,
+	                                      VK_BUFFER_USAGE_TRANSFER_DST_BIT | VK_BUFFER_USAGE_INDEX_BUFFER_BIT,
+	                                      VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT, m_indexBuffer, m_indexBufferMemory,
+	                                      a_depthResource);
 
-	CopyBuffer(a_device->CastVulkan()->GetDevice(), a_device->CastVulkan()->GetGraphicsQueue(), a_commandPool->CastVulkan()->GetCommandPool(), l_stagingBuffer, indexBuffer, l_bufferSize, a_texture);
+	CopyBuffer(a_device->CastVulkan()->GetDevice(), a_device->CastVulkan()->GetGraphicsQueue(),
+	           a_commandPool->CastVulkan()->GetCommandPool(), l_stagingBuffer, m_indexBuffer, l_bufferSize, a_texture);
 
 	vkDestroyBuffer(a_device->CastVulkan()->GetDevice(), l_stagingBuffer, nullptr);
-	vkFreeMemory(a_device->CastVulkan()->GetDevice(), l_stagingBufferMemory, nullptr);*/
+	vkFreeMemory(a_device->CastVulkan()->GetDevice(), l_stagingBufferMemory, nullptr);
 }
 
 void VulkanBuffer::CreateUniformBuffers(IDevice* a_device, ITexture* a_texture, IDepthResource* a_depthResource)
 {
-	/*
-	VkDeviceSize l_bufferSize = sizeof(UniformBufferObject);
+	m_uniformBuffer.resize(MAX_FRAMES_IN_FLIGHT);
+	m_uniformBuffersMemory.resize(MAX_FRAMES_IN_FLIGHT);
+	m_uniformBuffersMapped.resize(MAX_FRAMES_IN_FLIGHT);
 
-	uniformBuffer.resize(MAX_FRAMES_IN_FLIGHT);
-	uniformBuffersMemory.resize(MAX_FRAMES_IN_FLIGHT);
-	uniformBuffersMapped.resize(MAX_FRAMES_IN_FLIGHT);
+	for (size_t i = 0; i < MAX_FRAMES_IN_FLIGHT; ++i)
+	{
+		const VkDeviceSize l_bufferSize = sizeof(UniformBufferObject);
+		a_texture->CastVulkan()->CreateBuffer(a_device->CastVulkan()->GetDevice(),
+		                                      a_device->CastVulkan()->GetPhysicalDevice(), l_bufferSize,
+		                                      VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT,
+		                                      VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT |
+		                                      VK_MEMORY_PROPERTY_HOST_COHERENT_BIT, m_uniformBuffer[i],
+		                                      m_uniformBuffersMemory[i], a_depthResource);
+		vkMapMemory(a_device->CastVulkan()->GetDevice(), m_uniformBuffersMemory[i], 0, l_bufferSize, 0, &m_uniformBuffersMapped[i]);
+	}
+}
 
-	for (size_t i = 0; i < MAX_FRAMES_IN_FLIGHT; ++i) {
-		a_texture->CastVulkan()->CreateBuffer(a_device->CastVulkan()->GetDevice(), a_device->CastVulkan()->GetPhysicalDevice(), l_bufferSize, VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT, uniformBuffer[i], uniformBuffersMemory[i], a_depthResource);
-		vkMapMemory(a_device->CastVulkan()->GetDevice(), uniformBuffersMemory[i], 0, l_bufferSize, 0, &uniformBuffersMapped[i]);
-	}*/
+void VulkanBuffer::CopyBuffer(const VkDevice a_device, const VkQueue a_graphicsQueue, const VkCommandPool a_commandPool, const VkBuffer a_srcBuffer, const VkBuffer a_dstBuffer, const VkDeviceSize a_size, ITexture* a_texture)
+{
+	const VkCommandBuffer l_commandBuffer = a_texture->CastVulkan()->BeginSingleTimeCommands(a_device, a_commandPool);
+	VkBufferCopy l_bufferCopy{};
+	l_bufferCopy.size = a_size;
+	vkCmdCopyBuffer(l_commandBuffer, a_srcBuffer, a_dstBuffer, 1, &l_bufferCopy);
+
+	a_texture->CastVulkan()->EndSingleTimeCommands(a_device, a_graphicsQueue, a_commandPool, l_commandBuffer);
 }
