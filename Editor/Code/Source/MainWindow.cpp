@@ -91,38 +91,43 @@ void MainWindow::Draw()
 			ImGui::EndMenuBar();
 		}
 
-		static ImTextureID moveButton = LoadTexture("../../Assets/Move Button.png");
-		static ImTextureID rotateButton = LoadTexture("../../Assets/Rotate Button.png");
-		static ImTextureID resizeButton = LoadTexture("../../Assets/Resize Button.png");
-		static ImTextureID playButton = LoadTexture("../../Assets/Play Button.png");
-		static ImTextureID stopButton = LoadTexture("../../Assets/Stop Button.png");
+		static ImTextureID s_moveButton = LoadTexture("../../Assets/Move Button.png");
+		static ImTextureID s_rotateButton = LoadTexture("../../Assets/Rotate Button.png");
+		static ImTextureID s_resizeButton = LoadTexture("../../Assets/Resize Button.png");
+		static ImTextureID s_playButton = LoadTexture("../../Assets/Play Button.png");
+		static ImTextureID s_stopButton = LoadTexture("../../Assets/Stop Button.png");
+		static ImTextureID s_saveButton = LoadTexture("../../Assets/Save Button.png");
 
-		ImGui::Image(moveButton, { 25, 25 }, { 0, 0 }, { 1, 1 });
-		//if (ImGui::IsItemClicked()) #Fonction;
-		//if (ImGui::IsItemActivated()) #Fonction;
+		ImGui::Image(s_moveButton, { 25, 25 }, { 0, 0 }, { 1, 1 });
+		//if (ImGui::IsItemClicked()) 
+			//#Fonction;
+		//if (ImGui::IsItemActivated())
+			//#Fonction;
 
 		ImGui::SameLine();
-		ImGui::Image(rotateButton, { 25, 25 }, { 0, 0 }, { 1, 1 });
+		ImGui::Image(s_rotateButton, { 25, 25 }, { 0, 0 }, { 1, 1 });
 
 		ImGui::SameLine();
-		ImGui::Image(resizeButton, { 25, 25 }, { 0, 0 }, { 1, 1 });
+		ImGui::Image(s_resizeButton, { 25, 25 }, { 0, 0 }, { 1, 1 });
 
 		ImGui::SameLine(0, 100 * ImGui::GetStyle().ItemSpacing.x);
-		ImGui::Image(playButton, { 25, 25 }, { 0, 0 }, { 1, 1 });
+		ImGui::Image(s_playButton, { 25, 25 }, { 0, 0 }, { 1, 1 });
 
 		ImGui::SameLine();
-		ImGui::Image(stopButton, { 25, 25 }, { 0, 0 }, { 1, 1 });
+		ImGui::Image(s_stopButton, { 25, 25 }, { 0, 0 }, { 1, 1 });
 
+		ImGui::SameLine(0, 115 * ImGui::GetStyle().ItemSpacing.x);
+		ImGui::Image(s_saveButton, { 25, 25 }, { 0, 0 }, { 1, 1 });
 
 		ImGui::TableSetColumnIndex(0);
-		ImGui::Begin("tab1", { -1, 255 }, true);
+		ImGui::Begin("window1", { -1, 255 }, true);
 		ImGui::End();
 
 		ImGui::TableNextColumn();
-		ImGui::Begin("tab2", { -1, 255 }, true);
+		ImGui::Begin("window2", { -1, 255 }, true);
 		ImGui::End();
 
-		ImGui::Begin("tab2", { -1, -1 }, true);
+		ImGui::Begin("window3", { -1, -1 }, true);
 		ImGui::End();
 	}
 	ImGui::PopStyleColor();
