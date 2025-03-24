@@ -1,26 +1,17 @@
 #pragma once
 
-class Window;
-
+typedef union SDL_Event SDL_Event;
 class MainWindow
 {
 public:
     MainWindow() = default;
     ~MainWindow() = default;
 
-    void Open()
-    {
-        m_isOpen = true;
-    }
+    void Create();
+    void Shutdown();
 
-    void Close()
-    {
-        m_isOpen = false;
-    }
-    void Draw();
+    void HandleSLDEvent(SDL_Event& e);
 
-    //void SetupImGUIContext(Window a_window);
-
-private:
-    bool m_isOpen = true;
+    void BeginRender();
+    void EndRender();
 };
