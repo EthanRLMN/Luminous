@@ -1,11 +1,13 @@
 #include "Rendering/Vulkan/VulkanRenderingDraw.hpp"
 
+
+
 void VulkanRenderingDraw::Create(GLFWwindow* a_window, IDevice* a_device, ISwapChain* a_swapChain, IPipeline* a_pipeline, IBuffer* a_buffer, IRenderPass* a_renderPass, IDescriptor* a_descriptor ,IModel* a_model)
 {
-	vkWaitForFences(a_device->CastVulkan()->GetDevice(), 1, &m_fences[currentFrame], VK_TRUE, UINT64_MAX);
+	vkWaitForFences(a_device->CastVulkan()->GetDevice(), 1, &m_fences[m_currentFrame], VK_TRUE, UINT64_MAX);
 
 	uint32_t l_imageIndex;
-	VkResult l_result = vkAcquireNextImageKHR(a_device->CastVulkan()->GetDevice(), a_swapChain->CastVulkan()->GetSwapChain(), UINT64_MAX, imageAvailableSemaphores[currentFrame], VK_NULL_HANDLE, &l_imageIndex);
+	VkResult l_result = vkAcquireNextImageKHR(a_device->CastVulkan()->GetDevice(), a_swapChain->CastVulkan()->GetSwapChain(), UINT64_MAX, m_imageAvailableSemaphores[m_currentFrame], VK_NULL_HANDLE, &l_imageIndex);
 
 	if (l_result == VK_ERROR_OUT_OF_DATE_KHR) {
 		RecreateSwapChain(a_window, a_device->CastVulkan()->GetDevice());
@@ -16,32 +18,32 @@ void VulkanRenderingDraw::Create(GLFWwindow* a_window, IDevice* a_device, ISwapC
 		DEBUG_LOG_ERROR("failed to acquire swap chain image\n");
 	}
 
-	UpdateUniformBuffer(currentFrame);
+	UpdateUniformBuffer(m_currentFrame);
 
-	vkResetFences(a_device->CastVulkan()->GetDevice(), 1, &m_fences[currentFrame]);
+	vkResetFences(a_device->CastVulkan()->GetDevice(), 1, &m_fences[m_currentFrame]);
 
-	vkResetCommandBuffer(a_swapChain->CastVulkan()->GetCommandBuffers()[currentFrame], 0);
-	RecordCommandBuffer(a_swapChain->CastVulkan()->GetCommandBuffers()[currentFrame], a_pipeline->CastVulkan()->GetGraphicsPipeline(), a_pipeline->CastVulkan()->GetPipelineLayout(), l_imageIndex, a_swapChain, a_renderPass, a_buffer, a_descriptor);
+	vkResetCommandBuffer(a_swapChain->CastVulkan()->GetCommandBuffers()[m_currentFrame], 0);
+	RecordCommandBuffer(a_swapChain->CastVulkan()->GetCommandBuffers()[m_currentFrame], a_pipeline->CastVulkan()->GetGraphicsPipeline(), a_pipeline->CastVulkan()->GetPipelineLayout(), l_imageIndex, a_swapChain, a_renderPass, a_buffer, a_descriptor);
 
 
 	VkSubmitInfo l_submitInfo{};
 	l_submitInfo.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO;
 
-	VkSemaphore waitSemaphores[] = { imageAvailableSemaphores[currentFrame] };
+	VkSemaphore waitSemaphores[] = { m_imageAvailableSemaphores[m_currentFrame] };
 	VkPipelineStageFlags waitStages[] = { VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT };
 	l_submitInfo.waitSemaphoreCount = 1;
 	l_submitInfo.pWaitSemaphores = waitSemaphores;
 	l_submitInfo.pWaitDstStageMask = waitStages;
 
 	l_submitInfo.commandBufferCount = 1;
-	l_submitInfo.pCommandBuffers = &a_swapChain->CastVulkan()->GetCommandBuffers()[currentFrame];
+	l_submitInfo.pCommandBuffers = &a_swapChain->CastVulkan()->GetCommandBuffers()[m_currentFrame];
 
-	VkSemaphore l_signalSemaphores[] = { renderFinishedSemaphores[currentFrame] };
+	VkSemaphore l_signalSemaphores[] = { m_renderFinishedSemaphores[m_currentFrame] };
 
 	l_submitInfo.signalSemaphoreCount = 1;
 	l_submitInfo.pSignalSemaphores = l_signalSemaphores;
 
-	if (vkQueueSubmit(a_device->CastVulkan()->GetGraphicsQueue(), 1, &l_submitInfo, m_fences[currentFrame]) != VK_SUCCESS) {
+	if (vkQueueSubmit(a_device->CastVulkan()->GetGraphicsQueue(), 1, &l_submitInfo, m_fences[m_currentFrame]) != VK_SUCCESS) {
 		DEBUG_LOG_ERROR("Failed to submit draw command buffer\n");
 	}
 
@@ -57,15 +59,15 @@ void VulkanRenderingDraw::Create(GLFWwindow* a_window, IDevice* a_device, ISwapC
 
 	l_result = vkQueuePresentKHR(a_device->CastVulkan()->GetPresentationQueue(), &l_presentInfo);
 
-	if (l_result == VK_ERROR_OUT_OF_DATE_KHR || l_result == VK_SUBOPTIMAL_KHR || framebufferResized) {
-		framebufferResized = false;
+	if (l_result == VK_ERROR_OUT_OF_DATE_KHR || l_result == VK_SUBOPTIMAL_KHR || m_framebufferResized) {
+		m_framebufferResized = false;
 		RecreateSwapChain(a_window, a_device->CastVulkan()->GetDevice());
 	}
 	else if (l_result != VK_SUCCESS) {
 		DEBUG_LOG_ERROR("failed to present swap chain image\n");
 	}
 
-	currentFrame = (currentFrame + 1) % MAX_FRAMES_IN_FLIGHT;
+	m_currentFrame = (m_currentFrame + 1) % MAX_FRAMES_IN_FLIGHT;
 }
 
 void VulkanRenderingDraw::Destroy()
@@ -122,7 +124,7 @@ void VulkanRenderingDraw::RecordCommandBuffer(VkCommandBuffer a_commandBuffer, V
 	vkCmdBindIndexBuffer(a_commandBuffer, a_buffer->CastVulkan()->GetIndexBuffer(), 0, VK_INDEX_TYPE_UINT32);
 
 
-	vkCmdBindDescriptorSets(a_commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, a_pipelineLayout, 0, 1, &a_descriptor->CastVulkan()->GetDescriptorSet()[currentFrame], 0, nullptr);
+	vkCmdBindDescriptorSets(a_commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, a_pipelineLayout, 0, 1, &a_descriptor->CastVulkan()->GetDescriptorSet()[m_currentFrame], 0, nullptr);
 
 
 	vkCmdDrawIndexed(a_commandBuffer, static_cast<uint32_t>(a_model->CastVulkan()->GetIndices().size()), 1, 0, 0, 0);
@@ -136,3 +138,19 @@ void VulkanRenderingDraw::RecordCommandBuffer(VkCommandBuffer a_commandBuffer, V
 	}
 
 }
+
+void VulkanRenderingDraw::UpdateUniformBuffer(uint32_t currentImage ,ISwapChain* a_swapChain)
+{
+	static std::chrono::steady_clock::time_point l_startTime = std::chrono::high_resolution_clock::now();
+	std::chrono::steady_clock::time_point l_currentTime = std::chrono::high_resolution_clock::now();
+	float time = std::chrono::duration<float, std::chrono::seconds::period>(l_currentTime - l_startTime).count();
+
+	UniformBufferObject l_ubo{};
+	l_ubo.model = glm::rotate(glm::mat4(1.0f), time * glm::radians(90.0f), glm::vec3(0.0f, 0.0f, 1.0f));
+	l_ubo.view = glm::lookAt(glm::vec3(2.0f, 2.0f, 2.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 1.0f));
+	l_ubo.proj = glm::perspective(glm::radians(45.0f), a_swapChain->CastVulkan()->GetSwapChainExtent().width / (float)a_swapChain->CastVulkan()->GetSwapChainExtent().height, 0.1f, 10.0f);
+	l_ubo.proj[1][1] *= -1;
+
+	memcpy(uniformBuffersMapped[currentImage], &l_ubo, sizeof(l_ubo));
+}
+
