@@ -2,19 +2,24 @@
 
 #include <unordered_map>
 #include "Resource.hpp"
+#include "Logger.hpp"
+#include "ModelLoading/AssimpModelLoader.hpp"
 
-class ResourceManager
+class IResourceManager
 {
 public:
-	ResourceManager() = default;
-	~ResourceManager() = default;
+	IResourceManager() = default;
+	~IResourceManager() = default;
 
-	std::unordered_map<std::string, Resource*> m_resources;
+	std::unordered_map<std::string, IResource*> m_resources;
 
-	template <typename T>
-	const T* LoadResource(std::string a_file);
-	const T* GetResource(std::string a_file);
-	const T* DeleteResource(std::string a_file)
+	template<typename T> T* LoadResource(std::string a_file);
+	IResource* GetResource(std::string a_file);
+	IResource* DeleteResource(std::string a_file);
 
+private:
+	AssimpModelLoader m_meshLoader;
 
 };
+
+#include "ResourceManager/ResourceManager.inl"

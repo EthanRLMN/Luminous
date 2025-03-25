@@ -1,18 +1,15 @@
-#include "ResourceManager.hpp"
+#include "ResourceManager/ResourceManager.hpp"
 
 
 
-const T* ResourceManager::LoadResource(std::string a_file)
+
+
+IResource* IResourceManager::GetResource(std::string a_file)
 {
-
+	return nullptr;
 }
 
-const T* ResourceManager::GetResource(std::string a_id)
+IResource* IResourceManager::DeleteResource(std::string a_file)
 {
-
-}
-
-const T* ResourceManager::DeleteResource(std::string a_id)
-{
-
+	return nullptr;
 }

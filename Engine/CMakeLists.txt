@@ -26,7 +26,7 @@ set(L_TARGET_NAME L_ENGINE)
 #---------------------------------------#
 #            BUILD MODE                 #
 #---------------------------------------#
-add_library(${L_TARGET_NAME} STATIC ${L_ENGINE_SOURCES})
+add_library(${L_TARGET_NAME} STATIC ${L_ENGINE_SOURCES} "Code/Source/ResourceManager/Mesh.cpp")
 
 
 
