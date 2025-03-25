@@ -12,9 +12,9 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtx/hash.hpp>
 
-#include "Matrix4.hpp"
-#include "Vector2.hpp"
-#include "Vector3.hpp"
+//#include "Matrix4.hpp"
+//#include "Vector2.hpp"
+//#include "Vector3.hpp"
 
 /**
  * @brief How many frames should be rendererd ahead

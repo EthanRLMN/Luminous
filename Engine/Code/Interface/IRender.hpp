@@ -18,16 +18,9 @@
 #include "IDescriptor.hpp"
 #include "ICommandBuffer.hpp"
 #include "ISynchronization.hpp"
-#include "IInputManager.hpp"
-#include "IInstance.hpp"
-#include "IModel.hpp"
-#include "IPipeline.hpp"
-#include "IRenderPass.hpp"
-#include "ISurface.hpp"
-#include "ISwapChain.hpp"
-#include "ISynchronization.hpp"
-#include "ITexture.hpp"
-#include "IWindow.hpp"
+
+#include "IRenderingDraw.hpp"
+
 
 class IRender
 {
@@ -54,6 +47,8 @@ public:
 	virtual ICommandBuffer* InstantiateCommandBuffer() = 0;
 	virtual ISynchronization* InstantiateSynchronization() = 0;
 
+	virtual IRenderingDraw* InstantiateRenderingDraw() = 0;
+
 
 
 	virtual void DeleteWindow(IWindow* a_window) { delete a_window; }
@@ -75,4 +70,6 @@ public:
 	virtual void DeleteDescriptor(IDescriptor* a_descriptor) { delete a_descriptor; }
 	virtual void DeleteCommandBuffer(ICommandBuffer* a_commandBuffer) { delete a_commandBuffer; }
 	virtual void DeleteSynchronization(ISynchronization* a_synchronization) { delete a_synchronization; }
+
+	virtual void DeleteRenderingDraw(IRenderingDraw* a_renderingDraw) { delete a_renderingDraw; }
 };

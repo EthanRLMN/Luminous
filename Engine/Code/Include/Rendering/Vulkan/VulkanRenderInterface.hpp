@@ -22,6 +22,8 @@
 #include "Rendering/Vulkan/VulkanSynchronization.hpp"
 #include "Rendering/Vulkan/VulkanTexture.hpp"
 
+#include "Rendering/Vulkan/VulkanRenderingDraw.hpp"
+
 class VulkanRenderInterface final : public IRender
 {
 public:
@@ -79,5 +81,8 @@ public:
 
 	inline ISynchronization* InstantiateSynchronization() override { return new VulkanSynchronization(); }
 	void DeleteSynchronization(ISynchronization* a_synchronization) override { delete a_synchronization; }
+
+	inline IRenderingDraw* InstantiateRenderingDraw() override { return new VulkanRenderingDraw(); }
+	void DeleteRenderingDraw(IRenderingDraw* a_renderDraw) override { delete a_renderDraw; }
 
 };

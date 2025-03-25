@@ -2,12 +2,12 @@
 
 
 
-void VulkanRenderingDraw::Create(GLFWwindow* a_window, IDevice* a_device, ISwapChain* a_swapChain, IPipeline* a_pipeline, IBuffer* a_buffer, IRenderPass* a_renderPass, IDescriptor* a_descriptor ,IModel* a_model)
+void VulkanRenderingDraw::Create(GLFWwindow* a_window, IDevice* a_device, ISwapChain* a_swapChain, IPipeline* a_pipeline, IBuffer* a_buffer, IRenderPass* a_renderPass, IDescriptor* a_descriptor, IModel* a_model, ISynchronization* a_synchronization)
 {
-	vkWaitForFences(a_device->CastVulkan()->GetDevice(), 1, &m_fences[m_currentFrame], VK_TRUE, UINT64_MAX);
+	vkWaitForFences(a_device->CastVulkan()->GetDevice(), 1, &a_synchronization->CastVulkan()->GetFences()[m_currentFrame], VK_TRUE, UINT64_MAX);
 
 	uint32_t l_imageIndex;
-	VkResult l_result = vkAcquireNextImageKHR(a_device->CastVulkan()->GetDevice(), a_swapChain->CastVulkan()->GetSwapChain(), UINT64_MAX, m_imageAvailableSemaphores[m_currentFrame], VK_NULL_HANDLE, &l_imageIndex);
+	VkResult l_result = vkAcquireNextImageKHR(a_device->CastVulkan()->GetDevice(), a_swapChain->CastVulkan()->GetSwapChain(), UINT64_MAX, a_synchronization->CastVulkan()->GetImageAvailableSemaphores()[m_currentFrame], VK_NULL_HANDLE, &l_imageIndex);
 
 	if (l_result == VK_ERROR_OUT_OF_DATE_KHR) {
 		//RecreateSwapChain(a_window, a_device->CastVulkan()->GetDevice());
@@ -20,7 +20,7 @@ void VulkanRenderingDraw::Create(GLFWwindow* a_window, IDevice* a_device, ISwapC
 
 	UpdateUniformBuffer(m_currentFrame,a_swapChain,a_buffer);
 
-	vkResetFences(a_device->CastVulkan()->GetDevice(), 1, &m_fences[m_currentFrame]);
+	vkResetFences(a_device->CastVulkan()->GetDevice(), 1, &a_synchronization->CastVulkan()->GetFences()[m_currentFrame]);
 
 	vkResetCommandBuffer(a_swapChain->CastVulkan()->GetCommandBuffers()[m_currentFrame], 0);
 	RecordCommandBuffer(a_swapChain->CastVulkan()->GetCommandBuffers()[m_currentFrame], a_pipeline->CastVulkan()->GetGraphicsPipeline(), a_pipeline->CastVulkan()->GetPipelineLayout(), l_imageIndex, a_swapChain, a_renderPass, a_buffer, a_descriptor,a_model);
@@ -29,7 +29,7 @@ void VulkanRenderingDraw::Create(GLFWwindow* a_window, IDevice* a_device, ISwapC
 	VkSubmitInfo l_submitInfo{};
 	l_submitInfo.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO;
 
-	VkSemaphore waitSemaphores[] = { m_imageAvailableSemaphores[m_currentFrame] };
+	VkSemaphore waitSemaphores[] = { a_synchronization->CastVulkan()->GetImageAvailableSemaphores()[m_currentFrame] };
 	VkPipelineStageFlags waitStages[] = { VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT };
 	l_submitInfo.waitSemaphoreCount = 1;
 	l_submitInfo.pWaitSemaphores = waitSemaphores;
@@ -38,12 +38,12 @@ void VulkanRenderingDraw::Create(GLFWwindow* a_window, IDevice* a_device, ISwapC
 	l_submitInfo.commandBufferCount = 1;
 	l_submitInfo.pCommandBuffers = &a_swapChain->CastVulkan()->GetCommandBuffers()[m_currentFrame];
 
-	VkSemaphore l_signalSemaphores[] = { m_renderFinishedSemaphores[m_currentFrame] };
+	VkSemaphore l_signalSemaphores[] = { a_synchronization->CastVulkan()->GetRenderFinishedSemaphores()[m_currentFrame] };
 
 	l_submitInfo.signalSemaphoreCount = 1;
 	l_submitInfo.pSignalSemaphores = l_signalSemaphores;
 
-	if (vkQueueSubmit(a_device->CastVulkan()->GetGraphicsQueue(), 1, &l_submitInfo, m_fences[m_currentFrame]) != VK_SUCCESS) {
+	if (vkQueueSubmit(a_device->CastVulkan()->GetGraphicsQueue(), 1, &l_submitInfo, a_synchronization->CastVulkan()->GetFences()[m_currentFrame]) != VK_SUCCESS) {
 		DEBUG_LOG_ERROR("Failed to submit draw command buffer\n");
 	}
 
@@ -154,3 +154,24 @@ void VulkanRenderingDraw::UpdateUniformBuffer(uint32_t currentImage ,ISwapChain*
 	memcpy(a_buffer->CastVulkan()->GetUniformBuffersMapped()[currentImage], &l_ubo, sizeof(l_ubo));
 }
 
+/*
+void VulkanRenderingDraw::RecreateSwapChain(GLFWwindow* a_window, VkDevice a_device)
+{
+	int l_width = 0, l_height = 0;
+
+	glfwGetFramebufferSize(a_window, &l_width, &l_height);
+	while (l_width == 0 || l_height == 0) {
+		glfwGetFramebufferSize(a_window, &l_width, &l_height);
+		glfwWaitEvents();
+	}
+
+	CleanUpSwapChain();
+
+	vkDeviceWaitIdle(a_device);
+
+	CreateSwapChain(a_window);
+	CreateImageViews(a_device);
+	CreateDepthRessource();
+	CreateFrameBuffers();
+}
+*/
