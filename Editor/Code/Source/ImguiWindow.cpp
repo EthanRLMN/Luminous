@@ -21,7 +21,7 @@ void ImguiWindow::Create()
 
 	ImGui::CreateContext();
 
-	auto* window = m_application->GetWindow();
+	auto* window = Application::GetWindow();
 	ImGui_ImplGlfw_InitForVulkan(window->CastVulkan()->GetGLFWWindow(), true);
 	ImGui_ImplSDL2_InitForVulkan(window.GetSDLWindow(), window.GetGLContext());
 }
