@@ -18,12 +18,12 @@ void VulkanRenderingDraw::Create(GLFWwindow* a_window, IDevice* a_device, ISwapC
 		DEBUG_LOG_ERROR("failed to acquire swap chain image\n");
 	}
 
-	UpdateUniformBuffer(m_currentFrame);
+	UpdateUniformBuffer(m_currentFrame,a_swapChain,a_buffer);
 
 	vkResetFences(a_device->CastVulkan()->GetDevice(), 1, &m_fences[m_currentFrame]);
 
 	vkResetCommandBuffer(a_swapChain->CastVulkan()->GetCommandBuffers()[m_currentFrame], 0);
-	RecordCommandBuffer(a_swapChain->CastVulkan()->GetCommandBuffers()[m_currentFrame], a_pipeline->CastVulkan()->GetGraphicsPipeline(), a_pipeline->CastVulkan()->GetPipelineLayout(), l_imageIndex, a_swapChain, a_renderPass, a_buffer, a_descriptor);
+	RecordCommandBuffer(a_swapChain->CastVulkan()->GetCommandBuffers()[m_currentFrame], a_pipeline->CastVulkan()->GetGraphicsPipeline(), a_pipeline->CastVulkan()->GetPipelineLayout(), l_imageIndex, a_swapChain, a_renderPass, a_buffer, a_descriptor,a_model);
 
 
 	VkSubmitInfo l_submitInfo{};
@@ -139,7 +139,7 @@ void VulkanRenderingDraw::RecordCommandBuffer(VkCommandBuffer a_commandBuffer, V
 
 }
 
-void VulkanRenderingDraw::UpdateUniformBuffer(uint32_t currentImage ,ISwapChain* a_swapChain)
+void VulkanRenderingDraw::UpdateUniformBuffer(uint32_t currentImage ,ISwapChain* a_swapChain , IBuffer* a_buffer)
 {
 	static std::chrono::steady_clock::time_point l_startTime = std::chrono::high_resolution_clock::now();
 	std::chrono::steady_clock::time_point l_currentTime = std::chrono::high_resolution_clock::now();
@@ -151,6 +151,6 @@ void VulkanRenderingDraw::UpdateUniformBuffer(uint32_t currentImage ,ISwapChain*
 	l_ubo.proj = glm::perspective(glm::radians(45.0f), a_swapChain->CastVulkan()->GetSwapChainExtent().width / (float)a_swapChain->CastVulkan()->GetSwapChainExtent().height, 0.1f, 10.0f);
 	l_ubo.proj[1][1] *= -1;
 
-	memcpy(uniformBuffersMapped[currentImage], &l_ubo, sizeof(l_ubo));
+	memcpy(a_buffer->CastVulkan()->GetUniformBuffersMapped()[currentImage], &l_ubo, sizeof(l_ubo));
 }
 

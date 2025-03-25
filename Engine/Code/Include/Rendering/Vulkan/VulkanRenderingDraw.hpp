@@ -26,7 +26,8 @@ public:
 	void RecordCommandBuffer(VkCommandBuffer a_commandBuffer, VkPipeline a_graphicsPipeline, VkPipelineLayout a_pipelineLayout, uint32_t a_imageIndex, ISwapChain* a_swapChain, IRenderPass* a_renderPass, IBuffer* a_buffer, IDescriptor* a_descriptor, IModel* a_model);
 
 
-	void UpdateUniformBuffer(uint32_t currentImage);
+
+	void UpdateUniformBuffer(uint32_t currentImage, ISwapChain* a_swapChain, IBuffer* a_buffer);
 
 	uint32_t m_currentFrame{ 0 };
 
