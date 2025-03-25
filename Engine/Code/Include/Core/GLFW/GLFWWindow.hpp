@@ -18,10 +18,10 @@ public:
     void SetSize(Maths::Vector2 a_size) override;
     float GetOpacity() override;
     void SetOpacity(float a_alpha) override;
-    const std::string GetTitle() override;
+    [[nodiscard]] std::string GetTitle() const override;
     void SetTitle(const std::string& a_name) override;
 
-    GLFWWindow* CastVulkan() override { return this; }
+    GLFWWindow* CastGLFW() override { return this; }
 
     [[nodiscard]] GLFWwindow* GetGLFWWindow() const { return m_window; }
 

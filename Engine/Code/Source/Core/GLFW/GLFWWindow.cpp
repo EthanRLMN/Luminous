@@ -49,7 +49,7 @@ Maths::Vector2 GLFWWindow::GetSize()
 {
     int t_x, t_y;
     glfwGetWindowSize(m_window, &t_x, &t_y);
-    return Maths::Vector2(static_cast<float>(t_x), static_cast<float>(t_y));
+    return Maths::Vector2{static_cast<float>(t_x), static_cast<float>(t_y)};
 }
 
 void GLFWWindow::SetSize(const Maths::Vector2 a_size)
@@ -67,7 +67,7 @@ void GLFWWindow::SetOpacity(const float a_alpha)
     glfwSetWindowOpacity(m_window, a_alpha);
 }
 
-const std::string GLFWWindow::GetTitle()
+std::string GLFWWindow::GetTitle() const
 {
     std::string t_str = glfwGetWindowTitle(m_window);
     return t_str;

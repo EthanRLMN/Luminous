@@ -1,13 +1,13 @@
 #pragma once
 
-enum class Action
+enum class Action : unsigned int
 {
     RELEASE = 0,
     PRESS = 1,
     REPEAT = 2
 };
 
-enum class MouseButton
+enum class MouseButton : unsigned int
 {
     MOUSE_BUTTON_1 = 0,
     MOUSE_BUTTON_2 = 1,
@@ -23,7 +23,7 @@ enum class MouseButton
     MOUSE_BUTTON_MIDDLE = MOUSE_BUTTON_3
 };
 
-enum class Key
+enum class Key : unsigned int
 {
     KEY_SPACE = 32,
     KEY_APOSTROPHE = 39, /* ' */

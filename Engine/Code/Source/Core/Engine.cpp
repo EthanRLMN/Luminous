@@ -1,4 +1,4 @@
-#include "Engine.hpp"
+#include "Core/Engine.hpp"
 
 #include "Rendering/Vulkan/VulkanRenderInterface.hpp"
 
@@ -107,11 +107,12 @@ Engine::~Engine()
 
 void Engine::Run() const
 {
+	// TODO : Cleanup
 	while (!m_window->ShouldClose())
 	{
 		m_window->PollEvents();
 		/*if (m_inputManager->IsKeyPressed(m_window, Key::KEY_A))
-			DEBUG_LOG_VERBOSE("Key {} has been pressed!\n", Key::KEY_A);
+			DEBUG_LOG_VERBOSE("Key {} has been pressed!\n", (int)Key::KEY_A);
 
 		if (m_inputManager->IsMouseButtonDown(m_window, MouseButton::MOUSE_BUTTON_LEFT))
 			DEBUG_LOG_VERBOSE("x={}, y={}\n", m_inputManager->GetMouseScroll().x, m_inputManager->GetMouseScroll().y);*/

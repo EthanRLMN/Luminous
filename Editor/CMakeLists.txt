@@ -7,7 +7,7 @@ project(Editor
 #---------------------------------------#
 #                SOURCES                #
 #---------------------------------------#
-file(GLOB_RECURSE L_EDITOR_SOURCES "Code/Editor.cpp" "Code/Source/*.cpp" "Libs/imgui/*.cpp" "Libs/imgui/backends/*.cpp")
+file(GLOB_RECURSE L_EDITOR_SOURCES "Code/Source/*.cpp" "Libs/imgui/*.cpp" "Libs/imgui/backends/*.cpp")
 
 # Define the lib name for easy modification
 set(LE_TARGET_NAME L_EDITOR)

@@ -9,7 +9,7 @@
 
 void VulkanSurface::Create(IInstance* a_instance, IWindow* a_window)
 {
-    const VkResult l_result = glfwCreateWindowSurface(a_instance->CastVulkan()->GetInstance(), a_window->CastVulkan()->GetGLFWWindow(), nullptr, &m_surface);
+    const VkResult l_result = glfwCreateWindowSurface(a_instance->CastVulkan()->GetInstance(), a_window->CastGLFW()->GetGLFWWindow(), nullptr, &m_surface);
 
     if (l_result != VK_SUCCESS)
         DEBUG_LOG_ERROR("Vulkan Surface : Failed to create Surface!\n");

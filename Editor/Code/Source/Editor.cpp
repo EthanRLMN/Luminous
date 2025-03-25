@@ -1,11 +1,7 @@
-#include "Engine.hpp"
-
 #include "imgui/imgui.h"
 
-#include "imgui/backends/imgui_impl_glfw.h"
-#include "imgui/backends/imgui_impl_vulkan.h"
-
-#include "Rendering/GLFW/GLFWWindow.hpp"
+#include "Core/Engine.hpp"
+#include "Core/GLFW/GLFWWindow.hpp"
 
 void Destroy()
 {

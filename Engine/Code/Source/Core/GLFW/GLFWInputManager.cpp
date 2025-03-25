@@ -4,10 +4,10 @@
 #include "Rendering/GLFW/GLFWWindow.hpp"
 
 std::array<int, 120> GLFWInputManager::m_keyPressed{};
-std::array<Action, 3> GLFWInputManager::m_keyStatus{};
+std::array<Action, 120> GLFWInputManager::m_keyStatus{};
 
 std::array<int, 12> GLFWInputManager::m_mouseButtonPressed{};
-std::array<Action, 3> GLFWInputManager::m_mouseButtonStatus{};
+std::array<Action, 12> GLFWInputManager::m_mouseButtonStatus{};
 
 std::array<int, 2> GLFWInputManager::m_mouseScroll{};
 
@@ -40,7 +40,7 @@ int GLFWInputManager::IsKeyPressed(IWindow* a_window, const Key a_key)
 
 void GLFWInputManager::KeyCallback(GLFWwindow* a_window, const int a_key, int a_scancode, const int a_action, int a_mods)
 {
-	const Action l_keyAction = static_cast<Action>(a_action);
+	const auto l_keyAction = static_cast<Action>(a_action);
 	if (l_keyAction == Action::RELEASE)
 		m_keyPressed[a_key] = 0;
 
@@ -76,7 +76,7 @@ int GLFWInputManager::IsMouseButtonPressed(IWindow* a_window, const MouseButton 
 
 void GLFWInputManager::MouseButtonCallback(GLFWwindow* a_window, const int a_button, const int a_action, int a_mods)
 {
-	const Action l_buttonAction = static_cast<Action>(a_action);
+	const auto l_buttonAction = static_cast<Action>(a_action);
 	if (l_buttonAction == Action::RELEASE)
 		m_mouseButtonPressed[a_button] = 0;
 
@@ -93,7 +93,7 @@ Maths::Vector2 GLFWInputManager::GetCursorPosition(IWindow* a_window)
 {
 	double t_x, t_y;
 	glfwGetCursorPos(m_window, &t_x, &t_y);
-	return Maths::Vector2(static_cast<float>(t_x), static_cast<float>(t_y));
+	return Maths::Vector2{static_cast<float>(t_x), static_cast<float>(t_y)};
 }
 
 void GLFWInputManager::SetCursorPosition(IWindow* a_window, const Maths::Vector2 a_pos)
@@ -103,12 +103,12 @@ void GLFWInputManager::SetCursorPosition(IWindow* a_window, const Maths::Vector2
 
 Maths::Vector2 GLFWInputManager::GetMouseScroll()
 {
-	return Maths::Vector2(static_cast<float>(m_mouseScroll[0]), static_cast<float>(m_mouseScroll[1]));
+	return Maths::Vector2{static_cast<float>(m_mouseScroll[0]), static_cast<float>(m_mouseScroll[1])};
 }
 
 void GLFWInputManager::Initialize(IWindow* a_window)
 {
-	m_window = a_window->CastVulkan()->GetGLFWWindow();
+	m_window = a_window->CastGLFW()->GetGLFWWindow();
 
 	glfwSetKeyCallback(m_window, KeyCallback);
 	glfwSetMouseButtonCallback(m_window, MouseButtonCallback);
@@ -117,7 +117,7 @@ void GLFWInputManager::Initialize(IWindow* a_window)
 
 void GLFWInputManager::Destroy(IWindow* a_window)
 {
-	glfwDestroyWindow(a_window->CastVulkan()->GetGLFWWindow());
+	glfwDestroyWindow(a_window->CastGLFW()->GetGLFWWindow());
 	glfwTerminate();
 }
 

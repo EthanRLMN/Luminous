@@ -37,10 +37,10 @@ private:
     static void MouseScrollCallback(GLFWwindow* a_window, double a_xOffset, double a_yOffset);
 
     static std::array<int, 120> m_keyPressed;
-    static std::array<Action, 3> m_keyStatus;
+    static std::array<Action, 120> m_keyStatus;
 
     static std::array<int, 12> m_mouseButtonPressed;
-    static std::array<Action, 3> m_mouseButtonStatus;
+    static std::array<Action, 12> m_mouseButtonStatus;
 
     static std::array<int, 2> m_mouseScroll;
 
