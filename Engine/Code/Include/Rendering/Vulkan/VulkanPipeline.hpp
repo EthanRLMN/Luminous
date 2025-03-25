@@ -12,7 +12,7 @@ public:
 	void Destroy() override;
 
 
-	[[nodiscard]] VkPipeline GetInstance() const { return m_graphicsPipeline; }
+	[[nodiscard]] VkPipeline GetGraphicsPipeline() const { return m_graphicsPipeline; }
 	[[nodiscard]] VkPipelineLayout GetPipelineLayout() const { return m_pipelineLayout; };
 
 	VulkanPipeline* CastVulkan() override { return this; }
