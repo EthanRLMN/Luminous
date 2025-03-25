@@ -1,27 +1,6 @@
 #include "Application.hpp"
 #include "imgui.h"
 #include "MainWindow.hpp"
-#include "backends/imgui_impl_glfw.h"
-#include "backends/imgui_impl_vulkan.h"
-#include "Rendering/API/Vulkan/VulkanWindow.hpp"
-
-void MainWindow::Shutdown()
-{
-	//ImGui_ImplVulkan_Shutdown();
-	//ImGui_ImplGlfw_Shutdown();
-	ImGui::DestroyContext();
-}
-
-void MainWindow::Create()
-{
-	IMGUI_CHECKVERSION();
-
-	ImGui::CreateContext();
-
-	Application *application = new Application();
-	GLFWwindow* window = application->GetWindow()->CastVulkan()->GetGLFWWindow();
-	ImGui_ImplGlfw_InitForVulkan(window, true);
-}
 
 int main()
 {

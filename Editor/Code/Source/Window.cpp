@@ -1,6 +1,6 @@
 #include "MainWindow.hpp"
 
-void MainWindow::Draw()
+void Window::Draw()
 {
 	ImGui::PushStyleColor(ImGuiCol_WindowBg, 0xff323432);
 	ImGui::SetNextWindowSize({ 1920, 1080 }, ImGuiCond_FirstUseEver);
