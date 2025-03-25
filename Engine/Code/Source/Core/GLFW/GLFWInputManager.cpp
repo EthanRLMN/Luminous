@@ -1,7 +1,7 @@
 #include "IWindow.hpp"
 
-#include "Rendering/GLFW/GLFWInputManager.hpp"
-#include "Rendering/GLFW/GLFWWindow.hpp"
+#include "Core/GLFW/GLFWInputManager.hpp"
+#include "Core/GLFW/GLFWWindow.hpp"
 
 std::array<int, 120> GLFWInputManager::m_keyPressed{};
 std::array<Action, 120> GLFWInputManager::m_keyStatus{};

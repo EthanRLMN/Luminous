@@ -1,11 +1,12 @@
-#include "ModelLoading/AssimpModelLoader.hpp"
-
 #include <direct.h>
 #include <string>
 
 #include "Logger.hpp"
 #include "assimp/Importer.hpp"
 #include "assimp/postprocess.h"
+
+#include "Resources/ModelLoading/AssimpModelLoader.hpp"
+#include "Resources/ModelLoading/AssimpModelDebugger.hpp"
 
 AssimpModelDebugger AssimpModelLoader::LoadModel(const char* a_file)
 {

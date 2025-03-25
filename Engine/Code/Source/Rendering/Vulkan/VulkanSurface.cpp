@@ -3,8 +3,9 @@
 #include "IInstance.hpp"
 #include "IWindow.hpp"
 
+#include "Core/GLFW/GLFWWindow.hpp"
+
 #include "Rendering/Vulkan/VulkanSurface.hpp"
-#include "Rendering/GLFW/GLFWWindow.hpp"
 #include "Rendering/Vulkan/VulkanInstance.hpp"
 
 void VulkanSurface::Create(IInstance* a_instance, IWindow* a_window)

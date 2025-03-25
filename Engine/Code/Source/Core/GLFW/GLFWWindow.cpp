@@ -1,6 +1,4 @@
-#include <iostream>
-
-#include "Rendering/GLFW/GLFWWindow.hpp"
+#include "Core/GLFW/GLFWWindow.hpp"
 
 void GLFWWindow::Initialize(const std::string& a_name, const int a_width, const int a_height)
 {

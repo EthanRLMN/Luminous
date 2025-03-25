@@ -1,4 +1,4 @@
-#include "ModelLoading/AssimpModelDebugger.hpp"
+#include "Resources/ModelLoading/AssimpModelDebugger.hpp"
 
 #include "Logger.hpp"
 

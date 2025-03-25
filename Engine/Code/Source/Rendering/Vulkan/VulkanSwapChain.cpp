@@ -1,7 +1,8 @@
 #include "IWindow.hpp"
 
+#include "Core/GLFW/GLFWWindow.hpp"
+
 #include "Rendering/Vulkan/VulkanSwapChain.hpp"
-#include "Rendering/GLFW/GLFWWindow.hpp"
 #include "Rendering/Vulkan/VulkanDevice.hpp"
 
 void VulkanSwapChain::Create(IWindow* a_window, IDevice* a_device, ISurface* a_surface)

@@ -2,8 +2,8 @@
 
 #include "IRender.hpp"
 
-#include "Rendering/GLFW/GLFWInputManager.hpp"
-#include "Rendering/GLFW/GLFWWindow.hpp"
+#include "Core/GLFW/GLFWInputManager.hpp"
+#include "Core/GLFW/GLFWWindow.hpp"
 
 #include "VulkanDescriptorSetLayout.hpp"
 #include "Rendering/Vulkan/VulkanBuffer.hpp"
