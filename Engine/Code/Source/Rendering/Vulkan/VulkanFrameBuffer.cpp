@@ -24,7 +24,7 @@ void VulkanFrameBuffer::Create(IDevice* a_device, ISwapChain* a_swapChain, IRend
 
 		VkFramebufferCreateInfo l_framebufferCreateInfo = {};
 		l_framebufferCreateInfo.sType = VK_STRUCTURE_TYPE_FRAMEBUFFER_CREATE_INFO;
-		l_framebufferCreateInfo.renderPass = a_renderPass->CastVulkan()->GetInstance();
+		l_framebufferCreateInfo.renderPass = a_renderPass->CastVulkan()->GetRenderPass();
 		l_framebufferCreateInfo.attachmentCount = static_cast<uint32_t>(l_attachments.size());
 		l_framebufferCreateInfo.pAttachments = l_attachments.data();
 		l_framebufferCreateInfo.width = l_vulkanSwapChain->GetSwapChainExtent().width;

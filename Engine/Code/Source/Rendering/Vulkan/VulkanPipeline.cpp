@@ -155,7 +155,7 @@ void VulkanPipeline::Create(IDevice* a_device, IRenderPass* a_renderPass, IDescr
 	l_pipelineCreateInfo.pColorBlendState = &l_colorBlending;
 	l_pipelineCreateInfo.pDynamicState = &l_dynamicStateCreationInfo;
 	l_pipelineCreateInfo.layout = m_pipelineLayout;
-	l_pipelineCreateInfo.renderPass = a_renderPass->CastVulkan()->GetInstance();
+	l_pipelineCreateInfo.renderPass = a_renderPass->CastVulkan()->GetRenderPass();
 	l_pipelineCreateInfo.subpass = 0;
 	l_pipelineCreateInfo.basePipelineHandle = VK_NULL_HANDLE;
 	l_pipelineCreateInfo.basePipelineIndex = -1;

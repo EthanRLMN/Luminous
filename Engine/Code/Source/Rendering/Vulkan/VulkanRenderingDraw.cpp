@@ -10,7 +10,7 @@ void VulkanRenderingDraw::Create(GLFWwindow* a_window, IDevice* a_device, ISwapC
 	VkResult l_result = vkAcquireNextImageKHR(a_device->CastVulkan()->GetDevice(), a_swapChain->CastVulkan()->GetSwapChain(), UINT64_MAX, m_imageAvailableSemaphores[m_currentFrame], VK_NULL_HANDLE, &l_imageIndex);
 
 	if (l_result == VK_ERROR_OUT_OF_DATE_KHR) {
-		RecreateSwapChain(a_window, a_device->CastVulkan()->GetDevice());
+		//RecreateSwapChain(a_window, a_device->CastVulkan()->GetDevice());
 		return;
 	}
 	else if (l_result != VK_SUCCESS && l_result != VK_SUBOPTIMAL_KHR)
@@ -61,7 +61,7 @@ void VulkanRenderingDraw::Create(GLFWwindow* a_window, IDevice* a_device, ISwapC
 
 	if (l_result == VK_ERROR_OUT_OF_DATE_KHR || l_result == VK_SUBOPTIMAL_KHR || m_framebufferResized) {
 		m_framebufferResized = false;
-		RecreateSwapChain(a_window, a_device->CastVulkan()->GetDevice());
+		//RecreateSwapChain(a_window, a_device->CastVulkan()->GetDevice());
 	}
 	else if (l_result != VK_SUCCESS) {
 		DEBUG_LOG_ERROR("failed to present swap chain image\n");
