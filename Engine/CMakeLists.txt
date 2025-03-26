@@ -33,7 +33,7 @@ add_library(${L_TARGET_NAME} STATIC ${L_ENGINE_SOURCES})
 #---------------------------------------#
 #                INCLUDE                #
 #---------------------------------------#
-target_include_directories(${L_TARGET_NAME} PUBLIC "Code/Include" "Code/Interface" "Libs/stb_image" "Libs/tinyobj" "Libs/vulkanmemoryallocator/include")
+target_include_directories(${L_TARGET_NAME} PUBLIC "Code/Include" "Code/Interface" "Libs/stb_image" "Libs/tinyobj" "Libs/vulkanmemoryallocator/include""Libs/glm")
 
 
 
@@ -59,7 +59,7 @@ set(CMAKE_POSITION_INDEPENDENT_CODE ON)
 set(CMAKE_C_EXTENSIONS OFF)
 set(CMAKE_CXX_EXTENSIONS OFF)
 
-target_link_libraries(${L_TARGET_NAME} PUBLIC VulkanMemoryAllocator Vulkan::Vulkan glfw assimp L_LOGGER L_MATHS)
+target_link_libraries(${L_TARGET_NAME} PUBLIC glm::glm VulkanMemoryAllocator Vulkan::Vulkan glfw assimp L_LOGGER L_MATHS)
 
 
 

@@ -26,3 +26,4 @@ add_subdirectory(assimp)
 
 add_subdirectory(logger)
 add_subdirectory(luminousmaths)
+add_subdirectory(glm)
