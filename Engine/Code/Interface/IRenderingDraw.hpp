@@ -18,9 +18,9 @@ class IFrameBuffer;
 class IRenderingDraw
 {
 public:
+	virtual ~IRenderingDraw() = default;
 	virtual void Create(GLFWwindow* a_window, IDevice* a_device, ISwapChain* a_swapChain, IPipeline* a_pipeline, IBuffer* a_buffer, IRenderPass* a_renderPass, IDescriptor* a_descriptor, IModel* a_model, ISynchronization* a_synchronization, ICommandBuffer* a_commandBuffer , IFrameBuffer* a_frameBuffer) = 0;
 	virtual void Destroy() = 0;
-
 
 	virtual VulkanRenderingDraw* CastVulkan()
 	{

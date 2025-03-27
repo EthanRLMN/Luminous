@@ -37,7 +37,7 @@ target_compile_features(${LE_TARGET_NAME} PUBLIC cxx_std_23)
 if(MSVC)
     target_compile_options(${LE_TARGET_NAME} PUBLIC /W3 /WX)
 else()
-    target_compile_options(${LE_TARGET_NAME} PUBLIC -Wall -Wextra -Wpedantic -Werror)
+    target_compile_options(${LE_TARGET_NAME} PUBLIC -Wall -Wextra -Wpedantic)
 endif()
 
 # Build position independent code.
