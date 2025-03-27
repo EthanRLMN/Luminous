@@ -12,11 +12,12 @@ class IRenderPass;
 class IDescriptor;
 class IModel;
 class ISynchronization;
+class ICommandBuffer;
 
 class IRenderingDraw
 {
 public:
-	virtual void Create(GLFWwindow* a_window, IDevice* a_device, ISwapChain* a_swapChain, IPipeline* a_pipeline, IBuffer* a_buffer, IRenderPass* a_renderPass, IDescriptor* a_descriptor, IModel* a_model, ISynchronization* a_synchronization) = 0;
+	virtual void Create(GLFWwindow* a_window, IDevice* a_device, ISwapChain* a_swapChain, IPipeline* a_pipeline, IBuffer* a_buffer, IRenderPass* a_renderPass, IDescriptor* a_descriptor, IModel* a_model, ISynchronization* a_synchronization, ICommandBuffer* a_commandBuffer) = 0;
 	virtual void Destroy() = 0;
 
 

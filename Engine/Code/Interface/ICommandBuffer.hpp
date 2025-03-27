@@ -12,7 +12,7 @@ class ICommandBuffer
 public:
 	virtual ~ICommandBuffer() = default;
 
-	virtual void Create(IDevice* a_device, ISwapChain* a_swapChain, ICommandPool* a_commandPool) = 0;
+	virtual void Create(IDevice* a_device, ICommandPool* a_commandPool) = 0;
 	virtual void Destroy() = 0;
 
 	virtual VulkanCommandBuffer* CastVulkan()

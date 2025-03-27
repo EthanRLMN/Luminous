@@ -27,7 +27,6 @@ public:
 
 	[[nodiscard]] std::vector < VkImage> GetSwapChainImages() const { return m_swapChainImages; }
 	[[nodiscard]] std::vector < VkFramebuffer> GetSwapChainFrameBuffers() const { return m_swapChainFrameBuffers; }
-	[[nodiscard]] std::vector < VkCommandBuffer> GetCommandBuffers() const { return m_commandBuffers; }
 	[[nodiscard]] std::vector < VkImageView> GetSwapChainImageViews() const { return m_swapChainImageViews; }
 	void SetSwapChainFrameBufferSize(size_t a_size);
 
@@ -47,6 +46,5 @@ private:
 
 	std::vector<VkFramebuffer> m_swapChainFrameBuffers{ VK_NULL_HANDLE };
 	std::vector<VkImage> m_swapChainImages{ VK_NULL_HANDLE };
-	std::vector<VkCommandBuffer> m_commandBuffers{ VK_NULL_HANDLE };
 	std::vector<VkImageView> m_swapChainImageViews{ VK_NULL_HANDLE };
 };

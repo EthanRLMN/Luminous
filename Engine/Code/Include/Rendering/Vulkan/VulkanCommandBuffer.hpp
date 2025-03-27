@@ -8,11 +8,16 @@
 class VulkanCommandBuffer final : public ICommandBuffer
 {
 public:
-	void Create(IDevice* a_device, ISwapChain* a_swapChain, ICommandPool* a_commandPool) override;
+	void Create(IDevice* a_device, ICommandPool* a_commandPool) override;
 	void Destroy() override;
+
+	[[nodiscard]] std::vector < VkCommandBuffer> GetCommandBuffers() const { return m_commandBuffers; }
 
 	VulkanCommandBuffer* CastVulkan() override
 	{
 		return this;
 	}
+
+private :
+	std::vector<VkCommandBuffer> m_commandBuffers{ VK_NULL_HANDLE };
 };

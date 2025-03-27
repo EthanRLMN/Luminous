@@ -69,7 +69,7 @@ Engine::Engine()
 	m_descriptor->Create(m_device, m_descriptorSetLayout, m_texture, m_buffer);
 
 	m_commandBuffer = m_interface->InstantiateCommandBuffer();
-	m_commandBuffer->Create(m_device, m_swapChain, m_commandPool);
+	m_commandBuffer->Create(m_device, m_commandPool);
 
 	m_synchronization = m_interface->InstantiateSynchronization();
 	m_synchronization->Create(m_device);
@@ -118,7 +118,7 @@ void Engine::Run() const
 			DEBUG_LOG_VERBOSE("x={}, y={}\n", m_inputManager->GetMouseScroll().x, m_inputManager->GetMouseScroll().y);*/
 
 		IRenderingDraw* renderingDraw = m_interface->InstantiateRenderingDraw();
-		renderingDraw->Create(m_window->CastGLFW()->GetGLFWWindow(), m_device, m_swapChain, m_pipeline, m_buffer, m_renderPass, m_descriptor, m_model,m_synchronization);
+		renderingDraw->Create(m_window->CastGLFW()->GetGLFWWindow(), m_device, m_swapChain, m_pipeline, m_buffer, m_renderPass, m_descriptor, m_model,m_synchronization,m_commandBuffer);
 
 		m_inputManager->Update(m_window);
 	}

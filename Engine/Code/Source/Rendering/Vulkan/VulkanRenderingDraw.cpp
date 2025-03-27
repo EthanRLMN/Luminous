@@ -2,7 +2,7 @@
 
 
 
-void VulkanRenderingDraw::Create(GLFWwindow* a_window, IDevice* a_device, ISwapChain* a_swapChain, IPipeline* a_pipeline, IBuffer* a_buffer, IRenderPass* a_renderPass, IDescriptor* a_descriptor, IModel* a_model, ISynchronization* a_synchronization)
+void VulkanRenderingDraw::Create(GLFWwindow* a_window, IDevice* a_device, ISwapChain* a_swapChain, IPipeline* a_pipeline, IBuffer* a_buffer, IRenderPass* a_renderPass, IDescriptor* a_descriptor, IModel* a_model, ISynchronization* a_synchronization ,ICommandBuffer* a_commandBuffer)
 {
 	vkWaitForFences(a_device->CastVulkan()->GetDevice(), 1, &a_synchronization->CastVulkan()->GetFences()[m_currentFrame], VK_TRUE, UINT64_MAX);
 
@@ -22,8 +22,8 @@ void VulkanRenderingDraw::Create(GLFWwindow* a_window, IDevice* a_device, ISwapC
 
 	vkResetFences(a_device->CastVulkan()->GetDevice(), 1, &a_synchronization->CastVulkan()->GetFences()[m_currentFrame]);
 
-	vkResetCommandBuffer(a_swapChain->CastVulkan()->GetCommandBuffers()[m_currentFrame], 0);
-	RecordCommandBuffer(a_swapChain->CastVulkan()->GetCommandBuffers()[m_currentFrame], a_pipeline->CastVulkan()->GetGraphicsPipeline(), a_pipeline->CastVulkan()->GetPipelineLayout(), l_imageIndex, a_swapChain, a_renderPass, a_buffer, a_descriptor,a_model);
+	vkResetCommandBuffer(a_commandBuffer->CastVulkan()->GetCommandBuffers()[m_currentFrame], 0);
+	RecordCommandBuffer(a_commandBuffer->CastVulkan()->GetCommandBuffers()[m_currentFrame], a_pipeline->CastVulkan()->GetGraphicsPipeline(), a_pipeline->CastVulkan()->GetPipelineLayout(), l_imageIndex, a_swapChain, a_renderPass, a_buffer, a_descriptor,a_model);
 
 
 	VkSubmitInfo l_submitInfo{};
@@ -36,7 +36,7 @@ void VulkanRenderingDraw::Create(GLFWwindow* a_window, IDevice* a_device, ISwapC
 	l_submitInfo.pWaitDstStageMask = waitStages;
 
 	l_submitInfo.commandBufferCount = 1;
-	l_submitInfo.pCommandBuffers = &a_swapChain->CastVulkan()->GetCommandBuffers()[m_currentFrame];
+	l_submitInfo.pCommandBuffers = &a_commandBuffer->CastVulkan()->GetCommandBuffers()[m_currentFrame];
 
 	VkSemaphore l_signalSemaphores[] = { a_synchronization->CastVulkan()->GetRenderFinishedSemaphores()[m_currentFrame] };
 
