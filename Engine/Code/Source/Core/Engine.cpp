@@ -118,7 +118,7 @@ void Engine::Run() const
 			DEBUG_LOG_VERBOSE("x={}, y={}\n", m_inputManager->GetMouseScroll().x, m_inputManager->GetMouseScroll().y);*/
 
 		IRenderingDraw* renderingDraw = m_interface->InstantiateRenderingDraw();
-		renderingDraw->Create(m_window->CastGLFW()->GetGLFWWindow(), m_device, m_swapChain, m_pipeline, m_buffer, m_renderPass, m_descriptor, m_model,m_synchronization,m_commandBuffer);
+		renderingDraw->Create(m_window->CastGLFW()->GetGLFWWindow(), m_device, m_swapChain, m_pipeline, m_buffer, m_renderPass, m_descriptor, m_model,m_synchronization,m_commandBuffer,m_frameBuffer);
 
 		m_inputManager->Update(m_window);
 	}

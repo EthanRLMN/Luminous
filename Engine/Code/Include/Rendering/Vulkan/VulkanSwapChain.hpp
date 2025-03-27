@@ -26,9 +26,8 @@ public:
 	[[nodiscard]] VkExtent2D GetSwapChainExtent() const { return m_swapChainExtent; }
 
 	[[nodiscard]] std::vector < VkImage> GetSwapChainImages() const { return m_swapChainImages; }
-	[[nodiscard]] std::vector < VkFramebuffer> GetSwapChainFrameBuffers() const { return m_swapChainFrameBuffers; }
 	[[nodiscard]] std::vector < VkImageView> GetSwapChainImageViews() const { return m_swapChainImageViews; }
-	void SetSwapChainFrameBufferSize(size_t a_size);
+	
 
 	VkImageView CreateImageView(VkImage a_image, VkDevice a_device, VkFormat a_format, VkImageAspectFlags a_aspectFlags);
 
@@ -44,7 +43,6 @@ private:
 	VkFormat m_swapChainImageFormat = VK_FORMAT_UNDEFINED;
 	VkExtent2D m_swapChainExtent = { 0, 0 };
 
-	std::vector<VkFramebuffer> m_swapChainFrameBuffers{ VK_NULL_HANDLE };
 	std::vector<VkImage> m_swapChainImages{ VK_NULL_HANDLE };
 	std::vector<VkImageView> m_swapChainImageViews{ VK_NULL_HANDLE };
 };

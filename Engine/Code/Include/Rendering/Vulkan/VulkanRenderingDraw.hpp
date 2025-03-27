@@ -11,6 +11,7 @@
 #include "Rendering/Vulkan/VulkanModel.hpp"
 #include "Rendering/Vulkan/VulkanSynchronization.hpp"
 #include "Rendering/Vulkan/VulkanCommandBuffer.hpp"
+#include "Rendering/Vulkan/VulkanFrameBuffer.hpp"
 
 
 //#include "Matrix4.hpp"
@@ -22,10 +23,10 @@
 class VulkanRenderingDraw final : public IRenderingDraw {
 
 public:
-	void Create(GLFWwindow* a_window, IDevice* a_device, ISwapChain* a_swapChain, IPipeline* a_pipeline, IBuffer* a_buffer, IRenderPass* a_renderPass, IDescriptor* a_descriptor, IModel* a_model, ISynchronization* a_synchronization, ICommandBuffer* a_commandBuffer) override;
+	void Create(GLFWwindow* a_window, IDevice* a_device, ISwapChain* a_swapChain, IPipeline* a_pipeline, IBuffer* a_buffer, IRenderPass* a_renderPass, IDescriptor* a_descriptor, IModel* a_model, ISynchronization* a_synchronization, ICommandBuffer* a_commandBuffer,IFrameBuffer*  a_frameBuffer) override;
 	void Destroy() override;
 
-	void RecordCommandBuffer(VkCommandBuffer a_commandBuffer, VkPipeline a_graphicsPipeline, VkPipelineLayout a_pipelineLayout, uint32_t a_imageIndex, ISwapChain* a_swapChain, IRenderPass* a_renderPass, IBuffer* a_buffer, IDescriptor* a_descriptor, IModel* a_model);
+	void RecordCommandBuffer(VkCommandBuffer a_commandBuffer, VkPipeline a_graphicsPipeline, VkPipelineLayout a_pipelineLayout, uint32_t a_imageIndex, ISwapChain* a_swapChain, IRenderPass* a_renderPass, IBuffer* a_buffer, IDescriptor* a_descriptor, IModel* a_model,IFrameBuffer* a_frameBuffer);
 
 
 

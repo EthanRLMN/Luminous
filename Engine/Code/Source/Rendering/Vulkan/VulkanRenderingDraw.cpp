@@ -2,7 +2,7 @@
 
 
 
-void VulkanRenderingDraw::Create(GLFWwindow* a_window, IDevice* a_device, ISwapChain* a_swapChain, IPipeline* a_pipeline, IBuffer* a_buffer, IRenderPass* a_renderPass, IDescriptor* a_descriptor, IModel* a_model, ISynchronization* a_synchronization ,ICommandBuffer* a_commandBuffer)
+void VulkanRenderingDraw::Create(GLFWwindow* a_window, IDevice* a_device, ISwapChain* a_swapChain, IPipeline* a_pipeline, IBuffer* a_buffer, IRenderPass* a_renderPass, IDescriptor* a_descriptor, IModel* a_model, ISynchronization* a_synchronization ,ICommandBuffer* a_commandBuffer,IFrameBuffer* a_frameBuffer)
 {
 	vkWaitForFences(a_device->CastVulkan()->GetDevice(), 1, &a_synchronization->CastVulkan()->GetFences()[m_currentFrame], VK_TRUE, UINT64_MAX);
 
@@ -23,7 +23,7 @@ void VulkanRenderingDraw::Create(GLFWwindow* a_window, IDevice* a_device, ISwapC
 	vkResetFences(a_device->CastVulkan()->GetDevice(), 1, &a_synchronization->CastVulkan()->GetFences()[m_currentFrame]);
 
 	vkResetCommandBuffer(a_commandBuffer->CastVulkan()->GetCommandBuffers()[m_currentFrame], 0);
-	RecordCommandBuffer(a_commandBuffer->CastVulkan()->GetCommandBuffers()[m_currentFrame], a_pipeline->CastVulkan()->GetGraphicsPipeline(), a_pipeline->CastVulkan()->GetPipelineLayout(), l_imageIndex, a_swapChain, a_renderPass, a_buffer, a_descriptor,a_model);
+	RecordCommandBuffer(a_commandBuffer->CastVulkan()->GetCommandBuffers()[m_currentFrame], a_pipeline->CastVulkan()->GetGraphicsPipeline(), a_pipeline->CastVulkan()->GetPipelineLayout(), l_imageIndex, a_swapChain, a_renderPass, a_buffer, a_descriptor,a_model,a_frameBuffer);
 
 
 	VkSubmitInfo l_submitInfo{};
@@ -75,7 +75,7 @@ void VulkanRenderingDraw::Destroy()
 }
 
 
-void VulkanRenderingDraw::RecordCommandBuffer(VkCommandBuffer a_commandBuffer, VkPipeline a_graphicsPipeline, VkPipelineLayout a_pipelineLayout, uint32_t a_imageIndex, ISwapChain* a_swapChain, IRenderPass* a_renderPass, IBuffer* a_buffer, IDescriptor* a_descriptor, IModel* a_model)
+void VulkanRenderingDraw::RecordCommandBuffer(VkCommandBuffer a_commandBuffer, VkPipeline a_graphicsPipeline, VkPipelineLayout a_pipelineLayout, uint32_t a_imageIndex, ISwapChain* a_swapChain, IRenderPass* a_renderPass, IBuffer* a_buffer, IDescriptor* a_descriptor, IModel* a_model,IFrameBuffer* a_frameBuffer)
 {
 	VkCommandBufferBeginInfo l_bufferBeginInfo = {};
 	l_bufferBeginInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
@@ -89,7 +89,7 @@ void VulkanRenderingDraw::RecordCommandBuffer(VkCommandBuffer a_commandBuffer, V
 
 	l_renderPassBeginInfo.sType = VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO;
 	l_renderPassBeginInfo.renderPass = a_renderPass->CastVulkan()->GetRenderPass();
-	l_renderPassBeginInfo.framebuffer = a_swapChain->CastVulkan()->GetSwapChainFrameBuffers()[a_imageIndex];
+	l_renderPassBeginInfo.framebuffer = a_frameBuffer->CastVulkan()->GetFrameBuffers()[a_imageIndex];
 	l_renderPassBeginInfo.renderArea.offset = { 0,0 };
 	l_renderPassBeginInfo.renderArea.extent = a_swapChain->CastVulkan()->GetSwapChainExtent();
 

@@ -1,8 +1,3 @@
-#include "IDepthResource.hpp"
-#include "IDevice.hpp"
-#include "IRenderPass.hpp"
-#include "ISwapChain.hpp"
-
 #include "Rendering/Vulkan/VulkanFrameBuffer.hpp"
 #include "Rendering/Vulkan/VulkanDepthResource.hpp"
 #include "Rendering/Vulkan/VulkanDevice.hpp"
@@ -12,7 +7,7 @@
 void VulkanFrameBuffer::Create(IDevice* a_device, ISwapChain* a_swapChain, IRenderPass* a_renderPass,
                                IDepthResource* a_depthResource)
 {
-	a_swapChain->CastVulkan()->SetSwapChainFrameBufferSize(a_swapChain->CastVulkan()->GetSwapChainImageViews().size());
+	GetFrameBuffersSize(a_swapChain->CastVulkan()->GetSwapChainImageViews().size());
 
 	const VulkanSwapChain* l_vulkanSwapChain = a_swapChain->CastVulkan();
 	for (size_t i = 0; i < l_vulkanSwapChain->GetSwapChainImageViews().size(); ++i)
@@ -32,10 +27,15 @@ void VulkanFrameBuffer::Create(IDevice* a_device, ISwapChain* a_swapChain, IRend
 		l_framebufferCreateInfo.layers = 1;
 
 		const VkResult l_result = vkCreateFramebuffer(a_device->CastVulkan()->GetDevice(), &l_framebufferCreateInfo,
-		                                              nullptr, &l_vulkanSwapChain->GetSwapChainFrameBuffers()[i]);;
+		                                              nullptr, &m_frameBuffers[i]);;
 		if (l_result != VK_SUCCESS)
 			throw std::runtime_error("Failed to create framebuffer");
 	}
+}
+
+void VulkanFrameBuffer::GetFrameBuffersSize(const size_t a_size)
+{
+	m_frameBuffers.resize(a_size);
 }
 
 void VulkanFrameBuffer::Destroy()

@@ -182,10 +182,6 @@ VkExtent2D VulkanSwapChain::ChooseSwapExtend(const VkSurfaceCapabilitiesKHR& a_s
 	return l_newExtend;
 }
 
-void VulkanSwapChain::SetSwapChainFrameBufferSize(const size_t a_size)
-{
-	m_swapChainFrameBuffers.resize(a_size);
-}
 
 VkImageView VulkanSwapChain::CreateImageView(const VkImage a_image, const VkDevice a_device, const VkFormat a_format,
                                              const VkImageAspectFlags a_aspectFlags)
