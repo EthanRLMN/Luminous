@@ -18,6 +18,6 @@ public:
 		return this;
 	}
 
-private :
 	std::vector<VkCommandBuffer> m_commandBuffers{ VK_NULL_HANDLE };
+private :
 };

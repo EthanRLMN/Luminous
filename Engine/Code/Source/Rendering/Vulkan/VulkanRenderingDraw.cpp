@@ -7,23 +7,21 @@ void VulkanRenderingDraw::Create(GLFWwindow* a_window, IDevice* a_device, ISwapC
 	vkWaitForFences(a_device->CastVulkan()->GetDevice(), 1, &a_synchronization->CastVulkan()->GetFences()[m_currentFrame], VK_TRUE, UINT64_MAX);
 
 	uint32_t l_imageIndex;
-	VkResult l_result = vkAcquireNextImageKHR(a_device->CastVulkan()->GetDevice(), a_swapChain->CastVulkan()->GetSwapChain(), UINT64_MAX, a_synchronization->CastVulkan()->GetImageAvailableSemaphores()[m_currentFrame], VK_NULL_HANDLE, &l_imageIndex);
+	VkResult l_result = vkAcquireNextImageKHR(a_device->CastVulkan()->GetDevice(), a_swapChain->CastVulkan()->GetSwapChain(), UINT64_MAX,a_synchronization->CastVulkan()->GetImageAvailableSemaphores()[m_currentFrame], VK_NULL_HANDLE, &l_imageIndex);
 
 	if (l_result == VK_ERROR_OUT_OF_DATE_KHR) {
-		//RecreateSwapChain(a_window, a_device->CastVulkan()->GetDevice());
+		//RecreateSwapChain(a_window,mainDevice.logicalDevice);
 		return;
 	}
 	else if (l_result != VK_SUCCESS && l_result != VK_SUBOPTIMAL_KHR)
 	{
-		DEBUG_LOG_ERROR("failed to acquire swap chain image\n");
+		std::cout << "failed to acquire swap chain image";
 	}
 
 	UpdateUniformBuffer(m_currentFrame,a_swapChain,a_buffer);
 
-	vkResetFences(a_device->CastVulkan()->GetDevice(), 1, &a_synchronization->CastVulkan()->GetFences()[m_currentFrame]);
+	vkResetFences(a_device->CastVulkan()->GetDevice(), 1, & a_synchronization->CastVulkan()->GetFences()[m_currentFrame]);
 
-	vkResetCommandBuffer(a_commandBuffer->CastVulkan()->GetCommandBuffers()[m_currentFrame], 0);
-	RecordCommandBuffer(a_commandBuffer->CastVulkan()->GetCommandBuffers()[m_currentFrame], a_pipeline->CastVulkan()->GetGraphicsPipeline(), a_pipeline->CastVulkan()->GetPipelineLayout(), l_imageIndex, a_swapChain, a_renderPass, a_buffer, a_descriptor,a_model,a_frameBuffer);
 
 
 	VkSubmitInfo l_submitInfo{};
@@ -36,15 +34,18 @@ void VulkanRenderingDraw::Create(GLFWwindow* a_window, IDevice* a_device, ISwapC
 	l_submitInfo.pWaitDstStageMask = waitStages;
 
 	l_submitInfo.commandBufferCount = 1;
-	l_submitInfo.pCommandBuffers = &a_commandBuffer->CastVulkan()->GetCommandBuffers()[m_currentFrame];
+	l_submitInfo.pCommandBuffers = &a_commandBuffer->CastVulkan()->m_commandBuffers[m_currentFrame];
 
 	VkSemaphore l_signalSemaphores[] = { a_synchronization->CastVulkan()->GetRenderFinishedSemaphores()[m_currentFrame] };
 
 	l_submitInfo.signalSemaphoreCount = 1;
 	l_submitInfo.pSignalSemaphores = l_signalSemaphores;
 
+	vkResetCommandBuffer(a_commandBuffer->CastVulkan()->GetCommandBuffers()[m_currentFrame], 0);
+	RecordCommandBuffer(a_commandBuffer->CastVulkan()->GetCommandBuffers()[m_currentFrame], a_pipeline->CastVulkan()->GetGraphicsPipeline(), a_pipeline->CastVulkan()->GetPipelineLayout(), l_imageIndex,a_swapChain,a_renderPass,a_buffer,a_descriptor,a_model,a_frameBuffer);
+	
 	if (vkQueueSubmit(a_device->CastVulkan()->GetGraphicsQueue(), 1, &l_submitInfo, a_synchronization->CastVulkan()->GetFences()[m_currentFrame]) != VK_SUCCESS) {
-		DEBUG_LOG_ERROR("Failed to submit draw command buffer\n");
+		std::cout << "Failed to submit draw command buffer";
 	}
 
 	VkPresentInfoKHR l_presentInfo{};
@@ -52,7 +53,7 @@ void VulkanRenderingDraw::Create(GLFWwindow* a_window, IDevice* a_device, ISwapC
 	l_presentInfo.waitSemaphoreCount = 1;
 	l_presentInfo.pWaitSemaphores = l_signalSemaphores;
 
-	VkSwapchainKHR l_swapChains[] = { a_swapChain->CastVulkan()->GetSwapChain() };
+	VkSwapchainKHR l_swapChains[] = { a_swapChain->CastVulkan()->GetSwapChain()};
 	l_presentInfo.swapchainCount = 1;
 	l_presentInfo.pSwapchains = l_swapChains;
 	l_presentInfo.pImageIndices = &l_imageIndex;
@@ -61,10 +62,10 @@ void VulkanRenderingDraw::Create(GLFWwindow* a_window, IDevice* a_device, ISwapC
 
 	if (l_result == VK_ERROR_OUT_OF_DATE_KHR || l_result == VK_SUBOPTIMAL_KHR || m_framebufferResized) {
 		m_framebufferResized = false;
-		//RecreateSwapChain(a_window, a_device->CastVulkan()->GetDevice());
+		//RecreateSwapChain(a_window,mainDevice.logicalDevice);
 	}
 	else if (l_result != VK_SUCCESS) {
-		DEBUG_LOG_ERROR("failed to present swap chain image\n");
+		std::cout << "failed to present swap chain image";
 	}
 
 	m_currentFrame = (m_currentFrame + 1) % MAX_FRAMES_IN_FLIGHT;
