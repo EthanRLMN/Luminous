@@ -23,9 +23,25 @@ void VulkanTexture::Create(IDevice* a_device, ISwapChain* a_swapChain, IDepthRes
 
 void VulkanTexture::Destroy(IDevice* a_device)
 {
-	vkDestroyImage(a_device->CastVulkan()->GetDevice(), m_textureImage, nullptr);
-	vkDestroyImageView(a_device->CastVulkan()->GetDevice(), m_textureImageView, nullptr);
-	vkDestroySampler(a_device->CastVulkan()->GetDevice(), m_textureSampler, nullptr);
+	VkDevice l_device = a_device->CastVulkan()->GetDevice();
+
+	vkDeviceWaitIdle(l_device); 
+
+	if (m_textureImageView != VK_NULL_HANDLE) {
+		vkDestroyImageView(l_device, m_textureImageView, nullptr);
+		m_textureImageView = VK_NULL_HANDLE;
+	}
+
+	if (m_textureImage != VK_NULL_HANDLE) {
+		vkDestroyImage(l_device, m_textureImage, nullptr);
+		m_textureImage = VK_NULL_HANDLE;
+	}
+
+	if (m_textureSampler != VK_NULL_HANDLE) {
+		vkDestroySampler(l_device, m_textureSampler, nullptr);
+		m_textureSampler = VK_NULL_HANDLE;
+	}
+
 	DEBUG_LOG_INFO("Vulkan Texture : Texture Destroy!\n");
 }
 
