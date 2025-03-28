@@ -41,6 +41,7 @@ void GLFWWindow::Destroy() const
 {
     glfwDestroyWindow(m_window);
     glfwTerminate();
+    DEBUG_LOG_INFO("GLFW Window : Destroy!\n");
 }
 
 Maths::Vector2 GLFWWindow::GetSize()

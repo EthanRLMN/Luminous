@@ -59,7 +59,7 @@ public:
 	virtual void DeleteDevice(IDevice* a_device) { delete a_device; }
 	virtual void DeleteSwapChain(ISwapChain* a_swapChain) { delete a_swapChain; }
 	virtual void DeleteRenderPass(IRenderPass* a_renderPass) { delete a_renderPass; }
-	virtual void DeleteDescriptionSetLayout(IDescriptorSetLayout* a_descriptionSetLayout) { delete a_descriptionSetLayout; }
+	virtual void DeleteDescriptorSetLayout(IDescriptorSetLayout* a_descriptorSetLayout) { delete a_descriptorSetLayout; }
 	virtual void DeletePipeline(IPipeline* a_pipeline) { delete a_pipeline; }
 	virtual void DeleteCommandPool(ICommandPool* a_commandPool) { delete a_commandPool; }
 	virtual void DeleteDepthResource(IDepthResource* a_depthResource) { delete a_depthResource; }
