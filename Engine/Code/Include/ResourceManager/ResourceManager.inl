@@ -19,7 +19,7 @@ template<typename T> T* IResourceManager::LoadResource(std::string a_file)
 		{
 			std::string l_info = "Failed to Initialize " + a_file + " file.";
 			DEBUG_LOG_INFO("{}", l_info);
-			delete(T);
+			delete(l_resource);
 			return nullptr;
 		}
 	}
