@@ -16,4 +16,5 @@ void VulkanCommandBuffer::Create(IDevice* a_device, ICommandPool* a_commandPool)
 
 void VulkanCommandBuffer::Destroy()
 {
+	
 }
