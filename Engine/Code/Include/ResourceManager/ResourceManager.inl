@@ -1,4 +1,5 @@
 #include "ResourceManager/ResourceManager.hpp"
+#include <iostream>
 
 
 template<typename T> T* IResourceManager::LoadResource(std::string a_file)
@@ -41,12 +42,14 @@ template<typename T> T* IResourceManager::GetResource(std::string a_file)
 	}
 	else
 	{
-		DEBUG_LOG_INFO("{}", typeid(m_resources[a_file]));
+		//DEBUG_LOG_INFO("{}", typeid(m_resources[a_file]));
+		std::cout << typeid(*m_resources[a_file]).name() << '\n';
 		if (true)
 		{
 			std::string l_info = a_file + " has been found.";
 			DEBUG_LOG_INFO("{}", l_info);
-			return dynamic_cast<T*>(m_resources[a_file]);
+			return nullptr;
+			//return dynamic_cast<T*>(m_resources[a_file]);
 		}
 		else
 		{
