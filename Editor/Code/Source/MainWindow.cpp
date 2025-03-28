@@ -91,7 +91,7 @@ void MainWindow::Draw()
 			ImGui::EndMenuBar();
 		}
 
-		static ImTextureID s_moveButton = LoadTexture("../../Assets/Move Button.png");
+		/*static ImTextureID s_moveButton = LoadTexture("../../Assets/Move Button.png");
 		static ImTextureID s_rotateButton = LoadTexture("../../Assets/Rotate Button.png");
 		static ImTextureID s_resizeButton = LoadTexture("../../Assets/Resize Button.png");
 		static ImTextureID s_playButton = LoadTexture("../../Assets/Play Button.png");
@@ -117,10 +117,10 @@ void MainWindow::Draw()
 		ImGui::Image(s_stopButton, { 25, 25 }, { 0, 0 }, { 1, 1 });
 
 		ImGui::SameLine(0, 115 * ImGui::GetStyle().ItemSpacing.x);
-		ImGui::Image(s_saveButton, { 25, 25 }, { 0, 0 }, { 1, 1 });
+		ImGui::Image(s_saveButton, { 25, 25 }, { 0, 0 }, { 1, 1 });*/
 
 		ImGui::TableSetColumnIndex(0);
-		ImGui::Begin("window1", { -1, 255 }, true);
+		ImGui::Begin("window1", {1,255}, true);
 		ImGui::End();
 
 		ImGui::TableNextColumn();

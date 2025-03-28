@@ -1,7 +1,5 @@
 #pragma once
 
-typedef union SDL_Event SDL_Event;
-
 class ImguiWindow
 {
 public:
@@ -11,8 +9,9 @@ public:
 	void Create();
 	void Shutdown();
 
-	void HandleSLDEvent(SDL_Event& e);
-
 	void BeginRender();
 	void EndRender();
+
+    bool WantCaptureMouse();
+    bool WantCaptureKeyboard();
 };
