@@ -208,7 +208,7 @@ VkImageView VulkanSwapChain::CreateImageView(const VkImage a_image, const VkDevi
 	VkImageView l_imageView{};
 	const VkResult l_result = vkCreateImageView(a_device, &l_viewCreateInfo, nullptr, &l_imageView);
 	if (l_result != VK_SUCCESS)
-		throw std::runtime_error("Failed to create an image View!");
+		DEBUG_LOG_INFO("Failed to create an image View!!\n");
 
 	return l_imageView;
 }
