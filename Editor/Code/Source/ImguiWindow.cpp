@@ -1,7 +1,6 @@
 #include "ImguiWindow.hpp"
 
 #include "Application.hpp"
-#include "Vulkan.h"
 
 #include "backends/imgui_impl_glfw.h"
 #include "backends/imgui_impl_vulkan.h"
@@ -11,7 +10,7 @@ void ImguiWindow::Create()
 	IMGUI_CHECKVERSION();
 	ImGui::CreateContext();
 
-	auto* window = Application::GetWindow();
+	GLFWwindow* window = Application::GetWindow();
 	ImGui_ImplGlfw_InitForVulkan(window->CastVulkan()->GetGLFWWindow(), true);
 }
 
