@@ -79,7 +79,19 @@ void VulkanSwapChain::Create(IWindow* a_window, IDevice* a_device, ISurface* a_s
 
 void VulkanSwapChain::Destroy(IDevice* a_device)
 {
+	for (size_t i = 0; i < m_swapChainImageViews.size(); i++)
+	{
+		vkDestroyImageView(a_device->CastVulkan()->GetDevice(), m_swapChainImageViews[i], nullptr);
+	}
+
+	/*
+	for (size_t i = 0; i < m_swapChainImages.size(); i++)
+	{
+		vkDestroyImage(a_device->CastVulkan()->GetDevice(), m_swapChainImages[i], nullptr);
+	}*/
+
 	vkDestroySwapchainKHR(a_device->CastVulkan()->GetDevice(), m_swapChain, nullptr);
+
 	DEBUG_LOG_INFO("Vulkan SwapChain : SwapChain destroyed!\n");
 }
 
