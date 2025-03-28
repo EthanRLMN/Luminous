@@ -1,41 +1,107 @@
-#include "Application.hpp"
+#include <GLFW/glfw3.h>
+#include <vulkan/vulkan.h>
+#include <iostream>
 #include "imgui.h"
-#include "Window.hpp"
+#include "backends/imgui_impl_glfw.h"
+#include "backends/imgui_impl_vulkan.h"
+
+GLFWwindow* CreateGLFWWindow(int width, int height, const char* title)
+{
+    if (!glfwInit())
+    {
+        exit(-1);
+    }
+
+    glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
+    GLFWwindow* window = glfwCreateWindow(width, height, title, nullptr, nullptr);
+    if (!window)
+    {
+        glfwTerminate();
+        exit(-1);
+    }
+
+    glfwMakeContextCurrent(window);
+    return window;
+}
+
+VkInstance CreateVulkanInstance()
+{
+    VkApplicationInfo appInfo = {};
+    appInfo.sType = VK_STRUCTURE_TYPE_APPLICATION_INFO;
+    appInfo.pApplicationName = "Luminous";
+    appInfo.applicationVersion = VK_MAKE_VERSION(1, 0, 0);
+    appInfo.pEngineName = "No Engine";
+    appInfo.engineVersion = VK_MAKE_VERSION(1, 0, 0);
+    appInfo.apiVersion = VK_API_VERSION_1_0;
+
+    VkInstanceCreateInfo createInfo = {};
+    createInfo.sType = VK_STRUCTURE_TYPE_INSTANCE_CREATE_INFO;
+    createInfo.pApplicationInfo = &appInfo;
+
+    VkInstance instance;
+    if (vkCreateInstance(&createInfo, nullptr, &instance) != VK_SUCCESS)
+    {
+        exit(-1);
+    }
+
+    return instance;
+}
+
+void SetupImGui(GLFWwindow* window, VkInstance instance)
+{
+    IMGUI_CHECKVERSION();
+    ImGui::CreateContext();
+    ImGuiIO& io = ImGui::GetIO();
+    io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;
+    io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;
+
+    ImGui_ImplGlfw_InitForVulkan(window, true);
+
+    ImGui_ImplVulkan_InitInfo init_info = {};
+    init_info.Instance = instance;
+    init_info.PhysicalDevice = VK_NULL_HANDLE;
+    init_info.Device = VK_NULL_HANDLE;
+    init_info.QueueFamily = 0;
+    init_info.Queue = VK_NULL_HANDLE;
+    init_info.PipelineCache = VK_NULL_HANDLE;
+    init_info.DescriptorPool = VK_NULL_HANDLE;
+    init_info.Allocator = nullptr;
+    init_info.CheckVkResultFn = nullptr;
+
+    ImGui_ImplVulkan_Init(&init_info);
+}
 
 int main()
 {
-	const Application l_application;
-	l_application.Run();
+    GLFWwindow* window = CreateGLFWWindow(1920, 1080, "Luminous");
 
-	ImGuiIO& io = ImGui::GetIO();
+    VkInstance instance = CreateVulkanInstance();
 
-	io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;     // Enable Keyboard Controls
-	io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;         // IF using Docking Branch
+    SetupImGui(window, instance);
 
-	// Setup Platform/Renderer backends
-	/*ImGui_ImplVulkan_InitInfo l_vulkanInfo{};
-	l_vulkanInfo.Instance = VK_NULL_HANDLE;*/
+    while (!glfwWindowShouldClose(window))
+    {
+        glfwPollEvents();
 
-	//ImGui_ImplVulkan_Init(&l_vulkanInfo);
+        ImGui_ImplVulkan_NewFrame();
+        ImGui_ImplGlfw_NewFrame();
+        ImGui::NewFrame();
 
-	ImGui::ShowDemoWindow(); // Show demo window! :)
-	//mainWindow.Open();
+        ImGui::ShowDemoWindow();
 
-	while (!l_application.GetWindow()->ShouldClose())
-	{
-		// Poll events before doing anything else
-		glfwPollEvents();
+        ImGui::Render();
 
-		/*ImGui_ImplVulkan_NewFrame();
-		ImGui_ImplGlfw_NewFrame();*/
-		ImGui::NewFrame();
+        glfwSwapBuffers(window);
+    }
 
-		// Handle rendering
-		ImGui::Render();
-		//ImGui_ImplVulkan_RenderDrawData(ImGui::GetDrawData(), l_application.GetCo);
-		//mainWindow.Draw();
-	}
+    ImGui_ImplVulkan_Shutdown();
+    ImGui_ImplGlfw_Shutdown();
+    ImGui::DestroyContext();
 
-	//Destroy();
-	return 0;
+    vkDestroyInstance(instance, nullptr);
+
+    glfwDestroyWindow(window);
+    glfwTerminate();
+
+    return 0;
 }

@@ -1,7 +1,7 @@
 #include "ImguiWindow.hpp"
 
 #include "Application.hpp"
-#include "Vulkan.hpp"
+#include "Vulkan.h"
 
 #include "backends/imgui_impl_glfw.h"
 #include "backends/imgui_impl_vulkan.h"

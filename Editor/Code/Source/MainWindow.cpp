@@ -120,14 +120,14 @@ void MainWindow::Draw()
 		ImGui::Image(s_saveButton, { 25, 25 }, { 0, 0 }, { 1, 1 });*/
 
 		ImGui::TableSetColumnIndex(0);
-		ImGui::Begin("window1", {1,255}, true);
+		ImGui::Begin("window1", nullptr, ImGuiWindowFlags_NoTitleBar);
 		ImGui::End();
 
 		ImGui::TableNextColumn();
-		ImGui::Begin("window2", { -1, 255 }, true);
+		ImGui::Begin("window2", nullptr, ImGuiWindowFlags_NoTitleBar);
 		ImGui::End();
 
-		ImGui::Begin("window3", { -1, -1 }, true);
+		ImGui::Begin("window3", nullptr, ImGuiWindowFlags_NoTitleBar);
 		ImGui::End();
 	}
 	ImGui::PopStyleColor();
