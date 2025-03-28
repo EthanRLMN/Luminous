@@ -42,6 +42,11 @@ void VulkanTexture::Destroy(IDevice* a_device)
 		m_textureSampler = VK_NULL_HANDLE;
 	}
 
+	if (m_textureImageMemory != VK_NULL_HANDLE) {
+		vkFreeMemory(l_device, m_textureImageMemory, nullptr);
+		m_textureImageMemory = VK_NULL_HANDLE;
+	}
+
 	DEBUG_LOG_INFO("Vulkan Texture : Texture Destroy!\n");
 }
 
