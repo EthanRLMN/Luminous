@@ -1,7 +1,6 @@
 #pragma once
 
 typedef union SDL_Event SDL_Event;
-using SDL_GLContext = void*;
 
 class ImguiWindow
 {
@@ -16,4 +15,4 @@ public:
 
 	void BeginRender();
 	void EndRender();
-}
+};
