@@ -80,7 +80,7 @@ Engine::~Engine()
 	m_pipeline->Destroy(m_device);
 	m_interface->DeletePipeline(m_pipeline);
 
-	m_descriptorSetLayout->Destroy();
+	m_descriptorSetLayout->Destroy(m_device);
 	m_interface->DeleteDescriptionSetLayout(m_descriptorSetLayout);
 
 	m_renderPass->Destroy(m_device);

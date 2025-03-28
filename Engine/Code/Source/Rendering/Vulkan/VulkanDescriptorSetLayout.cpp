@@ -30,8 +30,11 @@ void VulkanDescriptorSetLayout::Create(IDevice* a_device)
 	const VkResult l_result = vkCreateDescriptorSetLayout(a_device->CastVulkan()->GetDevice(), &l_layoutInfo, nullptr, &m_descriptorSetLayout);
 	if (l_result != VK_SUCCESS)
 		DEBUG_LOG_ERROR("Vulkan Descriptor : Failed to create a descriptor set layout!\n");
+	DEBUG_LOG_INFO("Vulkan DescriptorSetLayout : DescriptorSetLayout Created!\n");
 }
 
-void VulkanDescriptorSetLayout::Destroy()
+void VulkanDescriptorSetLayout::Destroy(IDevice* a_device)
 {
+	vkDestroyDescriptorSetLayout(a_device->CastVulkan()->GetDevice(), m_descriptorSetLayout, nullptr);
+	DEBUG_LOG_INFO("Vulkan DescriptorSetLayout : DescriptorSetLayout Destroyed!\n");
 }
