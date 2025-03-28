@@ -18,6 +18,14 @@ void VulkanBuffer::Create(IDevice* a_device, ITexture* a_texture, ICommandPool* 
 	DEBUG_LOG_INFO("Vulkan Buffer : Buffer created!\n");
 }
 
+void VulkanBuffer::Destroy(IDevice* a_device)
+{
+	vkDestroyBuffer(a_device->CastVulkan()->GetDevice(), m_indexBuffer, nullptr);
+	vkDestroyBuffer(a_device->CastVulkan()->GetDevice(), m_vertexBuffer, nullptr);
+
+	DEBUG_LOG_INFO("Vulkan Buffer : Buffer Destroy!\n");
+}
+
 void VulkanBuffer::CreateVertexBuffers(IDevice* a_device, ITexture* a_texture, ICommandPool* a_commandPool,
                                        IDepthResource* a_depthResource, IModel* a_model)
 {

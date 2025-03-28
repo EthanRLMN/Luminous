@@ -12,9 +12,9 @@ class VulkanBuffer final : public IBuffer
 {
 public:
     VulkanBuffer() = default;
-    void Destroy() override {};
 
     void Create(IDevice* a_device, ITexture* a_texture, ICommandPool* a_commandPool, IDepthResource* a_depthResource, IModel* a_model) override;
+    void Destroy(IDevice* a_device) override;
 
     void CreateVertexBuffers(IDevice* a_device, ITexture* a_texture, ICommandPool* a_commandPool, IDepthResource* a_depthResource, IModel* a_model);
     void CreateIndexBuffers(IDevice* a_device, ITexture* a_texture, ICommandPool* a_commandPool, IDepthResource* a_depthResource, IModel* a_model);
