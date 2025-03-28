@@ -60,7 +60,7 @@ void VulkanSwapChain::Create(IWindow* a_window, IDevice* a_device, ISurface* a_s
 	const VkResult l_result = vkCreateSwapchainKHR(l_vkDevice, &l_swapChainCreateInfo, nullptr, &m_swapChain);
 
 	if (l_result != VK_SUCCESS)
-		throw std::runtime_error("Failed to create a SwapChain");
+		DEBUG_LOG_ERROR("Failed to create a SwapChain\n");
 
 	vkGetSwapchainImagesKHR(l_vkDevice, m_swapChain, &l_imageCount, nullptr);
 	m_swapChainImages.resize(l_imageCount);
