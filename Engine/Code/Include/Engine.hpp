@@ -12,7 +12,7 @@ public:
 	~Engine();
 
 	void Run() const;
-	void DestroyVulkan() const;
+	void Destroy() const;
 	void DestroyWindow() const;
 
 	[[nodiscard]] IWindow* GetWindow() const { return m_window; }

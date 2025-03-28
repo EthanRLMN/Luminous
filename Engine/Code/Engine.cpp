@@ -84,8 +84,11 @@ void Engine::DestroyWindow() const
 	m_interface->DeleteWindow(m_window);
 }
 
-void Engine::DestroyVulkan() const
+void Engine::Destroy() const
 {
+	m_synchronization->Destroy(m_device);
+	m_interface->DeleteSynchronization(m_synchronization);
+
 	m_commandBuffer->Destroy();
 	m_interface->DeleteCommandBuffer(m_commandBuffer);
 
@@ -155,7 +158,7 @@ void Engine::Run() const
 
 		m_inputManager->Update(m_window);
 	}
-	DestroyVulkan();
+	Destroy();
 	DestroyWindow();
 
 }
