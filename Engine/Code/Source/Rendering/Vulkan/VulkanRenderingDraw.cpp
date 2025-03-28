@@ -55,11 +55,8 @@ void VulkanRenderingDraw::Create(GLFWwindow* a_window, IDevice* a_device, ISwapC
 	                    a_pipeline->CastVulkan()->GetGraphicsPipeline(), a_pipeline->CastVulkan()->GetPipelineLayout(),
 	                    l_imageIndex, a_swapChain, a_renderPass, a_buffer, a_descriptor, a_model, a_frameBuffer);
 
-	if (vkQueueSubmit(a_device->CastVulkan()->GetGraphicsQueue(), 1, &l_submitInfo,
-	                  a_synchronization->CastVulkan()->GetFences()[m_currentFrame]) != VK_SUCCESS)
-	{
-		std::cout << "Failed to submit draw command buffer";
-	}
+	if (vkQueueSubmit(a_device->CastVulkan()->GetGraphicsQueue(), 1, &l_submitInfo, a_synchronization->CastVulkan()->GetFences()[m_currentFrame]) != VK_SUCCESS)
+		DEBUG_LOG_ERROR("Failed to submit draw command buffer");
 
 	VkPresentInfoKHR l_presentInfo{};
 	l_presentInfo.sType = VK_STRUCTURE_TYPE_PRESENT_INFO_KHR;
@@ -79,7 +76,7 @@ void VulkanRenderingDraw::Create(GLFWwindow* a_window, IDevice* a_device, ISwapC
 		//RecreateSwapChain(a_window,mainDevice.logicalDevice);
 	} else if (l_result != VK_SUCCESS)
 	{
-		std::cout << "failed to present swap chain image";
+		DEBUG_LOG_ERROR("failed to present swap chain image");
 	}
 
 	m_currentFrame = (m_currentFrame + 1) % MAX_FRAMES_IN_FLIGHT;
