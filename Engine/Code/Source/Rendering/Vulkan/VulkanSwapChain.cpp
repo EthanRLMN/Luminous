@@ -79,6 +79,7 @@ void VulkanSwapChain::Create(IWindow* a_window, IDevice* a_device, ISurface* a_s
 
 void VulkanSwapChain::Destroy(IDevice* a_device)
 {
+	vkDestroySwapchainKHR(a_device->CastVulkan()->GetDevice(), m_swapChain, nullptr);
 	DEBUG_LOG_INFO("Vulkan SwapChain : SwapChain destroyed!\n");
 }
 

@@ -92,7 +92,6 @@ void VulkanInstance::Create(IWindow* a_window)
 void VulkanInstance::Destroy()
 {
 	vkDestroyInstance(m_instance, nullptr);
-
 	DEBUG_LOG_INFO("Vulkan Instance : Instance Deleted!\n");
 }
 

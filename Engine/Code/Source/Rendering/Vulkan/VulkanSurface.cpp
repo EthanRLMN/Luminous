@@ -18,5 +18,6 @@ void VulkanSurface::Create(IInstance* a_instance, IWindow* a_window)
 
 void VulkanSurface::Destroy(IInstance* a_instance)
 {
+    vkDestroySurfaceKHR(a_instance->CastVulkan()->GetInstance(), m_surface,nullptr);
     DEBUG_LOG_INFO("Vulkan Surface : Surface has been destroyed!\n");
 }

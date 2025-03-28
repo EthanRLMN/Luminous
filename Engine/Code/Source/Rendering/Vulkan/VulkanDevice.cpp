@@ -17,6 +17,7 @@ void VulkanDevice::Create(IInstance* a_instance, IWindow* a_window, ISurface* a_
 
 	GetPhysicalDevice(l_vkPhysDevice, l_vkSurface);
 	CreateLogicalDevice(l_vkSurface, l_vkPhysDevice);
+	DEBUG_LOG_INFO("Vulkan Device : Device Created!\n");
 }
 
 void VulkanDevice::Destroy()
