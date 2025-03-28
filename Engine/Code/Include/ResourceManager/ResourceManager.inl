@@ -41,7 +41,19 @@ template<typename T> T* IResourceManager::GetResource(std::string a_file)
 	}
 	else
 	{
-		
+		DEBUG_LOG_INFO("{}", typeid(m_resources[a_file]));
+		if (true)
+		{
+			std::string l_info = a_file + " has been found.";
+			DEBUG_LOG_INFO("{}", l_info);
+			return dynamic_cast<T*>(m_resources[a_file]);
+		}
+		else
+		{
+			std::string l_info = a_file + " can be found but type provided is incorrect.";
+			DEBUG_LOG_WARNING("{}", l_info);
+			return nullptr;
+		}
 	}
 	return nullptr;
 }
