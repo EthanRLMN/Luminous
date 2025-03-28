@@ -19,7 +19,7 @@ template<typename T> T* IResourceManager::LoadResource(std::string a_file)
 		else
 		{
 			std::string l_info = "Failed to Initialize " + a_file + " file.";
-			DEBUG_LOG_INFO("{}", l_info);
+			DEBUG_LOG_ERROR("{}", l_info);
 			delete(l_resource);
 			return nullptr;
 		}
@@ -31,6 +31,21 @@ template<typename T> T* IResourceManager::LoadResource(std::string a_file)
 	}
 	return nullptr;
 }
+
+template<typename T> T* IResourceManager::GetResource(std::string a_file)
+{
+	if (m_resources[a_file] == nullptr)
+	{
+		std::string l_info = a_file + " cannot be found.";
+		DEBUG_LOG_WARNING("{}", l_info);
+	}
+	else
+	{
+		
+	}
+	return nullptr;
+}
+
 
 template<typename T> void IResourceManager::DeleteResource(std::string a_file)
 {

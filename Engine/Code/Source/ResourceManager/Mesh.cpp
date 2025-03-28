@@ -4,9 +4,6 @@
 bool Mesh::Initialize(IResourceManager* a_manager, std::string a_file)
 {
 	a_manager->GetMeshLoader()->LoadModel(this,a_file.c_str());
-
-	DebugVertices();
-
 	return isLoaded;
 }
 

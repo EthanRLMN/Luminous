@@ -11,9 +11,3 @@ IResourceManager::~IResourceManager()
 	delete(m_meshLoader);
 }
 
-
-IResource* IResourceManager::GetResource(std::string a_file)
-{
-	return nullptr;
-}
-
