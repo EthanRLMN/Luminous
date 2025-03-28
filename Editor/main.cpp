@@ -1,6 +1,6 @@
 #include "Application.hpp"
 #include "imgui.h"
-#include "MainWindow.hpp"
+#include "Window.hpp"
 
 int main()
 {
