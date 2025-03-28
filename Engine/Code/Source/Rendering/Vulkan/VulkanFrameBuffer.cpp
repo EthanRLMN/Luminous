@@ -38,6 +38,10 @@ void VulkanFrameBuffer::GetFrameBuffersSize(const size_t a_size)
 	m_frameBuffers.resize(a_size);
 }
 
-void VulkanFrameBuffer::Destroy()
+void VulkanFrameBuffer::Destroy(IDevice* a_device)
 {
+	for (size_t i = 0; i < m_frameBuffers.size(); i++)
+	{
+		vkDestroyFramebuffer(a_device->CastVulkan()->GetDevice(),m_frameBuffers[i],nullptr);
+	}
 }

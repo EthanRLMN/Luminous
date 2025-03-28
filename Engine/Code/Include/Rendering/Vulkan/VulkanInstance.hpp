@@ -18,6 +18,7 @@ public :
 	void Destroy() override;
 
 	[[nodiscard]] VkInstance GetInstance() const { return m_instance; }
+	[[nodiscard]] VkDebugUtilsMessengerEXT GetDebugUtilsMessagerExt() const { return m_callback; }
 
 	VulkanInstance* CastVulkan() override { return this; }
 

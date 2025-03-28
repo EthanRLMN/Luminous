@@ -21,6 +21,7 @@ void VulkanDevice::Create(IInstance* a_instance, IWindow* a_window, ISurface* a_
 
 void VulkanDevice::Destroy()
 {
+	vkDestroyDevice(m_device, nullptr);
 	DEBUG_LOG_INFO("Vulkan Device : Device destroyed!\n");
 }
 
