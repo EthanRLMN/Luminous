@@ -77,17 +77,4 @@ uint32_t VulkanDepthResource::FindMemoryType(const VkPhysicalDevice a_physicalDe
 	return 0;
 }
 
-VkImage VulkanDepthResource::GetDepthImage() const
-{
-	return m_depthImage;
-}
 
-VkDeviceMemory VulkanDepthResource::GetDepthImageMemory() const
-{
-	return m_depthImageMemory;
-}
-
-VkImageView VulkanDepthResource::GetDepthImageView() const
-{
-	return m_depthImageView;
-}

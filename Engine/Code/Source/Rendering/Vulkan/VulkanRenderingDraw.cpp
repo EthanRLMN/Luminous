@@ -201,8 +201,6 @@ void VulkanRenderingDraw::CreateImageViews(IDevice* a_device, ISwapChain* a_swap
 {
 	a_swapChain->CastVulkan()->GetSwapChainImageViews().resize(a_swapChain->CastVulkan()->GetSwapChainImages().size());
 
-
-
 	for (uint32_t i = 0; i < a_swapChain->CastVulkan()->GetSwapChainImages().size(); ++i) {
 		a_swapChain->CastVulkan()->GetSwapChainImageViews()[i] = a_swapChain->CastVulkan()->CreateImageView(a_swapChain->CastVulkan()->GetSwapChainImages()[i], a_device->CastVulkan()->GetDevice(), a_swapChain->CastVulkan()->GetSwapChainImageFormat(), VK_IMAGE_ASPECT_COLOR_BIT);
 	}
