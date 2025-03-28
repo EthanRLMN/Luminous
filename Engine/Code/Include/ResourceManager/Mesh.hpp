@@ -1,6 +1,10 @@
 #pragma once
-#include "ResourceManager.hpp"
-#include "ModelLoading/AssimpModelDebugger.hpp"
+#include "ModelLoading/AssimpVertex.hpp"
+
+#include "ResourceManager/Resource.hpp"
+#include <vector>
+
+class IResourceManager;
 
 class Mesh : public IResource
 {
@@ -11,6 +15,11 @@ public:
 	bool Initialize(IResourceManager* a_manager, std::string a_file) override;
 	void Destroy() override;
 
-	AssimpModelDebugger m_meshDebug;
+	bool isLoaded = false;
+
+	std::vector<AssimpVertex> m_vertices;
+	std::vector<unsigned int> m_indices;
+
+	void DebugVertices() const;
 
 };

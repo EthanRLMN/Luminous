@@ -8,8 +8,8 @@
 class IResourceManager
 {
 public:
-	IResourceManager() = default;
-	~IResourceManager() = default;
+	IResourceManager();
+	~IResourceManager();
 
 	std::unordered_map<std::string, IResource*> m_resources;
 
@@ -17,10 +17,11 @@ public:
 	IResource* GetResource(std::string a_file);
 	template<typename T> void DeleteResource(std::string a_file);
 
-	inline AssimpModelLoader* GetMeshLoader() { return m_meshLoader; }
+	AssimpModelLoader* GetMeshLoader() { return m_meshLoader; };
 
 private:
 	AssimpModelLoader* m_meshLoader;
+	int mecouy = 1;
 
 };
 
