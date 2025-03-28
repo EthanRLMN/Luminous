@@ -42,14 +42,11 @@ template<typename T> T* IResourceManager::GetResource(std::string a_file)
 	}
 	else
 	{
-		//DEBUG_LOG_INFO("{}", typeid(m_resources[a_file]));
-		std::cout << typeid(*m_resources[a_file]).name() << '\n';
-		if (true)
+		if (typeid(*m_resources[a_file]) == typeid(T))
 		{
 			std::string l_info = a_file + " has been found.";
 			DEBUG_LOG_INFO("{}", l_info);
-			return nullptr;
-			//return dynamic_cast<T*>(m_resources[a_file]);
+			return dynamic_cast<T*>(m_resources[a_file]);
 		}
 		else
 		{
