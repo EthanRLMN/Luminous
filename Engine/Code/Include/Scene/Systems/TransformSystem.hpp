@@ -3,7 +3,7 @@
 #include "ComponentSystem.hpp"
 #include "Matrix4.hpp"
 
-class TransformSystem : public Component
+class TransformSystem final : public ComponentSystem
 {
 public:
     ~TransformSystem() = default;

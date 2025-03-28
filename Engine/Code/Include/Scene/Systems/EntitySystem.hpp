@@ -9,7 +9,7 @@
 class EntitySystem
 {
 public:
-    EntitySystem();
+    EntitySystem() = delete;
     ~EntitySystem() = default;
 
     template<typename T, typename... Args>
@@ -39,7 +39,7 @@ public:
         return nullptr;
     }
 
-    const TransformSystem& Transform() { return m_transform; }
+    TransformSystem& Transform() { return m_transform; }
 
 private:
     void Update();
