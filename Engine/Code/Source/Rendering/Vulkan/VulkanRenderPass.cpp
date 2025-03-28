@@ -11,10 +11,13 @@
 void VulkanRenderPass::Create(ISwapChain* a_swapChain, IDevice* a_device)
 {
 	CreateRenderPass(a_swapChain, a_device);
+	DEBUG_LOG_INFO("Vulkan RenderPass : RenderPass created!\n");
 }
 
 void VulkanRenderPass::Destroy(IDevice* a_device)
 {
+	vkDestroyRenderPass(a_device->CastVulkan()->GetDevice(), m_renderPass, nullptr);
+	DEBUG_LOG_INFO("Vulkan RenderPass : Destroy RenderPass!\n");
 }
 
 void VulkanRenderPass::CreateRenderPass(ISwapChain* a_swapChain, IDevice* a_device)
@@ -57,13 +60,13 @@ void VulkanRenderPass::CreateRenderPass(ISwapChain* a_swapChain, IDevice* a_devi
 	l_dependency.srcSubpass = VK_SUBPASS_EXTERNAL;
 	l_dependency.dstSubpass = 0;
 	l_dependency.srcStageMask = VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT |
-	                            VK_PIPELINE_STAGE_EARLY_FRAGMENT_TESTS_BIT;
+		VK_PIPELINE_STAGE_EARLY_FRAGMENT_TESTS_BIT;
 	l_dependency.srcAccessMask = 0;
 	l_dependency.dstStageMask = VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT |
-	                            VK_PIPELINE_STAGE_EARLY_FRAGMENT_TESTS_BIT;
+		VK_PIPELINE_STAGE_EARLY_FRAGMENT_TESTS_BIT;
 	l_dependency.srcAccessMask = VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT | VK_ACCESS_DEPTH_STENCIL_ATTACHMENT_WRITE_BIT;
 
-	const std::array<VkAttachmentDescription, 2> l_attachments = {l_colorAttachment, l_depthAttachment};
+	const std::array<VkAttachmentDescription, 2> l_attachments = { l_colorAttachment, l_depthAttachment };
 
 	VkRenderPassCreateInfo l_renderPassCreateInfo = {};
 	l_renderPassCreateInfo.sType = VK_STRUCTURE_TYPE_RENDER_PASS_CREATE_INFO;
@@ -75,25 +78,25 @@ void VulkanRenderPass::CreateRenderPass(ISwapChain* a_swapChain, IDevice* a_devi
 	l_renderPassCreateInfo.pDependencies = &l_dependency;
 
 	const VkResult l_result = vkCreateRenderPass(a_device->CastVulkan()->GetDevice(), &l_renderPassCreateInfo, nullptr,
-	                                             &m_renderPass);
+		&m_renderPass);
 
 	if (l_result != VK_SUCCESS)
-		throw std::runtime_error("Failed to create a render pass");
+		DEBUG_LOG_ERROR("Failed to create a render pass\n");
 }
 
 VkFormat VulkanRenderPass::FindDepthFormat(const VkPhysicalDevice a_physicalDevice)
 {
 	return FindSupportedFormat(a_physicalDevice,
-	                           {VK_FORMAT_D32_SFLOAT, VK_FORMAT_D32_SFLOAT_S8_UINT, VK_FORMAT_D24_UNORM_S8_UINT},
-	                           VK_IMAGE_TILING_OPTIMAL, VK_FORMAT_FEATURE_DEPTH_STENCIL_ATTACHMENT_BIT);
+		{ VK_FORMAT_D32_SFLOAT, VK_FORMAT_D32_SFLOAT_S8_UINT, VK_FORMAT_D24_UNORM_S8_UINT },
+		VK_IMAGE_TILING_OPTIMAL, VK_FORMAT_FEATURE_DEPTH_STENCIL_ATTACHMENT_BIT);
 }
 
 
 VkFormat VulkanRenderPass::FindSupportedFormat(const VkPhysicalDevice a_physicalDevice,
-                                               const std::vector<VkFormat>& a_candidates, const VkImageTiling a_tiling,
-                                               const VkFormatFeatureFlags a_features)
+	const std::vector<VkFormat>& a_candidates, const VkImageTiling a_tiling,
+	const VkFormatFeatureFlags a_features)
 {
-	for (const VkFormat l_format: a_candidates)
+	for (const VkFormat l_format : a_candidates)
 	{
 		VkFormatProperties l_props;
 		vkGetPhysicalDeviceFormatProperties(a_physicalDevice, l_format, &l_props);
@@ -108,4 +111,3 @@ VkFormat VulkanRenderPass::FindSupportedFormat(const VkPhysicalDevice a_physical
 	DEBUG_LOG_ERROR("Vulkan RenderPass : Failed to find supported file format!\n");
 	return VK_FORMAT_UNDEFINED;
 }
-
