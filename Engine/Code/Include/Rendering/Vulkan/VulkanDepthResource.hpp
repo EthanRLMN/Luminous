@@ -8,7 +8,7 @@ class VulkanDepthResource : public IDepthResource
 {
 public:
 	void Create(IDevice* a_device, ISwapChain* a_swapChain, IRenderPass* a_renderPass) override;
-	void Destroy() override;
+	void Destroy(IDevice* a_device) override;
 
 	VulkanDepthResource* CastVulkan() override { return this; }
 

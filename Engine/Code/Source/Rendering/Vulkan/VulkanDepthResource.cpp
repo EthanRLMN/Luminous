@@ -19,10 +19,15 @@ void VulkanDepthResource::Create(IDevice* a_device, ISwapChain* a_swapChain, IRe
 	            m_depthImageMemory);
 
 	m_depthImageView = a_swapChain->CastVulkan()->CreateImageView(m_depthImage, a_device->CastVulkan()->GetDevice(), l_depthFormat, VK_IMAGE_ASPECT_DEPTH_BIT);
+	DEBUG_LOG_INFO("Vulkan DepthResource : DepthResource Created!\n");
 }
 
-void VulkanDepthResource::Destroy()
+void VulkanDepthResource::Destroy(IDevice* a_device)
 {
+	vkDestroyImage(a_device->CastVulkan()->GetDevice(), m_depthImage, nullptr);
+	vkDestroyImageView(a_device->CastVulkan()->GetDevice(), m_depthImageView, nullptr);
+
+	DEBUG_LOG_INFO("Vulkan DepthResource : DepthResource Destroyed!\n");
 }
 
 void VulkanDepthResource::CreateImage(const VkDevice a_device, const VkPhysicalDevice a_physicalDevice,
