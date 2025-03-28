@@ -23,6 +23,13 @@ void VulkanBuffer::Destroy(IDevice* a_device)
 	vkDestroyBuffer(a_device->CastVulkan()->GetDevice(), m_indexBuffer, nullptr);
 	vkDestroyBuffer(a_device->CastVulkan()->GetDevice(), m_vertexBuffer, nullptr);
 
+
+	for (size_t i = 0; i < m_uniformBuffer.size(); i++)
+	{
+		vkDestroyBuffer(a_device->CastVulkan()->GetDevice(), m_uniformBuffer[i], nullptr);
+	}
+
+
 	DEBUG_LOG_INFO("Vulkan Buffer : Buffer Destroy!\n");
 }
 
