@@ -15,10 +15,12 @@ public:
 
 	template<typename T> T* LoadResource(std::string a_file);
 	IResource* GetResource(std::string a_file);
-	IResource* DeleteResource(std::string a_file);
+	template<typename T> void DeleteResource(std::string a_file);
+
+	inline AssimpModelLoader* GetMeshLoader() { return m_meshLoader; }
 
 private:
-	AssimpModelLoader m_meshLoader;
+	AssimpModelLoader* m_meshLoader;
 
 };
 

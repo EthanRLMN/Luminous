@@ -80,8 +80,7 @@ Engine::Engine()
 
 
 	m_resourceManager = new IResourceManager;
-	m_resourceManager->LoadResource<Mesh>("string");
-	m_resourceManager->LoadResource<Mesh>("string");
+	Mesh* mesh = m_resourceManager->LoadResource<Mesh>("Engine/Assets/Models/metalSonic.obj");
 
 }
 

@@ -14,6 +14,7 @@ template<typename T> T* IResourceManager::LoadResource(std::string a_file)
 			std::string l_info = "Initialized " + a_file + " file.";
 			DEBUG_LOG_INFO("{}", l_info);
 			m_resources[a_file] = l_resource;
+			return l_resource;
 		}
 		else
 		{
@@ -29,5 +30,10 @@ template<typename T> T* IResourceManager::LoadResource(std::string a_file)
 		DEBUG_LOG_INFO("{}", l_info);
 	}
 	return nullptr;
+}
+
+template<typename T> void IResourceManager::DeleteResource(std::string a_file)
+{
+
 }
 

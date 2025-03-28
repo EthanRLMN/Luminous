@@ -21,7 +21,7 @@ AssimpModelDebugger AssimpModelLoader::LoadModel(const char* a_file)
 	                                             aiProcess_JoinIdenticalVertices |
 	                                             aiProcess_SortByPType);
 
-	if (!l_scene || l_scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !l_scene->mRootNode) // if is Not Zero
+	if (!l_scene || l_scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !l_scene->mRootNode)
 	{
 		std::string l_info = "ASSIMP : " + std::string(l_importer.GetErrorString());
 		DEBUG_LOG_ERROR("{}", l_info);
@@ -40,6 +40,7 @@ AssimpModelDebugger AssimpModelLoader::LoadModel(const char* a_file)
 		l_model.m_indices = SetupIndices(l_mesh);
 		l_info = std::string(a_file) + " has been successfully parsed.";
 		DEBUG_LOG_INFO("{}", l_info);
+		l_model.isLoaded = true;
 		return l_model;
 	}
 	return l_model;
