@@ -21,14 +21,18 @@ void VulkanBuffer::Create(IDevice* a_device, ITexture* a_texture, ICommandPool* 
 void VulkanBuffer::Destroy(IDevice* a_device)
 {
 	vkDestroyBuffer(a_device->CastVulkan()->GetDevice(), m_indexBuffer, nullptr);
+	vkFreeMemory(a_device->CastVulkan()->GetDevice(), m_indexBufferMemory, nullptr);
 	vkDestroyBuffer(a_device->CastVulkan()->GetDevice(), m_vertexBuffer, nullptr);
+	vkFreeMemory(a_device->CastVulkan()->GetDevice(), m_vertexBufferMemory, nullptr);
 
-
-	for (size_t i = 0; i < m_uniformBuffer.size(); i++)
+	for (size_t i = 0; i < m_uniformBuffer.size(); ++i)
 	{
 		vkDestroyBuffer(a_device->CastVulkan()->GetDevice(), m_uniformBuffer[i], nullptr);
 	}
-
+	for (size_t i = 0; i < m_uniformBuffersMemory.size();++i)
+	{
+		vkFreeMemory(a_device->CastVulkan()->GetDevice(), m_uniformBuffersMemory[i], nullptr);
+	}
 
 	DEBUG_LOG_INFO("Vulkan Buffer : Buffer Destroy!\n");
 }
