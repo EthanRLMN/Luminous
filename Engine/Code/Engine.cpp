@@ -77,7 +77,7 @@ Engine::Engine()
 
 Engine::~Engine()
 {
-	m_pipeline->Destroy();
+	m_pipeline->Destroy(m_device);
 	m_interface->DeletePipeline(m_pipeline);
 
 	m_descriptorSetLayout->Destroy();

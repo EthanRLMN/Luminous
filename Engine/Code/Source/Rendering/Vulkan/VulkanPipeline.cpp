@@ -162,16 +162,19 @@ void VulkanPipeline::Create(IDevice* a_device, IRenderPass* a_renderPass, IDescr
 
 	l_result = vkCreateGraphicsPipelines(a_device->CastVulkan()->GetDevice(), VK_NULL_HANDLE, 1, &l_pipelineCreateInfo, nullptr, &m_graphicsPipeline);
 	if (l_result != VK_SUCCESS)
-		throw std::runtime_error("Failed to create a Graphics Pipeline!");
+		DEBUG_LOG_ERROR("Failed to create a Graphics Pipeline!\n");
 
 	//destroy sahder module no longer needed after pipeline created
 	vkDestroyShaderModule(a_device->CastVulkan()->GetDevice(), fragmentShaderModule, nullptr);
 	vkDestroyShaderModule(a_device->CastVulkan()->GetDevice(), vertexShaderModule, nullptr);
+	DEBUG_LOG_INFO("Vulkan Graphic Pipeline : Pipeline Created!\n");
 }
 
-void VulkanPipeline::Destroy()
+void VulkanPipeline::Destroy(IDevice* a_device)
 {
-	DEBUG_LOG_INFO("Vulkan Pipeline : Pipeline destroyed!\n");
+	vkDestroyPipeline(a_device->CastVulkan()->GetDevice(), m_graphicsPipeline, nullptr);
+	vkDestroyPipelineLayout(a_device->CastVulkan()->GetDevice(), m_pipelineLayout, nullptr);
+	DEBUG_LOG_INFO("Vulkan Graphic Pipeline : Pipeline destroyed!\n");
 }
 
 VkShaderModule VulkanPipeline::CreateShaderModule(VkDevice a_device, const std::vector<char>& a_code)
