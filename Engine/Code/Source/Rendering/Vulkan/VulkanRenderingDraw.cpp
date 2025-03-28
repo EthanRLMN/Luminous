@@ -1,10 +1,7 @@
 #include "Rendering/Vulkan/VulkanRenderingDraw.hpp"
 
 
-void VulkanRenderingDraw::Create(GLFWwindow* a_window, IDevice* a_device, ISwapChain* a_swapChain,
-                                 IPipeline* a_pipeline, IBuffer* a_buffer, IRenderPass* a_renderPass,
-                                 IDescriptor* a_descriptor, IModel* a_model, ISynchronization* a_synchronization,
-                                 ICommandBuffer* a_commandBuffer, IFrameBuffer* a_frameBuffer)
+void VulkanRenderingDraw::Create(IWindow* a_window, IDevice* a_device, ISwapChain* a_swapChain, IPipeline* a_pipeline, IBuffer* a_buffer, IRenderPass* a_renderPass, IDescriptor* a_descriptor, IModel* a_model, ISynchronization* a_synchronization, ICommandBuffer* a_commandBuffer, IFrameBuffer* a_frameBuffer, IDepthResource* a_depthResource, ISurface* a_surface)
 {
 	vkWaitForFences(a_device->CastVulkan()->GetDevice(), 1,
 	                &a_synchronization->CastVulkan()->GetFences()[m_currentFrame], VK_TRUE, UINT64_MAX);
@@ -17,7 +14,7 @@ void VulkanRenderingDraw::Create(GLFWwindow* a_window, IDevice* a_device, ISwapC
 
 	if (l_result == VK_ERROR_OUT_OF_DATE_KHR)
 	{
-		//RecreateSwapChain(a_window,mainDevice.logicalDevice);
+		RecreateSwapChain(a_window, a_device, a_surface, a_swapChain, a_depthResource, a_frameBuffer, a_renderPass);
 		return;
 	}
 	if (l_result != VK_SUCCESS && l_result != VK_SUBOPTIMAL_KHR)
@@ -73,7 +70,7 @@ void VulkanRenderingDraw::Create(GLFWwindow* a_window, IDevice* a_device, ISwapC
 	if (l_result == VK_ERROR_OUT_OF_DATE_KHR || l_result == VK_SUBOPTIMAL_KHR || m_framebufferResized)
 	{
 		m_framebufferResized = false;
-		//RecreateSwapChain(a_window,mainDevice.logicalDevice);
+		RecreateSwapChain(a_window, a_device, a_surface, a_swapChain, a_depthResource, a_frameBuffer, a_renderPass);
 	} else if (l_result != VK_SUCCESS)
 	{
 		DEBUG_LOG_ERROR("failed to present swap chain image");
@@ -163,24 +160,50 @@ void VulkanRenderingDraw::UpdateUniformBuffer(const uint32_t currentImage, ISwap
 	memcpy(a_buffer->CastVulkan()->GetUniformBuffersMapped()[currentImage], &l_ubo, sizeof(l_ubo));
 }
 
-/*
-void VulkanRenderingDraw::RecreateSwapChain(GLFWwindow* a_window, VkDevice a_device)
+void VulkanRenderingDraw::RecreateSwapChain(IWindow* a_window, IDevice* a_device, ISurface* a_surface, ISwapChain* a_swapChain, IDepthResource* a_depthRessource, IFrameBuffer* a_frameBuffer, IRenderPass* a_renderPass)
 {
 	int l_width = 0, l_height = 0;
 
-	glfwGetFramebufferSize(a_window, &l_width, &l_height);
+	glfwGetFramebufferSize(a_window->CastGLFW()->GetGLFWWindow(), &l_width, &l_height);
 	while (l_width == 0 || l_height == 0) {
-		glfwGetFramebufferSize(a_window, &l_width, &l_height);
+		glfwGetFramebufferSize(a_window->CastGLFW()->GetGLFWWindow(), &l_width, &l_height);
 		glfwWaitEvents();
 	}
 
-	CleanUpSwapChain();
+	CleanUpSwapChain(a_device, a_swapChain, a_depthRessource, a_frameBuffer);
 
-	vkDeviceWaitIdle(a_device);
+	vkDeviceWaitIdle(a_device->CastVulkan()->GetDevice());
 
-	CreateSwapChain(a_window);
-	CreateImageViews(a_device);
-	CreateDepthRessource();
-	CreateFrameBuffers();
+	a_swapChain->CastVulkan()->Create(a_window, a_device, a_surface);
+	CreateImageViews(a_device, a_swapChain);
+	a_depthRessource->CastVulkan()->Create(a_device, a_swapChain, a_renderPass);
+	a_frameBuffer->CastVulkan()->Create(a_device,a_swapChain,a_renderPass,a_depthRessource);
 }
-*/
+
+void VulkanRenderingDraw::CleanUpSwapChain(IDevice* a_device, ISwapChain* a_swapChain, IDepthResource* a_depthresource, IFrameBuffer* a_framebuffer)
+{
+	vkDestroyImageView(a_device->CastVulkan()->GetDevice(), a_depthresource->CastVulkan()->GetDepthImageView(), nullptr);
+	vkDestroyImage(a_device->CastVulkan()->GetDevice(), a_depthresource->CastVulkan()->GetDepthImage(), nullptr);
+	vkFreeMemory(a_device->CastVulkan()->GetDevice(), a_depthresource->CastVulkan()->GetDepthImageMemory(), nullptr);
+
+	for (auto framebuffer : a_framebuffer->CastVulkan()->GetFrameBuffers()) {
+		vkDestroyFramebuffer(a_device->CastVulkan()->GetDevice(), framebuffer, nullptr);
+	}
+
+	for (auto imageView : a_swapChain->CastVulkan()->GetSwapChainImageViews()) {
+		vkDestroyImageView(a_device->CastVulkan()->GetDevice(), imageView, nullptr);
+	}
+
+	vkDestroySwapchainKHR(a_device->CastVulkan()->GetDevice(), a_swapChain->CastVulkan()->GetSwapChain(), nullptr);
+}
+
+void VulkanRenderingDraw::CreateImageViews(IDevice* a_device, ISwapChain* a_swapChain)
+{
+	a_swapChain->CastVulkan()->GetSwapChainImageViews().resize(a_swapChain->CastVulkan()->GetSwapChainImages().size());
+
+
+
+	for (uint32_t i = 0; i < a_swapChain->CastVulkan()->GetSwapChainImages().size(); ++i) {
+		a_swapChain->CastVulkan()->GetSwapChainImageViews()[i] = a_swapChain->CastVulkan()->CreateImageView(a_swapChain->CastVulkan()->GetSwapChainImages()[i], a_device->CastVulkan()->GetDevice(), a_swapChain->CastVulkan()->GetSwapChainImageFormat(), VK_IMAGE_ASPECT_COLOR_BIT);
+	}
+}
