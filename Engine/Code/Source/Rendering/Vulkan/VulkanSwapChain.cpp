@@ -84,12 +84,6 @@ void VulkanSwapChain::Destroy(IDevice* a_device)
 		vkDestroyImageView(a_device->CastVulkan()->GetDevice(), m_swapChainImageViews[i], nullptr);
 	}
 
-	/*
-	for (size_t i = 0; i < m_swapChainImages.size(); i++)
-	{
-		vkDestroyImage(a_device->CastVulkan()->GetDevice(), m_swapChainImages[i], nullptr);
-	}*/
-
 	vkDestroySwapchainKHR(a_device->CastVulkan()->GetDevice(), m_swapChain, nullptr);
 
 	DEBUG_LOG_INFO("Vulkan SwapChain : SwapChain destroyed!\n");

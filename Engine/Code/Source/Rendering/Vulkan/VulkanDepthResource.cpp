@@ -24,6 +24,7 @@ void VulkanDepthResource::Create(IDevice* a_device, ISwapChain* a_swapChain, IRe
 
 void VulkanDepthResource::Destroy(IDevice* a_device)
 {
+	vkFreeMemory(a_device->CastVulkan()->GetDevice(), m_depthImageMemory, nullptr);
 	vkDestroyImage(a_device->CastVulkan()->GetDevice(), m_depthImage, nullptr);
 	vkDestroyImageView(a_device->CastVulkan()->GetDevice(), m_depthImageView, nullptr);
 
