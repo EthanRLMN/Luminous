@@ -4,18 +4,18 @@
 #include <typeindex>
 #include <unordered_map>
 
-#include "Transform.hpp"
+#include "TransformSystem.hpp"
 
-class Entity
+class EntitySystem
 {
 public:
-    Entity() = default;
-    ~Entity() = default;
+    EntitySystem();
+    ~EntitySystem() = default;
 
     template<typename T, typename... Args>
     std::shared_ptr<T> AddComponent(Args&&... args)
     {
-        static_assert(std::is_base_of_v<Component, T>, "T must inherit from a component!");
+        static_assert(std::is_base_of_v<ComponentSystem, T>, "T must inherit from a component!");
         auto l_component = std::make_shared<T>(std::forward<Args>(args)...);
         m_components[typeid(T)] = l_component;
 
@@ -25,7 +25,7 @@ public:
     template <typename T>
     void RemoveComponent()
     {
-        static_assert(std::is_base_of_v<Component, T>, "T must inherit from a component!");
+        static_assert(std::is_base_of_v<ComponentSystem, T>, "T must inherit from a component!");
         const auto it = m_components.find(typeid(T));
         if (it != m_components.end()) { m_components.erase(it); }
     }
@@ -39,12 +39,11 @@ public:
         return nullptr;
     }
 
-
-    Transform m_transform;
-
+    const TransformSystem& Transform() { return m_transform; }
 
 private:
     void Update();
 
-    std::unordered_map<std::type_index, std::shared_ptr<Component>> m_components { };
+    std::unordered_map<std::type_index, std::shared_ptr<ComponentSystem>> m_components { };
+    TransformSystem m_transform;
 };
