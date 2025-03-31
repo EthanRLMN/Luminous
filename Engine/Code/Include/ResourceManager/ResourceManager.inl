@@ -27,8 +27,10 @@ template<typename T> T* IResourceManager::LoadResource(std::string a_file)
 	}
 	else
 	{
-		std::string l_info = "Trying to replace " + a_file + " since it already exists...";
+		std::string l_info = "Trying to get " + a_file + " since it already exists...";
+
 		DEBUG_LOG_INFO("{}", l_info);
+		return GetResource<T>(a_file);
 	}
 	return nullptr;
 }
@@ -70,8 +72,8 @@ template<typename T> void IResourceManager::DeleteResource(std::string a_file)
 	{
 		if (typeid(*m_resources[a_file]) == typeid(T))
 		{
-			delete(m_resources[a_file]);
-
+			m_resources[a_file]->Destroy();
+			m_resources.erase(a_file);
 			if (m_resources[a_file] == nullptr)
 			{
 				std::string l_info = "Successfully deleted " + a_file + ".";
