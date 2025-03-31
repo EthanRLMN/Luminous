@@ -31,6 +31,7 @@ void VulkanFrameBuffer::Create(IDevice* a_device, ISwapChain* a_swapChain, IRend
 		if (l_result != VK_SUCCESS)
 			throw std::runtime_error("Failed to create framebuffer");
 	}
+	DEBUG_LOG_INFO("Vulkan FrameBuffer : Create FrameBuffer!\n");
 }
 
 void VulkanFrameBuffer::GetFrameBuffersSize(const size_t a_size)
@@ -38,6 +39,11 @@ void VulkanFrameBuffer::GetFrameBuffersSize(const size_t a_size)
 	m_frameBuffers.resize(a_size);
 }
 
-void VulkanFrameBuffer::Destroy()
+void VulkanFrameBuffer::Destroy(IDevice* a_device)
 {
+	for (size_t i = 0; i < m_frameBuffers.size(); i++)
+	{
+		vkDestroyFramebuffer(a_device->CastVulkan()->GetDevice(),m_frameBuffers[i],nullptr);
+	}
+	DEBUG_LOG_INFO("Vulkan FrameBuffer : Create FrameBuffer!\n");
 }

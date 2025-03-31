@@ -77,7 +77,7 @@ void VulkanInstance::Debug()
 	                                VK_DEBUG_UTILS_MESSAGE_TYPE_PERFORMANCE_BIT_EXT;
 	l_debugCreateInfo.pfnUserCallback = DebugCallback;
 
-	if (CreateDebugUtilsMessengerEXT(m_instance, &l_debugCreateInfo, nullptr, &m_callback) != VK_SUCCESS)
+	if (CreateDebugUtilsMessengerEXT(m_instance, &l_debugCreateInfo, nullptr, &m_debugMessenger) != VK_SUCCESS)
 		DEBUG_LOG_ERROR("Vulkan Instance : Failed to setup Debug Messenger!\n");
 }
 
@@ -91,9 +91,22 @@ void VulkanInstance::Create(IWindow* a_window)
 
 void VulkanInstance::Destroy()
 {
-	vkDestroyInstance(m_instance, nullptr);
+	if (validationEnabled) {
+		if (m_debugMessenger) {
+			auto destroyMessenger = reinterpret_cast<PFN_vkDestroyDebugUtilsMessengerEXT>(
+				vkGetInstanceProcAddr(m_instance, "vkDestroyDebugUtilsMessengerEXT"));
+			if (destroyMessenger) {
+				destroyMessenger(m_instance, m_debugMessenger, nullptr);
+			}
+		}
+	}
+
+	if (m_instance) {
+		vkDestroyInstance(m_instance, nullptr);
+	}
 
 	DEBUG_LOG_INFO("Vulkan Instance : Instance Deleted!\n");
+
 }
 
 bool VulkanInstance::CheckValidationLayerSupport()

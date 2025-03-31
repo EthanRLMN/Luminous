@@ -17,10 +17,13 @@ void VulkanDevice::Create(IInstance* a_instance, IWindow* a_window, ISurface* a_
 
 	GetPhysicalDevice(l_vkPhysDevice, l_vkSurface);
 	CreateLogicalDevice(l_vkSurface, l_vkPhysDevice);
+	DEBUG_LOG_INFO("Vulkan Device : Device Created!\n");
 }
 
 void VulkanDevice::Destroy()
 {
+	vkDestroyDevice(m_device, nullptr);
+
 	DEBUG_LOG_INFO("Vulkan Device : Device destroyed!\n");
 }
 
@@ -75,7 +78,7 @@ void VulkanDevice::GetPhysicalDevice(const VkInstance a_instance, const VkSurfac
 	vkEnumeratePhysicalDevices(a_instance, &l_deviceCount, nullptr);
 
 	if (l_deviceCount == 0)
-		throw std::runtime_error("can't find GPUs that support Vulkan Instance");
+		DEBUG_LOG_ERROR("can't find GPUs that support Vulkan Instance!\n");
 
 	std::vector<VkPhysicalDevice> l_deviceList{l_deviceCount};
 	vkEnumeratePhysicalDevices(a_instance, &l_deviceCount, l_deviceList.data());

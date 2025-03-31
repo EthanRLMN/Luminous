@@ -14,6 +14,3 @@ void VulkanCommandBuffer::Create(IDevice* a_device, ICommandPool* a_commandPool)
 		DEBUG_LOG_ERROR("Failed to allocate command Buffer!\n");
 }
 
-void VulkanCommandBuffer::Destroy()
-{
-}

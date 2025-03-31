@@ -1,12 +1,12 @@
 #define STB_IMAGE_IMPLEMENTATION
 #include "stb_image.h"
 
+#include "Rendering/Vulkan/VulkanTexture.hpp"
 #include "ICommandPool.hpp"
 #include "IDepthResource.hpp"
 #include "IDevice.hpp"
 #include "ISwapChain.hpp"
 
-#include "Rendering/Vulkan/VulkanTexture.hpp"
 #include "Rendering/Vulkan/VulkanCommandPool.hpp"
 #include "Rendering/Vulkan/VulkanDepthResource.hpp"
 #include "Rendering/Vulkan/VulkanDevice.hpp"
@@ -18,10 +18,36 @@ void VulkanTexture::Create(IDevice* a_device, ISwapChain* a_swapChain, IDepthRes
 	CreateTextureImage(a_device, a_depthResource, a_commandPool);
 	CreateTextureImageView(a_device, a_swapChain);
 	CreateTextureSampler(a_device);
+	DEBUG_LOG_INFO("Vulkan Texture : Texture Created!\n");
 }
 
-void VulkanTexture::Destroy()
+void VulkanTexture::Destroy(IDevice* a_device)
 {
+	VkDevice l_device = a_device->CastVulkan()->GetDevice();
+
+	vkDeviceWaitIdle(l_device); 
+
+	if (m_textureImageView != VK_NULL_HANDLE) {
+		vkDestroyImageView(l_device, m_textureImageView, nullptr);
+		m_textureImageView = VK_NULL_HANDLE;
+	}
+
+	if (m_textureImage != VK_NULL_HANDLE) {
+		vkDestroyImage(l_device, m_textureImage, nullptr);
+		m_textureImage = VK_NULL_HANDLE;
+	}
+
+	if (m_textureSampler != VK_NULL_HANDLE) {
+		vkDestroySampler(l_device, m_textureSampler, nullptr);
+		m_textureSampler = VK_NULL_HANDLE;
+	}
+
+	if (m_textureImageMemory != VK_NULL_HANDLE) {
+		vkFreeMemory(l_device, m_textureImageMemory, nullptr);
+		m_textureImageMemory = VK_NULL_HANDLE;
+	}
+
+	DEBUG_LOG_INFO("Vulkan Texture : Texture Destroy!\n");
 }
 
 void VulkanTexture::CreateTextureImage(IDevice* a_device, IDepthResource* a_depthResource, ICommandPool* a_commandPool)

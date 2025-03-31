@@ -75,13 +75,49 @@ Engine::Engine()
 	m_synchronization->Create(m_device);
 }
 
-Engine::~Engine()
+void Engine::DestroyWindow() const
 {
-	m_pipeline->Destroy();
+	m_inputManager->Destroy(m_window);
+	m_interface->DeleteInputManager(m_inputManager);
+
+	m_window->Destroy();
+	m_interface->DeleteWindow(m_window);
+}
+
+void Engine::Destroy() const
+{
+	m_synchronization->Destroy(m_device);
+	m_interface->DeleteSynchronization(m_synchronization);
+
+	m_commandBuffer->Destroy();
+	m_interface->DeleteCommandBuffer(m_commandBuffer);
+
+	m_descriptor->Destroy(m_device);
+	m_interface->DeleteDescriptor(m_descriptor);
+
+	m_buffer->Destroy(m_device);
+	m_interface->DeleteBuffer(m_buffer);
+
+	m_model->Destroy();
+	m_interface->DeleteModel(m_model);
+
+	m_texture->Destroy(m_device);
+	m_interface->DeleteTexture(m_texture);
+
+	m_frameBuffer->Destroy(m_device);
+	m_interface->DeleteFrameBuffer(m_frameBuffer);
+
+	m_depthResource->Destroy(m_device);
+	m_interface->DeleteDepthResource(m_depthResource);
+
+	m_commandPool->Destroy(m_device);
+	m_interface->DeleteCommandPool(m_commandPool);
+
+	m_pipeline->Destroy(m_device);
 	m_interface->DeletePipeline(m_pipeline);
 
-	m_descriptorSetLayout->Destroy();
-	m_interface->DeleteDescriptionSetLayout(m_descriptorSetLayout);
+	m_descriptorSetLayout->Destroy(m_device);
+	m_interface->DeleteDescriptorSetLayout(m_descriptorSetLayout);
 
 	m_renderPass->Destroy(m_device);
 	m_interface->DeleteRenderPass(m_renderPass);
@@ -96,17 +132,18 @@ Engine::~Engine()
 	m_interface->DeleteSurface(m_surface);
 
 	m_instance->Destroy();
+	m_interface->DeleteContext(m_instance);
+}
 
-	m_inputManager->Destroy(m_window);
-	m_interface->DeleteInputManager(m_inputManager);
-
-	m_window->Destroy();
-
+Engine::~Engine()
+{
+	delete(m_interface);
 	delete(m_window);
 }
 
 void Engine::Run() const
 {
+	IRenderingDraw* renderingDraw = m_interface->InstantiateRenderingDraw();
 	// TODO : Cleanup
 	while (!m_window->ShouldClose())
 	{
@@ -117,11 +154,11 @@ void Engine::Run() const
 		if (m_inputManager->IsMouseButtonDown(m_window, MouseButton::MOUSE_BUTTON_LEFT))
 			DEBUG_LOG_VERBOSE("x={}, y={}\n", m_inputManager->GetMouseScroll().x, m_inputManager->GetMouseScroll().y);*/
 
-		IRenderingDraw* renderingDraw = m_interface->InstantiateRenderingDraw();
-		renderingDraw->Create(m_window->CastGLFW()->GetGLFWWindow(), m_device, m_swapChain, m_pipeline, m_buffer, m_renderPass, m_descriptor, m_model,m_synchronization,m_commandBuffer,m_frameBuffer);
+		renderingDraw->Create(m_window, m_device, m_swapChain, m_pipeline, m_buffer, m_renderPass, m_descriptor, m_model, m_synchronization, m_commandBuffer, m_frameBuffer, m_depthResource, m_surface);
 
 		m_inputManager->Update(m_window);
 	}
-	m_window->Destroy();
-}
+	Destroy();
+	DestroyWindow();
 
+}

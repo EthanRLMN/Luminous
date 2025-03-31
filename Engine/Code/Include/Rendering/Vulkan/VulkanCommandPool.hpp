@@ -8,12 +8,13 @@ class VulkanCommandPool final : public ICommandPool
 {
 public:
 	void Create(IDevice* a_device, ISurface* a_surface) override;
-	void Destroy() override;
+	void Destroy(IDevice* a_device) override;
 
 	VulkanCommandPool* CastVulkan() override { return this; }
 
-	[[nodiscard]] VkCommandPool GetCommandPool() const;
+	[[nodiscard]] VkCommandPool GetCommandPool() const { return m_graphicsCommandPool; }
+
 
 private:
-	VkCommandPool m_graphicsCommandPool{VK_NULL_HANDLE};
+	VkCommandPool m_graphicsCommandPool{ VK_NULL_HANDLE };
 };

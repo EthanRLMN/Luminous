@@ -10,20 +10,23 @@
 
 void VulkanDescriptor::Create(IDevice* a_device, IDescriptorSetLayout* a_descriptorSetLayout, ITexture* a_texture, IBuffer* a_buffer)
 {
-	FillBuffers(a_buffer);
+	SetBuffers(a_buffer);
 	CreateDescriptorPool(a_device);
 	CreateDescriptorSets(a_device, a_descriptorSetLayout, a_texture);
+	DEBUG_LOG_INFO("Vulkan Descriptors : Descriptors created!\n");
 }
 
-void VulkanDescriptor::FillBuffers(IBuffer* a_buffer)
+void VulkanDescriptor::SetBuffers(IBuffer* a_buffer)
 {
 	m_uniformBuffer = a_buffer->CastVulkan()->GetUniformBuffer();
 	m_uniformBuffersMemory = a_buffer->CastVulkan()->GetUniformBuffersMemory();
 	m_uniformBuffersMapped = a_buffer->CastVulkan()->GetUniformBuffersMapped();
 }
 
-void VulkanDescriptor::Destroy()
+void VulkanDescriptor::Destroy(IDevice* a_device)
 {
+	vkDestroyDescriptorPool(a_device->CastVulkan()->GetDevice(), m_descriptorPool, nullptr);
+	DEBUG_LOG_INFO("Vulkan Descriptors : Descriptors Destroy!\n");
 }
 
 void VulkanDescriptor::CreateDescriptorPool(IDevice* a_device)
@@ -43,6 +46,8 @@ void VulkanDescriptor::CreateDescriptorPool(IDevice* a_device)
 
 	if (vkCreateDescriptorPool(a_device->CastVulkan()->GetDevice(), &l_poolInfo, nullptr, &m_descriptorPool) != VK_SUCCESS)
 		DEBUG_LOG_ERROR("Failed to create descriptor pool\n");
+
+	DEBUG_LOG_INFO("Vulkan Descriptors : DescriptorPool created!\n");
 }
 
 void VulkanDescriptor::CreateDescriptorSets(IDevice* a_device, IDescriptorSetLayout* a_descriptorSetLayout, ITexture* a_texture)
@@ -93,5 +98,8 @@ void VulkanDescriptor::CreateDescriptorSets(IDevice* a_device, IDescriptorSetLay
 
 		vkUpdateDescriptorSets(a_device->CastVulkan()->GetDevice(), static_cast<uint32_t>(l_descriptorWrites.size()),
 		                       l_descriptorWrites.data(), 0, nullptr);
+
+
+		DEBUG_LOG_INFO("Vulkan Descriptors : DescriptorSet created!\n");
 	}
 }

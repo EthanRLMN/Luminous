@@ -10,7 +10,8 @@ class VulkanTexture final : public ITexture
 public:
 	void Create(IDevice* a_device, ISwapChain* a_swapChain, IDepthResource* a_depthResource,
 	            ICommandPool* a_commandPool) override;
-	void Destroy() override;
+	void Destroy(IDevice* a_device) override;
+
 
 	void CreateTextureImage(IDevice* a_device, IDepthResource* a_depthResource, ICommandPool* a_commandPool);
 
@@ -46,8 +47,8 @@ public:
 
 private:
 	VkImage m_textureImage{VK_NULL_HANDLE};
-	VkDeviceMemory m_textureImageMemory{VK_NULL_HANDLE};
 	VkImageView m_textureImageView{VK_NULL_HANDLE};
+	VkDeviceMemory m_textureImageMemory{VK_NULL_HANDLE};
 	VkSampler m_textureSampler{VK_NULL_HANDLE};
 };
 

@@ -8,6 +8,7 @@
 
 #include "Rendering/Vulkan/VulkanSynchronization.hpp"
 #include "Rendering/Vulkan/VulkanDevice.hpp"
+#include "Struct/VulkanUtilities.hpp"
 
 void VulkanSynchronization::Create(IDevice* a_device)
 {
@@ -32,7 +33,16 @@ void VulkanSynchronization::Create(IDevice* a_device)
 	DEBUG_LOG_INFO("Vulkan Synchronization : Synchronization created!\n");
 }
 
-void VulkanSynchronization::Destroy()
+void VulkanSynchronization::Destroy(IDevice* a_device)
 {
+	vkQueueWaitIdle(a_device->CastVulkan()->GetGraphicsQueue());
+
+	for (size_t i = 0; i < MAX_FRAMES_IN_FLIGHT; ++i) {
+
+		vkDestroySemaphore(a_device->CastVulkan()->GetDevice(), m_renderFinishedSemaphores[i], nullptr);
+		vkDestroySemaphore(a_device->CastVulkan()->GetDevice(), m_imageAvailableSemaphores[i], nullptr);
+		vkDestroyFence(a_device->CastVulkan()->GetDevice(), m_fences[i], nullptr);
+	}
+
 	DEBUG_LOG_INFO("Vulkan Synchronization : Synchronization destroyed!\n");
 }

@@ -11,7 +11,7 @@ public:
 	~VulkanDescriptorSetLayout() override = default;
 
 	void Create(IDevice* a_device) override;
-	void Destroy() override;
+	void Destroy(IDevice* a_device)  override;
 
 	[[nodiscard]] VkDescriptorSetLayout GetDescriptorSetLayout() const { return m_descriptorSetLayout; }
 	VulkanDescriptorSetLayout* CastVulkan() override { return this; }

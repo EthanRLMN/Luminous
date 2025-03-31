@@ -50,7 +50,7 @@ public:
 	void DeleteRenderPass(IRenderPass* a_renderPass) override { delete a_renderPass; }
 
 	inline IDescriptorSetLayout* InstantiateDescriptorSetLayout() override { return new VulkanDescriptorSetLayout(); }
-	void DeleteDescriptionSetLayout(IDescriptorSetLayout* a_descriptionSetLayout) override { delete a_descriptionSetLayout; }
+	void DeleteDescriptorSetLayout(IDescriptorSetLayout* a_descriptorSetLayout) override { delete a_descriptorSetLayout; }
 
 	inline IPipeline* InstantiatePipeline() override { return new VulkanPipeline(); }
 	void DeletePipeline(IPipeline* a_pipeline) override { delete a_pipeline; }

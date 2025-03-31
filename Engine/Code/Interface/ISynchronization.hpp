@@ -10,7 +10,7 @@ public:
 	virtual ~ISynchronization() = default;
 
 	virtual void Create(IDevice* a_device) = 0;
-	virtual void Destroy() = 0;
+	virtual void Destroy(IDevice* a_device) = 0;
 
 	virtual VulkanSynchronization* CastVulkan()
 	{

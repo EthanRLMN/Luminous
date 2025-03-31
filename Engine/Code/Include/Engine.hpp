@@ -12,6 +12,8 @@ public:
 	~Engine();
 
 	void Run() const;
+	void Destroy() const;
+	void DestroyWindow() const;
 
 	[[nodiscard]] IWindow* GetWindow() const { return m_window; }
 	[[nodiscard]] IInputManager* GetInputManager() const { return m_inputManager; }
@@ -32,7 +34,6 @@ public:
 	[[nodiscard]] ICommandBuffer* GetCommandBuffer() const { return m_commandBuffer; }
 	[[nodiscard]] ISynchronization* GetSynchronization() const { return m_synchronization; }
 
-	//[[nodiscard]] IRenderingDraw* GetRenderingDraw() const { return m_renderingDraw; }
 
 private:
 	IRender* m_interface { nullptr };
@@ -56,5 +57,4 @@ private:
 	ICommandBuffer* m_commandBuffer{ nullptr };
 	ISynchronization* m_synchronization { nullptr };
 
-	//IRenderingDraw* m_renderingDraw{ nullptr };
 };

@@ -14,7 +14,7 @@ public:
 	virtual ~IDepthResource() = default;
 
 	virtual void Create(IDevice* a_device, ISwapChain* a_swapChain, IRenderPass* a_renderPass) = 0;
-	virtual void Destroy() = 0;
+	virtual void Destroy(IDevice* a_device) = 0;
 
 	virtual VulkanDepthResource* CastVulkan()
 	{

@@ -12,7 +12,7 @@ public:
 	virtual ~ICommandPool() = default;
 
 	virtual void Create(IDevice* a_device, ISurface* a_surface) = 0;
-	virtual void Destroy() = 0;
+	virtual void Destroy(IDevice* a_device) = 0;
 
 
 	virtual VulkanCommandPool* CastVulkan()

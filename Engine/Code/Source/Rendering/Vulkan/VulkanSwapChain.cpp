@@ -60,7 +60,7 @@ void VulkanSwapChain::Create(IWindow* a_window, IDevice* a_device, ISurface* a_s
 	const VkResult l_result = vkCreateSwapchainKHR(l_vkDevice, &l_swapChainCreateInfo, nullptr, &m_swapChain);
 
 	if (l_result != VK_SUCCESS)
-		throw std::runtime_error("Failed to create a SwapChain");
+		DEBUG_LOG_ERROR("Failed to create a SwapChain\n");
 
 	vkGetSwapchainImagesKHR(l_vkDevice, m_swapChain, &l_imageCount, nullptr);
 	m_swapChainImages.resize(l_imageCount);
@@ -79,6 +79,13 @@ void VulkanSwapChain::Create(IWindow* a_window, IDevice* a_device, ISurface* a_s
 
 void VulkanSwapChain::Destroy(IDevice* a_device)
 {
+	for (size_t i = 0; i < m_swapChainImageViews.size(); i++)
+	{
+		vkDestroyImageView(a_device->CastVulkan()->GetDevice(), m_swapChainImageViews[i], nullptr);
+	}
+
+	vkDestroySwapchainKHR(a_device->CastVulkan()->GetDevice(), m_swapChain, nullptr);
+
 	DEBUG_LOG_INFO("Vulkan SwapChain : SwapChain destroyed!\n");
 }
 
@@ -207,7 +214,7 @@ VkImageView VulkanSwapChain::CreateImageView(const VkImage a_image, const VkDevi
 	VkImageView l_imageView{};
 	const VkResult l_result = vkCreateImageView(a_device, &l_viewCreateInfo, nullptr, &l_imageView);
 	if (l_result != VK_SUCCESS)
-		throw std::runtime_error("Failed to create an image View!");
+		DEBUG_LOG_INFO("Failed to create an image View!!\n");
 
 	return l_imageView;
 }
