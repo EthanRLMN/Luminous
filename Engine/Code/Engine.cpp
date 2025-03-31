@@ -1,6 +1,7 @@
 #include "Include/Engine.hpp"
 
 #include "Rendering/Vulkan/VulkanRenderInterface.hpp"
+#include "ResourceManager/Mesh.hpp"
 
 Engine::Engine()
 {
@@ -25,6 +26,9 @@ Engine::Engine()
 
 	m_inputManager = m_interface->InstantiateInputManager();
 	m_inputManager->Initialize(m_window);
+
+	
+
 
 	m_instance = m_interface->InstantiateContext();
 	m_instance->Create(m_window);
@@ -73,6 +77,17 @@ Engine::Engine()
 
 	m_synchronization = m_interface->InstantiateSynchronization();
 	m_synchronization->Create(m_device);
+
+
+	m_resourceManager = m_interface->InstantiateResourceManager();
+	Mesh* mesh2 = m_resourceManager->GetResource<Mesh>("Engine/Assets/Models/metalSonic.obj");
+	Mesh* mesh = m_resourceManager->LoadResource<Mesh>("Engine/Assets/Models/metalSonic.obj");
+
+	
+
+	m_resourceManager->DeleteResource<Mesh>("Engine/Assets/Models/metalSonic.obj");
+	Mesh* mesh5 = m_resourceManager->LoadResource<Mesh>("Engine/Assets/Models/metalSonic.obj");
+	Mesh* mesh3 = m_resourceManager->GetResource<Mesh>("Engine/Assets/Models/metalSonic.obj");
 }
 
 void Engine::DestroyWindow() const
@@ -135,9 +150,12 @@ void Engine::Destroy() const
 	m_interface->DeleteContext(m_instance);
 }
 
-Engine::~Engine()
-{
-	delete(m_interface);
+	m_inputManager->Destroy(m_window);
+	m_interface->DeleteInputManager(m_inputManager);
+
+	m_window->Destroy();
+
+	m_interface->DeleteResourceManager(m_resourceManager);
 	delete(m_window);
 }
 

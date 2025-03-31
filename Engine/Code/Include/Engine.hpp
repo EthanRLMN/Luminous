@@ -2,6 +2,7 @@
 
 #include "IRender.hpp"
 #include "ISynchronization.hpp"
+#include "ResourceManager/ResourceManager.hpp"
 
 class VulkanRenderInterface;
 
@@ -39,6 +40,7 @@ private:
 	IRender* m_interface { nullptr };
 	IWindow* m_window { nullptr };
 	IInputManager* m_inputManager { nullptr };
+	IResourceManager* m_resourceManager{ nullptr };
 
 	IInstance* m_instance { nullptr };
 	ISurface* m_surface { nullptr };

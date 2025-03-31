@@ -5,11 +5,8 @@
 #include "assimp/Importer.hpp"
 #include "assimp/postprocess.h"
 
-#include "Resources/ModelLoading/AssimpModelLoader.hpp"
-#include "Resources/ModelLoading/AssimpModelDebugger.hpp"
 
-
-AssimpModelDebugger AssimpModelLoader::LoadModel(const char* a_file)
+void AssimpModelLoader::LoadModel(Mesh* a_mesh, const char* a_file)
 {
 	Assimp::Importer l_importer { };
 	char l_buffer[1024];
@@ -19,28 +16,25 @@ AssimpModelDebugger AssimpModelLoader::LoadModel(const char* a_file)
 	DebugExtensionsList(&l_importer);
 	const aiScene* l_scene = l_importer.ReadFile(a_file, aiProcess_CalcTangentSpace | aiProcess_Triangulate | aiProcess_JoinIdenticalVertices | aiProcess_SortByPType);
 
-	if (!l_scene || l_scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !l_scene->mRootNode) // if is Not Zero
+	if (!l_scene || l_scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !l_scene->mRootNode)
 	{
 		std::string l_info = "ASSIMP : " + std::string(l_importer.GetErrorString());
 		DEBUG_LOG_ERROR("{}", l_info);
-
-		return AssimpModelDebugger { };
+		return;
 	}
 
-	AssimpModelDebugger l_model { };
 	const aiMesh* l_mesh = l_scene->mMeshes[0];
 	std::string l_info = std::string(a_file) + " file has been red by the parser.";
 	DEBUG_LOG_INFO("{}", l_info);
 
 	if (l_mesh)
 	{
-		l_model.m_vertices = SetupVertices(l_mesh);
-		l_model.m_indices = SetupIndices(l_mesh);
+		a_mesh->m_vertices = SetupVertices(l_mesh);
+		a_mesh->m_indices = SetupIndices(l_mesh);
 		l_info = std::string(a_file) + " has been successfully parsed.";
 		DEBUG_LOG_INFO("{}", l_info);
-		return l_model;
+		a_mesh->isLoaded = true;
 	}
-	return l_model;
 }
 
 

@@ -13,6 +13,7 @@ public:
 	void DebugVertices() const;
 	void DebugIndices();
 
+	bool isLoaded = false;
 	std::vector<AssimpVertex> m_vertices;
 	std::vector<unsigned int> m_indices;
 };
