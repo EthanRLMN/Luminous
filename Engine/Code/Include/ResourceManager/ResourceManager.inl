@@ -61,6 +61,28 @@ template<typename T> T* IResourceManager::GetResource(std::string a_file)
 
 template<typename T> void IResourceManager::DeleteResource(std::string a_file)
 {
+	if (m_resources[a_file] == nullptr)
+	{
+		std::string l_info = "Trying to delete " + a_file + " but it doesn't exist.";
+		DEBUG_LOG_ERROR("{}", l_info);
+	}
+	else
+	{
+		if (typeid(*m_resources[a_file]) == typeid(T))
+		{
+			delete(m_resources[a_file]);
 
+			if (m_resources[a_file] == nullptr)
+			{
+				std::string l_info = "Successfully deleted " + a_file + ".";
+				DEBUG_LOG_INFO("{}", l_info);
+			}
+		}
+		else
+		{
+			std::string l_info = a_file + " can be found but type provided is incorrect.";
+			DEBUG_LOG_WARNING("{}", l_info);
+		}
+	}
 }
 

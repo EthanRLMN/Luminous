@@ -35,5 +35,5 @@ void Mesh::DebugVertices() const
 
 void Mesh::Destroy()
 {
-
+	delete(this);
 }

@@ -80,10 +80,14 @@ Engine::Engine()
 
 
 	m_resourceManager = new IResourceManager;
+	Mesh* mesh2 = m_resourceManager->GetResource<Mesh>("Engine/Assets/Models/metalSonic.obj");
 	Mesh* mesh = m_resourceManager->LoadResource<Mesh>("Engine/Assets/Models/metalSonic.obj");
 
-	Mesh* mesh2 = m_resourceManager->GetResource<Mesh>("Engine/Assets/Models/metalSonic.obj");
+	
 
+	m_resourceManager->DeleteResource<Mesh>("Engine/Assets/Models/metalSonic.obj");
+	Mesh* mesh5 = m_resourceManager->GetResource<Mesh>("Engine/Assets/Models/metalSonic.obj");
+	//Mesh* mesh3 = m_resourceManager->GetResource<Mesh>("Engine/Assets/Models/metalSonic.obj");
 }
 
 Engine::~Engine()
