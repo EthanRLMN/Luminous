@@ -18,17 +18,21 @@ public :
 	void Destroy() override;
 
 	[[nodiscard]] VkInstance GetInstance() const { return m_instance; }
-	[[nodiscard]] VkDebugUtilsMessengerEXT GetDebugUtilsMessagerExt() const { return m_debugMessenger; }
+	[[nodiscard]] VkDebugUtilsMessengerEXT GetDebugUtilsMessengerExt() const { return m_debugMessenger; }
 
 	VulkanInstance* CastVulkan() override { return this; }
 
 private:
 	void CreateInstance();
 	void Debug();
+	void SetupValidationLayers(VkInstanceCreateInfo& a_createInfo);
+
+	void SetupApplicationInfo(VkApplicationInfo& a_applicationInfo);
+	void SetupDebugCreateInfo(VkDebugUtilsMessengerCreateInfoEXT& a_createInfo);
 
 	bool CheckValidationLayerSupport();
 	bool CheckInstanceExtensionSupport(const std::vector<const char*>* a_checkExtensions);
 
-	VkInstance m_instance { VK_NULL_HANDLE };
-	VkDebugUtilsMessengerEXT m_debugMessenger{ VK_NULL_HANDLE };
+	VkInstance m_instance { nullptr };
+	VkDebugUtilsMessengerEXT m_debugMessenger{ nullptr };
 };

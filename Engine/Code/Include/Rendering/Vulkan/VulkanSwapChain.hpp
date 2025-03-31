@@ -38,11 +38,11 @@ private:
 	VkPresentModeKHR ChooseBestPresentationMode(const std::vector<VkPresentModeKHR>& a_presentationModes);
 	VkExtent2D ChooseSwapExtend(const VkSurfaceCapabilitiesKHR& a_surfaceCapabilities, GLFWwindow* a_window);
 
-	VkSwapchainKHR m_swapChain{ VK_NULL_HANDLE };
+	VkSwapchainKHR m_swapChain{ nullptr };
 
 	VkFormat m_swapChainImageFormat = VK_FORMAT_UNDEFINED;
 	VkExtent2D m_swapChainExtent = { 0, 0 };
 
-	std::vector<VkImage> m_swapChainImages{ VK_NULL_HANDLE };
-	std::vector<VkImageView> m_swapChainImageViews{ VK_NULL_HANDLE };
+	std::vector<VkImage> m_swapChainImages{ nullptr };
+	std::vector<VkImageView> m_swapChainImageViews{ nullptr };
 };

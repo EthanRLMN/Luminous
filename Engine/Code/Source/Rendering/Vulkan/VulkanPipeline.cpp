@@ -157,10 +157,10 @@ void VulkanPipeline::Create(IDevice* a_device, IRenderPass* a_renderPass, IDescr
 	l_pipelineCreateInfo.layout = m_pipelineLayout;
 	l_pipelineCreateInfo.renderPass = a_renderPass->CastVulkan()->GetRenderPass();
 	l_pipelineCreateInfo.subpass = 0;
-	l_pipelineCreateInfo.basePipelineHandle = VK_NULL_HANDLE;
+	l_pipelineCreateInfo.basePipelineHandle = nullptr;
 	l_pipelineCreateInfo.basePipelineIndex = -1;
 
-	l_result = vkCreateGraphicsPipelines(a_device->CastVulkan()->GetDevice(), VK_NULL_HANDLE, 1, &l_pipelineCreateInfo, nullptr, &m_graphicsPipeline);
+	l_result = vkCreateGraphicsPipelines(a_device->CastVulkan()->GetDevice(), nullptr, 1, &l_pipelineCreateInfo, nullptr, &m_graphicsPipeline);
 	if (l_result != VK_SUCCESS)
 		DEBUG_LOG_ERROR("Failed to create a Graphics Pipeline!\n");
 

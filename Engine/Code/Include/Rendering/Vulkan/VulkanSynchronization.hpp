@@ -19,8 +19,8 @@ public:
 	[[nodiscard]] std::vector<VkFence>  GetFences() const { return m_fences; }
 
 private:
-	std::vector<VkSemaphore> m_imageAvailableSemaphores{ VK_NULL_HANDLE };
-	std::vector<VkSemaphore> m_renderFinishedSemaphores{ VK_NULL_HANDLE };
-	std::vector<VkFence> m_fences{ VK_NULL_HANDLE };
+	std::vector<VkSemaphore> m_imageAvailableSemaphores{ nullptr };
+	std::vector<VkSemaphore> m_renderFinishedSemaphores{ nullptr };
+	std::vector<VkFence> m_fences{ nullptr };
 
 };

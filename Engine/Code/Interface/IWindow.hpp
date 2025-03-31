@@ -7,6 +7,7 @@
 
 class GLFWWindow;
 
+
 class IWindow
 {
 public:
@@ -24,6 +25,7 @@ public:
 	virtual void SetOpacity(float a_alpha) = 0;
 	[[nodiscard]] virtual std::string GetTitle() const = 0;
 	virtual void SetTitle(const std::string& a_name) = 0;
+
 
 	virtual GLFWWindow* CastGLFW()
 	{

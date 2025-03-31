@@ -1,6 +1,9 @@
 #pragma once
 
-#include <vulkan/vulkan.h>
+#include <set>
+
+#include "vulkan/vulkan.h"
+
 #include "IDevice.hpp"
 #include "Struct/VulkanUtilities.hpp"
 #include "Utils/QueueFamilyIndiceUtils.hpp"
@@ -29,8 +32,11 @@ public:
 
 
 private :
-	VkDevice m_device{ VK_NULL_HANDLE };
-	VkPhysicalDevice m_physicalDevice{ VK_NULL_HANDLE };
-	VkQueue m_graphicsQueue{ VK_NULL_HANDLE };
-	VkQueue m_presentationQueue{ VK_NULL_HANDLE };
+	void ProcessLogicalDeviceInfo(const QueueFamilyIndices& a_queueFamilyIndices);
+	void AssignQueueFamilyIndices(const std::set<int>& a_queueFamilyIndices, std::vector<VkDeviceQueueCreateInfo>& a_queueCreateInfos);
+
+	VkDevice m_device{ nullptr };
+	VkPhysicalDevice m_physicalDevice{ nullptr };
+	VkQueue m_graphicsQueue{ nullptr };
+	VkQueue m_presentationQueue{ nullptr };
 };

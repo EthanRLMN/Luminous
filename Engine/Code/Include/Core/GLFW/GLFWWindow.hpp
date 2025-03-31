@@ -1,8 +1,9 @@
 #pragma once
+
 #include "IWindow.hpp"
 
-#define GLFW_INCLUDE_VULKAN
 #include <Vector2.hpp>
+#define GLFW_INCLUDE_VULKAN
 #include <GLFW/glfw3.h>
 
 class GLFWWindow final : public IWindow
@@ -24,6 +25,7 @@ public:
     GLFWWindow* CastGLFW() override { return this; }
 
     [[nodiscard]] GLFWwindow* GetGLFWWindow() const { return m_window; }
+
 
 private:
     GLFWwindow* m_window = nullptr;

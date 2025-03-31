@@ -16,5 +16,5 @@ public:
 
 
 private:
-	VkCommandPool m_graphicsCommandPool{ VK_NULL_HANDLE };
+	VkCommandPool m_graphicsCommandPool{ nullptr };
 };

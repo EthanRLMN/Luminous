@@ -8,6 +8,7 @@
 
 #include "Rendering/Vulkan/VulkanDescriptorSetLayout.hpp"
 
+
 class VulkanDescriptor final : public IDescriptor
 {
 public:
@@ -19,16 +20,17 @@ public:
 
 	VulkanDescriptor* CastVulkan() override { return this; }
 
+
 private:
 	void CreateDescriptorPool(IDevice* a_device);
 	void CreateDescriptorSets(IDevice* a_device, IDescriptorSetLayout* a_descriptorSetLayout, ITexture* a_texture);
 	void SetBuffers(IBuffer* a_buffer);
-	
+	void UpdateDescriptorSets(IDevice* a_device, ITexture* a_texture);
 
-	VkDescriptorPool m_descriptorPool{VK_NULL_HANDLE};
-	std::vector<VkDescriptorSet> m_descriptorSets{VK_NULL_HANDLE};
+	VkDescriptorPool m_descriptorPool { nullptr };
+	std::vector<VkDescriptorSet> m_descriptorSets { nullptr };
 
-	std::vector<VkBuffer> m_uniformBuffer{VK_NULL_HANDLE};
-	std::vector<VkDeviceMemory> m_uniformBuffersMemory{VK_NULL_HANDLE};
-	std::vector<void*> m_uniformBuffersMapped{VK_NULL_HANDLE};
+	std::vector<VkBuffer> m_uniformBuffer { nullptr };
+	std::vector<VkDeviceMemory> m_uniformBuffersMemory { nullptr };
+	std::vector<void*> m_uniformBuffersMapped { nullptr };
 };

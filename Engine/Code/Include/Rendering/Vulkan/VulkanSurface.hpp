@@ -15,6 +15,6 @@ public:
 	VulkanSurface* CastVulkan() override { return this; }
 
 private:
-	VkSurfaceKHR m_surface = VK_NULL_HANDLE;
+	VkSurfaceKHR m_surface = nullptr;
 };
 

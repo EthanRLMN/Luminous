@@ -1,12 +1,9 @@
 #pragma once
 
-#include <vulkan/vulkan.hpp>
-
 #include "IBuffer.hpp"
 
-#include "Rendering/Vulkan/VulkanCommandPool.hpp"
-
 #include "Struct/VulkanUtilities.hpp"
+
 
 class VulkanBuffer final : public IBuffer
 {
@@ -31,15 +28,16 @@ public:
     [[nodiscard]] std::vector<VkDeviceMemory> GetUniformBuffersMemory() const { return m_uniformBuffersMemory; }
     [[nodiscard]] std::vector<void*> GetUniformBuffersMapped() const { return m_uniformBuffersMapped; }
 
+
 private:
     void CopyBuffer(VkDevice a_device, VkQueue a_graphicsQueue, VkCommandPool a_commandPool, VkBuffer a_srcBuffer, VkBuffer a_dstBuffer, VkDeviceSize a_size, ITexture* a_texture);
 
-    VkBuffer m_vertexBuffer{VK_NULL_HANDLE};
-    VkDeviceMemory m_vertexBufferMemory{VK_NULL_HANDLE};
-    VkBuffer m_indexBuffer{VK_NULL_HANDLE};
-    VkDeviceMemory m_indexBufferMemory{VK_NULL_HANDLE};
+    VkBuffer m_vertexBuffer { nullptr };
+    VkDeviceMemory m_vertexBufferMemory { nullptr };
+    VkBuffer m_indexBuffer { nullptr };
+    VkDeviceMemory m_indexBufferMemory { nullptr };
 
-    std::vector<VkBuffer> m_uniformBuffer{VK_NULL_HANDLE};
-    std::vector<VkDeviceMemory> m_uniformBuffersMemory{VK_NULL_HANDLE};
-    std::vector<void*> m_uniformBuffersMapped{VK_NULL_HANDLE};
+    std::vector<VkBuffer> m_uniformBuffer { nullptr };
+    std::vector<VkDeviceMemory> m_uniformBuffersMemory { nullptr };
+    std::vector<void*> m_uniformBuffersMapped { nullptr };
 };

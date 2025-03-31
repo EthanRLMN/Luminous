@@ -17,5 +17,5 @@ public:
 	VulkanDescriptorSetLayout* CastVulkan() override { return this; }
 
 private:
-	VkDescriptorSetLayout m_descriptorSetLayout { VK_NULL_HANDLE };
+	VkDescriptorSetLayout m_descriptorSetLayout { nullptr };
 };

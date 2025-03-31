@@ -5,6 +5,7 @@
 
 #include "IPipeline.hpp"
 
+
 class VulkanPipeline final : public IPipeline
 {
 public:
@@ -17,8 +18,8 @@ public:
 	VulkanPipeline* CastVulkan() override { return this; }
 	VkShaderModule CreateShaderModule(VkDevice a_device, const std::vector<char>& a_code);
 
-private:
 
-	VkPipeline m_graphicsPipeline{ VK_NULL_HANDLE };
-	VkPipelineLayout m_pipelineLayout{ VK_NULL_HANDLE };
+private:
+	VkPipeline m_graphicsPipeline { nullptr };
+	VkPipelineLayout m_pipelineLayout { nullptr };
 };

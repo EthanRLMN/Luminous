@@ -21,7 +21,9 @@ public:
 	[[nodiscard]] virtual VkImageView GetDepthImageView() const { return m_depthImageView; }
 
 private:
-	VkImage m_depthImage{ VK_NULL_HANDLE };
-	VkDeviceMemory m_depthImageMemory{ VK_NULL_HANDLE };
-	VkImageView m_depthImageView{ VK_NULL_HANDLE };
+	void FillImageInfo(VkDevice a_device, uint32_t a_width, uint32_t a_height, VkFormat a_format, VkImageTiling a_tiling, VkImageUsageFlags a_usage, VkImage& a_image);
+
+	VkImage m_depthImage{ nullptr };
+	VkDeviceMemory m_depthImageMemory{ nullptr };
+	VkImageView m_depthImageView{ nullptr };
 };

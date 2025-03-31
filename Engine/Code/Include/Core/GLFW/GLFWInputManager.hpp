@@ -8,6 +8,7 @@
 
 class IWindow;
 
+
 class GLFWInputManager final : public IInputManager
 {
 public:
@@ -27,9 +28,14 @@ public:
     void SetCursorPosition(IWindow* a_window, Maths::Vector2 a_pos) override;
 
     Maths::Vector2 GetMouseScroll() override;
-    void SetMouseScroll(Maths::Vector2 a_vec) override {};
+
+
+    void SetMouseScroll(Maths::Vector2 a_vec) override
+    {
+    };
 
     GLFWInputManager* CastGLFW() override { return this; }
+
 
 private:
     static void KeyCallback(GLFWwindow* a_window, int a_key, int a_scancode, int a_action, int a_mods);

@@ -46,9 +46,9 @@ public:
 	[[nodiscard]] VkSampler GetTextureSampler() const;
 
 private:
-	VkImage m_textureImage{VK_NULL_HANDLE};
-	VkImageView m_textureImageView{VK_NULL_HANDLE};
-	VkDeviceMemory m_textureImageMemory{VK_NULL_HANDLE};
-	VkSampler m_textureSampler{VK_NULL_HANDLE};
+	VkImage m_textureImage{nullptr};
+	VkImageView m_textureImageView{nullptr};
+	VkDeviceMemory m_textureImageMemory{nullptr};
+	VkSampler m_textureSampler{nullptr};
 };
 

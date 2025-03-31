@@ -22,5 +22,5 @@ public :
     [[nodiscard]] virtual VkRenderPass GetRenderPass() const { return m_renderPass; }
 
 private:
-    VkRenderPass m_renderPass = VK_NULL_HANDLE;
+    VkRenderPass m_renderPass = nullptr;
 };

@@ -8,6 +8,7 @@
 #include "Rendering/Vulkan/VulkanSurface.hpp"
 #include "Rendering/Vulkan/VulkanInstance.hpp"
 
+
 void VulkanSurface::Create(IInstance* a_instance, IWindow* a_window)
 {
     const VkResult l_result = glfwCreateWindowSurface(a_instance->CastVulkan()->GetInstance(), a_window->CastGLFW()->GetGLFWWindow(), nullptr, &m_surface);
@@ -18,8 +19,9 @@ void VulkanSurface::Create(IInstance* a_instance, IWindow* a_window)
     DEBUG_LOG_INFO("Vulkan Surface : Surface Created!\n");
 }
 
+
 void VulkanSurface::Destroy(IInstance* a_instance)
 {
-    vkDestroySurfaceKHR(a_instance->CastVulkan()->GetInstance(), m_surface,nullptr);
+    vkDestroySurfaceKHR(a_instance->CastVulkan()->GetInstance(), m_surface, nullptr);
     DEBUG_LOG_INFO("Vulkan Surface : Surface has been destroyed!\n");
 }
