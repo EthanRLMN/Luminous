@@ -80,4 +80,7 @@ public:
 	inline ISynchronization* InstantiateSynchronization() override { return new VulkanSynchronization(); }
 	void DeleteSynchronization(ISynchronization* a_synchronization) override { delete a_synchronization; }
 
+	inline IResourceManager* InstantiateResourceManager() override { return new IResourceManager(); }
+	void DeleteResourceManager(IResourceManager* a_resourceManager) override { delete a_resourceManager; }
+
 };

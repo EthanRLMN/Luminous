@@ -27,6 +27,7 @@
 #include "ISwapChain.hpp"
 #include "ISynchronization.hpp"
 #include "ITexture.hpp"
+#include "ResourceManager/ResourceManager.hpp"
 #include "IWindow.hpp"
 
 class IRender
@@ -53,7 +54,7 @@ public:
 	virtual IDescriptor* InstantiateDescriptor() = 0;
 	virtual ICommandBuffer* InstantiateCommandBuffer() = 0;
 	virtual ISynchronization* InstantiateSynchronization() = 0;
-
+	virtual IResourceManager* InstantiateResourceManager() = 0;
 
 
 	virtual void DeleteWindow(IWindow* a_window) { delete a_window; }
@@ -75,4 +76,5 @@ public:
 	virtual void DeleteDescriptor(IDescriptor* a_descriptor) { delete a_descriptor; }
 	virtual void DeleteCommandBuffer(ICommandBuffer* a_commandBuffer) { delete a_commandBuffer; }
 	virtual void DeleteSynchronization(ISynchronization* a_synchronization) { delete a_synchronization; }
+	virtual void DeleteResourceManager(IResourceManager* a_resourceManager) { delete a_resourceManager; }
 };

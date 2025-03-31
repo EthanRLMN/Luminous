@@ -79,15 +79,15 @@ Engine::Engine()
 	m_synchronization->Create(m_device);
 
 
-	m_resourceManager = new IResourceManager;
+	m_resourceManager = m_interface->InstantiateResourceManager();
 	Mesh* mesh2 = m_resourceManager->GetResource<Mesh>("Engine/Assets/Models/metalSonic.obj");
 	Mesh* mesh = m_resourceManager->LoadResource<Mesh>("Engine/Assets/Models/metalSonic.obj");
 
 	
 
-	//m_resourceManager->DeleteResource<Mesh>("Engine/Assets/Models/metalSonic.obj");
+	m_resourceManager->DeleteResource<Mesh>("Engine/Assets/Models/metalSonic.obj");
 	Mesh* mesh5 = m_resourceManager->LoadResource<Mesh>("Engine/Assets/Models/metalSonic.obj");
-	//Mesh* mesh3 = m_resourceManager->GetResource<Mesh>("Engine/Assets/Models/metalSonic.obj");
+	Mesh* mesh3 = m_resourceManager->GetResource<Mesh>("Engine/Assets/Models/metalSonic.obj");
 }
 
 Engine::~Engine()
@@ -117,7 +117,7 @@ Engine::~Engine()
 
 	m_window->Destroy();
 
-	delete(m_resourceManager);
+	m_interface->DeleteResourceManager(m_resourceManager);
 	delete(m_window);
 }
 
