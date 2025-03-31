@@ -10,7 +10,7 @@ class Engine
 {
 public:
 	Engine();
-	~Engine();
+	~Engine() = default;
 
 	void Run() const;
 	void Destroy() const;

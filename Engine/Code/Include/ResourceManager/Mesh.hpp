@@ -1,8 +1,9 @@
 #pragma once
-#include "ModelLoading/AssimpVertex.hpp"
+
+#include <vector>
 
 #include "ResourceManager/Resource.hpp"
-#include <vector>
+#include "Resources/ModelLoading/AssimpVertex.hpp"
 
 class IResourceManager;
 

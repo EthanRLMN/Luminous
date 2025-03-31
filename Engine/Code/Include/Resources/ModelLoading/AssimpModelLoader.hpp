@@ -2,7 +2,7 @@
 
 #include "assimp/BaseImporter.h"
 #include "assimp/scene.h"
-#include "ModelLoading/AssimpModelDebugger.hpp"
+
 #include "ResourceManager/Mesh.hpp"
 
 class AssimpModelLoader

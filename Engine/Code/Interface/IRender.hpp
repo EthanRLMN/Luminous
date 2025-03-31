@@ -1,34 +1,26 @@
 #pragma once
-#include "IWindow.hpp"
-#include "IInputManager.hpp"
 
-#include "IInstance.hpp"
-#include "ISurface.hpp"
-#include "IDevice.hpp"
-#include "ISwapChain.hpp"
-#include "IRenderPass.hpp"
-#include "IDescriptorSetLayout.hpp"
-#include "IPipeline.hpp"
+#include "IBuffer.hpp"
+#include "ICommandBuffer.hpp"
 #include "ICommandPool.hpp"
 #include "IDepthResource.hpp"
-#include "IFrameBuffer.hpp"
-#include "ITexture.hpp"
-#include "IModel.hpp"
-#include "IBuffer.hpp"
 #include "IDescriptor.hpp"
-#include "ICommandBuffer.hpp"
-#include "ISynchronization.hpp"
+#include "IDescriptorSetLayout.hpp"
+#include "IDevice.hpp"
+#include "IFrameBuffer.hpp"
 #include "IInputManager.hpp"
 #include "IInstance.hpp"
 #include "IModel.hpp"
 #include "IPipeline.hpp"
+#include "IRenderingDraw.hpp"
 #include "IRenderPass.hpp"
 #include "ISurface.hpp"
 #include "ISwapChain.hpp"
 #include "ISynchronization.hpp"
 #include "ITexture.hpp"
-#include "ResourceManager/ResourceManager.hpp"
 #include "IWindow.hpp"
+#include "ResourceManager/ResourceManager.hpp"
+
 
 class IRender
 {
@@ -55,6 +47,7 @@ public:
 	virtual ICommandBuffer* InstantiateCommandBuffer() = 0;
 	virtual ISynchronization* InstantiateSynchronization() = 0;
 	virtual IResourceManager* InstantiateResourceManager() = 0;
+	virtual IRenderingDraw* InstantiateRenderingDraw() = 0;
 
 
 	virtual void DeleteWindow(IWindow* a_window) { delete a_window; }
@@ -77,4 +70,5 @@ public:
 	virtual void DeleteCommandBuffer(ICommandBuffer* a_commandBuffer) { delete a_commandBuffer; }
 	virtual void DeleteSynchronization(ISynchronization* a_synchronization) { delete a_synchronization; }
 	virtual void DeleteResourceManager(IResourceManager* a_resourceManager) { delete a_resourceManager; }
+	virtual void DeleteRenderingDraw(IRenderingDraw* a_renderingDraw) { delete a_renderingDraw; }
 };

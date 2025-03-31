@@ -1,9 +1,12 @@
 #include <direct.h>
 #include <string>
 
-#include "Logger.hpp"
 #include "assimp/Importer.hpp"
 #include "assimp/postprocess.h"
+
+#include "Logger.hpp"
+
+#include "Resources/ModelLoading/AssimpModelLoader.hpp"
 
 
 void AssimpModelLoader::LoadModel(Mesh* a_mesh, const char* a_file)

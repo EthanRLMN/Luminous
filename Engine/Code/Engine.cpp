@@ -27,9 +27,6 @@ Engine::Engine()
 	m_inputManager = m_interface->InstantiateInputManager();
 	m_inputManager->Initialize(m_window);
 
-	
-
-
 	m_instance = m_interface->InstantiateContext();
 	m_instance->Create(m_window);
 
@@ -85,7 +82,7 @@ Engine::Engine()
 
 	
 
-	m_resourceManager->DeleteResource<Mesh>("Engine/Assets/Models/metalSonic.obj");
+	//m_resourceManager->DeleteResource<Mesh>("Engine/Assets/Models/metalSonic.obj");
 	Mesh* mesh5 = m_resourceManager->LoadResource<Mesh>("Engine/Assets/Models/metalSonic.obj");
 	Mesh* mesh3 = m_resourceManager->GetResource<Mesh>("Engine/Assets/Models/metalSonic.obj");
 }
@@ -148,7 +145,6 @@ void Engine::Destroy() const
 
 	m_instance->Destroy();
 	m_interface->DeleteContext(m_instance);
-}
 
 	m_inputManager->Destroy(m_window);
 	m_interface->DeleteInputManager(m_inputManager);
