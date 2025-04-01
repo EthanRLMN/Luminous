@@ -3,8 +3,8 @@
 #include "Core/GLFW/GLFWInputManager.hpp"
 #include "Core/GLFW/GLFWWindow.hpp"
 
-std::array<int, 120> GLFWInputManager::m_keyPressed{};
-std::array<Action, 120> GLFWInputManager::m_keyStatus{};
+std::array<int, 349> GLFWInputManager::m_keyPressed{};
+std::array<Action, 349> GLFWInputManager::m_keyStatus{};
 
 std::array<int, 12> GLFWInputManager::m_mouseButtonPressed{};
 std::array<Action, 12> GLFWInputManager::m_mouseButtonStatus{};
