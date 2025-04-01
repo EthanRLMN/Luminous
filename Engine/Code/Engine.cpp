@@ -146,13 +146,13 @@ void Engine::Destroy() const
 	m_instance->Destroy();
 	m_interface->DeleteContext(m_instance);
 
-	m_inputManager->Destroy(m_window);
-	m_interface->DeleteInputManager(m_inputManager);
+	//m_inputManager->Destroy(m_window);
+	//m_interface->DeleteInputManager(m_inputManager);
 
-	m_window->Destroy();
+	//m_window->Destroy();
 
 	m_interface->DeleteResourceManager(m_resourceManager);
-	delete(m_window);
+	//delete(m_window);
 }
 
 void Engine::Run() const
