@@ -71,12 +71,12 @@ echo Cleanup Done!
 ping 127.0.0.1 -n 3 > nul
 
 echo Initializing Submodules!
-git submodule init
+git submodule init --recursive
 echo Submodules Initialized!
 ping 127.0.0.1 -n 1 > nul
 
 echo Updating Submodules!
-git submodule update
+git submodule update --recursive
 echo Submodules updated!
 ping 127.0.0.1 -n 1 > nul
 
@@ -101,7 +101,7 @@ git submodule init
 echo Submodules initialization done!
 
 echo Updating Submodules...
-git submodule update
+git submodule update --recursive --remote --merge
 echo Submodules update done!
 
 echo All submodules were updated...
