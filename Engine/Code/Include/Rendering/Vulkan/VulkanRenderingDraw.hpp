@@ -25,6 +25,8 @@ public:
 
 
 private:
+    void SetupSubmitInfo(VkSubmitInfo& a_submitInfo, const VkSemaphore a_waitSemaphores[], const VkPipelineStageFlags a_waitStages[], std::vector<VkCommandBuffer>& a_commandBuffer);
+
 	bool m_framebufferResized { false };
 	uint32_t m_currentFrame { 0 };
 };
