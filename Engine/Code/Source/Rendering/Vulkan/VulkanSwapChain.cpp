@@ -158,10 +158,17 @@ VkPresentModeKHR VulkanSwapChain::ChooseBestPresentationMode(const std::vector<V
 
 VkExtent2D VulkanSwapChain::ChooseSwapExtend(const VkSurfaceCapabilitiesKHR& a_surfaceCapabilities, GLFWwindow* a_window)
 {
+
+	DEBUG_LOG_ERROR("{}", a_surfaceCapabilities.currentExtent.width);
+    DEBUG_LOG_ERROR("{}", a_surfaceCapabilities.currentExtent.height);
+
 	if (a_surfaceCapabilities.currentExtent.width != std::numeric_limits<uint32_t>::max()) return a_surfaceCapabilities.currentExtent;
 
 	int l_width, l_height;
 	glfwGetFramebufferSize(a_window, &l_width, &l_height);
+
+	DEBUG_LOG_ERROR("{}", l_width);
+    DEBUG_LOG_ERROR("{}", l_height);
 
 	VkExtent2D l_newExtend = { };
 	l_newExtend.width = static_cast<uint32_t>(l_width);

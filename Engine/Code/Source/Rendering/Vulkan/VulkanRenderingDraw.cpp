@@ -140,10 +140,11 @@ void VulkanRenderingDraw::UpdateUniformBuffer(const uint32_t currentImage, ISwap
 	const float l_time = std::chrono::duration<float, std::chrono::seconds::period>(l_currentTime - l_startTime).count();
 
 	UniformBufferObject l_ubo { };
-	l_ubo.model = Maths::Matrix4::Rotate(Maths::Matrix4(1.0f), l_time * Maths::DegToRad(90.0f), Maths::Vector3(0.0f, 0.0f, 1.0f));
+	l_ubo.model = Maths::Matrix4::Rotate(Maths::Matrix4(1.0f), l_time * 90.0f, Maths::Vector3(0.0f, 0.0f, 1.0f));
 	l_ubo.view = Maths::Matrix4::LookAt(Maths::Vector3(2.0f, 2.0f, 2.0f), Maths::Vector3(0.0f, 0.0f, 0.0f), Maths::Vector3(0.0f, 0.0f, 1.0f));
 	l_ubo.proj = Maths::Matrix4::Perspective(Maths::DegToRad(45.f), a_swapChain->CastVulkan()->GetSwapChainExtent().width / static_cast<float>(a_swapChain->CastVulkan()->GetSwapChainExtent().height), 0.1f, 10.0f);
-	l_ubo.proj = l_ubo.proj.Opposite();
+	//l_ubo.proj = l_ubo.proj.Opposite();
+    l_ubo.proj.mat[1][1] *= -1;
 
 	memcpy(a_buffer->CastVulkan()->GetUniformBuffersMapped()[currentImage], &l_ubo, sizeof(l_ubo));
 }
