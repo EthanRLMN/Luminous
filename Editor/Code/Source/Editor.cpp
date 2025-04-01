@@ -32,6 +32,7 @@ int main()
 
     //ImGui::ShowDemoWindow(); // Show demo window! :)
 
+    /*
     while (!l_Engine.GetWindow()->ShouldClose())
     {
         // Poll events before doing anything else
@@ -44,7 +45,7 @@ int main()
         // Handle rendering
         //ImGui::Render();
         //ImGui_ImplVulkan_RenderDrawData(ImGui::GetDrawData(), l_application.GetCo);
-    }
+    //}
 
     //Destroy();
     return 0;
