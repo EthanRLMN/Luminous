@@ -26,7 +26,7 @@ set(L_TARGET_NAME L_ENGINE)
 #---------------------------------------#
 #            BUILD MODE                 #
 #---------------------------------------#
-add_library(${L_TARGET_NAME} STATIC ${L_ENGINE_SOURCES} "Code/Source/ResourceManager/Mesh.cpp")
+add_library(${L_TARGET_NAME} STATIC ${L_ENGINE_SOURCES})
 
 
 
@@ -80,10 +80,10 @@ set_target_properties(${L_TARGET_NAME} PROPERTIES OUTPUT_NAME "${PROJECT_NAME}-$
 add_custom_command(
         TARGET ${L_TARGET_NAME}
         POST_BUILD
-        COMMAND ${CMAKE_COMMAND} -E copy_directory
-        ${CMAKE_CURRENT_SOURCE_DIR}/Assets
-        ${L_OUTPUT_DIR}/Engine/Assets
+        COMMAND "${CMAKE_COMMAND}" -E copy_directory
+        "${CMAKE_CURRENT_SOURCE_DIR}/Assets"
+        "${L_OUTPUT_DIR}/Engine/Assets"
 )
 
 # Force copy assets folder when building for visual studio because of issues caused by single-repository project
-file(COPY Assets DESTINATION ${CMAKE_BINARY_DIR}/Engine)
+file(COPY Assets DESTINATION "${CMAKE_BINARY_DIR}/Engine")

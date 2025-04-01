@@ -47,7 +47,17 @@ set(CMAKE_POSITION_INDEPENDENT_CODE ON)
 set(CMAKE_C_EXTENSIONS OFF)
 set(CMAKE_CXX_EXTENSIONS OFF)
 
-set_property(TARGET ${LE_TARGET_NAME} PROPERTY VS_DEBUGGER_WORKING_DIRECTORY "${CMAKE_SOURCE_DIR}/Builds/${CMAKE_CXX_COMPILER_ID}_${CMAKE_BUILD_TYPE}")
+if(CMAKE_BUILD_TYPE STREQUAL "Debug")
+    set_property(TARGET ${LE_TARGET_NAME} PROPERTY VS_DEBUGGER_WORKING_DIRECTORY "${CMAKE_SOURCE_DIR}/Builds/${CMAKE_CXX_COMPILER_ID}_Debug")
+elseif(CMAKE_BUILD_TYPE STREQUAL "Release")
+    set_property(TARGET ${LE_TARGET_NAME} PROPERTY VS_DEBUGGER_WORKING_DIRECTORY "${CMAKE_SOURCE_DIR}/Builds/${CMAKE_CXX_COMPILER_ID}_Release")
+elseif(CMAKE_BUILD_TYPE STREQUAL "RelWithDebInfo")
+    set_property(TARGET ${LE_TARGET_NAME} PROPERTY VS_DEBUGGER_WORKING_DIRECTORY "${CMAKE_SOURCE_DIR}/Builds/${CMAKE_CXX_COMPILER_ID}_RelWithDebInfo")
+elseif(CMAKE_BUILD_TYPE STREQUAL "MinSizeRel")
+    set_property(TARGET ${LE_TARGET_NAME} PROPERTY VS_DEBUGGER_WORKING_DIRECTORY "${CMAKE_SOURCE_DIR}/Builds/${CMAKE_CXX_COMPILER_ID}_MinSizeRel")
+endif()
+
+    
 
 #---------------------------------------#
 #        EXPORTS / IMPORTS FOR DLL      #
@@ -65,10 +75,10 @@ target_link_libraries(${LE_TARGET_NAME} PUBLIC L_ENGINE)
 add_custom_command(
         TARGET ${LE_TARGET_NAME}
         POST_BUILD
-        COMMAND ${CMAKE_COMMAND} -E copy_directory
-        ${CMAKE_CURRENT_SOURCE_DIR}/Assets
-        $<TARGET_FILE_DIR:${LE_TARGET_NAME}>/Editor/Assets
+        COMMAND "${CMAKE_COMMAND}" -E copy_directory
+        "${CMAKE_CURRENT_SOURCE_DIR}/Assets"
+        "$<TARGET_FILE_DIR:${LE_TARGET_NAME}>/Editor/Assets"
 )
 
 # Force copy assets folder when building for visual studio because of issues caused by single-repository project
-file(COPY Assets DESTINATION ${CMAKE_BINARY_DIR}/Editor)
+file(COPY Assets DESTINATION "${CMAKE_BINARY_DIR}/Editor")
