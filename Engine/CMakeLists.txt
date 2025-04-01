@@ -73,6 +73,7 @@ set_target_properties(${L_TARGET_NAME} PROPERTIES PREFIX "")
 set_target_properties(${L_TARGET_NAME} PROPERTIES OUTPUT_NAME "${PROJECT_NAME}-${PROJECT_VERSION}")
 
 
+
 #---------------------------------------#
 #           COPY ASSETS FOLDER          #
 #---------------------------------------#
