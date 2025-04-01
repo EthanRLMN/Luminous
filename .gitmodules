@@ -8,12 +8,12 @@
 [submodule "Libs/logger"]
 	path = Engine/Libs/logger
 	url = https://github.com/ZeBaananaa/LuminousLogger.git
-[submodule "Engine/Libs/luminousmaths"]
-	path = Engine/Libs/luminousmaths
-	url = git@gitlabstudents.isartintra.com:e.ruhlmann/enginemaths.git
 [submodule "Engine/Libs/vulkanmemoryallocator"]
 	path = Engine/Libs/vulkanmemoryallocator
 	url = https://github.com/GPUOpen-LibrariesAndSDKs/VulkanMemoryAllocator.git
 [submodule "Engine/Libs/glm"]
 	path = Engine/Libs/glm
 	url = https://github.com/g-truc/glm.git
+[submodule "Engine/Libs/luminousmaths"]
+	path = Engine/Libs/luminousmaths
+	url = https://github.com/ZeBaananaa/LuminousMaths.git
