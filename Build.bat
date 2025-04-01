@@ -54,30 +54,9 @@ goto :welcome
 
 
 :build
-echo Cleaning up project before building!
-ping 127.0.0.1 -n 1 > nul
-
-set folders=Builds Editor\Builds Engine\Builds Engine\Libs\assimp Engine\Libs\glfw Engine\Libs\logger Engine\Libs\luminousmaths TEMP
-
-for %%d in (%folders%) do (
-    if exist "%%d" (
-        echo Deleting %%d...
-        rmdir /s /q "%%d"
-    ) else (
-        echo Folder %%d does not exist.
-    )
-)
-echo Cleanup Done!
-ping 127.0.0.1 -n 3 > nul
-
-echo Initializing Submodules!
-git submodule init --recursive
+echo Initializing & Updating Submodules!
+git submodule update --init --recursive
 echo Submodules Initialized!
-ping 127.0.0.1 -n 1 > nul
-
-echo Updating Submodules!
-git submodule update --recursive
-echo Submodules updated!
 ping 127.0.0.1 -n 1 > nul
 
 echo Generating Files!
