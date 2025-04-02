@@ -2,7 +2,7 @@
 
 #include "ICommandPool.hpp"
 #include "IDevice.hpp"
-#include "IModel.hpp"
+#include "IMesh.hpp"
 #include "ITexture.hpp"
 
 #include "Struct/VulkanUtilities.hpp"
@@ -10,7 +10,7 @@
 #include "Rendering/Vulkan/VulkanBuffer.hpp"
 #include "Rendering/Vulkan/VulkanCommandPool.hpp"
 #include "Rendering/Vulkan/VulkanDevice.hpp"
-#include "Rendering/Vulkan/VulkanModel.hpp"
+#include "Rendering/Vulkan/VulkanMesh.hpp"
 #include "Rendering/Vulkan/VulkanTexture.hpp"
 
 

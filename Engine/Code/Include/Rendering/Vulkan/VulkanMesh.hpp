@@ -1,6 +1,6 @@
 #pragma once
 
-#include "IModel.hpp"
+#include "IMesh.hpp"
 #include "tiny_obj_loader.h"
 #include "Struct/VulkanUtilities.hpp"
 

@@ -3,7 +3,7 @@
 #include "assimp/BaseImporter.h"
 #include "assimp/scene.h"
 
-#include "IModel.hpp"
+#include "IMesh.hpp"
 
 class AssimpModelLoader
 {

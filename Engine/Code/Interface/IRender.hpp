@@ -10,7 +10,7 @@
 #include "IFrameBuffer.hpp"
 #include "IInputManager.hpp"
 #include "IInstance.hpp"
-#include "IModel.hpp"
+#include "IMesh.hpp"
 #include "IPipeline.hpp"
 #include "IRenderingDraw.hpp"
 #include "IRenderPass.hpp"

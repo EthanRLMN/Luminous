@@ -14,7 +14,7 @@
 #include "Rendering/Vulkan/VulkanDevice.hpp"
 #include "Rendering/Vulkan/VulkanFrameBuffer.hpp"
 #include "Rendering/Vulkan/VulkanInstance.hpp"
-#include "Rendering/Vulkan/VulkanModel.hpp"
+#include "Rendering/Vulkan/VulkanMesh.hpp"
 #include "Rendering/Vulkan/VulkanPipeline.hpp"
 #include "Rendering/Vulkan/VulkanRenderPass.hpp"
 #include "Rendering/Vulkan/VulkanSurface.hpp"
