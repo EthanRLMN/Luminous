@@ -81,7 +81,7 @@ void MainWindow::Draw()
 
 				ImGui::Separator();
 				ImGui::MenuItem("Luminous Engine Docmentation", "", false);
-
+				
 				ImGui::MenuItem("Credits", "", false);
 
 				ImGui::MenuItem("Report a bug", "", false);

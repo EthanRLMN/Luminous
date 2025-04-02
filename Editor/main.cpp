@@ -1,28 +1,9 @@
-#include <GLFW/glfw3.h>
 #include <vulkan/vulkan.h>
 #include <iostream>
 #include "imgui.h"
 #include "backends/imgui_impl_glfw.h"
 #include "backends/imgui_impl_vulkan.h"
-
-GLFWwindow* CreateGLFWWindow(int width, int height, const char* title)
-{
-    if (!glfwInit())
-    {
-        exit(-1);
-    }
-
-    glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
-    GLFWwindow* window = glfwCreateWindow(width, height, title, nullptr, nullptr);
-    if (!window)
-    {
-        glfwTerminate();
-        exit(-1);
-    }
-
-    glfwMakeContextCurrent(window);
-    return window;
-}
+#include "..\Engine\Code\Include\Rendering\API\Vulkan\VulkanWindow.hpp"
 
 VkInstance CreateVulkanInstance()
 {
@@ -43,7 +24,6 @@ VkInstance CreateVulkanInstance()
     {
         exit(-1);
     }
-
     return instance;
 }
 
@@ -73,7 +53,9 @@ void SetupImGui(GLFWwindow* window, VkInstance instance)
 
 int main()
 {
-    GLFWwindow* window = CreateGLFWWindow(1920, 1080, "Luminous");
+    VulkanWindow vulkanWindow;
+
+    GLFWwindow* window = vulkanWindow.Initialize("Luminous", 1920, 1080);
 
     VkInstance instance = CreateVulkanInstance();
 
@@ -86,8 +68,6 @@ int main()
         ImGui_ImplVulkan_NewFrame();
         ImGui_ImplGlfw_NewFrame();
         ImGui::NewFrame();
-
-        ImGui::ShowDemoWindow();
 
         ImGui::Render();
 
