@@ -3,7 +3,7 @@
 #define TINYOBJLOADER_IMPLEMENTATION
 #include "Rendering/Vulkan/VulkanModel.hpp"
 
-void VulkanMesh::Create()
+bool VulkanMesh::Create(IResourceManager* a_manager, std::string a_file)
 {
 	tinyobj::attrib_t attrib;
 	std::vector<tinyobj::shape_t> shapes;
@@ -13,7 +13,7 @@ void VulkanMesh::Create()
 	if (!LoadObj(&attrib, &shapes, &materials, &warn, &err, MODEL_PATH.c_str()))
 	{
 		DEBUG_LOG_ERROR("{}{}", warn, err);
-		return;
+		return false;
 	}
 
 	std::unordered_map<Vertex, uint32_t, VertexHasher> uniqueVertices{};
@@ -45,6 +45,7 @@ void VulkanMesh::Create()
 			m_indices.push_back(uniqueVertices[vertex]);
 		}
 	}
+    return true;
 }
 
 

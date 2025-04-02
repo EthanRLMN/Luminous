@@ -8,7 +8,7 @@
 class VulkanMesh final : public IMesh
 {
 public:
-	void Create() override;
+    bool Create(IResourceManager* a_manager, std::string a_file) override;
 	void Destroy() override;
 
 	[[nodiscard]] std::vector<Vertex> GetVertices() const { return m_vertices; }

@@ -1,15 +1,17 @@
 #pragma once
 
 #include "Logger.hpp"
+#include "ResourceManager/Resource.hpp"
 
 class VulkanMesh;
 
-class IMesh
+class IMesh : public IResource
 {
 public:
-	virtual ~IMesh() = default;
-	virtual void Create() = 0;
-	virtual void Destroy() = 0;
+    IMesh() = default;
+	~IMesh() = default;
+    bool Create(IResourceManager* a_manager, std::string a_file) override { return false; };
+    void Destroy() override { return; };
 
 	virtual VulkanMesh* CastVulkan()
 	{

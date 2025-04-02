@@ -16,8 +16,6 @@ public:
 	bool Create(IResourceManager* a_manager, std::string a_file) override;
 	void Destroy() override;
 
-	bool isLoaded = false;
-
 	std::vector<AssimpVertex> m_vertices;
 	std::vector<unsigned int> m_indices;
 

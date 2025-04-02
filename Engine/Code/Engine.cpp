@@ -60,8 +60,10 @@ Engine::Engine()
 	m_texture = m_interface->InstantiateTexture();
 	m_texture->Create(m_device, m_swapChain, m_depthResource, m_commandPool);
 
+	m_resourceManager = m_interface->InstantiateResourceManager();
+
 	m_mesh = m_interface->InstantiateModel();
-	m_mesh->Create();
+    m_mesh->Create(m_resourceManager, "Engine/Assets/Models/metalSonic.obj");
 
 	m_buffer = m_interface->InstantiateBuffer();
 	m_buffer->Create(m_device, m_texture, m_commandPool, m_depthResource, m_mesh);
@@ -76,7 +78,7 @@ Engine::Engine()
 	m_synchronization->Create(m_device);
 
 
-	m_resourceManager = m_interface->InstantiateResourceManager();
+	
 	Mesh* mesh2 = m_resourceManager->GetResource<Mesh>("Engine/Assets/Models/metalSonic.obj");
 	Mesh* mesh = m_resourceManager->LoadResource<Mesh>("Engine/Assets/Models/metalSonic.obj");
 
