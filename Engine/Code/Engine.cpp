@@ -22,7 +22,7 @@ Engine::Engine()
 	m_interface = new VulkanRenderInterface();
 
 	m_window = m_interface->InstantiateWindow();
-	m_window->Initialize("Luminous Window", 800, 600);
+	m_window->Initialize("Luminous", 1280, 720);
 
 	m_inputManager = m_interface->InstantiateInputManager();
 	m_inputManager->Initialize(m_window);
