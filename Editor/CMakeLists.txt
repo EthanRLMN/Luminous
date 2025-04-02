@@ -14,7 +14,7 @@ file(GLOB_RECURSE L_EDITOR_SOURCES "Code/*.cpp")
 #---------------------------------------#
 #               BUILD MODE              #
 #---------------------------------------#
-add_executable(L_EDITOR "main.cpp" "Code/Source/ImguiWindow.cpp")
+add_executable(L_EDITOR "main.cpp" "Code/Source/ImguiWindow.cpp" "Code/Include/FoldersWindow.cpp")
 
 
 

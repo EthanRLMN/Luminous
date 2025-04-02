@@ -5,7 +5,7 @@ void MainWindow::Draw()
 	ImGui::PushStyleColor(ImGuiCol_WindowBg, 0xff323432);
 	ImGui::SetNextWindowSize({ 1920, 1080 }, ImGuiCond_FirstUseEver);
 
-	if (m_isOpen && ImGui::Begin("Luminous###LuminousUI", &m_isOpen, ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_MenuBar))
+	if (m_isOpen && ImGui::Begin("Luminous", &m_isOpen, ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_MenuBar))
 	{
 		// TODO: Add Draw calls of dependent popup windows here
 		if (ImGui::BeginMenuBar())
@@ -130,5 +130,6 @@ void MainWindow::Draw()
 		ImGui::Begin("window3", nullptr, ImGuiWindowFlags_NoTitleBar);
 		ImGui::End();
 	}
+	ImGui::End();
 	ImGui::PopStyleColor();
 }
