@@ -14,7 +14,7 @@ T* IResourceManager::LoadResource(const std::string& a_file)
 		DEBUG_LOG_INFO("{}", l_info);
 
 		T* l_resource = new T();
-		if (l_resource && l_resource->Initialize(this, a_file))
+		if (l_resource && l_resource->Create(this, a_file))
 		{
 			l_info = "Initialized " + a_file + " file.";
 			DEBUG_LOG_INFO("{}", l_info);
