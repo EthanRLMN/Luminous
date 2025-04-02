@@ -2,16 +2,16 @@
 
 #include "Logger.hpp"
 
-class VulkanModel;
+class VulkanMesh;
 
-class IModel
+class IMesh
 {
 public:
-	virtual ~IModel() = default;
+	virtual ~IMesh() = default;
 	virtual void Create() = 0;
 	virtual void Destroy() = 0;
 
-	virtual VulkanModel* CastVulkan()
+	virtual VulkanMesh* CastVulkan()
 	{
 		DEBUG_LOG_ERROR("Vulkan Model : Cast is Wrong!\n");
 		return nullptr;

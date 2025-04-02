@@ -67,8 +67,8 @@ public:
 	inline ITexture* InstantiateTexture() override { return new VulkanTexture(); }
 	void DeleteTexture(ITexture* a_texture) override { delete a_texture; }
 
-	inline IModel* InstantiateModel() override { return new VulkanModel(); }
-	void DeleteModel(IModel* a_model) override { delete a_model; }
+	inline IMesh* InstantiateModel() override { return new VulkanMesh(); }
+	void DeleteModel(IMesh* a_mesh) override { delete a_mesh; }
 
 	inline IBuffer* InstantiateBuffer() override { return new VulkanBuffer(); }
 	void DeleteBuffer(IBuffer* a_buffer) override { delete a_buffer; }

@@ -60,11 +60,11 @@ Engine::Engine()
 	m_texture = m_interface->InstantiateTexture();
 	m_texture->Create(m_device, m_swapChain, m_depthResource, m_commandPool);
 
-	m_model = m_interface->InstantiateModel();
-	m_model->Create();
+	m_mesh = m_interface->InstantiateModel();
+	m_mesh->Create();
 
 	m_buffer = m_interface->InstantiateBuffer();
-	m_buffer->Create(m_device, m_texture, m_commandPool, m_depthResource, m_model);
+	m_buffer->Create(m_device, m_texture, m_commandPool, m_depthResource, m_mesh);
 
 	m_descriptor = m_interface->InstantiateDescriptor();
 	m_descriptor->Create(m_device, m_descriptorSetLayout, m_texture, m_buffer);
@@ -110,8 +110,8 @@ void Engine::Destroy() const
 	m_buffer->Destroy(m_device);
 	m_interface->DeleteBuffer(m_buffer);
 
-	m_model->Destroy();
-	m_interface->DeleteModel(m_model);
+	m_mesh->Destroy();
+	m_interface->DeleteModel(m_mesh);
 
 	m_texture->Destroy(m_device);
 	m_interface->DeleteTexture(m_texture);
@@ -168,7 +168,7 @@ void Engine::Run() const
 		if (m_inputManager->IsMouseButtonDown(m_window, MouseButton::MOUSE_BUTTON_LEFT))
 			DEBUG_LOG_VERBOSE("x={}, y={}\n", m_inputManager->GetMouseScroll().x, m_inputManager->GetMouseScroll().y);*/
 
-		renderingDraw->Create(m_window, m_device, m_swapChain, m_pipeline, m_buffer, m_renderPass, m_descriptor, m_model, m_synchronization, m_commandBuffer, m_frameBuffer, m_depthResource, m_surface);
+		renderingDraw->Create(m_window, m_device, m_swapChain, m_pipeline, m_buffer, m_renderPass, m_descriptor, m_mesh, m_synchronization, m_commandBuffer, m_frameBuffer, m_depthResource, m_surface);
 
 		m_inputManager->Update(m_window);
 	}

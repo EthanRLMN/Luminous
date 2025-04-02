@@ -14,10 +14,10 @@
 #include "Rendering/Vulkan/VulkanTexture.hpp"
 
 
-void VulkanBuffer::Create(IDevice* a_device, ITexture* a_texture, ICommandPool* a_commandPool, IDepthResource* a_depthResource, IModel* a_model)
+void VulkanBuffer::Create(IDevice* a_device, ITexture* a_texture, ICommandPool* a_commandPool, IDepthResource* a_depthResource, IMesh* a_mesh)
 {
-	CreateVertexBuffers(a_device, a_texture, a_commandPool, a_depthResource, a_model);
-	CreateIndexBuffers(a_device, a_texture, a_commandPool, a_depthResource, a_model);
+    CreateVertexBuffers(a_device, a_texture, a_commandPool, a_depthResource, a_mesh);
+    CreateIndexBuffers(a_device, a_texture, a_commandPool, a_depthResource, a_mesh);
 	CreateUniformBuffers(a_device, a_texture, a_depthResource);
 	DEBUG_LOG_INFO("Vulkan Buffer : Buffer created!\n");
 }
@@ -40,9 +40,9 @@ void VulkanBuffer::Destroy(IDevice* a_device)
 }
 
 
-void VulkanBuffer::CreateVertexBuffers(IDevice* a_device, ITexture* a_texture, ICommandPool* a_commandPool, IDepthResource* a_depthResource, IModel* a_model)
+void VulkanBuffer::CreateVertexBuffers(IDevice* a_device, ITexture* a_texture, ICommandPool* a_commandPool, IDepthResource* a_depthResource, IMesh* a_mesh)
 {
-	const std::vector<Vertex> l_vertices = a_model->CastVulkan()->GetVertices();
+	const std::vector<Vertex> l_vertices = a_mesh->CastVulkan()->GetVertices();
 	const VkDeviceSize l_bufferSize = sizeof(l_vertices.at(0)) * l_vertices.size();
 	VkBuffer l_stagingBuffer { nullptr };
 	VkDeviceMemory l_stagingBufferMemory { nullptr };
@@ -61,9 +61,9 @@ void VulkanBuffer::CreateVertexBuffers(IDevice* a_device, ITexture* a_texture, I
 }
 
 
-void VulkanBuffer::CreateIndexBuffers(IDevice* a_device, ITexture* a_texture, ICommandPool* a_commandPool, IDepthResource* a_depthResource, IModel* a_model)
+void VulkanBuffer::CreateIndexBuffers(IDevice* a_device, ITexture* a_texture, ICommandPool* a_commandPool, IDepthResource* a_depthResource, IMesh* a_mesh)
 {
-	const std::vector<uint32_t> l_indices = a_model->CastVulkan()->GetIndices();
+	const std::vector<uint32_t> l_indices = a_mesh->CastVulkan()->GetIndices();
 
 	const VkDeviceSize l_bufferSize = sizeof(l_indices.at(0)) * l_indices.size();
 	VkBuffer l_stagingBuffer { nullptr };

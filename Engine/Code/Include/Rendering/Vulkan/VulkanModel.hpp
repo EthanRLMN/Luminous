@@ -5,7 +5,7 @@
 #include "Struct/VulkanUtilities.hpp"
 
 
-class VulkanModel final : public IModel
+class VulkanMesh final : public IMesh
 {
 public:
 	void Create() override;
@@ -14,7 +14,7 @@ public:
 	[[nodiscard]] std::vector<Vertex> GetVertices() const { return m_vertices; }
 	[[nodiscard]] std::vector<uint32_t> GetIndices() const { return m_indices; }
 
-	VulkanModel* CastVulkan() override { return this; }
+	VulkanMesh* CastVulkan() override { return this; }
 
 	const std::string MODEL_PATH { "Engine/Assets/Models/metalSonic.obj" };
 

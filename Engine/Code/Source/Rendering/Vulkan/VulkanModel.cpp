@@ -3,7 +3,7 @@
 #define TINYOBJLOADER_IMPLEMENTATION
 #include "Rendering/Vulkan/VulkanModel.hpp"
 
-void VulkanModel::Create()
+void VulkanMesh::Create()
 {
 	tinyobj::attrib_t attrib;
 	std::vector<tinyobj::shape_t> shapes;
@@ -48,6 +48,6 @@ void VulkanModel::Create()
 }
 
 
-void VulkanModel::Destroy()
+void VulkanMesh::Destroy()
 {
 }
