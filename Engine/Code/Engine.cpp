@@ -62,8 +62,10 @@ Engine::Engine()
 
 	m_resourceManager = m_interface->InstantiateResourceManager();
 
-	m_mesh = m_interface->InstantiateModel();
-    m_mesh->Create(m_resourceManager, "Engine/Assets/Models/metalSonic.obj");
+	m_mesh = m_resourceManager->LoadResource<VulkanMesh>("Engine/Assets/Models/metalSonic.obj");
+
+	//m_mesh = m_interface->InstantiateModel();
+    //m_mesh->Create(m_resourceManager, "Engine/Assets/Models/metalSonic.obj");
 
 	m_buffer = m_interface->InstantiateBuffer();
 	m_buffer->Create(m_device, m_texture, m_commandPool, m_depthResource, m_mesh);
@@ -79,14 +81,14 @@ Engine::Engine()
 
 
 	
-	Mesh* mesh2 = m_resourceManager->GetResource<Mesh>("Engine/Assets/Models/metalSonic.obj");
-	Mesh* mesh = m_resourceManager->LoadResource<Mesh>("Engine/Assets/Models/metalSonic.obj");
+	//Mesh* mesh2 = m_resourceManager->GetResource<Mesh>("Engine/Assets/Models/metalSonic.obj");
+	//Mesh* mesh = m_resourceManager->LoadResource<Mesh>("Engine/Assets/Models/metalSonic.obj");
 
 	
 
 	//m_resourceManager->DeleteResource<Mesh>("Engine/Assets/Models/metalSonic.obj");
-	Mesh* mesh5 = m_resourceManager->LoadResource<Mesh>("Engine/Assets/Models/metalSonic.obj");
-	Mesh* mesh3 = m_resourceManager->GetResource<Mesh>("Engine/Assets/Models/metalSonic.obj");
+	//Mesh* mesh5 = m_resourceManager->LoadResource<Mesh>("Engine/Assets/Models/metalSonic.obj");
+	//Mesh* mesh3 = m_resourceManager->GetResource<Mesh>("Engine/Assets/Models/metalSonic.obj");
 }
 
 void Engine::DestroyWindow() const

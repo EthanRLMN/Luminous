@@ -3,7 +3,7 @@
 
 bool Mesh::Create(IResourceManager* a_manager, std::string a_file)
 {
-	a_manager->GetMeshLoader()->LoadModel(this,a_file.c_str());
+	//a_manager->GetMeshLoader()->LoadModel(this,a_file.c_str());
 	return isLoaded;
 }
 
