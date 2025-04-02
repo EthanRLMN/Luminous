@@ -1,7 +1,6 @@
 #include "Include/Engine.hpp"
 
 #include "Rendering/Vulkan/VulkanRenderInterface.hpp"
-#include "ResourceManager/Mesh.hpp"
 
 Engine::Engine()
 {

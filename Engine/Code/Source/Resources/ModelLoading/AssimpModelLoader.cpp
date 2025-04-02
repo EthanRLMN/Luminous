@@ -64,7 +64,6 @@ std::vector<Vertex> AssimpModelLoader::SetupVertices(const aiMesh* a_mesh)
 			l_vertTexCoords.x = 0;
 			l_vertTexCoords.y = 0;
 		}
-        DEBUG_LOG_INFO("{}, {}", l_vertTexCoords.x, l_vertTexCoords.y);
 		l_currentVertex.texCoord = l_vertTexCoords;
 
 		Maths::Vector3 l_vertNormals { };
