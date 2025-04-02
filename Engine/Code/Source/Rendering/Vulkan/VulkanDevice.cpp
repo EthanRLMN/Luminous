@@ -13,11 +13,11 @@
 
 void VulkanDevice::Create(IInstance* a_instance, IWindow* a_window, ISurface* a_surface)
 {
-	const VkInstance l_vkPhysDevice = a_instance->CastVulkan()->GetInstance();
+    const VkInstance l_vkInstance = a_instance->CastVulkan()->GetInstance();
 	const VkSurfaceKHR l_vkSurface = a_surface->CastVulkan()->GetSurface();
 
-	GetPhysicalDevice(l_vkPhysDevice, l_vkSurface);
-	CreateLogicalDevice(l_vkSurface, l_vkPhysDevice);
+	GetPhysicalDevice(l_vkInstance, l_vkSurface);
+    CreateLogicalDevice(l_vkSurface, l_vkInstance);
 	DEBUG_LOG_INFO("Vulkan Device : Device Created!\n");
 }
 
