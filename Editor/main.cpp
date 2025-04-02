@@ -5,29 +5,9 @@
 #include "backends/imgui_impl_vulkan.h"
 #include "..\Engine\Code\Include\Rendering\API\Vulkan\VulkanWindow.hpp"
 
-VkInstance CreateVulkanInstance()
-{
-    VkApplicationInfo appInfo = {};
-    appInfo.sType = VK_STRUCTURE_TYPE_APPLICATION_INFO;
-    appInfo.pApplicationName = "Luminous";
-    appInfo.applicationVersion = VK_MAKE_VERSION(1, 0, 0);
-    appInfo.pEngineName = "No Engine";
-    appInfo.engineVersion = VK_MAKE_VERSION(1, 0, 0);
-    appInfo.apiVersion = VK_API_VERSION_1_0;
+VulkanWindow vulkanWindow;
 
-    VkInstanceCreateInfo createInfo = {};
-    createInfo.sType = VK_STRUCTURE_TYPE_INSTANCE_CREATE_INFO;
-    createInfo.pApplicationInfo = &appInfo;
-
-    VkInstance instance;
-    if (vkCreateInstance(&createInfo, nullptr, &instance) != VK_SUCCESS)
-    {
-        exit(-1);
-    }
-    return instance;
-}
-
-void SetupImGui(GLFWwindow* window, VkInstance instance)
+void SetupImGui()
 {
     IMGUI_CHECKVERSION();
     ImGui::CreateContext();
@@ -35,10 +15,10 @@ void SetupImGui(GLFWwindow* window, VkInstance instance)
     io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;
     io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;
 
-    ImGui_ImplGlfw_InitForVulkan(window, true);
+    ImGui_ImplGlfw_InitForVulkan(vulkanWindow.GetGLFWwindow(), true);
 
     ImGui_ImplVulkan_InitInfo init_info = {};
-    init_info.Instance = instance;
+    init_info.Instance = vulkanWindow.GetVulkanInstance();
     init_info.PhysicalDevice = VK_NULL_HANDLE;
     init_info.Device = VK_NULL_HANDLE;
     init_info.QueueFamily = 0;
@@ -53,13 +33,9 @@ void SetupImGui(GLFWwindow* window, VkInstance instance)
 
 int main()
 {
-    VulkanWindow vulkanWindow;
-
     GLFWwindow* window = vulkanWindow.Initialize("Luminous", 1920, 1080);
 
-    VkInstance instance = CreateVulkanInstance();
-
-    SetupImGui(window, instance);
+    SetupImGui();
 
     while (!glfwWindowShouldClose(window))
     {
@@ -78,10 +54,7 @@ int main()
     ImGui_ImplGlfw_Shutdown();
     ImGui::DestroyContext();
 
-    vkDestroyInstance(instance, nullptr);
-
-    glfwDestroyWindow(window);
-    glfwTerminate();
+    vulkanWindow.Destroy();
 
     return 0;
 }

@@ -8,7 +8,7 @@
 class VulkanWindow final : public IWindow
 {
 public:
-    void Initialize(const std::string& a_name, int a_width, int a_height) override;
+    GLFWwindow* Initialize(const std::string& a_name, int a_width, int a_height) override;
     void Update() const override;
     void PollEvents() const override;
     [[nodiscard]] bool ShouldClose() const override;
@@ -23,8 +23,12 @@ public:
 
     VulkanWindow* CastVulkan() override { return this; }
 
-    [[nodiscard]] GLFWwindow* GetGLFWWindow() const { return m_window; }
+    GLFWwindow* GetGLFWwindow() const { return m_window; }
+    VkInstance GetVulkanInstance() const { return m_instance; }
 
 private:
     GLFWwindow* m_window = nullptr;
+    VkInstance m_instance = nullptr;
+
+    void CreateVulkanInstance();
 };

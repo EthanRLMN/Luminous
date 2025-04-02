@@ -2,7 +2,7 @@
 
 #include <iostream>
 
-void VulkanWindow::Initialize(const std::string& a_name, const int a_width, const int a_height)
+GLFWwindow* VulkanWindow::Initialize(const std::string& a_name, const int a_width, const int a_height)
 {
     glfwInit();
     glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
@@ -17,6 +17,8 @@ void VulkanWindow::Initialize(const std::string& a_name, const int a_width, cons
         DEBUG_LOG_INFO("Vulkan Window : Creation successful!\n");
     else
         DEBUG_LOG_ERROR("Vulkan Window : Creation failed!\n");
+
+    CreateVulkanInstance();
 }
 
 void VulkanWindow::Update() const
@@ -40,8 +42,18 @@ bool VulkanWindow::ShouldClose() const
 
 void VulkanWindow::Destroy() const
 {
-    glfwDestroyWindow(m_window);
-    glfwTerminate();
+    if (m_instance)
+    {
+        vkDestroyInstance(m_instance, nullptr);
+        m_instance = VK_NULL_HANDLE;
+    }
+
+    if (m_window)
+    {
+        glfwDestroyWindow(m_window);
+        glfwTerminate();
+        m_window = nullptr;
+    }
 }
 
 Maths::Vector2 VulkanWindow::GetSize()
@@ -77,3 +89,24 @@ void VulkanWindow::SetTitle(const std::string& a_name)
     glfwSetWindowTitle(m_window,a_name.c_str());
 }
 
+void VulkanWindow::CreateVulkanInstance()
+{
+    VkApplicationInfo appInfo = {};
+    appInfo.sType = VK_STRUCTURE_TYPE_APPLICATION_INFO;
+    appInfo.pApplicationName = "Luminous";
+    appInfo.applicationVersion = VK_MAKE_VERSION(1, 0, 0);
+    appInfo.pEngineName = "No Engine";
+    appInfo.engineVersion = VK_MAKE_VERSION(1, 0, 0);
+    appInfo.apiVersion = VK_API_VERSION_1_0;
+
+    VkInstanceCreateInfo createInfo = {};
+    createInfo.sType = VK_STRUCTURE_TYPE_INSTANCE_CREATE_INFO;
+    createInfo.pApplicationInfo = &appInfo;
+
+    VkInstance instance;
+    if (vkCreateInstance(&createInfo, nullptr, &instance) != VK_SUCCESS)
+    {
+        DEBUG_LOG_ERROR("VulkanWindow: Failed to create Vulkan instance!\n");
+        exit(-1);
+    }
+}
