@@ -11,8 +11,7 @@ public:
     bool Create(IResourceManager* a_manager, std::string a_file) override;
 	void Destroy() override;
 
-	[[nodiscard]] std::vector<Vertex> GetVertices() const { return m_vertices; }
-	[[nodiscard]] std::vector<uint32_t> GetIndices() const { return m_indices; }
+	
 
 	VulkanMesh* CastVulkan() override { return this; }
 
@@ -20,6 +19,5 @@ public:
 
 
 private:
-	std::vector<Vertex> m_vertices;
-	std::vector<uint32_t> m_indices;
+	
 };
