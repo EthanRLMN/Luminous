@@ -58,12 +58,13 @@ std::vector<Vertex> AssimpModelLoader::SetupVertices(const aiMesh* a_mesh)
 		if (a_mesh->mTextureCoords[0])
 		{
 			l_vertTexCoords.x = a_mesh->mTextureCoords[0][i].x;
-			l_vertTexCoords.y = a_mesh->mTextureCoords[0][i].y;
+			l_vertTexCoords.y = 1.0f - a_mesh->mTextureCoords[0][i].y;
 		} else
 		{
 			l_vertTexCoords.x = 0;
 			l_vertTexCoords.y = 0;
 		}
+        DEBUG_LOG_INFO("{}, {}", l_vertTexCoords.x, l_vertTexCoords.y);
 		l_currentVertex.texCoord = l_vertTexCoords;
 
 		Maths::Vector3 l_vertNormals { };
