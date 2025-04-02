@@ -3,6 +3,7 @@
 #include "Rendering/Vulkan/VulkanDescriptorSetLayout.hpp"
 #include "Rendering/Vulkan/VulkanDevice.hpp"
 
+
 void VulkanDescriptorSetLayout::Create(IDevice* a_device)
 {
 	VkDescriptorSetLayoutBinding l_uboLayoutBinding = {};
@@ -20,7 +21,6 @@ void VulkanDescriptorSetLayout::Create(IDevice* a_device)
 	l_samplerLayoutBinding.stageFlags = VK_SHADER_STAGE_FRAGMENT_BIT;
 
 	const std::array<VkDescriptorSetLayoutBinding, 2> l_bindings = {l_uboLayoutBinding, l_samplerLayoutBinding};
-
 	VkDescriptorSetLayoutCreateInfo l_layoutInfo{ VK_STRUCTURE_TYPE_DESCRIPTOR_SET_LAYOUT_CREATE_INFO };
 	l_layoutInfo.bindingCount = static_cast<uint32_t>(l_bindings.size());
 	l_layoutInfo.pBindings = l_bindings.data();

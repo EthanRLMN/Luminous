@@ -17,14 +17,11 @@ public:
 
 	void Create(IWindow* a_window, IDevice* a_device, ISurface* a_surface) override;
 	void Destroy(IDevice* a_device) override;
-
 	VulkanSwapChain* CastVulkan() override { return this; }
 
 	[[nodiscard]] VkSwapchainKHR GetSwapChain() const { return m_swapChain; }
-
 	[[nodiscard]] VkFormat GetSwapChainImageFormat() const { return m_swapChainImageFormat; }
 	[[nodiscard]] VkExtent2D GetSwapChainExtent() const { return m_swapChainExtent; }
-
 	[[nodiscard]] std::vector < VkImage> GetSwapChainImages() const { return m_swapChainImages; }
 	[[nodiscard]] std::vector < VkImageView> GetSwapChainImageViews() const { return m_swapChainImageViews; }
 	
@@ -43,10 +40,8 @@ private:
     void SendSwapChainData(const VkDevice& a_vkDevice, uint32_t& a_imageCount, const VkSurfaceFormatKHR& a_surfaceFormat, const VkExtent2D& a_extent);
 
 	VkSwapchainKHR m_swapChain{ nullptr };
-
 	VkFormat m_swapChainImageFormat = VK_FORMAT_UNDEFINED;
 	VkExtent2D m_swapChainExtent = { 0, 0 };
-
 	std::vector<VkImage> m_swapChainImages{ nullptr };
 	std::vector<VkImageView> m_swapChainImageViews{ nullptr };
 };

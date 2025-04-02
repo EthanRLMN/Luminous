@@ -1,11 +1,12 @@
 #include "ITexture.hpp"
 
-#include "Rendering/Vulkan/VulkanDescriptor.hpp"
-
 #include "IDevice.hpp"
+
+#include "Rendering/Vulkan/VulkanDescriptor.hpp"
 #include "Rendering/Vulkan/VulkanBuffer.hpp"
 #include "Rendering/Vulkan/VulkanDevice.hpp"
 #include "Rendering/Vulkan/VulkanTexture.hpp"
+
 #include "Struct/VulkanUtilities.hpp"
 
 
@@ -36,7 +37,6 @@ void VulkanDescriptor::Destroy(IDevice* a_device)
 void VulkanDescriptor::CreateDescriptorPool(IDevice* a_device)
 {
 	std::array<VkDescriptorPoolSize, 2> l_poolSizes { };
-
 	l_poolSizes[0].type = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
 	l_poolSizes[0].descriptorCount = static_cast<uint32_t>(MAX_FRAMES_IN_FLIGHT);
 	l_poolSizes[1].type = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
@@ -75,7 +75,7 @@ void VulkanDescriptor::UpdateDescriptorSets(IDevice* a_device, ITexture* a_textu
 {
 	for (size_t i = 0; i < MAX_FRAMES_IN_FLIGHT; ++i)
 	{
-		VkDescriptorBufferInfo l_bufferInfo { };
+		VkDescriptorBufferInfo l_bufferInfo{ };
 		l_bufferInfo.buffer = m_uniformBuffer[i];
 		l_bufferInfo.offset = 0;
 		l_bufferInfo.range = sizeof(UniformBufferObject);
@@ -102,7 +102,6 @@ void VulkanDescriptor::UpdateDescriptorSets(IDevice* a_device, ITexture* a_textu
 		l_descriptorWrites[1].pImageInfo = &l_imageInfo;
 
 		vkUpdateDescriptorSets(a_device->CastVulkan()->GetDevice(), static_cast<uint32_t>(l_descriptorWrites.size()), l_descriptorWrites.data(), 0, nullptr);
-
 		DEBUG_LOG_INFO("Vulkan Descriptors : DescriptorSet created!\n");
 	}
 }

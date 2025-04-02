@@ -13,11 +13,10 @@
 
 void VulkanDevice::Create(IInstance* a_instance, IWindow* a_window, ISurface* a_surface)
 {
-	const VkInstance l_vkPhysDevice = a_instance->CastVulkan()->GetInstance();
 	const VkSurfaceKHR l_vkSurface = a_surface->CastVulkan()->GetSurface();
 
-	GetPhysicalDevice(l_vkPhysDevice, l_vkSurface);
-	CreateLogicalDevice(l_vkSurface, l_vkPhysDevice);
+	GetPhysicalDevice(a_instance->CastVulkan()->GetInstance(), l_vkSurface);
+	CreateLogicalDevice(l_vkSurface);
 	DEBUG_LOG_INFO("Vulkan Device : Device Created!\n");
 }
 
@@ -29,27 +28,24 @@ void VulkanDevice::Destroy()
 }
 
 
-void VulkanDevice::CreateLogicalDevice(const VkSurfaceKHR a_surface, VkInstance a_instance)
+void VulkanDevice::CreateLogicalDevice(const VkSurfaceKHR& a_surface)
 {
-	QueueFamilyIndices l_indices = GetQueueFamilies(m_physicalDevice, a_surface);
+	const QueueFamilyIndices l_indices = GetQueueFamilies(m_physicalDevice, a_surface);
 	ProcessLogicalDeviceInfo(l_indices);
-
 	vkGetDeviceQueue(m_device, l_indices.graphicsFamily, 0, &m_graphicsQueue);
 	vkGetDeviceQueue(m_device, l_indices.presentationFamily, 0, &m_presentationQueue);
 }
 
 
-void VulkanDevice::GetPhysicalDevice(const VkInstance a_instance, const VkSurfaceKHR a_surface)
+void VulkanDevice::GetPhysicalDevice(const VkInstance& a_instance, const VkSurfaceKHR& a_surface)
 {
 	uint32_t l_deviceCount = 0;
 	vkEnumeratePhysicalDevices(a_instance, &l_deviceCount, nullptr);
-
 	if (l_deviceCount == 0)
 		DEBUG_LOG_ERROR("can't find GPUs that support Vulkan Instance!\n");
 
 	std::vector<VkPhysicalDevice> l_deviceList { l_deviceCount };
 	vkEnumeratePhysicalDevices(a_instance, &l_deviceCount, l_deviceList.data());
-
 	for (const VkPhysicalDevice& l_device : l_deviceList)
 	{
 		if (CheckDeviceSuitable(l_device, a_surface))
@@ -61,7 +57,7 @@ void VulkanDevice::GetPhysicalDevice(const VkInstance a_instance, const VkSurfac
 }
 
 
-bool VulkanDevice::CheckDeviceSuitable(VkPhysicalDevice a_device, VkSurfaceKHR a_surface)
+bool VulkanDevice::CheckDeviceSuitable(const VkPhysicalDevice& a_device, const VkSurfaceKHR& a_surface)
 {
 	VkPhysicalDeviceProperties l_deviceProperties { };
 	vkGetPhysicalDeviceProperties(a_device, &l_deviceProperties);
@@ -78,12 +74,11 @@ bool VulkanDevice::CheckDeviceSuitable(VkPhysicalDevice a_device, VkSurfaceKHR a
 		SwapChainDetails swapChainDetails = GetSwapChainDetails(a_device, a_surface);
 		l_swapChainValid = !swapChainDetails.presentationModes.empty() && !swapChainDetails.formats.empty();
 	}
-
 	return l_indices.IsValid() && l_extensionSupported && l_swapChainValid;
 }
 
 
-SwapChainDetails VulkanDevice::GetSwapChainDetails(const VkPhysicalDevice a_device, const VkSurfaceKHR a_surface)
+SwapChainDetails VulkanDevice::GetSwapChainDetails(const VkPhysicalDevice& a_device, const VkSurfaceKHR& a_surface)
 {
 	SwapChainDetails l_swapChainDetails { };
 	vkGetPhysicalDeviceSurfaceCapabilitiesKHR(a_device, a_surface, &l_swapChainDetails.surfaceCapabilities);
@@ -109,7 +104,7 @@ SwapChainDetails VulkanDevice::GetSwapChainDetails(const VkPhysicalDevice a_devi
 }
 
 
-bool VulkanDevice::CheckDeviceExtensionSupport(const VkPhysicalDevice a_device)
+bool VulkanDevice::CheckDeviceExtensionSupport(const VkPhysicalDevice& a_device)
 {
 	uint32_t l_extensionCount = 0;
 	vkEnumerateDeviceExtensionProperties(a_device, nullptr, &l_extensionCount, nullptr);
@@ -138,13 +133,11 @@ bool VulkanDevice::CheckDeviceExtensionSupport(const VkPhysicalDevice a_device)
 }
 
 
-QueueFamilyIndices VulkanDevice::GetQueueFamilies(const VkPhysicalDevice a_device, const VkSurfaceKHR a_surface)
+QueueFamilyIndices VulkanDevice::GetQueueFamilies(const VkPhysicalDevice& a_device, const VkSurfaceKHR& a_surface)
 {
 	uint32_t l_queueFamilyCount = 0;
 	vkGetPhysicalDeviceQueueFamilyProperties(a_device, &l_queueFamilyCount, nullptr);
-
 	std::vector<VkQueueFamilyProperties> l_queueFamilyList { l_queueFamilyCount };
-
 	vkGetPhysicalDeviceQueueFamilyProperties(a_device, &l_queueFamilyCount, l_queueFamilyList.data());
 
 	QueueFamilyIndices l_indices { };
@@ -166,7 +159,7 @@ QueueFamilyIndices VulkanDevice::GetQueueFamilies(const VkPhysicalDevice a_devic
 
 void VulkanDevice::ProcessLogicalDeviceInfo(const QueueFamilyIndices& a_queueFamilyIndices)
 {
-	std::set<int> l_queueFamilyIndices = { a_queueFamilyIndices.graphicsFamily, a_queueFamilyIndices.presentationFamily };
+	const std::set<int> l_queueFamilyIndices = { a_queueFamilyIndices.graphicsFamily, a_queueFamilyIndices.presentationFamily };
 	std::vector<VkDeviceQueueCreateInfo> l_queueCreateInfos { };
 	AssignQueueFamilyIndices(l_queueFamilyIndices, l_queueCreateInfos);
 
@@ -194,7 +187,7 @@ void VulkanDevice::ProcessLogicalDeviceInfo(const QueueFamilyIndices& a_queueFam
 
 void VulkanDevice::AssignQueueFamilyIndices(const std::set<int>& a_queueFamilyIndices, std::vector<VkDeviceQueueCreateInfo>& a_queueCreateInfos)
 {
-	const float l_priority = 1.0f;
+	const float l_priority { 1.0f };
 	for (const int l_queueFamilyIndex : a_queueFamilyIndices)
 	{
 		VkDeviceQueueCreateInfo l_queueCreateInfo = { VK_STRUCTURE_TYPE_DEVICE_QUEUE_CREATE_INFO };
