@@ -61,9 +61,8 @@ void VulkanRenderingDraw::Create(IWindow* a_window, IDevice* a_device, ISwapChai
 
     l_result = vkQueuePresentKHR(a_device->CastVulkan()->GetPresentationQueue(), &l_presentInfo);
     if (l_result == VK_ERROR_OUT_OF_DATE_KHR || l_result == VK_SUBOPTIMAL_KHR)
-    {
         RecreateSwapChain(a_window, a_device, a_surface, a_swapChain, a_depthResource, a_frameBuffer, a_renderPass);
-    } else if (l_result != VK_SUCCESS)
+    else if (l_result != VK_SUCCESS)
         DEBUG_LOG_ERROR("failed to present swap chain image");
 
     m_currentFrame = (m_currentFrame + 1) % MAX_FRAMES_IN_FLIGHT;
@@ -80,15 +79,8 @@ void VulkanRenderingDraw::RecordCommandBuffer(const VkCommandBuffer& a_commandBu
     std::array<VkClearValue, 2> l_clearValues{};
     PresentRenderPassInfo(l_renderPassBeginInfo, a_renderPass->CastVulkan()->GetRenderPass(), a_frameBuffer->CastVulkan()->GetFrameBuffers()[a_imageIndex], a_swapChain->CastVulkan()->GetSwapChainExtent(), l_clearValues, a_commandBuffer, a_graphicsPipeline);
 
-
-    const VkViewport l_viewport{
-        .x = 0.0f,
-        .y = 0.0f,
-        .width = static_cast<float>(a_swapChain->CastVulkan()->GetSwapChainExtent().width),
-        .height = static_cast<float>(a_swapChain->CastVulkan()->GetSwapChainExtent().height),
-        .minDepth = 0.0f,
-        .maxDepth = 1.0f,
-    };
+    VkViewport l_viewport{};
+    FillViewportInfo(l_viewport, a_swapChain->CastVulkan()->GetSwapChainExtent());
     vkCmdSetViewport(a_commandBuffer, 0, 1, &l_viewport);
 
     const VkRect2D l_scissor{
@@ -119,9 +111,10 @@ void VulkanRenderingDraw::UpdateUniformBuffer(const uint32_t currentImage, ISwap
     const float l_time = std::chrono::duration<float, std::chrono::seconds::period>(l_currentTime - l_startTime).count();
 
     UniformBufferObject l_ubo{};
+    const VkExtent2D& l_swapChainExtent = a_swapChain->CastVulkan()->GetSwapChainExtent();
     l_ubo.model = Maths::Matrix4::Rotate(Maths::Matrix4(1.0f), l_time * 90.0f, Maths::Vector3(0.0f, 0.0f, 1.0f));
     l_ubo.view = Maths::Matrix4::LookAt(Maths::Vector3(2.0f, 2.0f, 2.0f), Maths::Vector3(0.0f, 0.0f, 0.0f), Maths::Vector3(0.0f, 0.0f, 1.0f));
-    l_ubo.proj = Maths::Matrix4::Perspective(Maths::DegToRad(45.f), static_cast<float>(a_swapChain->CastVulkan()->GetSwapChainExtent().width) / static_cast<float>(a_swapChain->CastVulkan()->GetSwapChainExtent().height), 0.1f, 10.0f);
+    l_ubo.proj = Maths::Matrix4::Perspective(Maths::DegToRad(45.f), static_cast<float>(l_swapChainExtent.width) / static_cast<float>(l_swapChainExtent.height), 0.1f, 10.0f);
     l_ubo.proj.mat[1][1] *= -1;
 
     memcpy(a_buffer->CastVulkan()->GetUniformBuffersMapped()[currentImage], &l_ubo, sizeof(l_ubo));
@@ -139,7 +132,6 @@ void VulkanRenderingDraw::RecreateSwapChain(IWindow* a_window, IDevice* a_device
     }
 
     CleanupSwapChain(a_device, a_swapChain, a_depthResource, a_frameBuffer);
-
     vkDeviceWaitIdle(a_device->CastVulkan()->GetDevice());
 
     a_swapChain->CastVulkan()->Create(a_window, a_device, a_surface);
@@ -213,4 +205,14 @@ void VulkanRenderingDraw::PresentRenderPassInfo(VkRenderPassBeginInfo& a_renderP
     a_renderPassBeginInfo.pClearValues = a_clearValues.data();
     vkCmdBeginRenderPass(a_commandBuffer, &a_renderPassBeginInfo, VK_SUBPASS_CONTENTS_INLINE);
     vkCmdBindPipeline(a_commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, a_graphicsPipeline);
+}
+
+void VulkanRenderingDraw::FillViewportInfo(VkViewport& a_viewport, const VkExtent2D& a_swapChainExtent)
+{
+    a_viewport.x = 0.0f;
+    a_viewport.y = 0.0f;
+    a_viewport.width = static_cast<float>(a_swapChainExtent.width);
+    a_viewport.height = static_cast<float>(a_swapChainExtent.height);
+    a_viewport.minDepth = 0.0f;
+    a_viewport.maxDepth = 1.0f;
 }

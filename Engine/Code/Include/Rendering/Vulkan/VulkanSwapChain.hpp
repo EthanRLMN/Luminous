@@ -36,7 +36,11 @@ private:
 	QueueFamilyIndices GetQueueFamilies(VkPhysicalDevice a_device, VkSurfaceKHR a_surface);
 	VkSurfaceFormatKHR ChooseBestSurfaceFormat(const std::vector<VkSurfaceFormatKHR>& a_formats);
 	VkPresentModeKHR ChooseBestPresentationMode(const std::vector<VkPresentModeKHR>& a_presentationModes);
-	VkExtent2D ChooseSwapExtend(const VkSurfaceCapabilitiesKHR& a_surfaceCapabilities, GLFWwindow* a_window);
+	VkExtent2D ChooseSwapExtent(const VkSurfaceCapabilitiesKHR& a_surfaceCapabilities, GLFWwindow* a_window);
+
+    void FillSwapChainCreationInfo(VkSwapchainCreateInfoKHR& a_swapChainCreateInfo, const VkSurfaceKHR& a_surface, uint32_t a_imageCount, const VkSurfaceFormatKHR& a_surfaceFormat, const VkExtent2D& a_extent);
+    void FillSwapChainGraphicsFamilyData(VkSwapchainCreateInfoKHR& a_swapChainCreateInfo, const QueueFamilyIndices& a_indices, const std::vector<uint32_t>& a_queueFamilyIndices, const SwapChainDetails& a_swapChainDetails, const VkPresentModeKHR& a_presentMode);
+    void SendSwapChainData(const VkDevice& a_vkDevice, uint32_t& a_imageCount, const VkSurfaceFormatKHR& a_surfaceFormat, const VkExtent2D& a_extent);
 
 	VkSwapchainKHR m_swapChain{ nullptr };
 
