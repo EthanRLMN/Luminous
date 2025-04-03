@@ -27,8 +27,8 @@ public:
     VkInstance GetVulkanInstance() const { return m_instance; }
 
 private:
-    GLFWwindow* m_window = nullptr;
     VkInstance m_instance = nullptr;
+    GLFWwindow* m_window = nullptr;
 
     void CreateVulkanInstance();
 };

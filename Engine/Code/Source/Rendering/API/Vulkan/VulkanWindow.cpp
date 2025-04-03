@@ -45,14 +45,12 @@ void VulkanWindow::Destroy() const
     if (m_instance)
     {
         vkDestroyInstance(m_instance, nullptr);
-        m_instance = VK_NULL_HANDLE;
     }
 
     if (m_window)
     {
         glfwDestroyWindow(m_window);
         glfwTerminate();
-        m_window = nullptr;
     }
 }
 

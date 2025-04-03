@@ -1,11 +1,12 @@
 #include "FoldersWindow.hpp"
+#include "MainWindow.hpp"
 
 void FoldersWindow::Draw()
 {
 	ImGui::PushStyleColor(ImGuiCol_WindowBg, 0xff323432);
 	ImGui::SetNextWindowSize({ 1920, 215 }, ImGuiCond_FirstUseEver);
 
-	if (isOpen && ImGui::Begin("Folder", &isOpen, ImGuiWindowFlags_NoCollapse))
+	if (m_isOpen && ImGui::Begin("Folder", &m_isOpen, ImGuiWindowFlags_NoCollapse))
 	{
 		if (ImGui::BeginTable("table1", 3, ImGuiTableFlags_BordersInnerH | ImGuiTableFlags_BordersInnerV | ImGuiTableFlags_BordersOuterH | ImGuiTableFlags_BordersOuterV, { 0, 0 }))
 		{
