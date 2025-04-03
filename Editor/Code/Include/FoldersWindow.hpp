@@ -8,4 +8,7 @@ public:
     ~FoldersWindow();
 
     void Draw();
+
+private:
+    bool m_isOpen;
 };

@@ -4,6 +4,7 @@
 #define GLFW_INCLUDE_VULKAN
 #include <Vector2.hpp>
 #include <GLFW/glfw3.h>
+#include "vulkan/vulkan.h"
 
 class VulkanWindow final : public IWindow
 {

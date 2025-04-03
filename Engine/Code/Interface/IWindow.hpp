@@ -4,6 +4,7 @@
 
 #include "Vector2.hpp"
 #include "Logger.hpp"
+#include "GLFW/glfw3.h"
 
 class VulkanWindow;
 
