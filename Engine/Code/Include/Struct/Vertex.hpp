@@ -2,6 +2,7 @@
 #include <functional>
 #include <Vector3.hpp>
 
+/*
 struct Vertex
 {
     Maths::Vector3 pos;
@@ -35,3 +36,4 @@ struct VertexHasher
         return hash;
     }
 };
+*/

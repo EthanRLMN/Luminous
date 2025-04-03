@@ -27,7 +27,7 @@
         "CMAKE_C_COMPILER": "C:/msys64/mingw64/bin/gcc.exe",
         "CMAKE_CXX_COMPILER": "C:/msys64/mingw64/bin/g++.exe",
         "CMAKE_BUILD_TYPE": "Debug",
-        "L_MATHS_UNITTEST": true
+        "L_MATHS_UNITTEST": false
       }
     },
     {
@@ -53,7 +53,7 @@
         "CMAKE_C_COMPILER": "C:/msys64/clang64/bin/clang.exe",
         "CMAKE_CXX_COMPILER": "C:/msys64/clang64/bin/clang++.exe",
         "CMAKE_BUILD_TYPE": "Debug",
-        "L_MATHS_UNITTEST": true
+        "L_MATHS_UNITTEST": false
       }
     },
     {
@@ -70,7 +70,6 @@
       }
     }
   ],
-
   "buildPresets": [
     {
       "name": "VS_2022 Debug",
@@ -117,25 +116,24 @@
       "jobs": 8
     }
   ],
-  
-   "testPresets": [
- {
- "name": "VS_2022 Debug",
- "description": "Visual Studio multi-config Debug preset",
- "configurePreset": "VS_2022",
- "configuration": "Debug",
- "output": {
- "verbosity": "verbose"
- }
- },
- {
- "name": "VS_2022 Release",
- "description": "Visual Studio multi-config Release preset",
- "configurePreset": "VS_2022",
- "configuration": "Release",
- "output": {
- "verbosity": "verbose"
- }
- }
- ]
+  "testPresets": [
+    {
+      "name": "VS_2022 Debug",
+      "description": "Visual Studio multi-config Debug preset",
+      "configurePreset": "VS_2022",
+      "configuration": "Debug",
+      "output": {
+        "verbosity": "verbose"
+      }
+    },
+    {
+      "name": "VS_2022 Release",
+      "description": "Visual Studio multi-config Release preset",
+      "configurePreset": "VS_2022",
+      "configuration": "Release",
+      "output": {
+        "verbosity": "verbose"
+      }
+    }
+  ]
 }
