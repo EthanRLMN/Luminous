@@ -1,13 +1,15 @@
 #include <vulkan/vulkan.h>
 #include <iostream>
-#include "imgui.h"
-#include "backends/imgui_impl_glfw.h"
-#include "backends/imgui_impl_vulkan.h"
-#include "..\Engine\Code\Include\Rendering\API\Vulkan\VulkanWindow.hpp"
 
-VulkanWindow vulkanWindow;
+#include "Editor.hpp"
 
-void SetupImGui()
+void Editor::InitEditor()
+{
+    m_engine = new Engine();
+    m_engine->Run();
+}
+
+void Editor::SetupImGui()
 {
     IMGUI_CHECKVERSION();
     ImGui::CreateContext();
@@ -15,10 +17,10 @@ void SetupImGui()
     io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;
     io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;
 
-    ImGui_ImplGlfw_InitForVulkan(vulkanWindow.GetGLFWwindow(), true);
+    ImGui_ImplGlfw_InitForVulkan(GLFWWindow.GetGLFWwindow(), true);
 
     ImGui_ImplVulkan_InitInfo init_info = {};
-    init_info.Instance = vulkanWindow.GetVulkanInstance();
+    init_info.Instance = VulkanInstance.GetInstance();
     init_info.PhysicalDevice = VK_NULL_HANDLE;
     init_info.Device = VK_NULL_HANDLE;
     init_info.QueueFamily = 0;
@@ -31,9 +33,9 @@ void SetupImGui()
     ImGui_ImplVulkan_Init(&init_info);
 }
 
-int main()
+int Editor::main()
 {
-    GLFWwindow* window = vulkanWindow.Initialize("Luminous", 1920, 1080);
+    GLFWwindow* window = GLFWWindow.Initialize("Luminous", 1920, 1080);
 
     SetupImGui();
 
@@ -54,7 +56,7 @@ int main()
     ImGui_ImplGlfw_Shutdown();
     ImGui::DestroyContext();
 
-    vulkanWindow.Destroy();
+    GLFWWindow.Destroy();
 
     return 0;
 }

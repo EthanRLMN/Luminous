@@ -1,21 +1,18 @@
 #include "ImguiWindow.hpp"
 #include "GLFW/glfw3.h"
 
-#include "Rendering/API/Vulkan/VulkanWindow.hpp"
-
-#include "Application.hpp"
+#include "Core/GLFW/GLFWWindow.hpp"
+#include "Engine.hpp"
 
 #include "backends/imgui_impl_glfw.h"
 #include "backends/imgui_impl_vulkan.h"
-
-VulkanWindow vulkanWindow;
 
 void ImguiWindow::Create()
 {
 	IMGUI_CHECKVERSION();
 	ImGui::CreateContext();
 
-	ImGui_ImplGlfw_InitForVulkan(vulkanWindow.GetGLFWwindow(), true);
+	ImGui_ImplGlfw_InitForVulkan(GLFWWindow.GetGLFWWindow(), true);
 }
 
 void ImguiWindow::Shutdown()
@@ -34,8 +31,7 @@ void ImguiWindow::BeginRender()
 void ImguiWindow::EndRender()
 {
 	ImGui::Render();
-	VkCommandBuffer commandBuffer = Application::GetVulkanCommandBuffer();
-	ImGui_ImplVulkan_RenderDrawData(ImGui::GetDrawData(), commandBuffer);
+	ImGui_ImplVulkan_RenderDrawData(ImGui::GetDrawData(),Engine.GetCommandBuffer());
 }
 
 bool ImguiWindow::WantCaptureMouse()
