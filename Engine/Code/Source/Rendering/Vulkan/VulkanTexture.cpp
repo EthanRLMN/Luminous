@@ -15,6 +15,10 @@
 
 void VulkanTexture::Create(IDevice* a_device, ISwapChain* a_swapChain, IDepthResource* a_depthResource, ICommandPool* a_commandPool)
 {
+
+
+
+
 	CreateTextureImage(a_device, a_depthResource, a_commandPool);
 	CreateTextureImageView(a_device, a_swapChain);
 	CreateTextureSampler(a_device);

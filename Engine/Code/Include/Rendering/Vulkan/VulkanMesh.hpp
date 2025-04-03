@@ -8,7 +8,7 @@
 class VulkanMesh final : public IMesh
 {
 public:
-    bool Create(IResourceManager* a_manager, std::string a_file) override;
+    bool Create(IResourceManager* a_manager, std::string a_file,...) override;
 	void Destroy() override;
 
 	
