@@ -12,7 +12,7 @@ public:
     IMesh() = default;
 	~IMesh() = default;
     bool Create(IResourceManager* a_manager, std::string a_file,...) override { return false; };
-    void Destroy() override { return; };
+    void Destroy(...) override { return; };
 
 	virtual VulkanMesh* CastVulkan()
 	{

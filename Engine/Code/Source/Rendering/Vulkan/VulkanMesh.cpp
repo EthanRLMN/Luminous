@@ -11,7 +11,7 @@ bool VulkanMesh::Create(IResourceManager* a_manager, std::string a_file,...)
 }
 
 
-void VulkanMesh::Destroy()
+void VulkanMesh::Destroy(...)
 {
     
 }

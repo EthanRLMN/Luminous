@@ -8,9 +8,8 @@
 class VulkanTexture final : public ITexture
 {
 public:
-	void Create(IDevice* a_device, ISwapChain* a_swapChain, IDepthResource* a_depthResource,
-	            ICommandPool* a_commandPool) override;
-	void Destroy(IDevice* a_device) override;
+    bool Create(IResourceManager* a_manager, std::string a_file, ...) override;
+	void Destroy(...) override;
 
 
 	void CreateTextureImage(IDevice* a_device, IDepthResource* a_depthResource, ICommandPool* a_commandPool);

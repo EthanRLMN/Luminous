@@ -56,10 +56,13 @@ Engine::Engine()
 	m_frameBuffer = m_interface->InstantiateFrameBuffer();
 	m_frameBuffer->Create(m_device, m_swapChain, m_renderPass, m_depthResource);
 
-	m_texture = m_interface->InstantiateTexture();
-	m_texture->Create(m_device, m_swapChain, m_depthResource, m_commandPool);
-
 	m_resourceManager = m_interface->InstantiateResourceManager();
+
+	m_texture = m_interface->InstantiateTexture();
+
+    m_texture->Create(m_resourceManager, "Engine/Assets/Textures/Untitled312.png", m_device, m_swapChain, m_depthResource, m_commandPool);
+
+	
 
 	m_mesh = m_resourceManager->LoadResource<VulkanMesh>("Engine/Assets/Models/metalSonic.obj");
 
