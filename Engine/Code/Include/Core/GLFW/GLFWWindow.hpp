@@ -9,16 +9,16 @@
 class GLFWWindow final : public IWindow
 {
 public:
-    void Initialize(const std::string& a_name, int a_width, int a_height) override;
+    void Initialize(const std::string& a_name, const int& a_width, const int& a_height) override;
     void Update() const override;
     void PollEvents() const override;
     [[nodiscard]] bool ShouldClose() const override;
     void Destroy() const override;
 
-    Maths::Vector2 GetSize() override;
-    void SetSize(Maths::Vector2 a_size) override;
-    float GetOpacity() override;
-    void SetOpacity(float a_alpha) override;
+    Maths::Vector2 GetSize() const override;
+    void SetSize(const Maths::Vector2& a_size) override;
+    float GetOpacity() const override;
+    void SetOpacity(const float& a_alpha) override;
     [[nodiscard]] std::string GetTitle() const override;
     void SetTitle(const std::string& a_name) override;
 

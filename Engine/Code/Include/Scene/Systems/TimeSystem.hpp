@@ -10,8 +10,8 @@ public:
 
 
 private:
-    float m_deltaTime = 0.f;
-    float m_fixedDeltaTime = 0.002f;
-    float m_timeScale = 1.f;
-    float m_smoothDeltaTime = 0.f;
+    float m_deltaTime { 0.f };
+    float m_fixedDeltaTime { 0.002f };
+    float m_timeScale = { 1.f };
+    float m_smoothDeltaTime = { 0.f};
 };

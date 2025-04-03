@@ -13,8 +13,8 @@ public :
 
     void CreateRenderPass(ISwapChain* a_swapChain, IDevice* a_device);
 
-    VkFormat FindDepthFormat(VkPhysicalDevice a_physicalDevice);
-    VkFormat FindSupportedFormat(VkPhysicalDevice a_physicalDevice, const std::vector<VkFormat>& a_candidates, VkImageTiling a_tiling, VkFormatFeatureFlags a_features);
+    VkFormat FindDepthFormat(const VkPhysicalDevice& a_physicalDevice);
+    VkFormat FindSupportedFormat(const VkPhysicalDevice& a_physicalDevice, const std::vector<VkFormat>& a_candidates, const VkImageTiling& a_tiling, const VkFormatFeatureFlags& a_features);
     VulkanRenderPass* CastVulkan() override { return this; }
     [[nodiscard]] VkRenderPass GetRenderPass() const { return m_renderPass; }
 

@@ -11,9 +11,9 @@ class Mesh : public IResource
 {
 public:
 	Mesh() = default;
-	~Mesh() = default;
+	~Mesh() override = default;
 
-	bool Initialize(IResourceManager* a_manager, std::string a_file) override;
+	bool Initialize(const IResourceManager* a_manager, const std::string& a_file) override;
 	void Destroy() override;
 
 	bool isLoaded = false;

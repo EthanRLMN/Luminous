@@ -16,21 +16,21 @@ public:
     void Destroy(IWindow* a_window) override;
     void Update(IWindow* a_window) override;
 
-    int IsKeyDown(IWindow* a_window, Key a_key) override;
-    int IsKeyUp(IWindow* a_window, Key a_key) override;
-    int IsKeyPressed(IWindow* a_window, Key a_key) override;
+    int IsKeyDown(IWindow* a_window, const Key& a_key) override;
+    int IsKeyUp(IWindow* a_window, const Key& a_key) override;
+    int IsKeyPressed(IWindow* a_window, const Key& a_key) override;
 
-    int IsMouseButtonDown(IWindow* a_window, MouseButton a_button) override;
-    int IsMouseButtonUp(IWindow* a_window, MouseButton a_button) override;
-    int IsMouseButtonPressed(IWindow* a_window, MouseButton a_button) override;
+    int IsMouseButtonDown(IWindow* a_window, const MouseButton& a_button) override;
+    int IsMouseButtonUp(IWindow* a_window, const MouseButton& a_button) override;
+    int IsMouseButtonPressed(IWindow* a_window, const MouseButton& a_button) override;
 
     Maths::Vector2 GetCursorPosition(IWindow* a_window) override;
-    void SetCursorPosition(IWindow* a_window, Maths::Vector2 a_pos) override;
+    void SetCursorPosition(IWindow* a_window, const Maths::Vector2& a_pos) override;
 
     Maths::Vector2 GetMouseScroll() override;
 
 
-    void SetMouseScroll(Maths::Vector2 a_vec) override
+    void SetMouseScroll(const Maths::Vector2& a_vec) override
     {
     };
 

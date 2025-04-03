@@ -6,11 +6,13 @@
 
 #include "TransformSystem.hpp"
 
+
 class EntitySystem
 {
 public:
     EntitySystem() = delete;
     ~EntitySystem() = default;
+
 
     template<typename T, typename... Args>
     std::shared_ptr<T> AddComponent(Args&&... args)
@@ -22,7 +24,8 @@ public:
         return l_component;
     }
 
-    template <typename T>
+
+    template<typename T>
     void RemoveComponent()
     {
         static_assert(std::is_base_of_v<ComponentSystem, T>, "T must inherit from a component!");
@@ -30,8 +33,9 @@ public:
         if (it != m_components.end()) { m_components.erase(it); }
     }
 
+
     template<typename T>
-    std::shared_ptr<T> GetComponent()
+    std::shared_ptr<T> GetComponent() const
     {
         const auto it = m_components.find(typeid(T));
         if (it != m_components.end()) { return std::static_pointer_cast<T>(it->second); }
@@ -39,11 +43,13 @@ public:
         return nullptr;
     }
 
+
     TransformSystem& Transform() { return m_transform; }
+
 
 private:
     void Update();
 
-    std::unordered_map<std::type_index, std::shared_ptr<ComponentSystem>> m_components { };
+    std::unordered_map<std::type_index, std::shared_ptr<ComponentSystem> > m_components { };
     TransformSystem m_transform;
 };

@@ -55,13 +55,13 @@ void VulkanRenderPass::CreateRenderPass(ISwapChain* a_swapChain, IDevice* a_devi
 }
 
 
-VkFormat VulkanRenderPass::FindDepthFormat(const VkPhysicalDevice a_physicalDevice)
+VkFormat VulkanRenderPass::FindDepthFormat(const VkPhysicalDevice& a_physicalDevice)
 {
     return FindSupportedFormat(a_physicalDevice, { VK_FORMAT_D32_SFLOAT, VK_FORMAT_D32_SFLOAT_S8_UINT, VK_FORMAT_D24_UNORM_S8_UINT }, VK_IMAGE_TILING_OPTIMAL, VK_FORMAT_FEATURE_DEPTH_STENCIL_ATTACHMENT_BIT);
 }
 
 
-VkFormat VulkanRenderPass::FindSupportedFormat(const VkPhysicalDevice a_physicalDevice, const std::vector<VkFormat>& a_candidates, const VkImageTiling a_tiling, const VkFormatFeatureFlags a_features)
+VkFormat VulkanRenderPass::FindSupportedFormat(const VkPhysicalDevice& a_physicalDevice, const std::vector<VkFormat>& a_candidates, const VkImageTiling& a_tiling, const VkFormatFeatureFlags& a_features)
 {
     for (const VkFormat l_format : a_candidates)
     {

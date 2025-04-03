@@ -4,5 +4,5 @@ class ComponentSystem
 {
 public:
     virtual ~ComponentSystem() = default;
-    virtual void Update() { }
+    virtual void Update() {}
 };
