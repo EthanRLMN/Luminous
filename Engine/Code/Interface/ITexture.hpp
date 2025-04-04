@@ -17,7 +17,7 @@ public:
 	virtual ~ITexture() = default;
 
 	bool Create(IResourceManager* a_manager, IResourceParams a_params) override { return false; };
-    void Destroy(...) override { return; };
+    void Destroy(IDevice* a_device) override { return; };
 
 	virtual VulkanTexture* CastVulkan()
 	{

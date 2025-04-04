@@ -40,14 +40,10 @@ bool VulkanTexture::Create(IResourceManager* a_manager, IResourceParams a_params
 }
 
 
-void VulkanTexture::Destroy(...)
+void VulkanTexture::Destroy(IDevice* a_device)
 {
-    va_list args;
-    va_start(args,nullptr);
 
-	IDevice* l_device = va_arg(args, IDevice*);
-
-	const VkDevice l_vkdevice = l_device->CastVulkan()->GetDevice();
+	const VkDevice l_vkdevice = a_device->CastVulkan()->GetDevice();
 
 	vkDeviceWaitIdle(l_vkdevice);
 
@@ -76,7 +72,6 @@ void VulkanTexture::Destroy(...)
 	}
 
 	DEBUG_LOG_INFO("Vulkan Texture : Texture Destroy!\n");
-    va_end(args);
 }
 
 

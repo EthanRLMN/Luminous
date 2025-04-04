@@ -9,7 +9,7 @@ class VulkanMesh final : public IMesh
 {
 public:
     bool Create(IResourceManager* a_manager, IResourceParams a_params) override;
-	void Destroy(...) override;
+    void Destroy(IDevice* a_device) override;
 
 	
 

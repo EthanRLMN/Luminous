@@ -29,7 +29,7 @@ public:
 	~IResource() = default;
 
 	virtual bool Create(IResourceManager* a_manager, IResourceParams a_params) = 0;
-	virtual void Destroy(...) = 0;
+    virtual void Destroy(IDevice* a_device) = 0;
     bool isLoaded = false;
 
 

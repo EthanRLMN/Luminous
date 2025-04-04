@@ -9,7 +9,7 @@ class VulkanTexture final : public ITexture
 {
 public:
     bool Create(IResourceManager* a_manager, IResourceParams a_params) override;
-	void Destroy(...) override;
+    void Destroy(IDevice* a_device) override;
 
 
 	void CreateTextureImage(IDevice* a_device, IDepthResource* a_depthResource, ICommandPool* a_commandPool);

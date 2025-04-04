@@ -69,6 +69,10 @@ Engine::Engine()
     l_meshParams.m_meshPath = "Engine/Assets/Models/metalSonic.obj";
 	m_mesh = m_resourceManager->LoadResource<VulkanMesh>(l_meshParams);
 
+
+	VulkanMesh* mesh2 = m_resourceManager->GetResource<VulkanMesh>("Engine/Assets/Models/metalSonic.obj");
+	
+
 	//m_mesh = m_interface->InstantiateModel();
     //m_mesh->Create(m_resourceManager, "Engine/Assets/Models/metalSonic.obj");
 
@@ -119,7 +123,7 @@ void Engine::Destroy() const
 	m_buffer->Destroy(m_device);
 	m_interface->DeleteBuffer(m_buffer);
 
-	m_mesh->Destroy();
+	m_mesh->Destroy(m_device);
 	m_interface->DeleteModel(m_mesh);
 
 	m_texture->Destroy(m_device);

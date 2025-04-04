@@ -70,7 +70,7 @@ T* IResourceManager::GetResource(const std::string& a_file)
 
 
 template<typename T>
-void IResourceManager::DeleteResource(const std::string& a_file)
+void IResourceManager::DeleteResource(const std::string& a_file , IDevice* a_device)
 {
 	if (m_resources[a_file] == nullptr)
 	{
@@ -80,7 +80,7 @@ void IResourceManager::DeleteResource(const std::string& a_file)
 	{
 		if (typeid(*m_resources[a_file]) == typeid(T))
 		{
-			m_resources[a_file]->Destroy();
+            m_resources[a_file]->Destroy(a_device);
 			m_resources.erase(a_file);
 			if (m_resources[a_file] == nullptr)
 			{

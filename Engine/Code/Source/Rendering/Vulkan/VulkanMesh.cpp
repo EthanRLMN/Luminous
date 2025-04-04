@@ -11,7 +11,7 @@ bool VulkanMesh::Create(IResourceManager* a_manager, IResourceParams a_params)
 }
 
 
-void VulkanMesh::Destroy(...)
+void VulkanMesh::Destroy(IDevice* a_device)
 {
     
 }
