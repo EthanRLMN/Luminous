@@ -17,7 +17,6 @@ public:
 	[[nodiscard]] VkPipelineLayout GetPipelineLayout() const { return m_pipelineLayout; };
 
 	VulkanPipeline* CastVulkan() override { return this; }
-	VkShaderModule CreateShaderModule(VkDevice a_device, const std::vector<char>& a_code);
 
 
 private:

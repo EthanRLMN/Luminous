@@ -17,8 +17,8 @@ void VulkanPipeline::Create(IDevice* a_device, IRenderPass* a_renderPass, IDescr
 	std::vector<char> l_vertexShaderCode = ReadFile("Engine/Assets/Shaders/vert.spv");
 	std::vector<char> l_fragmentShaderCode = ReadFile("Engine/Assets/Shaders/frag.spv");
 
-	VkShaderModule vertexShaderModule = CreateShaderModule(a_device->CastVulkan()->GetDevice(), l_vertexShaderCode);
-	VkShaderModule fragmentShaderModule = CreateShaderModule(a_device->CastVulkan()->GetDevice(), l_fragmentShaderCode);
+	VkShaderModule vertexShaderModule;
+	VkShaderModule fragmentShaderModule;
 
 	//vertex stage creation
 	VkPipelineShaderStageCreateInfo l_vertexShaderCreateInfo { VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO };
@@ -89,20 +89,6 @@ void VulkanPipeline::Destroy(IDevice* a_device)
 	DEBUG_LOG_INFO("Vulkan Graphic Pipeline : Pipeline destroyed!\n");
 }
 
-
-VkShaderModule VulkanPipeline::CreateShaderModule(const VkDevice a_device, const std::vector<char>& a_code)
-{
-	VkShaderModuleCreateInfo l_shaderModuleCreateInfo { VK_STRUCTURE_TYPE_SHADER_MODULE_CREATE_INFO };
-	l_shaderModuleCreateInfo.codeSize = a_code.size();
-	l_shaderModuleCreateInfo.pCode = reinterpret_cast<const uint32_t*>(a_code.data());
-
-	VkShaderModule l_shaderModule { };
-	const VkResult l_result = vkCreateShaderModule(a_device, &l_shaderModuleCreateInfo, nullptr, &l_shaderModule);
-	if (l_result != VK_SUCCESS)
-		DEBUG_LOG_ERROR("Vulkan Pipeline : Shader Module creating failed!\n");
-
-	return l_shaderModule;
-}
 
 
 void VulkanPipeline::VertexStageCreation(VkPipelineShaderStageCreateInfo& a_vertexShaderCreateInfo, const VkShaderModule& a_vertexShaderModule)
