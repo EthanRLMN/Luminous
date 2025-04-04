@@ -15,17 +15,15 @@
 #include <cstdarg>
 
 
-bool VulkanTexture::Create(IResourceManager* a_manager, std::string a_file, ...)
+bool VulkanTexture::Create(IResourceManager* a_manager, IResourceParams a_params)
 {
-    va_list args;
-    va_start(args,a_file);
 
 	
 
-	IDevice* l_device = va_arg(args, IDevice*);
-    ISwapChain* l_swapChain = va_arg(args, ISwapChain*);
-    IDepthResource* l_depthResource = va_arg(args, IDepthResource*);
-    ICommandPool* l_commandPool = va_arg(args, ICommandPool*);
+	IDevice* l_device = a_params.m_device;
+    ISwapChain* l_swapChain = a_params.m_swapChain;
+    IDepthResource* l_depthResource = a_params.m_depthResource;
+    ICommandPool* l_commandPool = a_params.m_commandPool;
 
 
 	if (l_device == nullptr) 
@@ -38,7 +36,6 @@ bool VulkanTexture::Create(IResourceManager* a_manager, std::string a_file, ...)
 	CreateTextureSampler(l_device);
 	DEBUG_LOG_INFO("Vulkan Texture : Texture Created!\n");
 
-	va_end(args);
     return true;
 }
 

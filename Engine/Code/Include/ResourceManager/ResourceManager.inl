@@ -4,17 +4,29 @@
 
 #include "ResourceManager.hpp"
 
+class VulkanTexture;
+class VulkanMesh;
 
 template<typename T>
-T* IResourceManager::LoadResource(const std::string& a_file)
+T* IResourceManager::LoadResource(const IResourceParams a_params)
 {
+    std::string a_file = "";
+
+	if (typeid(T) == typeid(VulkanTexture)) 
+	{
+        a_file = a_params.m_texturePath;
+    } else if (typeid(T) == typeid(VulkanMesh))
+    {
+        a_file = a_params.m_meshPath;
+    }
+
 	if (m_resources[a_file] == nullptr)
 	{
 		std::string l_info = "Trying to load " + a_file + "...";
 		DEBUG_LOG_INFO("{}", l_info);
 
 		T* l_resource = new T();
-		if (l_resource && l_resource->Create(this, a_file))
+		if (l_resource && l_resource->Create(this, a_params))
 		{
 			l_info = "Initialized " + a_file + " file.";
 			DEBUG_LOG_INFO("{}", l_info);

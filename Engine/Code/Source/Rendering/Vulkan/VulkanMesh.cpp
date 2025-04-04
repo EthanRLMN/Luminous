@@ -4,9 +4,9 @@
 #include "Rendering/Vulkan/VulkanMesh.hpp"
 #include "ResourceManager/ResourceManager.hpp"
 
-bool VulkanMesh::Create(IResourceManager* a_manager, std::string a_file,...)
+bool VulkanMesh::Create(IResourceManager* a_manager, IResourceParams a_params)
 {
-    a_manager->GetMeshLoader()->LoadModel(this, a_file.c_str());
+    a_manager->GetMeshLoader()->LoadModel(this, a_params.m_meshPath.c_str());
     return isLoaded;
 }
 

@@ -8,7 +8,7 @@
 class VulkanTexture final : public ITexture
 {
 public:
-    bool Create(IResourceManager* a_manager, std::string a_file, ...) override;
+    bool Create(IResourceManager* a_manager, IResourceParams a_params) override;
 	void Destroy(...) override;
 
 

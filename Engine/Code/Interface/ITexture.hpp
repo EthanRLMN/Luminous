@@ -16,7 +16,7 @@ class ITexture : public IResource
 public:
 	virtual ~ITexture() = default;
 
-	bool Create(IResourceManager* a_manager, std::string a_file, ...) override { return false; };
+	bool Create(IResourceManager* a_manager, IResourceParams a_params) override { return false; };
     void Destroy(...) override { return; };
 
 	virtual VulkanTexture* CastVulkan()

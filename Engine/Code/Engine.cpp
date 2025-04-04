@@ -58,13 +58,16 @@ Engine::Engine()
 
 	m_resourceManager = m_interface->InstantiateResourceManager();
 
-	m_texture = m_interface->InstantiateTexture();
-
-    m_texture->Create(m_resourceManager, "Engine/Assets/Textures/Untitled312.png", m_device, m_swapChain, m_depthResource, m_commandPool);
-
 	
 
-	m_mesh = m_resourceManager->LoadResource<VulkanMesh>("Engine/Assets/Models/metalSonic.obj");
+	IResourceParams l_texParams{ m_device ,m_swapChain,m_depthResource,m_commandPool};
+    l_texParams.m_texturePath = "Engine/Assets/Textures/Untitled312.png";
+    m_texture = m_resourceManager->LoadResource<VulkanTexture>(l_texParams);
+
+	
+	IResourceParams l_meshParams{};
+    l_meshParams.m_meshPath = "Engine/Assets/Models/metalSonic.obj";
+	m_mesh = m_resourceManager->LoadResource<VulkanMesh>(l_meshParams);
 
 	//m_mesh = m_interface->InstantiateModel();
     //m_mesh->Create(m_resourceManager, "Engine/Assets/Models/metalSonic.obj");

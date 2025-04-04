@@ -11,7 +11,7 @@ class IMesh : public IResource
 public:
     IMesh() = default;
 	~IMesh() = default;
-    bool Create(IResourceManager* a_manager, std::string a_file,...) override { return false; };
+    bool Create(IResourceManager* a_manager, IResourceParams a_params) override { return false; };
     void Destroy(...) override { return; };
 
 	virtual VulkanMesh* CastVulkan()
