@@ -3,6 +3,18 @@
 
 #include "Editor.hpp"
 
+GLFWWindow glfwWindow;
+VulkanInstance vulkanInstance;
+
+Editor::~Editor()
+{
+    if (m_engine)
+    {
+        delete m_engine;
+        m_engine = nullptr;
+    }
+}
+
 void Editor::InitEditor()
 {
     m_engine = new Engine();
@@ -17,10 +29,10 @@ void Editor::SetupImGui()
     io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;
     io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;
 
-    ImGui_ImplGlfw_InitForVulkan(GLFWWindow.GetGLFWwindow(), true);
+    ImGui_ImplGlfw_InitForVulkan(glfwWindow.GetGLFWWindow(), true);
 
     ImGui_ImplVulkan_InitInfo init_info = {};
-    init_info.Instance = VulkanInstance.GetInstance();
+    init_info.Instance = vulkanInstance.GetInstance();
     init_info.PhysicalDevice = VK_NULL_HANDLE;
     init_info.Device = VK_NULL_HANDLE;
     init_info.QueueFamily = 0;
@@ -35,7 +47,7 @@ void Editor::SetupImGui()
 
 int Editor::main()
 {
-    GLFWwindow* window = GLFWWindow.Initialize("Luminous", 1920, 1080);
+    GLFWwindow* window = glfwWindow.Initialize("Luminous", 1920, 1080);
 
     SetupImGui();
 
@@ -56,7 +68,7 @@ int Editor::main()
     ImGui_ImplGlfw_Shutdown();
     ImGui::DestroyContext();
 
-    GLFWWindow.Destroy();
+    glfwWindow.Destroy();
 
     return 0;
 }

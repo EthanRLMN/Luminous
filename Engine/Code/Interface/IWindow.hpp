@@ -7,13 +7,12 @@
 
 class GLFWWindow;
 
-
 class IWindow
 {
 public:
     virtual ~IWindow() = default;
 
-    virtual void Initialize(const std::string& a_name, const int& a_width, const int& a_height) = 0;
+    virtual GLFWwindow* Initialize(const std::string& a_name, const int& a_width, const int& a_height) = 0;
     virtual void Update() const = 0;
     virtual void PollEvents() const = 0;
     [[nodiscard]] virtual bool ShouldClose() const = 0;

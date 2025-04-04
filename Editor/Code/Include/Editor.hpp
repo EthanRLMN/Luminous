@@ -5,8 +5,15 @@
 #include "Rendering/Vulkan/VulkanInstance.hpp"
 #include "Engine.hpp"
 
+class GLFWWindow;
+class VulkanInstance;
+
 class Editor
 {
+public:
+    Editor() = default;
+    ~Editor();
+
     void InitEditor();
     void SetupImGui();
     
@@ -14,5 +21,4 @@ class Editor
 
 private:
     Engine* m_engine = nullptr;
-
 };

@@ -1,22 +1,28 @@
 #include "Core/GLFW/GLFWWindow.hpp"
 
-
-void GLFWWindow::Initialize(const std::string& a_name, const int& a_width, const int& a_height)
+GLFWwindow* GLFWWindow::Initialize(const std::string& a_name, const int& a_width, const int& a_height)
 {
     glfwInit();
     glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
     glfwWindowHint(GLFW_RESIZABLE, GLFW_TRUE);
 
     if (glfwVulkanSupported())
+    {
         DEBUG_LOG_INFO("Vulkan Window : GLFW Vulkan Support enabled!\n");
+    }
 
     m_window = glfwCreateWindow(a_width, a_height, a_name.c_str(), nullptr, nullptr);
-
     if (m_window)
+    {
         DEBUG_LOG_INFO("Vulkan Window : Creation successful!\n");
-    else
-        DEBUG_LOG_ERROR("Vulkan Window : Creation failed!\n");
+        return m_window;
+    }
+
+    DEBUG_LOG_ERROR("Vulkan Window : Creation failed!\n");
+    return nullptr;
 }
+
+
 
 
 void GLFWWindow::Update() const

@@ -1,7 +1,6 @@
 #pragma once
 
 #include "IWindow.hpp"
-
 #include <Vector2.hpp>
 #define GLFW_INCLUDE_VULKAN
 #include <GLFW/glfw3.h>
@@ -9,7 +8,7 @@
 class GLFWWindow final : public IWindow
 {
 public:
-    void Initialize(const std::string& a_name, const int& a_width, const int& a_height) override;
+    GLFWwindow* Initialize(const std::string& a_name, const int& a_width, const int& a_height) override;
     void Update() const override;
     void PollEvents() const override;
     [[nodiscard]] bool ShouldClose() const override;
