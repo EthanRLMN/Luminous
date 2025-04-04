@@ -69,10 +69,6 @@ Engine::Engine()
     l_meshParams.m_meshPath = "Engine/Assets/Models/metalSonic.obj";
 	m_mesh = m_resourceManager->LoadResource<VulkanMesh>(l_meshParams);
 
-
-	VulkanMesh* mesh2 = m_resourceManager->GetResource<VulkanMesh>("Engine/Assets/Models/metalSonic.obj");
-	
-
 	//m_mesh = m_interface->InstantiateModel();
     //m_mesh->Create(m_resourceManager, "Engine/Assets/Models/metalSonic.obj");
 

@@ -10,39 +10,39 @@ class VulkanMesh;
 template<typename T>
 T* IResourceManager::LoadResource(const IResourceParams a_params)
 {
-    std::string a_file = "";
+    std::string l_file = "";
 
 	if (typeid(T) == typeid(VulkanTexture)) 
 	{
-        a_file = a_params.m_texturePath;
+        l_file = a_params.m_texturePath;
     } else if (typeid(T) == typeid(VulkanMesh))
     {
-        a_file = a_params.m_meshPath;
+        l_file = a_params.m_meshPath;
     }
 
-	if (m_resources[a_file] == nullptr)
+	if (m_resources[l_file] == nullptr)
 	{
-		std::string l_info = "Trying to load " + a_file + "...";
+        std::string l_info = "Trying to load " + l_file + "...";
 		DEBUG_LOG_INFO("{}", l_info);
 
 		T* l_resource = new T();
 		if (l_resource && l_resource->Create(this, a_params))
 		{
-			l_info = "Initialized " + a_file + " file.";
+            l_info = "Initialized " + l_file + " file.";
 			DEBUG_LOG_INFO("{}", l_info);
-			m_resources[a_file] = l_resource;
+            m_resources[l_file] = l_resource;
 			return l_resource;
 		}
 
-		l_info = "Failed to Initialize " + a_file + " file.";
+		l_info = "Failed to Initialize " + l_file + " file.";
 		DEBUG_LOG_ERROR("{}", l_info);
 		delete(l_resource);
 		return nullptr;
 	}
-	std::string l_info = "Trying to get " + a_file + " since it already exists...";
+    std::string l_info = "Trying to get " + l_file + " since it already exists...";
 
 	DEBUG_LOG_INFO("{}", l_info);
-	return GetResource<T>(a_file);
+    return GetResource<T>(l_file);
 }
 
 
