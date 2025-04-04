@@ -18,3 +18,8 @@ bool VulkanShaderModule::Create(IDevice* a_device, const std::vector<char>& a_sh
 
     return false;
 }
+
+void VulkanShaderModule::Destroy(IDevice* a_device)
+{
+    vkDestroyShaderModule(a_device->CastVulkan()->GetDevice(), m_shaderModule, nullptr);
+}

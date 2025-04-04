@@ -9,6 +9,7 @@
 #include "Rendering/Vulkan/VulkanDescriptorSetLayout.hpp"
 #include "Rendering/Vulkan/VulkanDevice.hpp"
 #include "Rendering/Vulkan/VulkanRenderPass.hpp"
+#include "Rendering/Vulkan/VulkanShaderModule.hpp"
 
 
 void VulkanPipeline::Create(IDevice* a_device, IRenderPass* a_renderPass, IDescriptorSetLayout* a_descriptionSetLayout)
@@ -17,16 +18,23 @@ void VulkanPipeline::Create(IDevice* a_device, IRenderPass* a_renderPass, IDescr
 	std::vector<char> l_vertexShaderCode = ReadFile("Engine/Assets/Shaders/vert.spv");
 	std::vector<char> l_fragmentShaderCode = ReadFile("Engine/Assets/Shaders/frag.spv");
 
-	VkShaderModule vertexShaderModule;
-	VkShaderModule fragmentShaderModule;
+
+	VulkanShaderModule l_vertexShaderModule;
+    l_vertexShaderModule.Create(a_device, l_vertexShaderCode);
+
+	VulkanShaderModule l_fragmentShaderModule;
+    l_fragmentShaderModule.Create(a_device, l_fragmentShaderCode);
+
+	//VkShaderModule vertexShaderModule;
+	//VkShaderModule fragmentShaderModule;
 
 	//vertex stage creation
 	VkPipelineShaderStageCreateInfo l_vertexShaderCreateInfo { VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO };
-	VertexStageCreation(l_vertexShaderCreateInfo, vertexShaderModule);
+    VertexStageCreation(l_vertexShaderCreateInfo, l_vertexShaderModule.GetShaderModule());
 
 	//fragment stage creation
 	VkPipelineShaderStageCreateInfo l_fragmentShaderCreateInfo { VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO };
-	FragmentStageCreation(l_fragmentShaderCreateInfo, fragmentShaderModule);
+    FragmentStageCreation(l_fragmentShaderCreateInfo, l_fragmentShaderModule.GetShaderModule());
 
 	//graphics pipeline creation info requires array  of shader
 	VkPipelineShaderStageCreateInfo l_shaderStages[] = { l_vertexShaderCreateInfo, l_fragmentShaderCreateInfo };
@@ -76,8 +84,9 @@ void VulkanPipeline::Create(IDevice* a_device, IRenderPass* a_renderPass, IDescr
 	PushPipelineInfo(l_pipelineCreateInfo, l_shaderStages, l_vertexInputCreateInfo, l_inputAssembly, l_viewportStateCreateInfo, l_rasterizerCreateInfo, l_multisamplingCreateInfo, l_depthStencil, l_colorBlending, l_dynamicStateCreationInfo, a_renderPass->CastVulkan()->GetRenderPass(), a_device->CastVulkan()->GetDevice());
 
 	//destroy shader module no longer needed after pipeline created
-	vkDestroyShaderModule(a_device->CastVulkan()->GetDevice(), fragmentShaderModule, nullptr);
-	vkDestroyShaderModule(a_device->CastVulkan()->GetDevice(), vertexShaderModule, nullptr);
+
+	l_fragmentShaderModule.Destroy(a_device);
+    l_vertexShaderModule.Destroy(a_device);
 	DEBUG_LOG_INFO("Vulkan Graphic Pipeline : Pipeline Created!\n");
 }
 
