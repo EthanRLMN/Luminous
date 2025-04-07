@@ -20,11 +20,15 @@ Engine::Engine()
 
 	m_interface = new VulkanRenderInterface();
 
+
 	m_window = m_interface->InstantiateWindow();
 	m_window->Initialize("Luminous Window", 800, 600);
 
 	m_inputManager = m_interface->InstantiateInputManager();
 	m_inputManager->Initialize(m_window);
+
+	m_resourceManager = m_interface->InstantiateResourceManager();
+
 
 	m_instance = m_interface->InstantiateContext();
 	m_instance->Create(m_window);
@@ -45,7 +49,7 @@ Engine::Engine()
 	m_descriptorSetLayout->Create(m_device);
 
 	m_pipeline = m_interface->InstantiatePipeline();
-	m_pipeline->Create(m_device, m_renderPass, m_descriptorSetLayout);
+	m_pipeline->Create(m_device, m_renderPass, m_descriptorSetLayout, m_resourceManager);
 
 	m_commandPool = m_interface->InstantiateCommandPool();
 	m_commandPool->Create(m_device, m_surface);
@@ -56,7 +60,7 @@ Engine::Engine()
 	m_frameBuffer = m_interface->InstantiateFrameBuffer();
 	m_frameBuffer->Create(m_device, m_swapChain, m_renderPass, m_depthResource);
 
-	m_resourceManager = m_interface->InstantiateResourceManager();
+	
 
 	
 

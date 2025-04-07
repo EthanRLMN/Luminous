@@ -12,7 +12,8 @@
 #include "Rendering/Vulkan/VulkanShaderModule.hpp"
 
 
-void VulkanPipeline::Create(IDevice* a_device, IRenderPass* a_renderPass, IDescriptorSetLayout* a_descriptionSetLayout)
+
+void VulkanPipeline::Create(IDevice* a_device, IRenderPass* a_renderPass, IDescriptorSetLayout* a_descriptionSetLayout, IResourceManager* a_resourceManager )
 {
 
 
