@@ -13,7 +13,7 @@ public:
 	IShaderModule() = default;
     ~IShaderModule() = default;
 
-	virtual bool Create(IDevice* a_device, const std::vector<char>& a_shaders) = 0;
+	virtual bool Create(IDevice* a_device, const std::string &a_path) = 0;
     virtual void Destroy(IDevice* a_device) = 0;
 
 	virtual VulkanShaderModule* CastVulkan()

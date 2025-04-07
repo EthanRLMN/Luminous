@@ -14,19 +14,13 @@
 
 void VulkanPipeline::Create(IDevice* a_device, IRenderPass* a_renderPass, IDescriptorSetLayout* a_descriptionSetLayout)
 {
-	// TODO Split shader module creation and file reading
-	std::vector<char> l_vertexShaderCode = ReadFile("Engine/Assets/Shaders/vert.spv");
-	std::vector<char> l_fragmentShaderCode = ReadFile("Engine/Assets/Shaders/frag.spv");
 
 
 	VulkanShaderModule l_vertexShaderModule;
-    l_vertexShaderModule.Create(a_device, l_vertexShaderCode);
+    l_vertexShaderModule.Create(a_device, "Engine/Assets/Shaders/vert.spv");
 
 	VulkanShaderModule l_fragmentShaderModule;
-    l_fragmentShaderModule.Create(a_device, l_fragmentShaderCode);
-
-	//VkShaderModule vertexShaderModule;
-	//VkShaderModule fragmentShaderModule;
+    l_fragmentShaderModule.Create(a_device, "Engine/Assets/Shaders/frag.spv");
 
 	//vertex stage creation
 	VkPipelineShaderStageCreateInfo l_vertexShaderCreateInfo { VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO };

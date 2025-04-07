@@ -6,7 +6,7 @@
 class VulkanShaderModule : public IShaderModule
 {
 public:
-    bool Create(IDevice* a_device, const std::vector<char>& a_shaders) override;
+    bool Create(IDevice* a_device,const std::string& a_path) override;
     void Destroy(IDevice* a_device) override;
 
     VulkanShaderModule* CastVulkan() override { return this; }

@@ -3,12 +3,17 @@
 
 #include "Rendering/Vulkan/VulkanDevice.hpp"
 
-bool VulkanShaderModule::Create(IDevice* a_device, const std::vector<char>& a_shaders)
+#include "Utils/FileReaderUtils.hpp"
+
+bool VulkanShaderModule::Create(IDevice* a_device, const std::string& a_path)
 {
+
+    std::vector<char> l_code = ReadFile(a_path);
+
     VkShaderModuleCreateInfo l_createInfo{};
     l_createInfo.sType = VK_STRUCTURE_TYPE_SHADER_MODULE_CREATE_INFO;
-    l_createInfo.codeSize = a_shaders.size();
-    l_createInfo.pCode = reinterpret_cast<const uint32_t*>(a_shaders.data());
+    l_createInfo.codeSize = l_code.size();
+    l_createInfo.pCode = reinterpret_cast<const uint32_t*>(l_code.data());
 
 
     if (vkCreateShaderModule(a_device->CastVulkan()->GetDevice(), &l_createInfo, nullptr, &m_shaderModule) != VK_SUCCESS)
