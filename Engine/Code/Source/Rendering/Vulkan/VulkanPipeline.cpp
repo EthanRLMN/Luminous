@@ -28,10 +28,11 @@ void VulkanPipeline::Create(IDevice* a_device, IRenderPass* a_renderPass, IDescr
 		l_fragmentShaderModule.CreateStage(VK_SHADER_STAGE_FRAGMENT_BIT)
     };
 
+	/**/
 	VkVertexInputBindingDescription l_bindingDescription { };
 	std::array<VkVertexInputAttributeDescription, 3> l_attributeDescriptions { };
 	VkPipelineVertexInputStateCreateInfo l_vertexInputCreateInfo = { VK_STRUCTURE_TYPE_PIPELINE_VERTEX_INPUT_STATE_CREATE_INFO };
-	BindShaderAttributes(l_bindingDescription, l_attributeDescriptions, l_vertexInputCreateInfo);
+	l_vertexShaderModule.BindShader(l_bindingDescription, l_attributeDescriptions, l_vertexInputCreateInfo);
 
 	//Input Assembly
 	VkPipelineInputAssemblyStateCreateInfo l_inputAssembly = { VK_STRUCTURE_TYPE_PIPELINE_INPUT_ASSEMBLY_STATE_CREATE_INFO };
