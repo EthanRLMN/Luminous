@@ -120,17 +120,6 @@
 
 		ImGui::SameLine(0, 115 * ImGui::GetStyle().ItemSpacing.x);
 		ImGui::Image(s_saveButton, { 25, 25 }, { 0, 0 }, { 1, 1 });*/
-
-		ImGui::TableSetColumnIndex(0);
-		ImGui::Begin("window1", nullptr, ImGuiWindowFlags_NoTitleBar);
-		ImGui::End();
-
-		ImGui::TableNextColumn();
-		ImGui::Begin("window2", nullptr, ImGuiWindowFlags_NoTitleBar);
-		ImGui::End();
-
-		ImGui::Begin("window3", nullptr, ImGuiWindowFlags_NoTitleBar);
-		ImGui::End();
 	}
 	ImGui::End();
 	ImGui::PopStyleColor();
