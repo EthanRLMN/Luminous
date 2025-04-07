@@ -1,9 +1,12 @@
 #pragma once
 
-#include "IWindow.hpp"
-#include <Vector2.hpp>
 #define GLFW_INCLUDE_VULKAN
 #include <GLFW/glfw3.h>
+
+#include "IWindow.hpp"
+
+#include "Vector2.hpp"
+
 
 class GLFWWindow final : public IWindow
 {

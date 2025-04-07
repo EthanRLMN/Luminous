@@ -1,10 +1,10 @@
-#include "imgui.h"
+#pragma once
 
 class MainWindow
 {
   public:
-    MainWindow();
-    ~MainWindow();
+    MainWindow() = default;
+    ~MainWindow() = default;
 
     void Draw();
 

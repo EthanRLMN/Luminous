@@ -33,7 +33,7 @@ add_library(${L_TARGET_NAME} STATIC ${L_ENGINE_SOURCES})
 #---------------------------------------#
 #                INCLUDE                #
 #---------------------------------------#
-target_include_directories(${L_TARGET_NAME} PUBLIC "Code/Include" "Code/Interface" "Libs/stb_image" "Libs/tinyobj" "Libs/vulkanmemoryallocator/include" "Libs/glm")
+target_include_directories(${L_TARGET_NAME} PUBLIC "Code/Include" "Code/Interface" "Libs/stb_image" "Libs/tinyobj" "Libs/vulkanmemoryallocator/include" "Libs/glm" "Libs")
 
 
 

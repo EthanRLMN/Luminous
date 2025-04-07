@@ -1,9 +1,10 @@
 #pragma once
 
-#include <iostream>
 #include <vector>
 #include <vulkan/vulkan.h>
+
 #include "IRenderPass.hpp"
+
 
 class VulkanRenderPass final : public IRenderPass
 {
