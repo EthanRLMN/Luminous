@@ -1,7 +1,6 @@
 #include "ImguiWindow.hpp"
 
 #include "Engine.hpp"
-#include "Core/GLFW/GLFWWindow.hpp"
 #include "Rendering/Vulkan/VulkanCommandBuffer.hpp"
 
 #include "backends/imgui_impl_glfw.h"

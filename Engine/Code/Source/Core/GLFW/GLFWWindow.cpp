@@ -27,7 +27,10 @@ GLFWwindow* GLFWWindow::Initialize(const std::string& a_name, const int& a_width
 
 void GLFWWindow::Update() const
 {
-    while (!ShouldClose()) { PollEvents(); }
+    while (!ShouldClose())
+    {
+        PollEvents();
+    }
 
     Destroy();
 }

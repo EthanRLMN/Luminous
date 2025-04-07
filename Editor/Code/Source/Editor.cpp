@@ -16,6 +16,10 @@
 
 void Editor::Destroy()
 {
+    ImGui_ImplVulkan_Shutdown();
+    ImGui_ImplGlfw_Shutdown();
+    ImGui::DestroyContext();
+
     if (m_engine)
     {
         delete m_engine;
@@ -27,9 +31,11 @@ void Editor::Init()
 {
     m_engine = new Engine();
     m_imguiWindow = new ImguiWindow();
+
+    SetupImGui();
 }
 
-void Editor::SetupImGui()
+void Editor::SetupImGui() const
 {
     IMGUI_CHECKVERSION();
     ImGui::CreateContext();
@@ -39,7 +45,6 @@ void Editor::SetupImGui()
 
     ImGui_ImplGlfw_InitForVulkan(m_engine->GetWindow()->CastGLFW()->GetGLFWWindow(), true);
 
-    //TODO Change api version
     ImGui_ImplVulkan_InitInfo l_initInfo{ };
     l_initInfo.ApiVersion = VK_API_VERSION_1_4;
     l_initInfo.Instance = m_engine->GetInstance()->CastVulkan()->GetInstance();
@@ -55,29 +60,14 @@ void Editor::SetupImGui()
     l_initInfo.CheckVkResultFn = nullptr;
     l_initInfo.RenderPass = m_engine->GetRenderPass()->CastVulkan()->GetRenderPass();
 
-    m_imguiWindow->Create(m_engine->GetWindow()->CastGLFW());
-
     ImGui_ImplVulkan_Init(&l_initInfo);
 }
 
-void Editor::Launch()
+void Editor::Update() const
 {
-    SetupImGui();
-
-    while (!m_engine->GetWindow()->ShouldClose())
+    while (m_engine->IsRunning())
     {
-        glfwPollEvents();
-
-        ImGui_ImplVulkan_NewFrame();
-        ImGui_ImplGlfw_NewFrame();
-        ImGui::NewFrame();
-
-        ImGui::Render();
-
-        glfwSwapBuffers(m_engine->GetWindow()->CastGLFW()->GetGLFWWindow());
+        // Do Something
+        DEBUG_LOG_VERBOSE("Test");
     }
-
-    ImGui_ImplVulkan_Shutdown();
-    ImGui_ImplGlfw_Shutdown();
-    ImGui::DestroyContext();
 }

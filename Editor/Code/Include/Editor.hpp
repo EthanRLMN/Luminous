@@ -14,9 +14,9 @@ public:
 
     void Destroy();
     void Init();
-    void SetupImGui();
+    void SetupImGui() const;
 
-    void Launch();
+    void Update() const;
 
     [[nodiscard]] Engine* GetEngine() const { return m_engine; }
     [[nodiscard]] ImguiWindow* GetImguiWindow() const { return m_imguiWindow; }

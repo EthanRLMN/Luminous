@@ -1,5 +1,7 @@
 #pragma once
 
+#include <functional>
+
 #include "IRender.hpp"
 #include "ISynchronization.hpp"
 #include "ResourceManager/ResourceManager.hpp"
@@ -12,7 +14,7 @@ public:
 	Engine();
 	~Engine() = default;
 
-	void Run() const;
+	void Update();
 	void Destroy() const;
 	void DestroyWindow() const;
 
@@ -34,6 +36,8 @@ public:
 	[[nodiscard]] IDescriptor* GetDescriptor() const { return m_descriptor; }
 	[[nodiscard]] ICommandBuffer* GetCommandBuffer() const { return m_commandBuffer; }
 	[[nodiscard]] ISynchronization* GetSynchronization() const { return m_synchronization; }
+
+    bool IsRunning() const { return m_isRunning; }
 
 
 private:
@@ -59,4 +63,5 @@ private:
 	ICommandBuffer* m_commandBuffer{ nullptr };
 	ISynchronization* m_synchronization { nullptr };
 
+    bool m_isRunning { false };
 };
