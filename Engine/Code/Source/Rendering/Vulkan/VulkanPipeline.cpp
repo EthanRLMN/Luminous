@@ -22,16 +22,11 @@ void VulkanPipeline::Create(IDevice* a_device, IRenderPass* a_renderPass, IDescr
 	VulkanShaderModule l_fragmentShaderModule;
     l_fragmentShaderModule.Create(a_device, "Engine/Assets/Shaders/frag.spv");
 
-	//vertex stage creation
-	VkPipelineShaderStageCreateInfo l_vertexShaderCreateInfo { VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO };
-    VertexStageCreation(l_vertexShaderCreateInfo, l_vertexShaderModule.GetShaderModule());
-
-	//fragment stage creation
-	VkPipelineShaderStageCreateInfo l_fragmentShaderCreateInfo { VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO };
-    FragmentStageCreation(l_fragmentShaderCreateInfo, l_fragmentShaderModule.GetShaderModule());
-
 	//graphics pipeline creation info requires array  of shader
-	VkPipelineShaderStageCreateInfo l_shaderStages[] = { l_vertexShaderCreateInfo, l_fragmentShaderCreateInfo };
+    VkPipelineShaderStageCreateInfo l_shaderStages[] = { 
+		l_vertexShaderModule.CreateStage(VK_SHADER_STAGE_VERTEX_BIT), 
+		l_fragmentShaderModule.CreateStage(VK_SHADER_STAGE_FRAGMENT_BIT)
+    };
 
 	VkVertexInputBindingDescription l_bindingDescription { };
 	std::array<VkVertexInputAttributeDescription, 3> l_attributeDescriptions { };

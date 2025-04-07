@@ -28,3 +28,14 @@ void VulkanShaderModule::Destroy(IDevice* a_device)
 {
     vkDestroyShaderModule(a_device->CastVulkan()->GetDevice(), m_shaderModule, nullptr);
 }
+
+VkPipelineShaderStageCreateInfo VulkanShaderModule::CreateStage(VkShaderStageFlagBits a_shaderType)
+{
+    VkPipelineShaderStageCreateInfo l_shaderStageCreateInfo{ VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO };
+
+    l_shaderStageCreateInfo.stage = a_shaderType;
+    l_shaderStageCreateInfo.module = m_shaderModule;
+    l_shaderStageCreateInfo.pName = "main";
+
+    return l_shaderStageCreateInfo;
+}

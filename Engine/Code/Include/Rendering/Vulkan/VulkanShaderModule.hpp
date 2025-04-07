@@ -11,6 +11,7 @@ public:
 
     VulkanShaderModule* CastVulkan() override { return this; }
     VkShaderModule GetShaderModule() { return m_shaderModule; }
+    VkPipelineShaderStageCreateInfo CreateStage(VkShaderStageFlagBits a_shaderType);
 
 private:
     VkShaderModule m_shaderModule;
