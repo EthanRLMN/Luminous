@@ -11,9 +11,10 @@ class VulkanRenderInterface;
 class Engine
 {
 public:
-	Engine();
+	Engine() = default;
 	~Engine() = default;
 
+    void Init();
 	void Update();
 	void Destroy() const;
 	void DestroyWindow() const;
@@ -61,6 +62,7 @@ private:
 	IBuffer* m_buffer { nullptr };
 	IDescriptor* m_descriptor{ nullptr };
 	ICommandBuffer* m_commandBuffer{ nullptr };
+	ICommandBuffer* m_editorCommandBuffer{ nullptr };
 	ISynchronization* m_synchronization { nullptr };
 
     bool m_isRunning { false };

@@ -3,7 +3,8 @@
 #include "Rendering/Vulkan/VulkanRenderInterface.hpp"
 #include "ResourceManager/Mesh.hpp"
 
-Engine::Engine()
+
+void Engine::Init()
 {
     m_isRunning = true;
 
@@ -74,6 +75,9 @@ Engine::Engine()
     m_commandBuffer = m_interface->InstantiateCommandBuffer();
     m_commandBuffer->Create(m_device, m_commandPool);
 
+    m_editorCommandBuffer = m_interface->InstantiateCommandBuffer();
+    m_commandBuffer->Create(m_device, m_commandPool);
+
     m_synchronization = m_interface->InstantiateSynchronization();
     m_synchronization->Create(m_device);
 
@@ -84,8 +88,6 @@ Engine::Engine()
     //m_resourceManager->DeleteResource<Mesh>("Engine/Assets/Models/metalSonic.obj");
     Mesh* mesh5 = m_resourceManager->LoadResource<Mesh>("Engine/Assets/Models/metalSonic.obj");
     Mesh* mesh3 = m_resourceManager->GetResource<Mesh>("Engine/Assets/Models/metalSonic.obj");
-
-    Update();
 }
 
 void Engine::DestroyWindow() const
@@ -162,7 +164,6 @@ void Engine::Update()
     // TODO : Cleanup
     while (!m_window->ShouldClose())
     {
-        m_window->PollEvents();
         renderingDraw->Create(m_window, m_device, m_swapChain, m_pipeline, m_buffer, m_renderPass, m_descriptor, m_model, m_synchronization, m_commandBuffer, m_frameBuffer, m_depthResource, m_surface);
         m_inputManager->Update(m_window);
     }

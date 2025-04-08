@@ -15,7 +15,7 @@ public:
 	void Create(IInstance* a_instance, IWindow* a_window, ISurface* a_surface) override;
 	void Destroy() override;
 	VulkanDevice* CastVulkan() override { return this; }
-	
+
 	void CreateLogicalDevice(const VkSurfaceKHR& a_surface);
 	void GetPhysicalDevice(const VkInstance& a_instance, const VkSurfaceKHR& a_surface);
 

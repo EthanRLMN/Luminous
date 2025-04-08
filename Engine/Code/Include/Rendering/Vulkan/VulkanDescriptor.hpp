@@ -16,6 +16,7 @@ public:
 	void Destroy(IDevice* a_device) override;
 
 	[[nodiscard]] VkDescriptorPool GetDescriptorPool() const { return m_descriptorPool; }
+	[[nodiscard]] VkDescriptorPool GetImGUIDescriptorPool() const { return m_imguiDescriptorPool; }
 	[[nodiscard]] std::vector<VkDescriptorSet> GetDescriptorSet() const { return m_descriptorSets; };
 
 	VulkanDescriptor* CastVulkan() override { return this; }
@@ -23,11 +24,13 @@ public:
 
 private:
 	void CreateDescriptorPool(IDevice* a_device);
+    void CreateImGUIDescriptorPool(IDevice* a_device);
 	void CreateDescriptorSets(IDevice* a_device, IDescriptorSetLayout* a_descriptorSetLayout, ITexture* a_texture);
 	void SetBuffers(IBuffer* a_buffer);
 	void UpdateDescriptorSets(IDevice* a_device, ITexture* a_texture);
 
 	VkDescriptorPool m_descriptorPool { nullptr };
+	VkDescriptorPool m_imguiDescriptorPool { nullptr };
 	std::vector<VkDescriptorSet> m_descriptorSets { nullptr };
 
 	std::vector<VkBuffer> m_uniformBuffer { nullptr };
