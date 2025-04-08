@@ -16,6 +16,7 @@ public:
     void Init();
     void SetupImGui();
 
+    void Begin();
     void Launch();
 
     [[nodiscard]] Engine* GetEngine() const { return m_engine; }

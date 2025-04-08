@@ -36,6 +36,9 @@ void Editor::SetupImGui()
     ImGuiIO& l_io = ImGui::GetIO();
     l_io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;
     l_io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;
+    l_io.ConfigFlags |= ImGuiConfigFlags_ViewportsEnable;
+
+    l_io.ConfigWindowsMoveFromTitleBarOnly = true;
 
     ImGui_ImplGlfw_InitForVulkan(m_engine->GetWindow()->CastGLFW()->GetGLFWWindow(), true);
 
@@ -60,6 +63,13 @@ void Editor::SetupImGui()
     ImGui_ImplVulkan_Init(&l_initInfo);
 }
 
+void Editor::Begin()
+{
+    ImGui_ImplVulkan_NewFrame();
+    ImGui_ImplGlfw_NewFrame();
+    ImGui::NewFrame();
+}
+
 void Editor::Launch()
 {
     SetupImGui();
@@ -68,9 +78,7 @@ void Editor::Launch()
     {
         glfwPollEvents();
 
-        ImGui_ImplVulkan_NewFrame();
-        ImGui_ImplGlfw_NewFrame();
-        ImGui::NewFrame();
+        Begin();
 
         ImGui::Render();
 
