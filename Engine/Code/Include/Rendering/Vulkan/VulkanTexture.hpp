@@ -35,9 +35,6 @@ public:
 
 	VulkanTexture* CastVulkan() override { return this; }
 
-	const std::string TEXTURE_PATH{
-		"Engine/Assets/Textures/Untitled312.png"
-	};
 
 	[[nodiscard]] VkImage GetTextureImage() const;
 	[[nodiscard]] VkDeviceMemory GetTextureImageMemory() const;

@@ -15,7 +15,6 @@ public:
 
 	VulkanMesh* CastVulkan() override { return this; }
 
-	const std::string MODEL_PATH { "Engine/Assets/Models/metalSonic.obj" };
 
 
 private:
