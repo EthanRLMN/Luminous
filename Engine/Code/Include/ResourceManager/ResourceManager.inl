@@ -4,6 +4,8 @@
 
 #include "ResourceManager.hpp"
 #include "Rendering/Vulkan/VulkanShader.hpp"
+#include "Rendering/Vulkan/VulkanTexture.hpp"
+#include "Rendering/Vulkan/VulkanMesh.hpp"
 
 class VulkanTexture;
 class VulkanMesh;

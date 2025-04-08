@@ -5,7 +5,8 @@
 
 #include "IPipeline.hpp"
 #include "vulkan/vulkan.h"
-#include "ResourceManager/Resource.hpp"
+#include "ResourceManager/ResourceManager.hpp"
+#include "Rendering/Vulkan/VulkanShader.hpp"
 
 
 class VulkanPipeline final : public IPipeline

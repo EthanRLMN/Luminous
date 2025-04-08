@@ -16,8 +16,10 @@
 void VulkanPipeline::Create(IDevice* a_device, IRenderPass* a_renderPass, IDescriptorSetLayout* a_descriptionSetLayout, IResourceManager* a_resourceManager )
 {
 
-	
-
+	IResourceParams l_shaderParams{ a_device };
+    l_shaderParams.m_vertexShaderPath = "Engine/Assets/Shaders/vert.spv";
+    l_shaderParams.m_fragmentShaderPath = "Engine/Assets/Shaders/frag.spv";
+    VulkanShader* l_shader = a_resourceManager->LoadResource<VulkanShader>(l_shaderParams);
 
 	VulkanShaderModule l_vertexShaderModule;
     l_vertexShaderModule.Create(a_device, "Engine/Assets/Shaders/vert.spv");
