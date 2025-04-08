@@ -12,6 +12,7 @@
 #include "Rendering/Vulkan/VulkanDevice.hpp"
 #include "Rendering/Vulkan/VulkanInstance.hpp"
 #include "Rendering/Vulkan/VulkanRenderPass.hpp"
+#include "Rendering/Vulkan/VulkanRenderingDraw.hpp"
 
 
 void Editor::Destroy()
@@ -22,6 +23,7 @@ void Editor::Destroy()
 
     if (m_engine)
     {
+        m_engine->GetUIRenderPass()->Destroy(m_engine->GetDevice());
         m_engine->Destroy();
 
         delete m_engine;
@@ -62,11 +64,11 @@ void Editor::SetupImGui() const
     ImGui_ImplVulkan_Init(&l_initInfo);
     ImGui_ImplVulkan_CreateFontsTexture();
 
-    //IM_ASSERT(ImGui::GetDrawData() != nullptr);
-    //IM_ASSERT(ImGui::GetDrawData()->CmdListsCount > 0);
+    m_engine->GetUIRenderPass(). CreateUIPass(m_engine->GetSwapChain(), m_engine->GetDevice());
+    ImGui_ImplVulkan_RenderDrawData(ImGui::GetDrawData(), m_engine->GetCommandBuffer()->CastVulkan()->GetCommandBuffers()[m_engine->GetRenderingDraw()->CastVulkan()->GetCurrentFrame()]);
 }
 
-void Editor::Update() const
+void Editor::Update()
 {
     while (m_engine->IsRunning())
     {
@@ -80,7 +82,6 @@ void Editor::Update() const
 
 
         Render();
-        //ImGui_ImplVulkan_RenderDrawData(ImGui::GetDrawData(), m_engine->GetCommandBuffer()->CastVulkan()->GetCommandBuffers()[m_engine->GetRenderingDraw()->CastVulkan()->GetCurrentFrame()]);
     }
 }
 

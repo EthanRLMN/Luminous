@@ -27,6 +27,7 @@ public:
 	[[nodiscard]] IDevice* GetDevice() const { return m_device; }
 	[[nodiscard]] ISwapChain* GetSwapChain() const { return m_swapChain; }
 	[[nodiscard]] IRenderPass* GetRenderPass() const { return m_renderPass; }
+	[[nodiscard]] IRenderPass* GetUIRenderPass() const { return m_uiRenderPass; }
 	[[nodiscard]] IDescriptorSetLayout* GetDescriptionSetLayout() const { return m_descriptorSetLayout; }
 	[[nodiscard]] IPipeline* GetPipeline() const { return m_pipeline; }
 	[[nodiscard]] ICommandPool* GetCommandPool() const { return m_commandPool; }
@@ -52,6 +53,7 @@ private:
 	IDevice* m_device { nullptr };
 	ISwapChain* m_swapChain { nullptr };
 	IRenderPass* m_renderPass { nullptr };
+	IRenderPass* m_uiRenderPass { nullptr };
 	IDescriptorSetLayout* m_descriptorSetLayout { nullptr };
 	IPipeline* m_pipeline { nullptr };
 	ICommandPool* m_commandPool{ nullptr };

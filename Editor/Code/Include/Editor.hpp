@@ -16,7 +16,7 @@ public:
     void Init();
     void SetupImGui() const;
 
-    void Update() const;
+    void Update();
     void Render() const;
 
     [[nodiscard]] Engine* GetEngine() const { return m_engine; }

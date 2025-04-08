@@ -103,6 +103,8 @@ void Engine::Init()
     m_renderPass = m_interface->InstantiateRenderPass();
     m_renderPass->Create(m_swapChain, m_device);
 
+    m_uiRenderPass = m_interface->InstantiateRenderPass();
+
     m_descriptorSetLayout = m_interface->InstantiateDescriptorSetLayout();
     m_descriptorSetLayout->Create(m_device);
 

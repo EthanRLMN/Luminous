@@ -1,5 +1,6 @@
 #pragma once
 
+#include <functional>
 #include <vector>
 #include <vulkan/vulkan.h>
 
@@ -11,8 +12,8 @@ class VulkanRenderPass final : public IRenderPass
 public :
     void Create(ISwapChain* a_swapChain, IDevice* a_device) override;
     void Destroy(IDevice* a_device) override;
-
-    void CreateRenderPass(ISwapChain* a_swapChain, IDevice* a_device);
+    void Begin(const std::optional<std::function<void()>>& a_function) override;
+    void End(const std::optional<std::function<void()>>& a_function) override;
 
     VkFormat FindDepthFormat(const VkPhysicalDevice& a_physicalDevice);
     VkFormat FindSupportedFormat(const VkPhysicalDevice& a_physicalDevice, const std::vector<VkFormat>& a_candidates, const VkImageTiling& a_tiling, const VkFormatFeatureFlags& a_features);

@@ -5,26 +5,15 @@
 #include "ISwapChain.hpp"
 
 #include "Rendering/Vulkan/VulkanRenderPass.hpp"
+
 #include "Rendering/Vulkan/VulkanDevice.hpp"
 #include "Rendering/Vulkan/VulkanSwapChain.hpp"
 
 
 void VulkanRenderPass::Create(ISwapChain* a_swapChain, IDevice* a_device)
 {
-    CreateRenderPass(a_swapChain, a_device);
-    DEBUG_LOG_INFO("Vulkan RenderPass : RenderPass created!\n");
-}
+    Begin();
 
-
-void VulkanRenderPass::Destroy(IDevice* a_device)
-{
-    vkDestroyRenderPass(a_device->CastVulkan()->GetDevice(), m_renderPass, nullptr);
-    DEBUG_LOG_INFO("Vulkan RenderPass : Destroy RenderPass!\n");
-}
-
-
-void VulkanRenderPass::CreateRenderPass(ISwapChain* a_swapChain, IDevice* a_device)
-{
     VkAttachmentDescription l_colorAttachment = {};
     FillColorAttachmentInfo(l_colorAttachment, a_swapChain->CastVulkan()->GetSwapChainImageFormat());
 
@@ -49,9 +38,29 @@ void VulkanRenderPass::CreateRenderPass(ISwapChain* a_swapChain, IDevice* a_devi
     VkRenderPassCreateInfo l_renderPassCreateInfo = {};
     SetupRenderPassCreateInfo(l_renderPassCreateInfo, l_attachments, l_subpass, l_dependency);
 
+    End();
+
     const VkResult l_result = vkCreateRenderPass(a_device->CastVulkan()->GetDevice(), &l_renderPassCreateInfo, nullptr, &m_renderPass);
     if (l_result != VK_SUCCESS)
         DEBUG_LOG_ERROR("Failed to create a render pass\n");
+
+    DEBUG_LOG_INFO("Vulkan RenderPass : RenderPass created!\n");
+}
+
+
+void VulkanRenderPass::Destroy(IDevice* a_device)
+{
+    vkDestroyRenderPass(a_device->CastVulkan()->GetDevice(), m_renderPass, nullptr);
+    DEBUG_LOG_INFO("Vulkan RenderPass : Destroy RenderPass!\n");
+}
+
+void VulkanRenderPass::Begin(const std::optional<std::function<void()>>& a_function)
+{
+}
+
+void VulkanRenderPass::End(const std::optional<std::function<void()>>& a_function)
+{
+
 }
 
 
@@ -79,6 +88,7 @@ VkFormat VulkanRenderPass::FindSupportedFormat(const VkPhysicalDevice& a_physica
     return VK_FORMAT_UNDEFINED;
 }
 
+
 void VulkanRenderPass::FillColorAttachmentInfo(VkAttachmentDescription& a_colorAttachment, const VkFormat& a_swapChainImageFormat)
 {
     a_colorAttachment.format = a_swapChainImageFormat;
@@ -90,6 +100,7 @@ void VulkanRenderPass::FillColorAttachmentInfo(VkAttachmentDescription& a_colorA
     a_colorAttachment.initialLayout = VK_IMAGE_LAYOUT_UNDEFINED;
     a_colorAttachment.finalLayout = VK_IMAGE_LAYOUT_PRESENT_SRC_KHR;
 }
+
 
 void VulkanRenderPass::FillDepthAttachmentInfo(VkAttachmentDescription& a_depthAttachment, const VkFormat& a_depthFormat)
 {
@@ -103,6 +114,7 @@ void VulkanRenderPass::FillDepthAttachmentInfo(VkAttachmentDescription& a_depthA
     a_depthAttachment.finalLayout = VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL;
 }
 
+
 void VulkanRenderPass::SetupSubpass(VkSubpassDescription& a_subpass, const VkAttachmentReference& a_colorAttachmentReference, const VkAttachmentReference& a_depthAttachmentReference)
 {
     a_subpass.pipelineBindPoint = VK_PIPELINE_BIND_POINT_GRAPHICS;
@@ -110,6 +122,7 @@ void VulkanRenderPass::SetupSubpass(VkSubpassDescription& a_subpass, const VkAtt
     a_subpass.pColorAttachments = &a_colorAttachmentReference;
     a_subpass.pDepthStencilAttachment = &a_depthAttachmentReference;
 }
+
 
 void VulkanRenderPass::SetupSubpassDependency(VkSubpassDependency& a_dependency)
 {
@@ -120,6 +133,7 @@ void VulkanRenderPass::SetupSubpassDependency(VkSubpassDependency& a_dependency)
     a_dependency.dstStageMask = VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT | VK_PIPELINE_STAGE_EARLY_FRAGMENT_TESTS_BIT;
     a_dependency.srcAccessMask = VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT | VK_ACCESS_DEPTH_STENCIL_ATTACHMENT_WRITE_BIT;
 }
+
 
 void VulkanRenderPass::SetupRenderPassCreateInfo(VkRenderPassCreateInfo& a_renderPassCreateInfo, const std::array<VkAttachmentDescription, 2>& a_attachments, const VkSubpassDescription& a_subpass, const VkSubpassDependency& a_dependency)
 {
