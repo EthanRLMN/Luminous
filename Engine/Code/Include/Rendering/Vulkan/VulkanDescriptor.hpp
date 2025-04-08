@@ -1,6 +1,5 @@
 #pragma once
 
-#include <array>
 #include <vulkan/vulkan.hpp>
 
 #include "IBuffer.hpp"

@@ -37,6 +37,7 @@ public:
 	[[nodiscard]] IDescriptor* GetDescriptor() const { return m_descriptor; }
 	[[nodiscard]] ICommandBuffer* GetCommandBuffer() const { return m_commandBuffer; }
 	[[nodiscard]] ISynchronization* GetSynchronization() const { return m_synchronization; }
+	[[nodiscard]] IRenderingDraw* GetRenderingDraw() const { return m_renderingDraw; }
 
     bool IsRunning() const { return m_isRunning; }
 
@@ -46,7 +47,6 @@ private:
 	IWindow* m_window { nullptr };
 	IInputManager* m_inputManager { nullptr };
 	IResourceManager* m_resourceManager{ nullptr };
-
 	IInstance* m_instance { nullptr };
 	ISurface* m_surface { nullptr };
 	IDevice* m_device { nullptr };
@@ -64,6 +64,7 @@ private:
 	ICommandBuffer* m_commandBuffer{ nullptr };
 	ICommandBuffer* m_editorCommandBuffer{ nullptr };
 	ISynchronization* m_synchronization { nullptr };
+    IRenderingDraw* m_renderingDraw { nullptr };
 
     bool m_isRunning { false };
 };

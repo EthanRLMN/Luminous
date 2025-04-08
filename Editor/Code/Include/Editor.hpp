@@ -17,6 +17,7 @@ public:
     void SetupImGui() const;
 
     void Update() const;
+    void Render() const;
 
     [[nodiscard]] Engine* GetEngine() const { return m_engine; }
     [[nodiscard]] ImguiWindow* GetImguiWindow() const { return m_imguiWindow; }

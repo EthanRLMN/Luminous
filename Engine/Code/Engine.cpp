@@ -4,25 +4,83 @@
 #include "ResourceManager/Mesh.hpp"
 
 
+void Engine::DestroyWindow() const
+{
+    m_inputManager->Destroy(m_window);
+    m_interface->DeleteInputManager(m_inputManager);
+
+    m_window->Destroy();
+    m_interface->DeleteWindow(m_window);
+}
+
+void Engine::Destroy() const
+{
+    m_synchronization->Destroy(m_device);
+    m_interface->DeleteSynchronization(m_synchronization);
+
+    m_commandBuffer->Destroy();
+    m_interface->DeleteCommandBuffer(m_commandBuffer);
+
+    m_descriptor->Destroy(m_device);
+    m_interface->DeleteDescriptor(m_descriptor);
+
+    m_buffer->Destroy(m_device);
+    m_interface->DeleteBuffer(m_buffer);
+
+    m_model->Destroy();
+    m_interface->DeleteModel(m_model);
+
+    m_texture->Destroy(m_device);
+    m_interface->DeleteTexture(m_texture);
+
+    m_frameBuffer->Destroy(m_device);
+    m_interface->DeleteFrameBuffer(m_frameBuffer);
+
+    m_depthResource->Destroy(m_device);
+    m_interface->DeleteDepthResource(m_depthResource);
+
+    m_commandPool->Destroy(m_device);
+    m_interface->DeleteCommandPool(m_commandPool);
+
+    m_pipeline->Destroy(m_device);
+    m_interface->DeletePipeline(m_pipeline);
+
+    m_descriptorSetLayout->Destroy(m_device);
+    m_interface->DeleteDescriptorSetLayout(m_descriptorSetLayout);
+
+    m_renderPass->Destroy(m_device);
+    m_interface->DeleteRenderPass(m_renderPass);
+
+    m_swapChain->Destroy(m_device);
+    m_interface->DeleteSwapChain(m_swapChain);
+
+    m_device->Destroy();
+    m_interface->DeleteDevice(m_device);
+
+    m_surface->Destroy(m_instance);
+    m_interface->DeleteSurface(m_surface);
+
+    m_instance->Destroy();
+    m_interface->DeleteContext(m_instance);
+
+    m_inputManager->Destroy(m_window);
+
+    m_interface->DeleteInputManager(m_inputManager);
+    m_interface->DeleteResourceManager(m_resourceManager);
+    //delete(m_window);
+
+    m_renderingDraw->Destroy();
+    m_interface->DeleteRenderingDraw(m_renderingDraw);
+}
+
+
 void Engine::Init()
 {
-    m_isRunning = true;
-
     Debug::Logger& l_logger = Debug::Logger::GetInstance();
     l_logger.Init("Engine", 1_MiB, 5, true);
 
-    /*
-    AssimpModelLoader t_loader;
-    AssimpModelDebugger l_cube = t_loader.LoadModel("Assets/Models/cube.fbx");
-    l_cube.DebugVertices();
-    l_cube.DebugIndices();*/
-
-    /*
-    IModel l_sphere = t_loader.LoadModel("sphere.obj");
-    l_sphere.DebugVertices();
-    l_sphere.DebugIndices();*/
-
     m_interface = new VulkanRenderInterface();
+    m_isRunning = true;
 
     m_window = m_interface->InstantiateWindow();
     m_window->Initialize("Luminous", 1280, 720);
@@ -88,84 +146,19 @@ void Engine::Init()
     //m_resourceManager->DeleteResource<Mesh>("Engine/Assets/Models/metalSonic.obj");
     Mesh* mesh5 = m_resourceManager->LoadResource<Mesh>("Engine/Assets/Models/metalSonic.obj");
     Mesh* mesh3 = m_resourceManager->GetResource<Mesh>("Engine/Assets/Models/metalSonic.obj");
-}
 
-void Engine::DestroyWindow() const
-{
-    m_inputManager->Destroy(m_window);
-    m_interface->DeleteInputManager(m_inputManager);
-
-    m_window->Destroy();
-    m_interface->DeleteWindow(m_window);
-}
-
-void Engine::Destroy() const
-{
-    m_synchronization->Destroy(m_device);
-    m_interface->DeleteSynchronization(m_synchronization);
-
-    m_commandBuffer->Destroy();
-    m_interface->DeleteCommandBuffer(m_commandBuffer);
-
-    m_descriptor->Destroy(m_device);
-    m_interface->DeleteDescriptor(m_descriptor);
-
-    m_buffer->Destroy(m_device);
-    m_interface->DeleteBuffer(m_buffer);
-
-    m_model->Destroy();
-    m_interface->DeleteModel(m_model);
-
-    m_texture->Destroy(m_device);
-    m_interface->DeleteTexture(m_texture);
-
-    m_frameBuffer->Destroy(m_device);
-    m_interface->DeleteFrameBuffer(m_frameBuffer);
-
-    m_depthResource->Destroy(m_device);
-    m_interface->DeleteDepthResource(m_depthResource);
-
-    m_commandPool->Destroy(m_device);
-    m_interface->DeleteCommandPool(m_commandPool);
-
-    m_pipeline->Destroy(m_device);
-    m_interface->DeletePipeline(m_pipeline);
-
-    m_descriptorSetLayout->Destroy(m_device);
-    m_interface->DeleteDescriptorSetLayout(m_descriptorSetLayout);
-
-    m_renderPass->Destroy(m_device);
-    m_interface->DeleteRenderPass(m_renderPass);
-
-    m_swapChain->Destroy(m_device);
-    m_interface->DeleteSwapChain(m_swapChain);
-
-    m_device->Destroy();
-    m_interface->DeleteDevice(m_device);
-
-    m_surface->Destroy(m_instance);
-    m_interface->DeleteSurface(m_surface);
-
-    m_instance->Destroy();
-    m_interface->DeleteContext(m_instance);
-
-    //m_inputManager->Destroy(m_window);
-    //m_interface->DeleteInputManager(m_inputManager);
-
-    //m_window->Destroy();
-
-    m_interface->DeleteResourceManager(m_resourceManager);
-    //delete(m_window);
+    m_renderingDraw = m_interface->InstantiateRenderingDraw();
 }
 
 void Engine::Update()
 {
-    IRenderingDraw* renderingDraw = m_interface->InstantiateRenderingDraw();
     // TODO : Cleanup
     while (!m_window->ShouldClose())
     {
-        renderingDraw->Create(m_window, m_device, m_swapChain, m_pipeline, m_buffer, m_renderPass, m_descriptor, m_model, m_synchronization, m_commandBuffer, m_frameBuffer, m_depthResource, m_surface);
+        m_window->PollEvents();
         m_inputManager->Update(m_window);
+
+        m_renderingDraw->Create(m_window, m_device, m_swapChain, m_pipeline, m_buffer, m_renderPass, m_descriptor, m_model, m_synchronization, m_commandBuffer, m_frameBuffer, m_depthResource, m_surface);
     }
     m_isRunning = false;
     Destroy();

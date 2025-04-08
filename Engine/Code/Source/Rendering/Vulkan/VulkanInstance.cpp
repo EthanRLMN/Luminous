@@ -76,7 +76,7 @@ void VulkanInstance::SetupApplicationInfo(VkApplicationInfo& a_applicationInfo)
 	a_applicationInfo.applicationVersion = VK_MAKE_VERSION(1, 0, 0);
 	a_applicationInfo.pEngineName = "Luminous";
 	a_applicationInfo.engineVersion = VK_MAKE_VERSION(1, 0, 0);
-	a_applicationInfo.apiVersion = VK_API_VERSION_1_3;
+	a_applicationInfo.apiVersion = VK_API_VERSION_1_4;
 }
 
 
