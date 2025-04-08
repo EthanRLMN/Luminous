@@ -26,9 +26,11 @@ T* IResourceManager::LoadResource(const IResourceParams a_params)
     {
         std::string l_path = "v=" + a_params.m_vertexShaderPath + ", f=" + a_params.m_fragmentShaderPath + ", t=" + a_params.m_tesselationShaderPath + ", g=" + a_params.m_geometryShaderPath;
         l_file = l_path;
+        DEBUG_LOG_INFO("{}", l_file);
+		
     }
 
-	DEBUG_LOG_INFO("{}", l_file);
+	
 
 	if (m_resources[l_file] == nullptr)
 	{

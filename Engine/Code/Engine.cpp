@@ -111,6 +111,9 @@ void Engine::DestroyWindow() const
 
 void Engine::Destroy() const
 {
+
+	m_resourceManager->DeleteResource<VulkanShader>("v=Engine/Assets/Shaders/vert.spv, f=Engine/Assets/Shaders/frag.spv, t=, g=",m_device);
+
 	m_synchronization->Destroy(m_device);
 	m_interface->DeleteSynchronization(m_synchronization);
 

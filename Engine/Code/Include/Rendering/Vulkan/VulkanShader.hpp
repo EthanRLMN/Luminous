@@ -16,10 +16,10 @@ public:
 
     VulkanShader* CastVulkan() override { return this; }
 
-    inline VulkanShaderModule GetVertexShaderModule() { return m_vertexShaderModule; }
-    inline VulkanShaderModule GetFragmentShaderModule() { return m_fragmentShaderModule; }
-    inline VulkanShaderModule GetTesselationShaderModule() { return m_tesselationShaderModule; }
-    inline VulkanShaderModule GetGeometryShaderModule() { return m_geometryShaderModule; }
+    inline VulkanShaderModule* GetVertexShaderModule() { return &m_vertexShaderModule; }
+    inline VulkanShaderModule* GetFragmentShaderModule() { return &m_fragmentShaderModule; }
+    inline VulkanShaderModule* GetTesselationShaderModule() { return &m_tesselationShaderModule; }
+    inline VulkanShaderModule* GetGeometryShaderModule() { return &m_geometryShaderModule; }
 
 private:
     VulkanShaderModule m_vertexShaderModule;

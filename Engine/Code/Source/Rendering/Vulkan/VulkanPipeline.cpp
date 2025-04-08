@@ -21,23 +21,18 @@ void VulkanPipeline::Create(IDevice* a_device, IRenderPass* a_renderPass, IDescr
     l_shaderParams.m_fragmentShaderPath = "Engine/Assets/Shaders/frag.spv";
     VulkanShader* l_shader = a_resourceManager->LoadResource<VulkanShader>(l_shaderParams);
 
-	VulkanShaderModule l_vertexShaderModule;
-    l_vertexShaderModule.Create(a_device, "Engine/Assets/Shaders/vert.spv");
-
-	VulkanShaderModule l_fragmentShaderModule;
-    l_fragmentShaderModule.Create(a_device, "Engine/Assets/Shaders/frag.spv");
 
 	//graphics pipeline creation info requires array  of shader
     VkPipelineShaderStageCreateInfo l_shaderStages[] = { 
-		l_vertexShaderModule.CreateStage(VK_SHADER_STAGE_VERTEX_BIT), 
-		l_fragmentShaderModule.CreateStage(VK_SHADER_STAGE_FRAGMENT_BIT)
+		l_shader->GetVertexShaderModule()->CreateStage(VK_SHADER_STAGE_VERTEX_BIT), 
+		l_shader->GetFragmentShaderModule()->CreateStage(VK_SHADER_STAGE_FRAGMENT_BIT)
     };
 
 	/**/
 	VkVertexInputBindingDescription l_bindingDescription { };
 	std::array<VkVertexInputAttributeDescription, 3> l_attributeDescriptions { };
 	VkPipelineVertexInputStateCreateInfo l_vertexInputCreateInfo = { VK_STRUCTURE_TYPE_PIPELINE_VERTEX_INPUT_STATE_CREATE_INFO };
-	l_vertexShaderModule.BindShader(l_bindingDescription, l_attributeDescriptions, l_vertexInputCreateInfo);
+    l_shader->GetVertexShaderModule()->BindShader(l_bindingDescription, l_attributeDescriptions, l_vertexInputCreateInfo);
 
 	//Input Assembly
 	VkPipelineInputAssemblyStateCreateInfo l_inputAssembly = { VK_STRUCTURE_TYPE_PIPELINE_INPUT_ASSEMBLY_STATE_CREATE_INFO };
@@ -80,8 +75,7 @@ void VulkanPipeline::Create(IDevice* a_device, IRenderPass* a_renderPass, IDescr
 
 	//destroy shader module no longer needed after pipeline created
 
-	l_fragmentShaderModule.Destroy(a_device);
-    l_vertexShaderModule.Destroy(a_device);
+	
 	DEBUG_LOG_INFO("Vulkan Graphic Pipeline : Pipeline Created!\n");
 }
 
