@@ -3,9 +3,11 @@
 #include "Logger.hpp"
 
 #include "ResourceManager.hpp"
+#include "Rendering/Vulkan/VulkanShader.hpp"
 
 class VulkanTexture;
 class VulkanMesh;
+class VulkanShader;
 
 template<typename T>
 T* IResourceManager::LoadResource(const IResourceParams a_params)
@@ -18,7 +20,13 @@ T* IResourceManager::LoadResource(const IResourceParams a_params)
     } else if (typeid(T) == typeid(VulkanMesh))
     {
         l_file = a_params.m_meshPath;
+    } else if (typeid(T) == typeid(VulkanShader))
+    {
+        std::string l_path = "v=" + a_params.m_vertexShaderPath + ", f=" + a_params.m_fragmentShaderPath + ", t=" + a_params.m_tesselationShaderPath + ", g=" + a_params.m_geometryShaderPath;
+        l_file = l_path;
     }
+
+	DEBUG_LOG_INFO("{}", l_file);
 
 	if (m_resources[l_file] == nullptr)
 	{

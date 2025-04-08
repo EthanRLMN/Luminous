@@ -19,9 +19,10 @@ bool VulkanShaderModule::Create(IDevice* a_device, const std::string& a_path)
     if (vkCreateShaderModule(a_device->CastVulkan()->GetDevice(), &l_createInfo, nullptr, &m_shaderModule) != VK_SUCCESS)
     {
         throw std::runtime_error("failed to create shader module!");
+        return false;
     }
 
-    return false;
+    return true;
 }
 
 void VulkanShaderModule::Destroy(IDevice* a_device)

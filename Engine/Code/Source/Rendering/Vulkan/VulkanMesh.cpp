@@ -1,6 +1,5 @@
 #include <unordered_map>
 
-#define TINYOBJLOADER_IMPLEMENTATION
 #include "Rendering/Vulkan/VulkanMesh.hpp"
 #include "ResourceManager/ResourceManager.hpp"
 

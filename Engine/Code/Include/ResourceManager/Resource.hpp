@@ -19,6 +19,8 @@ struct IResourceParams
     std::string m_texturePath = "";
     std::string m_vertexShaderPath = "";
     std::string m_fragmentShaderPath = "";
+    std::string m_tesselationShaderPath = "";
+    std::string m_geometryShaderPath = "";
 };
 
 class IResource
