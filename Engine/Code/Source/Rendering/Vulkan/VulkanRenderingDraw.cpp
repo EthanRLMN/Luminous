@@ -76,7 +76,7 @@ void VulkanRenderingDraw::RecordCommandBuffer(const VkCommandBuffer& a_commandBu
         DEBUG_LOG_INFO("failed to begin recording command buffer!\n");
 
     VkRenderPassBeginInfo l_renderPassBeginInfo = { VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO };
-    std::array<VkClearValue, 2> l_clearValues{};
+    const std::array<VkClearValue, 2> l_clearValues{};
     PresentRenderPassInfo(l_renderPassBeginInfo, a_renderPass->CastVulkan()->GetRenderPass(), a_frameBuffer->CastVulkan()->GetFrameBuffers()[a_imageIndex], a_swapChain->CastVulkan()->GetSwapChainExtent(), l_clearValues, a_commandBuffer, a_graphicsPipeline);
 
     VkViewport l_viewport{};
@@ -123,7 +123,7 @@ void VulkanRenderingDraw::UpdateUniformBuffer(const uint32_t currentImage, ISwap
 
 void VulkanRenderingDraw::RecreateSwapChain(IWindow* a_window, IDevice* a_device, ISurface* a_surface, ISwapChain* a_swapChain, IDepthResource* a_depthResource, IFrameBuffer* a_frameBuffer, IRenderPass* a_renderPass)
 {
-    int l_width{ 1280 }, l_height{ 720 };
+    int l_width, l_height{ 0 };
     glfwGetFramebufferSize(a_window->CastGLFW()->GetGLFWWindow(), &l_width, &l_height);
     while (l_width == 0 || l_height == 0)
     {

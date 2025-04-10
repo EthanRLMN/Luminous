@@ -11,8 +11,6 @@ class IRenderPass
 public:
 	virtual ~IRenderPass() = default;
 
-    virtual void Begin(const std::optional<std::function<void()>>& a_function) = 0;
-    virtual void End(const std::optional<std::function<void()>>& a_function) = 0;
 	virtual void Create(ISwapChain* a_swapChain, IDevice* a_device) = 0;
 	virtual void Destroy(IDevice* _device) = 0;
 

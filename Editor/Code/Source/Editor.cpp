@@ -47,7 +47,6 @@ void Editor::SetupImGui() const
     l_io.ConfigDockingAlwaysTabBar = true;
 
     ImGui_ImplGlfw_InitForVulkan(m_engine->GetWindow()->CastGLFW()->GetGLFWWindow(), true);
-    const uint32_t l_queueFamilyIndex = m_engine->GetDevice()->CastVulkan()->GetQueueFamilies(m_engine->GetDevice()->CastVulkan()->GetPhysicalDevice(), m_engine->GetSurface()->CastVulkan()->GetSurface()).graphicsFamily;
 
     ImGui_ImplVulkan_InitInfo l_initInfo{};
     l_initInfo.ApiVersion = VK_API_VERSION_1_4;
@@ -63,9 +62,6 @@ void Editor::SetupImGui() const
 
     ImGui_ImplVulkan_Init(&l_initInfo);
     ImGui_ImplVulkan_CreateFontsTexture();
-
-    m_engine->GetUIRenderPass(). CreateUIPass(m_engine->GetSwapChain(), m_engine->GetDevice());
-    ImGui_ImplVulkan_RenderDrawData(ImGui::GetDrawData(), m_engine->GetCommandBuffer()->CastVulkan()->GetCommandBuffers()[m_engine->GetRenderingDraw()->CastVulkan()->GetCurrentFrame()]);
 }
 
 void Editor::Update()
@@ -80,7 +76,7 @@ void Editor::Update()
 
         ImGui::ShowDemoWindow();
 
-
+        ImGui_ImplVulkan_RenderDrawData(ImGui::GetDrawData(), m_engine->GetCommandBuffer()->CastVulkan()->GetCommandBuffers()[m_engine->GetRenderingDraw()->CastVulkan()->GetCurrentFrame()]);
         Render();
     }
 }

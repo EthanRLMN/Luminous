@@ -154,15 +154,10 @@ void Engine::Init()
 
 void Engine::Update()
 {
-    // TODO : Cleanup
-    while (!m_window->ShouldClose())
-    {
-        m_window->PollEvents();
-        m_inputManager->Update(m_window);
+    m_window->PollEvents();
+    m_inputManager->Update(m_window);
+    m_renderingDraw->Create(m_window, m_device, m_swapChain, m_pipeline, m_buffer, m_renderPass, m_descriptor, m_model, m_synchronization, m_commandBuffer, m_frameBuffer, m_depthResource, m_surface);
 
-        m_renderingDraw->Create(m_window, m_device, m_swapChain, m_pipeline, m_buffer, m_renderPass, m_descriptor, m_model, m_synchronization, m_commandBuffer, m_frameBuffer, m_depthResource, m_surface);
-    }
-    m_isRunning = false;
-    Destroy();
-    DestroyWindow();
+    if (m_window->ShouldClose())
+        m_isRunning = false;
 }
