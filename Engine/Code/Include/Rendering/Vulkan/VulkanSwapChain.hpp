@@ -20,6 +20,10 @@ public:
 
 	VulkanSwapChain* CastVulkan() override { return this; }
 
+	void CreateImage(VkDevice a_device, VkPhysicalDevice a_physicalDevice, uint32_t a_width, uint32_t a_height, VkFormat a_format, VkImageTiling a_tiling, VkImageUsageFlags a_usage, VkMemoryPropertyFlags a_properties, VkImage& a_image, VkDeviceMemory& a_imageMemory, const VkSampleCountFlagBits a_numSamples);
+
+	uint32_t FindMemoryType(VkPhysicalDevice a_physicalDevice, uint32_t a_typeFilter, VkMemoryPropertyFlags a_properties);
+
 	[[nodiscard]] VkSwapchainKHR GetSwapChain() const { return m_swapChain; }
 
 	[[nodiscard]] VkFormat GetSwapChainImageFormat() const { return m_swapChainImageFormat; }
@@ -37,6 +41,8 @@ private:
 	VkSurfaceFormatKHR ChooseBestSurfaceFormat(const std::vector<VkSurfaceFormatKHR>& a_formats);
 	VkPresentModeKHR ChooseBestPresentationMode(const std::vector<VkPresentModeKHR>& a_presentationModes);
 	VkExtent2D ChooseSwapExtend(const VkSurfaceCapabilitiesKHR& a_surfaceCapabilities, GLFWwindow* a_window);
+
+	void FillImageInfo(VkDevice a_device, uint32_t a_width, uint32_t a_height, VkFormat a_format, VkImageTiling a_tiling, VkImageUsageFlags a_usage, VkImage& a_image, const VkSampleCountFlagBits a_numSamples);
 
 	VkSwapchainKHR m_swapChain{ nullptr };
 

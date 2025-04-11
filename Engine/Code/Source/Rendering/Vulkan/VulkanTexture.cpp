@@ -31,7 +31,7 @@ bool VulkanTexture::Create(IResourceManager* a_manager, IResourceParams a_params
         DEBUG_LOG_ERROR("DEVICE IS NULL");
 	}
 
-	CreateTextureImage(l_device, l_depthResource, l_commandPool,a_params.m_texturePath);
+	CreateTextureImage(l_device,l_swapChain, l_depthResource, l_commandPool,a_params.m_texturePath);
 	CreateTextureImageView(l_device, l_swapChain);
 	CreateTextureSampler(l_device);
 	DEBUG_LOG_INFO("Vulkan Texture : Texture Created!\n");
@@ -75,7 +75,7 @@ void VulkanTexture::Destroy(IDevice* a_device)
 }
 
 
-void VulkanTexture::CreateTextureImage(IDevice* a_device, IDepthResource* a_depthResource, ICommandPool* a_commandPool,std::string a_path)
+void VulkanTexture::CreateTextureImage(IDevice* a_device, ISwapChain* a_swapChain, IDepthResource* a_depthResource, ICommandPool* a_commandPool,std::string a_path)
 {
     if (a_device == nullptr)
     {
@@ -108,7 +108,7 @@ void VulkanTexture::CreateTextureImage(IDevice* a_device, IDepthResource* a_dept
 
 	stbi_image_free(l_pixels);
 
-	a_depthResource->CastVulkan()->CreateImage(l_vkDevice, l_vkPhysicalDevice, l_texWidth, l_texHeight, VK_FORMAT_R8G8B8A8_SRGB, VK_IMAGE_TILING_OPTIMAL, VK_IMAGE_USAGE_TRANSFER_DST_BIT | VK_IMAGE_USAGE_SAMPLED_BIT, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT, m_textureImage, m_textureImageMemory, VK_SAMPLE_COUNT_1_BIT);
+	a_swapChain->CastVulkan()->CreateImage(l_vkDevice, l_vkPhysicalDevice, l_texWidth, l_texHeight, VK_FORMAT_R8G8B8A8_SRGB, VK_IMAGE_TILING_OPTIMAL, VK_IMAGE_USAGE_TRANSFER_DST_BIT | VK_IMAGE_USAGE_SAMPLED_BIT, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT, m_textureImage, m_textureImageMemory, VK_SAMPLE_COUNT_1_BIT);
 
 	TransitionImageLayout(l_vkDevice, l_vkGraphicsQueue, l_vkCommandPool, m_textureImage, VK_FORMAT_R8G8B8A8_SRGB, VK_IMAGE_LAYOUT_UNDEFINED, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL);
 

@@ -12,7 +12,7 @@ public:
     void Destroy(IDevice* a_device) override;
 
 
-	void CreateTextureImage(IDevice* a_device, IDepthResource* a_depthResource, ICommandPool* a_commandPool,std::string a_path);
+	void CreateTextureImage(IDevice* a_device, ISwapChain* a_swapChain, IDepthResource* a_depthResource, ICommandPool* a_commandPool, std::string a_path);
 
 	void CreateTextureImageView(IDevice* a_device, ISwapChain* a_swapChain);
 	void CreateTextureSampler(IDevice* a_device);
