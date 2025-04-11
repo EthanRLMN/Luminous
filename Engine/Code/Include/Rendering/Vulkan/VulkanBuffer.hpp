@@ -10,12 +10,12 @@ class VulkanBuffer final : public IBuffer
 public:
     VulkanBuffer() = default;
 
-    void Create(IDevice* a_device, ITexture* a_texture, ICommandPool* a_commandPool, IDepthResource* a_depthResource, IMesh* a_mesh) override;
+    void Create(IDevice* a_device, ITexture* a_texture, ICommandPool* a_commandPool, ISwapChain* a_swapChain, IMesh* a_mesh) override;
     void Destroy(IDevice* a_device) override;
 
-    void CreateVertexBuffers(IDevice* a_device, ITexture* a_texture, ICommandPool* a_commandPool, IDepthResource* a_depthResource, IMesh* a_mesh);
-    void CreateIndexBuffers(IDevice* a_device, ITexture* a_texture, ICommandPool* a_commandPool, IDepthResource* a_depthResource, IMesh* a_mesh);
-    void CreateUniformBuffers(IDevice* a_device, ITexture* a_texture, IDepthResource* a_depthResource);
+    void CreateVertexBuffers(IDevice* a_device, ITexture* a_texture, ICommandPool* a_commandPool, ISwapChain* a_swapChain, IMesh* a_mesh);
+    void CreateIndexBuffers(IDevice* a_device, ITexture* a_texture, ICommandPool* a_commandPool, ISwapChain* a_swapChain, IMesh* a_mesh);
+    void CreateUniformBuffers(IDevice* a_device, ITexture* a_texture, ISwapChain* a_swapChain);
 
     VulkanBuffer* CastVulkan() override { return this; }
 

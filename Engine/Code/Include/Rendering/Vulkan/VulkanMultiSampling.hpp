@@ -13,7 +13,7 @@ public:
     void Destroy(IDevice* a_device) override;
 
     VkSampleCountFlagBits GetMaxUsableSampleCount(IDevice* a_device);
-    void CreateColorResources(IDevice* a_device,IDepthResource* a_depthResource, ISwapChain* a_swapchain);
+    void CreateColorResources(IDevice* a_device, ISwapChain* a_swapchain);
 
 private:
 

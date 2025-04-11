@@ -19,7 +19,7 @@ public:
 
 	void CreateBuffer(VkDevice a_device, VkPhysicalDevice _physicalDevice, VkDeviceSize a_size,
 	                  VkBufferUsageFlags a_usage, VkMemoryPropertyFlags a_properties, VkBuffer& a_buffer,
-	                  VkDeviceMemory& a_bufferMemory, IDepthResource* a_depthResource);
+                      VkDeviceMemory& a_bufferMemory, ISwapChain* a_swapChain);
 
 	void TransitionImageLayout(VkDevice a_device, VkQueue a_graphicsQueue, VkCommandPool a_commandPool, VkImage a_image,
 	                           VkFormat a_format, VkImageLayout a_oldLayout, VkImageLayout a_newLayout);

@@ -77,7 +77,7 @@ Engine::Engine()
     //m_mesh->Create(m_resourceManager, "Engine/Assets/Models/metalSonic.obj");
 
 	m_buffer = m_interface->InstantiateBuffer();
-	m_buffer->Create(m_device, m_texture, m_commandPool, m_depthResource, m_mesh);
+	m_buffer->Create(m_device, m_texture, m_commandPool, m_swapChain, m_mesh);
 
 	m_descriptor = m_interface->InstantiateDescriptor();
 	m_descriptor->Create(m_device, m_descriptorSetLayout, m_texture, m_buffer);

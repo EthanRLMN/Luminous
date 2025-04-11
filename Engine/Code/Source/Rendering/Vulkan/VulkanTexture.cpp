@@ -99,7 +99,7 @@ void VulkanTexture::CreateTextureImage(IDevice* a_device, ISwapChain* a_swapChai
 
 	VkBuffer l_stagingBuffer;
 	VkDeviceMemory l_stagingBufferMemory;
-	CreateBuffer(l_vkDevice, l_vkPhysicalDevice, l_imageSize, VK_BUFFER_USAGE_TRANSFER_SRC_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT, l_stagingBuffer, l_stagingBufferMemory, a_depthResource);
+    CreateBuffer(l_vkDevice, l_vkPhysicalDevice, l_imageSize, VK_BUFFER_USAGE_TRANSFER_SRC_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT, l_stagingBuffer, l_stagingBufferMemory, a_swapChain);
 
 	void* l_data;
 	vkMapMemory(l_vkDevice, l_stagingBufferMemory, 0, l_imageSize, 0, &l_data);
@@ -153,7 +153,7 @@ void VulkanTexture::CreateTextureSampler(IDevice* a_device)
 }
 
 
-void VulkanTexture::CreateBuffer(const VkDevice a_device, const VkPhysicalDevice _physicalDevice, const VkDeviceSize a_size, const VkBufferUsageFlags a_usage, const VkMemoryPropertyFlags a_properties, VkBuffer& a_buffer, VkDeviceMemory& a_bufferMemory, IDepthResource* a_depthResource)
+void VulkanTexture::CreateBuffer(const VkDevice a_device, const VkPhysicalDevice _physicalDevice, const VkDeviceSize a_size, const VkBufferUsageFlags a_usage, const VkMemoryPropertyFlags a_properties, VkBuffer& a_buffer, VkDeviceMemory& a_bufferMemory, ISwapChain* a_swapChain)
 {
 	VkBufferCreateInfo l_bufferInfo { };
 	l_bufferInfo.sType = VK_STRUCTURE_TYPE_BUFFER_CREATE_INFO;
@@ -170,7 +170,7 @@ void VulkanTexture::CreateBuffer(const VkDevice a_device, const VkPhysicalDevice
 	VkMemoryAllocateInfo l_allocateInfo { };
 	l_allocateInfo.sType = VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO;
 	l_allocateInfo.allocationSize = l_memoryRequirements.size;
-	l_allocateInfo.memoryTypeIndex = a_depthResource->CastVulkan()->FindMemoryType(_physicalDevice, l_memoryRequirements.memoryTypeBits, a_properties);
+    l_allocateInfo.memoryTypeIndex = a_swapChain->CastVulkan()->FindMemoryType(_physicalDevice, l_memoryRequirements.memoryTypeBits, a_properties);
 
 	if (vkAllocateMemory(a_device, &l_allocateInfo, nullptr, &a_bufferMemory) != VK_SUCCESS)
 		DEBUG_LOG_ERROR("Vulkan Texture : Failed to allocate Buffer Memory!\n");
