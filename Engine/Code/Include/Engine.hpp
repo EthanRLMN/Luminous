@@ -50,6 +50,7 @@ private:
 	IDescriptorSetLayout* m_descriptorSetLayout { nullptr };
 	IPipeline* m_pipeline { nullptr };
 	ICommandPool* m_commandPool{ nullptr };
+    IMultiSampling* m_multiSampling{ nullptr };
 	IDepthResource* m_depthResource{ nullptr };
 	IFrameBuffer* m_frameBuffer{ nullptr };
 	ITexture* m_texture{ nullptr };

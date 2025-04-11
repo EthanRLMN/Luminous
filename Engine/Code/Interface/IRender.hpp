@@ -19,6 +19,7 @@
 #include "ISynchronization.hpp"
 #include "ITexture.hpp"
 #include "IWindow.hpp"
+#include "IMultiSampling.hpp"
 #include "ResourceManager/ResourceManager.hpp"
 
 
@@ -38,6 +39,7 @@ public:
 	virtual IDescriptorSetLayout* InstantiateDescriptorSetLayout() = 0;
 	virtual IPipeline* InstantiatePipeline() = 0;
 	virtual ICommandPool* InstantiateCommandPool() = 0;
+    virtual IMultiSampling* InstantiateMultiSampling() = 0;
 	virtual IDepthResource* InstantiateDepthResource() = 0;
 	virtual IFrameBuffer* InstantiateFrameBuffer() = 0;
 	virtual ITexture* InstantiateTexture() = 0;
@@ -62,6 +64,7 @@ public:
 	virtual void DeletePipeline(IPipeline* a_pipeline) { delete a_pipeline; }
 	virtual void DeleteCommandPool(ICommandPool* a_commandPool) { delete a_commandPool; }
 	virtual void DeleteDepthResource(IDepthResource* a_depthResource) { delete a_depthResource; }
+    virtual void DeleteMultiSampling(IMultiSampling* a_multiSampling) { delete a_multiSampling; }
 	virtual void DeleteFrameBuffer(IFrameBuffer* a_frameBuffer) { delete a_frameBuffer; }
 	virtual void DeleteTexture(ITexture* a_texture) { delete a_texture; }
 	virtual void DeleteModel(IMesh* a_mesh) { delete a_mesh; }

@@ -1,10 +1,12 @@
 
-#include "IMultiSampling.hpp"
+#pragma once
+
 #include "vulkan/vulkan.h"
 #include "Struct/VulkanUtilities.hpp"
 #include "Rendering/Vulkan/VulkanDevice.hpp"
 #include "Rendering/Vulkan/VulkanDepthResource.hpp"
 #include "Rendering/Vulkan/VulkanSwapChain.hpp"
+#include "IMultiSampling.hpp"
 
 class VulkanMultiSampling : public IMultiSampling
 {
@@ -14,6 +16,8 @@ public:
 
     VkSampleCountFlagBits GetMaxUsableSampleCount(IDevice* a_device);
     void CreateColorResources(IDevice* a_device, ISwapChain* a_swapchain);
+
+     VulkanMultiSampling* CastVulkan() override { return this; }
 
 private:
 

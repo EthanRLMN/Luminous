@@ -54,6 +54,9 @@ Engine::Engine()
 	m_commandPool = m_interface->InstantiateCommandPool();
 	m_commandPool->Create(m_device, m_surface);
 
+	m_multiSampling = m_interface->InstantiateMultiSampling();
+    m_multiSampling->Create(m_device);
+
 	m_depthResource = m_interface->InstantiateDepthResource();
 	m_depthResource->Create(m_device, m_swapChain, m_renderPass);
 
@@ -137,6 +140,9 @@ void Engine::Destroy() const
 
 	m_depthResource->Destroy(m_device);
 	m_interface->DeleteDepthResource(m_depthResource);
+
+	m_multiSampling->Destroy(m_device);
+    m_interface->DeleteMultiSampling(m_multiSampling);
 
 	m_commandPool->Destroy(m_device);
 	m_interface->DeleteCommandPool(m_commandPool);
