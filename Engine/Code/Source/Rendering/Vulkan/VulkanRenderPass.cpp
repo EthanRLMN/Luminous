@@ -9,6 +9,12 @@
 #include "Rendering/Vulkan/VulkanDevice.hpp"
 #include "Rendering/Vulkan/VulkanSwapChain.hpp"
 
+static VulkanRenderPass::GuiRenderCallback l_editorGuiCallback { nullptr };
+
+void VulkanRenderPass::RegisterGuiCallback(GuiRenderCallback a_callback)
+{
+    l_editorGuiCallback = std::move(a_callback);
+}
 
 void VulkanRenderPass::Create(ISwapChain* a_swapChain, IDevice* a_device)
 {
@@ -82,6 +88,9 @@ void VulkanRenderPass::CreateUIPass(ISwapChain* a_swapChain, IDevice* a_device)
     const std::array<VkAttachmentDescription, 2> l_attachments = { l_colorAttachment, l_depthAttachment };
     VkRenderPassCreateInfo l_renderPassCreateInfo = {};
     SetupRenderPassCreateInfo(l_renderPassCreateInfo, l_attachments, l_subpass, l_dependency);
+
+    if (l_editorGuiCallback)
+        l_editorGuiCallback();
 
     const VkResult l_result = vkCreateRenderPass(a_device->CastVulkan()->GetDevice(), &l_renderPassCreateInfo, nullptr, &m_renderPass);
     if (l_result != VK_SUCCESS)

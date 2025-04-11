@@ -76,8 +76,12 @@ void Editor::Update()
 
         ImGui::ShowDemoWindow();
 
-        ImGui_ImplVulkan_RenderDrawData(ImGui::GetDrawData(), m_engine->GetCommandBuffer()->CastVulkan()->GetCommandBuffers()[m_engine->GetRenderingDraw()->CastVulkan()->GetCurrentFrame()]);
         Render();
+        m_engine->GetUIRenderPass()->CastVulkan()->RegisterGuiCallback([&]()
+{
+ImGui_ImplVulkan_RenderDrawData(ImGui::GetDrawData(), m_engine->GetCommandBuffer()->CastVulkan()->GetCommandBuffers()[m_engine->GetRenderingDraw()->CastVulkan()->GetCurrentFrame()]);
+});
+        //m_engine->GetUIRenderPass()->CastVulkan()->CreateUIPass(m_engine->GetSwapChain(), m_engine->GetDevice());
     }
 }
 
