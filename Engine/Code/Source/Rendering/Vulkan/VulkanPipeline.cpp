@@ -9,32 +9,30 @@
 #include "Rendering/Vulkan/VulkanDescriptorSetLayout.hpp"
 #include "Rendering/Vulkan/VulkanDevice.hpp"
 #include "Rendering/Vulkan/VulkanRenderPass.hpp"
+#include "Rendering/Vulkan/VulkanShaderModule.hpp"
 
 
-void VulkanPipeline::Create(IDevice* a_device, IRenderPass* a_renderPass, IDescriptorSetLayout* a_descriptionSetLayout)
+
+void VulkanPipeline::Create(IDevice* a_device, IRenderPass* a_renderPass, IDescriptorSetLayout* a_descriptionSetLayout, IResourceManager* a_resourceManager )
 {
-	// TODO Split shader module creation and file reading
-	std::vector<char> l_vertexShaderCode = ReadFile("Engine/Assets/Shaders/vert.spv");
-	std::vector<char> l_fragmentShaderCode = ReadFile("Engine/Assets/Shaders/frag.spv");
 
-	VkShaderModule vertexShaderModule = CreateShaderModule(a_device->CastVulkan()->GetDevice(), l_vertexShaderCode);
-	VkShaderModule fragmentShaderModule = CreateShaderModule(a_device->CastVulkan()->GetDevice(), l_fragmentShaderCode);
+	IResourceParams l_shaderParams{ a_device };
+    l_shaderParams.m_vertexShaderPath = "Engine/Assets/Shaders/vert.spv";
+    l_shaderParams.m_fragmentShaderPath = "Engine/Assets/Shaders/frag.spv";
+    VulkanShader* l_shader = a_resourceManager->LoadResource<VulkanShader>(l_shaderParams);
 
-	//vertex stage creation
-	VkPipelineShaderStageCreateInfo l_vertexShaderCreateInfo { VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO };
-	VertexStageCreation(l_vertexShaderCreateInfo, vertexShaderModule);
-
-	//fragment stage creation
-	VkPipelineShaderStageCreateInfo l_fragmentShaderCreateInfo { VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO };
-	FragmentStageCreation(l_fragmentShaderCreateInfo, fragmentShaderModule);
 
 	//graphics pipeline creation info requires array  of shader
-	VkPipelineShaderStageCreateInfo l_shaderStages[] = { l_vertexShaderCreateInfo, l_fragmentShaderCreateInfo };
+    VkPipelineShaderStageCreateInfo l_shaderStages[] = { 
+		l_shader->GetVertexShaderModule()->CreateStage(VK_SHADER_STAGE_VERTEX_BIT), 
+		l_shader->GetFragmentShaderModule()->CreateStage(VK_SHADER_STAGE_FRAGMENT_BIT)
+    };
 
+	/**/
 	VkVertexInputBindingDescription l_bindingDescription { };
 	std::array<VkVertexInputAttributeDescription, 3> l_attributeDescriptions { };
 	VkPipelineVertexInputStateCreateInfo l_vertexInputCreateInfo = { VK_STRUCTURE_TYPE_PIPELINE_VERTEX_INPUT_STATE_CREATE_INFO };
-	BindShaderAttributes(l_bindingDescription, l_attributeDescriptions, l_vertexInputCreateInfo);
+    l_shader->GetVertexShaderModule()->BindShader(l_bindingDescription, l_attributeDescriptions, l_vertexInputCreateInfo);
 
 	//Input Assembly
 	VkPipelineInputAssemblyStateCreateInfo l_inputAssembly = { VK_STRUCTURE_TYPE_PIPELINE_INPUT_ASSEMBLY_STATE_CREATE_INFO };
@@ -76,8 +74,8 @@ void VulkanPipeline::Create(IDevice* a_device, IRenderPass* a_renderPass, IDescr
 	PushPipelineInfo(l_pipelineCreateInfo, l_shaderStages, l_vertexInputCreateInfo, l_inputAssembly, l_viewportStateCreateInfo, l_rasterizerCreateInfo, l_multisamplingCreateInfo, l_depthStencil, l_colorBlending, l_dynamicStateCreationInfo, a_renderPass->CastVulkan()->GetRenderPass(), a_device->CastVulkan()->GetDevice());
 
 	//destroy shader module no longer needed after pipeline created
-	vkDestroyShaderModule(a_device->CastVulkan()->GetDevice(), fragmentShaderModule, nullptr);
-	vkDestroyShaderModule(a_device->CastVulkan()->GetDevice(), vertexShaderModule, nullptr);
+
+	
 	DEBUG_LOG_INFO("Vulkan Graphic Pipeline : Pipeline Created!\n");
 }
 
@@ -89,20 +87,6 @@ void VulkanPipeline::Destroy(IDevice* a_device)
 	DEBUG_LOG_INFO("Vulkan Graphic Pipeline : Pipeline destroyed!\n");
 }
 
-
-VkShaderModule VulkanPipeline::CreateShaderModule(const VkDevice a_device, const std::vector<char>& a_code)
-{
-	VkShaderModuleCreateInfo l_shaderModuleCreateInfo { VK_STRUCTURE_TYPE_SHADER_MODULE_CREATE_INFO };
-	l_shaderModuleCreateInfo.codeSize = a_code.size();
-	l_shaderModuleCreateInfo.pCode = reinterpret_cast<const uint32_t*>(a_code.data());
-
-	VkShaderModule l_shaderModule { };
-	const VkResult l_result = vkCreateShaderModule(a_device, &l_shaderModuleCreateInfo, nullptr, &l_shaderModule);
-	if (l_result != VK_SUCCESS)
-		DEBUG_LOG_ERROR("Vulkan Pipeline : Shader Module creating failed!\n");
-
-	return l_shaderModule;
-}
 
 
 void VulkanPipeline::VertexStageCreation(VkPipelineShaderStageCreateInfo& a_vertexShaderCreateInfo, const VkShaderModule& a_vertexShaderModule)

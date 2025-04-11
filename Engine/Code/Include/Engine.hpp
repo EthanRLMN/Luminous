@@ -60,7 +60,7 @@ private:
 	IDepthResource* m_depthResource{ nullptr };
 	IFrameBuffer* m_frameBuffer{ nullptr };
 	ITexture* m_texture{ nullptr };
-	IModel* m_model{ nullptr };
+	IMesh* m_mesh{ nullptr };
 	IBuffer* m_buffer { nullptr };
 	IDescriptor* m_descriptor{ nullptr };
 	ICommandBuffer* m_commandBuffer{ nullptr };

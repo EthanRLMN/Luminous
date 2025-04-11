@@ -9,7 +9,7 @@
 #include "Resources/ModelLoading/AssimpModelLoader.hpp"
 
 
-void AssimpModelLoader::LoadModel(Mesh* a_mesh, const char* a_file)
+void AssimpModelLoader::LoadModel(IMesh* a_mesh, const char* a_file)
 {
     Assimp::Importer l_importer { };
     char l_buffer[1024];
@@ -40,36 +40,36 @@ void AssimpModelLoader::LoadModel(Mesh* a_mesh, const char* a_file)
 }
 
 
-std::vector<AssimpVertex> AssimpModelLoader::SetupVertices(const aiMesh* a_mesh)
+std::vector<Vertex> AssimpModelLoader::SetupVertices(const aiMesh* a_mesh)
 {
-    std::vector<AssimpVertex> l_vertices { };
-    for (unsigned int i = 0; i < a_mesh->mNumVertices; ++i)
-    {
-        AssimpVertex l_currentVertex { };
+    std::vector<Vertex> l_vertices{};
+	for (unsigned int i = 0; i < a_mesh->mNumVertices; ++i)
+	{
+		Vertex l_currentVertex { };
 
-        Maths::Vector3 l_vertPosition { };
-        l_vertPosition.x = a_mesh->mVertices[i].x;
-        l_vertPosition.y = a_mesh->mVertices[i].y;
-        l_vertPosition.z = a_mesh->mVertices[i].z;
-        l_currentVertex.m_position = l_vertPosition;
+		Maths::Vector3 l_vertPosition { };
+		l_vertPosition.x = a_mesh->mVertices[i].x;
+		l_vertPosition.y = a_mesh->mVertices[i].y;
+		l_vertPosition.z = a_mesh->mVertices[i].z;
+		l_currentVertex.pos = l_vertPosition;
 
-        Maths::Vector2 l_vertTexCoords { };
-        if (a_mesh->mTextureCoords[0])
-        {
-            l_vertTexCoords.x = a_mesh->mTextureCoords[0][i].x;
-            l_vertTexCoords.y = a_mesh->mTextureCoords[0][i].y;
-        } else
-        {
-            l_vertTexCoords.x = 0;
-            l_vertTexCoords.y = 0;
-        }
-        l_currentVertex.m_texCoords = l_vertTexCoords;
+		Maths::Vector2 l_vertTexCoords { };
+		if (a_mesh->mTextureCoords[0])
+		{
+			l_vertTexCoords.x = a_mesh->mTextureCoords[0][i].x;
+			l_vertTexCoords.y = 1.0f - a_mesh->mTextureCoords[0][i].y;
+		} else
+		{
+			l_vertTexCoords.x = 0;
+			l_vertTexCoords.y = 0;
+		}
+		l_currentVertex.texCoord = l_vertTexCoords;
 
-        Maths::Vector3 l_vertNormals { };
-        l_vertNormals.x = a_mesh->mNormals[i].x;
-        l_vertNormals.y = a_mesh->mNormals[i].y;
-        l_vertNormals.z = a_mesh->mNormals[i].z;
-        l_currentVertex.m_normal = l_vertNormals;
+		Maths::Vector3 l_vertNormals { };
+		l_vertNormals.x = a_mesh->mNormals[i].x;
+		l_vertNormals.y = a_mesh->mNormals[i].y;
+		l_vertNormals.z = a_mesh->mNormals[i].z;
+		l_currentVertex.color = l_vertNormals;
 
         l_vertices.push_back(l_currentVertex);
     }

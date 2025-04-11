@@ -10,7 +10,7 @@
 #include "IFrameBuffer.hpp"
 #include "IInputManager.hpp"
 #include "IInstance.hpp"
-#include "IModel.hpp"
+#include "IMesh.hpp"
 #include "IPipeline.hpp"
 #include "IRenderingDraw.hpp"
 #include "IRenderPass.hpp"
@@ -41,7 +41,7 @@ public:
 	virtual IDepthResource* InstantiateDepthResource() = 0;
 	virtual IFrameBuffer* InstantiateFrameBuffer() = 0;
 	virtual ITexture* InstantiateTexture() = 0;
-	virtual IModel* InstantiateModel() = 0;
+	virtual IMesh* InstantiateModel() = 0;
 	virtual IBuffer* InstantiateBuffer() = 0;
 	virtual IDescriptor* InstantiateDescriptor() = 0;
 	virtual ICommandBuffer* InstantiateCommandBuffer() = 0;
@@ -64,7 +64,7 @@ public:
 	virtual void DeleteDepthResource(IDepthResource* a_depthResource) { delete a_depthResource; }
 	virtual void DeleteFrameBuffer(IFrameBuffer* a_frameBuffer) { delete a_frameBuffer; }
 	virtual void DeleteTexture(ITexture* a_texture) { delete a_texture; }
-	virtual void DeleteModel(IModel* a_model) { delete a_model; }
+	virtual void DeleteModel(IMesh* a_mesh) { delete a_mesh; }
 	virtual void DeleteBuffer(IBuffer* a_buffer) { delete a_buffer; }
 	virtual void DeleteDescriptor(IDescriptor* a_descriptor) { delete a_descriptor; }
 	virtual void DeleteCommandBuffer(ICommandBuffer* a_commandBuffer) { delete a_commandBuffer; }

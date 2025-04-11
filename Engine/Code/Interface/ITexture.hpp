@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Logger.hpp"
+#include "ResourceManager/Resource.hpp"
 
 class VulkanTexture;
 
@@ -9,13 +10,14 @@ class ISwapChain;
 class IDepthResource;
 class ICommandPool;
 
-class ITexture {
+class ITexture : public IResource 
+{
 
 public:
 	virtual ~ITexture() = default;
 
-	virtual void Create(IDevice* a_device, ISwapChain* a_swapChain, IDepthResource* a_depthResource, ICommandPool* a_commandPool) = 0;
-	virtual void Destroy(IDevice* a_device) = 0;
+	bool Create(IResourceManager* a_manager, IResourceParams a_params) override { return false; };
+    void Destroy(IDevice* a_device) override { return; };
 
 	virtual VulkanTexture* CastVulkan()
 	{

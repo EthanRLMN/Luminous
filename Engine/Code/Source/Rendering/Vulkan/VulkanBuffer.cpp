@@ -2,7 +2,7 @@
 
 #include "ICommandPool.hpp"
 #include "IDevice.hpp"
-#include "IModel.hpp"
+#include "IMesh.hpp"
 #include "ITexture.hpp"
 
 #include "Struct/VulkanUtilities.hpp"
@@ -10,16 +10,16 @@
 #include "Rendering/Vulkan/VulkanBuffer.hpp"
 #include "Rendering/Vulkan/VulkanCommandPool.hpp"
 #include "Rendering/Vulkan/VulkanDevice.hpp"
-#include "Rendering/Vulkan/VulkanModel.hpp"
+#include "Rendering/Vulkan/VulkanMesh.hpp"
 #include "Rendering/Vulkan/VulkanTexture.hpp"
 
 
-void VulkanBuffer::Create(IDevice* a_device, ITexture* a_texture, ICommandPool* a_commandPool, IDepthResource* a_depthResource, IModel* a_model)
+void VulkanBuffer::Create(IDevice* a_device, ITexture* a_texture, ICommandPool* a_commandPool, IDepthResource* a_depthResource, IMesh* a_mesh)
 {
-    CreateVertexBuffers(a_device, a_texture, a_commandPool, a_depthResource, a_model);
-    CreateIndexBuffers(a_device, a_texture, a_commandPool, a_depthResource, a_model);
-    CreateUniformBuffers(a_device, a_texture, a_depthResource);
-    DEBUG_LOG_INFO("Vulkan Buffer : Buffer created!\n");
+    CreateVertexBuffers(a_device, a_texture, a_commandPool, a_depthResource, a_mesh);
+    CreateIndexBuffers(a_device, a_texture, a_commandPool, a_depthResource, a_mesh);
+	CreateUniformBuffers(a_device, a_texture, a_depthResource);
+	DEBUG_LOG_INFO("Vulkan Buffer : Buffer created!\n");
 }
 
 
@@ -40,13 +40,13 @@ void VulkanBuffer::Destroy(IDevice* a_device)
 }
 
 
-void VulkanBuffer::CreateVertexBuffers(IDevice* a_device, ITexture* a_texture, ICommandPool* a_commandPool, IDepthResource* a_depthResource, IModel* a_model)
+void VulkanBuffer::CreateVertexBuffers(IDevice* a_device, ITexture* a_texture, ICommandPool* a_commandPool, IDepthResource* a_depthResource, IMesh* a_mesh)
 {
-    const std::vector<Vertex> l_vertices = a_model->CastVulkan()->GetVertices();
-    const VkDeviceSize l_bufferSize = sizeof(l_vertices.at(0)) * l_vertices.size();
-    VkBuffer l_stagingBuffer{ nullptr };
-    VkDeviceMemory l_stagingBufferMemory{ nullptr };
-    a_texture->CastVulkan()->CreateBuffer(a_device->CastVulkan()->GetDevice(), a_device->CastVulkan()->GetPhysicalDevice(), l_bufferSize, VK_BUFFER_USAGE_TRANSFER_SRC_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT, l_stagingBuffer, l_stagingBufferMemory, a_depthResource);
+	const std::vector<Vertex> l_vertices = a_mesh->CastVulkan()->GetVertices();
+	const VkDeviceSize l_bufferSize = sizeof(l_vertices.at(0)) * l_vertices.size();
+	VkBuffer l_stagingBuffer { nullptr };
+	VkDeviceMemory l_stagingBufferMemory { nullptr };
+	a_texture->CastVulkan()->CreateBuffer(a_device->CastVulkan()->GetDevice(), a_device->CastVulkan()->GetPhysicalDevice(), l_bufferSize, VK_BUFFER_USAGE_TRANSFER_SRC_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT, l_stagingBuffer, l_stagingBufferMemory, a_depthResource);
 
     void* l_data = nullptr;
     vkMapMemory(a_device->CastVulkan()->GetDevice(), l_stagingBufferMemory, 0, l_bufferSize, 0, &l_data);
@@ -61,12 +61,9 @@ void VulkanBuffer::CreateVertexBuffers(IDevice* a_device, ITexture* a_texture, I
 }
 
 
-void VulkanBuffer::CreateIndexBuffers(IDevice* a_device, ITexture* a_texture, ICommandPool* a_commandPool, IDepthResource* a_depthResource, IModel* a_model)
+void VulkanBuffer::CreateIndexBuffers(IDevice* a_device, ITexture* a_texture, ICommandPool* a_commandPool, IDepthResource* a_depthResource, IMesh* a_mesh)
 {
-    const std::vector<uint32_t> l_indices = a_model->CastVulkan()->GetIndices();
-    const VkDeviceSize l_bufferSize = sizeof(l_indices.at(0)) * l_indices.size();
-    VkBuffer l_stagingBuffer{ nullptr };
-    VkDeviceMemory l_stagingBufferMemory{ nullptr };
+	const std::vector<uint32_t> l_indices = a_mesh->CastVulkan()->GetIndices();
 
     a_texture->CastVulkan()->CreateBuffer(a_device->CastVulkan()->GetDevice(), a_device->CastVulkan()->GetPhysicalDevice(), l_bufferSize, VK_BUFFER_USAGE_TRANSFER_SRC_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT, l_stagingBuffer, l_stagingBufferMemory, a_depthResource);
 
