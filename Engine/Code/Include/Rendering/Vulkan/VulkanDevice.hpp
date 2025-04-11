@@ -29,7 +29,8 @@ public:
 	SwapChainDetails GetSwapChainDetails(VkPhysicalDevice a_device, VkSurfaceKHR a_surface);
 	bool CheckDeviceExtensionSupport(VkPhysicalDevice a_device);
 	QueueFamilyIndices GetQueueFamilies(VkPhysicalDevice a_device, VkSurfaceKHR a_surface);
-
+    inline void SetMSAASamples(VkSampleCountFlagBits a_sampleCount) { m_msaaSamples = a_sampleCount; }
+    inline VkSampleCountFlagBits GetMSAASamples() { return m_msaaSamples; }
 
 private :
 	void ProcessLogicalDeviceInfo(const QueueFamilyIndices& a_queueFamilyIndices);
@@ -39,4 +40,6 @@ private :
 	VkPhysicalDevice m_physicalDevice{ nullptr };
 	VkQueue m_graphicsQueue{ nullptr };
 	VkQueue m_presentationQueue{ nullptr };
+
+	VkSampleCountFlagBits m_msaaSamples{ VK_SAMPLE_COUNT_1_BIT };
 };

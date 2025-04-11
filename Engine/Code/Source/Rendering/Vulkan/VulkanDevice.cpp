@@ -164,6 +164,7 @@ QueueFamilyIndices VulkanDevice::GetQueueFamilies(const VkPhysicalDevice a_devic
 }
 
 
+
 void VulkanDevice::ProcessLogicalDeviceInfo(const QueueFamilyIndices& a_queueFamilyIndices)
 {
 	std::set<int> l_queueFamilyIndices = { a_queueFamilyIndices.graphicsFamily, a_queueFamilyIndices.presentationFamily };
