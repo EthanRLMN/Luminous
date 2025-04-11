@@ -12,29 +12,21 @@
 #include "Rendering/Vulkan/VulkanDevice.hpp"
 #include "Rendering/Vulkan/VulkanSwapChain.hpp"
 
-#include <cstdarg>
-
 
 bool VulkanTexture::Create(IResourceManager* a_manager, IResourceParams a_params)
 {
-
-	
-
-	IDevice* l_device = a_params.m_device;
+    IDevice* l_device = a_params.m_device;
     ISwapChain* l_swapChain = a_params.m_swapChain;
     IDepthResource* l_depthResource = a_params.m_depthResource;
     ICommandPool* l_commandPool = a_params.m_commandPool;
 
 
-	if (l_device == nullptr) 
-	{
-        DEBUG_LOG_ERROR("DEVICE IS NULL");
-	}
+    if (l_device == nullptr) { DEBUG_LOG_ERROR("DEVICE IS NULL"); }
 
-	CreateTextureImage(l_device, l_depthResource, l_commandPool);
-	CreateTextureImageView(l_device, l_swapChain);
-	CreateTextureSampler(l_device);
-	DEBUG_LOG_INFO("Vulkan Texture : Texture Created!\n");
+    CreateTextureImage(l_device, l_depthResource, l_commandPool);
+    CreateTextureImageView(l_device, l_swapChain);
+    CreateTextureSampler(l_device);
+    DEBUG_LOG_INFO("Vulkan Texture : Texture Created!\n");
 
     return true;
 }
@@ -43,51 +35,49 @@ bool VulkanTexture::Create(IResourceManager* a_manager, IResourceParams a_params
 void VulkanTexture::Destroy(IDevice* a_device)
 {
 
-	const VkDevice l_vkdevice = a_device->CastVulkan()->GetDevice();
+    const VkDevice l_vkdevice = a_device->CastVulkan()->GetDevice();
 
-	vkDeviceWaitIdle(l_vkdevice);
+    vkDeviceWaitIdle(l_vkdevice);
 
-	if (m_textureImageView != nullptr)
-	{
+    if (m_textureImageView != nullptr)
+    {
         vkDestroyImageView(l_vkdevice, m_textureImageView, nullptr);
-		m_textureImageView = nullptr;
-	}
+        m_textureImageView = nullptr;
+    }
 
-	if (m_textureImage != nullptr)
-	{
+    if (m_textureImage != nullptr)
+    {
         vkDestroyImage(l_vkdevice, m_textureImage, nullptr);
-		m_textureImage = nullptr;
-	}
+        m_textureImage = nullptr;
+    }
 
-	if (m_textureSampler != nullptr)
-	{
+    if (m_textureSampler != nullptr)
+    {
         vkDestroySampler(l_vkdevice, m_textureSampler, nullptr);
-		m_textureSampler = nullptr;
-	}
+        m_textureSampler = nullptr;
+    }
 
-	if (m_textureImageMemory != nullptr)
-	{
+    if (m_textureImageMemory != nullptr)
+    {
         vkFreeMemory(l_vkdevice, m_textureImageMemory, nullptr);
-		m_textureImageMemory = nullptr;
-	}
+        m_textureImageMemory = nullptr;
+    }
 
-	DEBUG_LOG_INFO("Vulkan Texture : Texture Destroy!\n");
+    DEBUG_LOG_INFO("Vulkan Texture : Texture Destroy!\n");
 }
 
 
 void VulkanTexture::CreateTextureImage(IDevice* a_device, IDepthResource* a_depthResource, ICommandPool* a_commandPool)
 {
-    if (a_device == nullptr)
-    {
-        DEBUG_LOG_ERROR("DEVICE IS NULL");
-    }
+    if (a_device == nullptr) { DEBUG_LOG_ERROR("DEVICE IS NULL"); }
 
 
-	const VkDevice l_vkDevice = a_device->CastVulkan()->GetDevice();
-	const VkPhysicalDevice l_vkPhysicalDevice = a_device->CastVulkan()->GetPhysicalDevice();
-	const VkQueue l_vkGraphicsQueue = a_device->CastVulkan()->GetGraphicsQueue();
-	const VkCommandPool l_vkCommandPool = a_commandPool->CastVulkan()->GetCommandPool();
+    const VkDevice l_vkDevice = a_device->CastVulkan()->GetDevice();
+    const VkPhysicalDevice l_vkPhysicalDevice = a_device->CastVulkan()->GetPhysicalDevice();
+    const VkQueue l_vkGraphicsQueue = a_device->CastVulkan()->GetGraphicsQueue();
+    const VkCommandPool l_vkCommandPool = a_commandPool->CastVulkan()->GetCommandPool();
 
+    int l_texWidth, l_texHeight, l_texChannels = -1;
     //stb_image
     stbi_uc* l_pixels = stbi_load(TEXTURE_PATH.c_str(), &l_texWidth, &l_texHeight, &l_texChannels, STBI_rgb_alpha);
     const VkDeviceSize l_imageSize = l_texWidth * l_texHeight * 4;
@@ -121,10 +111,10 @@ void VulkanTexture::CreateTextureImageView(IDevice* a_device, ISwapChain* a_swap
 
 void VulkanTexture::CreateTextureSampler(IDevice* a_device)
 {
-    VkPhysicalDeviceProperties l_properties { };
+    VkPhysicalDeviceProperties l_properties{};
     vkGetPhysicalDeviceProperties(a_device->CastVulkan()->GetPhysicalDevice(), &l_properties);
 
-    VkSamplerCreateInfo l_samplerInfo { VK_STRUCTURE_TYPE_SAMPLER_CREATE_INFO };
+    VkSamplerCreateInfo l_samplerInfo{ VK_STRUCTURE_TYPE_SAMPLER_CREATE_INFO };
     l_samplerInfo.magFilter = VK_FILTER_LINEAR;
     l_samplerInfo.minFilter = VK_FILTER_LINEAR;
     l_samplerInfo.addressModeU = VK_SAMPLER_ADDRESS_MODE_REPEAT;
@@ -145,7 +135,7 @@ void VulkanTexture::CreateTextureSampler(IDevice* a_device)
 
 void VulkanTexture::CreateBuffer(const VkDevice& a_device, const VkPhysicalDevice& a_physicalDevice, const VkDeviceSize& a_size, const VkBufferUsageFlags& a_usage, const VkMemoryPropertyFlags& a_properties, VkBuffer& a_buffer, VkDeviceMemory& a_bufferMemory, IDepthResource* a_depthResource)
 {
-    VkBufferCreateInfo l_bufferInfo { VK_STRUCTURE_TYPE_BUFFER_CREATE_INFO };
+    VkBufferCreateInfo l_bufferInfo{ VK_STRUCTURE_TYPE_BUFFER_CREATE_INFO };
     l_bufferInfo.size = a_size;
     l_bufferInfo.usage = a_usage;
     l_bufferInfo.sharingMode = VK_SHARING_MODE_EXCLUSIVE;
@@ -153,10 +143,10 @@ void VulkanTexture::CreateBuffer(const VkDevice& a_device, const VkPhysicalDevic
     if (vkCreateBuffer(a_device, &l_bufferInfo, nullptr, &a_buffer) != VK_SUCCESS)
         DEBUG_LOG_ERROR("Vulkan Texture : Failed to load buffer!\n");
 
-    VkMemoryRequirements l_memoryRequirements { };
+    VkMemoryRequirements l_memoryRequirements{};
     vkGetBufferMemoryRequirements(a_device, a_buffer, &l_memoryRequirements);
 
-    VkMemoryAllocateInfo l_allocateInfo { VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO };
+    VkMemoryAllocateInfo l_allocateInfo{ VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO };
     l_allocateInfo.allocationSize = l_memoryRequirements.size;
     l_allocateInfo.memoryTypeIndex = a_depthResource->CastVulkan()->FindMemoryType(a_physicalDevice, l_memoryRequirements.memoryTypeBits, a_properties);
 
@@ -170,7 +160,7 @@ void VulkanTexture::CreateBuffer(const VkDevice& a_device, const VkPhysicalDevic
 void VulkanTexture::TransitionImageLayout(const VkDevice& a_device, const VkQueue& a_graphicsQueue, const VkCommandPool& a_commandPool, const VkImage& a_image, const VkFormat& a_format, const VkImageLayout& a_oldLayout, const VkImageLayout& a_newLayout)
 {
     const VkCommandBuffer l_commandBuffer = BeginSingleTimeCommands(a_device, a_commandPool);
-    VkImageMemoryBarrier l_barrier { VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER };
+    VkImageMemoryBarrier l_barrier{ VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER };
     l_barrier.oldLayout = a_oldLayout;
     l_barrier.newLayout = a_newLayout;
     l_barrier.srcQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;
@@ -182,8 +172,8 @@ void VulkanTexture::TransitionImageLayout(const VkDevice& a_device, const VkQueu
     l_barrier.subresourceRange.baseArrayLayer = 0;
     l_barrier.subresourceRange.layerCount = 1;
 
-    VkPipelineStageFlags l_sourceStage { };
-    VkPipelineStageFlags l_destinationStage { };
+    VkPipelineStageFlags l_sourceStage{};
+    VkPipelineStageFlags l_destinationStage{};
     if (a_oldLayout == VK_IMAGE_LAYOUT_UNDEFINED && a_newLayout == VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL)
     {
         l_barrier.srcAccessMask = 0;
@@ -208,12 +198,12 @@ void VulkanTexture::TransitionImageLayout(const VkDevice& a_device, const VkQueu
 
 VkCommandBuffer VulkanTexture::BeginSingleTimeCommands(const VkDevice& a_device, const VkCommandPool& a_commandPool)
 {
-    VkCommandBufferAllocateInfo l_allocateInfo { VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO };
+    VkCommandBufferAllocateInfo l_allocateInfo{ VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO };
     l_allocateInfo.level = VK_COMMAND_BUFFER_LEVEL_PRIMARY;
     l_allocateInfo.commandPool = a_commandPool;
     l_allocateInfo.commandBufferCount = 1;
 
-    VkCommandBuffer l_commandBuffer { };
+    VkCommandBuffer l_commandBuffer{};
     if (a_commandPool == nullptr)
     {
         DEBUG_LOG_ERROR("Vulkan Texture : Invalid Command Pool!\n");
@@ -226,7 +216,7 @@ VkCommandBuffer VulkanTexture::BeginSingleTimeCommands(const VkDevice& a_device,
         return nullptr;
     }
 
-    VkCommandBufferBeginInfo beginInfo { VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO };
+    VkCommandBufferBeginInfo beginInfo{ VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO };
     beginInfo.flags = VK_COMMAND_BUFFER_USAGE_ONE_TIME_SUBMIT_BIT;
 
     vkBeginCommandBuffer(l_commandBuffer, &beginInfo);
@@ -238,7 +228,7 @@ void VulkanTexture::EndSingleTimeCommands(const VkDevice& a_device, const VkQueu
 {
     vkEndCommandBuffer(a_commandBuffer);
 
-    VkSubmitInfo l_submitInfo { VK_STRUCTURE_TYPE_SUBMIT_INFO };
+    VkSubmitInfo l_submitInfo{ VK_STRUCTURE_TYPE_SUBMIT_INFO };
     l_submitInfo.commandBufferCount = 1;
     l_submitInfo.pCommandBuffers = &a_commandBuffer;
 
@@ -251,7 +241,7 @@ void VulkanTexture::EndSingleTimeCommands(const VkDevice& a_device, const VkQueu
 void VulkanTexture::CopyBufferToImage(const VkDevice& a_device, const VkQueue& a_graphicsQueue, const VkCommandPool& a_commandPool, const VkBuffer& a_buffer, const VkImage& a_image, const uint32_t& a_width, const uint32_t& a_height)
 {
     const VkCommandBuffer l_commandBuffer = BeginSingleTimeCommands(a_device, a_commandPool);
-    VkBufferImageCopy l_bufferImageCopy { };
+    VkBufferImageCopy l_bufferImageCopy{};
     l_bufferImageCopy.bufferOffset = 0;
     l_bufferImageCopy.bufferRowLength = 0;
     l_bufferImageCopy.bufferImageHeight = 0;

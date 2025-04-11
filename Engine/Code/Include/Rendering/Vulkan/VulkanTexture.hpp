@@ -11,6 +11,7 @@ class VulkanTexture final : public ITexture
 public:
     bool Create(IResourceManager* a_manager, IResourceParams a_params) override;
     void Destroy(IDevice* a_device) override;
+    VulkanTexture* CastVulkan() override { return this; };
 
     void CreateTextureImage(IDevice* a_device, IDepthResource* a_depthResource, ICommandPool* a_commandPool);
     void CreateTextureImageView(IDevice* a_device, ISwapChain* a_swapChain);

@@ -17,7 +17,6 @@ public:
     void Init();
 	void Update();
 	void Destroy() const;
-	void DestroyWindow() const;
 
 	[[nodiscard]] IWindow* GetWindow() const { return m_window; }
 	[[nodiscard]] IInputManager* GetInputManager() const { return m_inputManager; }

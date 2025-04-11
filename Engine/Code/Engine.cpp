@@ -2,18 +2,10 @@
 
 #include "Rendering/Vulkan/VulkanRenderInterface.hpp"
 
-
-void Engine::DestroyWindow() const
-{
-    m_inputManager->Destroy(m_window);
-    m_interface->DeleteInputManager(m_inputManager);
-
-    m_window->Destroy();
-    m_interface->DeleteWindow(m_window);
-}
-
 void Engine::Destroy() const
 {
+    m_resourceManager->DeleteResource<VulkanShader>("v=Engine/Assets/Shaders/vert.spv, f=Engine/Assets/Shaders/frag.spv, t=, g=",m_device);
+
     m_synchronization->Destroy(m_device);
     m_interface->DeleteSynchronization(m_synchronization);
 
@@ -26,8 +18,8 @@ void Engine::Destroy() const
     m_buffer->Destroy(m_device);
     m_interface->DeleteBuffer(m_buffer);
 
-    m_model->Destroy();
-    m_interface->DeleteModel(m_model);
+    m_mesh->Destroy(m_device);
+    m_interface->DeleteModel(m_mesh);
 
     m_texture->Destroy(m_device);
     m_interface->DeleteTexture(m_texture);
@@ -62,14 +54,16 @@ void Engine::Destroy() const
     m_instance->Destroy();
     m_interface->DeleteContext(m_instance);
 
-    m_inputManager->Destroy(m_window);
-
-    m_interface->DeleteInputManager(m_inputManager);
     m_interface->DeleteResourceManager(m_resourceManager);
-    //delete(m_window);
 
     m_renderingDraw->Destroy();
     m_interface->DeleteRenderingDraw(m_renderingDraw);
+
+    m_inputManager->Destroy(m_window);
+    m_interface->DeleteInputManager(m_inputManager);
+
+    m_window->Destroy();
+    m_interface->DeleteWindow(m_window);
 }
 
 
@@ -86,6 +80,8 @@ void Engine::Init()
 
     m_inputManager = m_interface->InstantiateInputManager();
     m_inputManager->Initialize(m_window);
+
+    m_resourceManager = m_interface->InstantiateResourceManager();
 
     m_instance = m_interface->InstantiateContext();
     m_instance->Create(m_window);
@@ -108,7 +104,7 @@ void Engine::Init()
     m_descriptorSetLayout->Create(m_device);
 
     m_pipeline = m_interface->InstantiatePipeline();
-    m_pipeline->Create(m_device, m_renderPass, m_descriptorSetLayout);
+    m_pipeline->Create(m_device, m_renderPass, m_descriptorSetLayout, m_resourceManager);
 
     m_commandPool = m_interface->InstantiateCommandPool();
     m_commandPool->Create(m_device, m_surface);
@@ -119,14 +115,16 @@ void Engine::Init()
     m_frameBuffer = m_interface->InstantiateFrameBuffer();
     m_frameBuffer->Create(m_device, m_swapChain, m_renderPass, m_depthResource);
 
-    m_texture = m_interface->InstantiateTexture();
-    m_texture->Create(m_device, m_swapChain, m_depthResource, m_commandPool);
+    IResourceParams l_texParams{ m_device ,m_swapChain,m_depthResource,m_commandPool};
+    l_texParams.m_texturePath = "Engine/Assets/Textures/Untitled312.png";
+    m_texture = m_resourceManager->LoadResource<VulkanTexture>(l_texParams);
 
-    m_model = m_interface->InstantiateModel();
-    m_model->Create();
+    IResourceParams l_meshParams{};
+    l_meshParams.m_meshPath = "Engine/Assets/Models/metalSonic.obj";
+    m_mesh = m_resourceManager->LoadResource<VulkanMesh>(l_meshParams);
 
     m_buffer = m_interface->InstantiateBuffer();
-    m_buffer->Create(m_device, m_texture, m_commandPool, m_depthResource, m_model);
+    m_buffer->Create(m_device, m_texture, m_commandPool, m_depthResource, m_mesh);
 
     m_descriptor = m_interface->InstantiateDescriptor();
     m_descriptor->Create(m_device, m_descriptorSetLayout, m_texture, m_buffer);
@@ -135,18 +133,10 @@ void Engine::Init()
     m_commandBuffer->Create(m_device, m_commandPool);
 
     m_editorCommandBuffer = m_interface->InstantiateCommandBuffer();
-    m_commandBuffer->Create(m_device, m_commandPool);
+    m_editorCommandBuffer->Create(m_device, m_commandPool);
 
     m_synchronization = m_interface->InstantiateSynchronization();
     m_synchronization->Create(m_device);
-
-    m_resourceManager = m_interface->InstantiateResourceManager();
-    Mesh* mesh2 = m_resourceManager->GetResource<Mesh>("Engine/Assets/Models/metalSonic.obj");
-    Mesh* mesh = m_resourceManager->LoadResource<Mesh>("Engine/Assets/Models/metalSonic.obj");
-
-    //m_resourceManager->DeleteResource<Mesh>("Engine/Assets/Models/metalSonic.obj");
-    Mesh* mesh5 = m_resourceManager->LoadResource<Mesh>("Engine/Assets/Models/metalSonic.obj");
-    Mesh* mesh3 = m_resourceManager->GetResource<Mesh>("Engine/Assets/Models/metalSonic.obj");
 
     m_renderingDraw = m_interface->InstantiateRenderingDraw();
 }
@@ -155,7 +145,7 @@ void Engine::Update()
 {
     m_window->Update();
     m_inputManager->Update(m_window);
-    m_renderingDraw->Create(m_window, m_device, m_swapChain, m_pipeline, m_buffer, m_renderPass, m_descriptor, m_model, m_synchronization, m_commandBuffer, m_frameBuffer, m_depthResource, m_surface);
+    m_renderingDraw->Create(m_window, m_device, m_swapChain, m_pipeline, m_buffer, m_renderPass, m_descriptor, m_mesh, m_synchronization, m_commandBuffer, m_frameBuffer, m_depthResource, m_surface);
 
     if (m_window->ShouldClose())
         m_isRunning = false;
