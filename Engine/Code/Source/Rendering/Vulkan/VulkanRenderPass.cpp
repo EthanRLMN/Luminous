@@ -27,17 +27,17 @@ void VulkanRenderPass::CreateRenderPass(ISwapChain* a_swapChain, IDevice* a_devi
 {
 	VkAttachmentDescription l_colorAttachment = { };
 	l_colorAttachment.format = a_swapChain->CastVulkan()->GetSwapChainImageFormat();
-	l_colorAttachment.samples = VK_SAMPLE_COUNT_1_BIT;
+    l_colorAttachment.samples = a_device->CastVulkan()->GetMSAASamples();
 	l_colorAttachment.loadOp = VK_ATTACHMENT_LOAD_OP_CLEAR;
 	l_colorAttachment.storeOp = VK_ATTACHMENT_STORE_OP_STORE;
 	l_colorAttachment.stencilLoadOp = VK_ATTACHMENT_LOAD_OP_DONT_CARE;
 	l_colorAttachment.stencilStoreOp = VK_ATTACHMENT_STORE_OP_DONT_CARE;
 	l_colorAttachment.initialLayout = VK_IMAGE_LAYOUT_UNDEFINED;
-	l_colorAttachment.finalLayout = VK_IMAGE_LAYOUT_PRESENT_SRC_KHR;
+    l_colorAttachment.finalLayout = VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL;
 
 	VkAttachmentDescription l_depthAttachment { };
 	l_depthAttachment.format = FindDepthFormat(a_device->CastVulkan()->GetPhysicalDevice());
-	l_depthAttachment.samples = VK_SAMPLE_COUNT_1_BIT;
+    l_depthAttachment.samples = a_device->CastVulkan()->GetMSAASamples();
 	l_depthAttachment.loadOp = VK_ATTACHMENT_LOAD_OP_CLEAR;
 	l_depthAttachment.storeOp = VK_ATTACHMENT_STORE_OP_DONT_CARE;
 	l_depthAttachment.stencilLoadOp = VK_ATTACHMENT_LOAD_OP_DONT_CARE;
@@ -77,6 +77,24 @@ void VulkanRenderPass::CreateRenderPass(ISwapChain* a_swapChain, IDevice* a_devi
 	l_renderPassCreateInfo.pSubpasses = &l_subpass;
 	l_renderPassCreateInfo.dependencyCount = 1;
 	l_renderPassCreateInfo.pDependencies = &l_dependency;
+
+	VkAttachmentDescription l_colorAttachmentResolve{};
+    l_colorAttachmentResolve.format = a_swapChain->CastVulkan()->GetSwapChainImageFormat();
+    l_colorAttachmentResolve.samples = VK_SAMPLE_COUNT_1_BIT;
+    l_colorAttachmentResolve.loadOp = VK_ATTACHMENT_LOAD_OP_DONT_CARE;
+    l_colorAttachmentResolve.storeOp = VK_ATTACHMENT_STORE_OP_STORE;
+    l_colorAttachmentResolve.stencilLoadOp = VK_ATTACHMENT_LOAD_OP_DONT_CARE;
+    l_colorAttachmentResolve.stencilStoreOp = VK_ATTACHMENT_STORE_OP_DONT_CARE;
+    l_colorAttachmentResolve.initialLayout = VK_IMAGE_LAYOUT_UNDEFINED;
+    l_colorAttachmentResolve.finalLayout = VK_IMAGE_LAYOUT_PRESENT_SRC_KHR;
+
+	VkAttachmentReference l_colorAttachmentResolveRef{};
+    l_colorAttachmentResolveRef.attachment = 2;
+    l_colorAttachmentResolveRef.layout = VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL;
+    l_subpass.pResolveAttachments = &l_colorAttachmentResolveRef;
+
+	std::array<VkAttachmentDescription, 3> l_attachments2 = { l_colorAttachment, l_depthAttachment, l_colorAttachmentResolve };
+    l_renderPassCreateInfo.pAttachments = l_attachments2.data();
 
 	const VkResult l_result = vkCreateRenderPass(a_device->CastVulkan()->GetDevice(), &l_renderPassCreateInfo, nullptr, &m_renderPass);
 

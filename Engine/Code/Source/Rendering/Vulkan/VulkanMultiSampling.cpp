@@ -8,6 +8,9 @@ void VulkanMultiSampling::Create(IDevice* a_device)
 
 void VulkanMultiSampling::Destroy(IDevice* a_device)
 {
+    vkDestroyImageView(a_device->CastVulkan()->GetDevice(), m_colorImageView, nullptr);
+    vkDestroyImage(a_device->CastVulkan()->GetDevice(), m_colorImage, nullptr);
+    vkFreeMemory(a_device->CastVulkan()->GetDevice(), m_colorImageMemory, nullptr);
 }
 
 VkSampleCountFlagBits VulkanMultiSampling::GetMaxUsableSampleCount(IDevice* a_device)

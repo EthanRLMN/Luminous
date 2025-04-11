@@ -19,6 +19,8 @@ public:
 
      VulkanMultiSampling* CastVulkan() override { return this; }
 
+     inline VkImageView GetColorImageView() { return m_colorImageView; }
+
 private:
 
     VkImage m_colorImage;

@@ -80,7 +80,7 @@ void VulkanSwapChain::Destroy(IDevice* a_device)
 
 void VulkanSwapChain::CreateImage(VkDevice a_device, VkPhysicalDevice a_physicalDevice, uint32_t a_width, uint32_t a_height, VkFormat a_format, VkImageTiling a_tiling, VkImageUsageFlags a_usage, VkMemoryPropertyFlags a_properties, VkImage& a_image, VkDeviceMemory& a_imageMemory, const VkSampleCountFlagBits a_numSamples)
 {
-    FillImageInfo(a_device, a_width, a_height, a_format, a_tiling, a_usage, a_image, VK_SAMPLE_COUNT_1_BIT);
+    FillImageInfo(a_device, a_width, a_height, a_format, a_tiling, a_usage, a_image, a_numSamples);
 
     VkMemoryRequirements l_memoryRequirement{};
     vkGetImageMemoryRequirements(a_device, a_image, &l_memoryRequirement);

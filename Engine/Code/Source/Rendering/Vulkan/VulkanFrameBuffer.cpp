@@ -3,16 +3,24 @@
 #include "Rendering/Vulkan/VulkanDevice.hpp"
 #include "Rendering/Vulkan/VulkanRenderPass.hpp"
 #include "Rendering/Vulkan/VulkanSwapChain.hpp"
+#include "Rendering/Vulkan/VulkanMultiSampling.hpp"
 
-
-void VulkanFrameBuffer::Create(IDevice* a_device, ISwapChain* a_swapChain, IRenderPass* a_renderPass, IDepthResource* a_depthResource)
+void VulkanFrameBuffer::Create(IDevice* a_device, ISwapChain* a_swapChain, IRenderPass* a_renderPass, IDepthResource* a_depthResource, IMultiSampling* a_multiSampling)
 {
 	GetFrameBuffersSize(a_swapChain->CastVulkan()->GetSwapChainImageViews().size());
+
+	
 
 	const VulkanSwapChain* l_vulkanSwapChain = a_swapChain->CastVulkan();
 	for (size_t i = 0; i < l_vulkanSwapChain->GetSwapChainImageViews().size(); ++i)
 	{
-		std::array<VkImageView, 2> l_attachments = { l_vulkanSwapChain->GetSwapChainImageViews()[i], a_depthResource->CastVulkan()->GetDepthImageView() };
+        std::array<VkImageView, 3> l_attachments = {
+            l_vulkanSwapChain->GetSwapChainImageViews()[i],
+            a_depthResource->CastVulkan()->GetDepthImageView(),
+            a_multiSampling->CastVulkan()->GetColorImageView()
+        };
+
+		
 
 		VkFramebufferCreateInfo l_framebufferCreateInfo = { VK_STRUCTURE_TYPE_FRAMEBUFFER_CREATE_INFO };
 		l_framebufferCreateInfo.renderPass = a_renderPass->CastVulkan()->GetRenderPass();

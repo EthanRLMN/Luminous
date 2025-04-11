@@ -8,7 +8,7 @@
 class VulkanFrameBuffer final : public IFrameBuffer
 {
 public:
-	void Create(IDevice* a_device, ISwapChain* a_swapChain, IRenderPass* a_renderPass, IDepthResource* a_depthResource) override;
+    void Create(IDevice* a_device, ISwapChain* a_swapChain, IRenderPass* a_renderPass, IDepthResource* a_depthResource, IMultiSampling* a_multiSampling) override;
 	void Destroy(IDevice* a_device) override;
 
 	[[nodiscard]] std::vector<VkFramebuffer> GetFrameBuffers() const { return m_frameBuffers; }

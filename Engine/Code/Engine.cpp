@@ -56,12 +56,13 @@ Engine::Engine()
 
 	m_multiSampling = m_interface->InstantiateMultiSampling();
     m_multiSampling->Create(m_device);
+    m_multiSampling->CastVulkan()->CreateColorResources(m_device, m_swapChain);
 
 	m_depthResource = m_interface->InstantiateDepthResource();
 	m_depthResource->Create(m_device, m_swapChain, m_renderPass);
 
 	m_frameBuffer = m_interface->InstantiateFrameBuffer();
-	m_frameBuffer->Create(m_device, m_swapChain, m_renderPass, m_depthResource);
+	m_frameBuffer->Create(m_device, m_swapChain, m_renderPass, m_depthResource,m_multiSampling);
 
 	
 
