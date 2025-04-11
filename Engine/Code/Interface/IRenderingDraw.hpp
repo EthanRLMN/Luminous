@@ -1,7 +1,6 @@
 #pragma once
 
 #include "Logger.hpp"
-#include "GLFW/glfw3.h"
 
 class VulkanRenderingDraw;
 class IDevice;
