@@ -29,9 +29,9 @@ void VulkanDepthResource::Destroy(IDevice* a_device)
 }
 
 
-void VulkanDepthResource::CreateImage(const VkDevice a_device, const VkPhysicalDevice a_physicalDevice, const uint32_t a_width, const uint32_t a_height, const VkFormat a_format, const VkImageTiling a_tiling, const VkImageUsageFlags a_usage, const VkMemoryPropertyFlags a_properties, VkImage& a_image, VkDeviceMemory& a_imageMemory)
+void VulkanDepthResource::CreateImage(const VkDevice a_device, const VkPhysicalDevice a_physicalDevice, const uint32_t a_width, const uint32_t a_height, const VkFormat a_format, const VkImageTiling a_tiling, const VkImageUsageFlags a_usage, const VkMemoryPropertyFlags a_properties, VkImage& a_image, VkDeviceMemory& a_imageMemory, const VkSampleCountFlagBits a_numSamples)
 {
-	FillImageInfo(a_device, a_width, a_height, a_format, a_tiling, a_usage, a_image);
+    FillImageInfo(a_device, a_width, a_height, a_format, a_tiling, a_usage, a_image, VK_SAMPLE_COUNT_1_BIT);
 
 	VkMemoryRequirements l_memoryRequirement { };
 	vkGetImageMemoryRequirements(a_device, a_image, &l_memoryRequirement);
@@ -61,7 +61,7 @@ uint32_t VulkanDepthResource::FindMemoryType(const VkPhysicalDevice a_physicalDe
 }
 
 
-void VulkanDepthResource::FillImageInfo(const VkDevice a_device, const uint32_t a_width, const uint32_t a_height, const VkFormat a_format, const VkImageTiling a_tiling, const VkImageUsageFlags a_usage, VkImage& a_image)
+void VulkanDepthResource::FillImageInfo(const VkDevice a_device, const uint32_t a_width, const uint32_t a_height, const VkFormat a_format, const VkImageTiling a_tiling, const VkImageUsageFlags a_usage, VkImage& a_image, const VkSampleCountFlagBits a_numSamples)
 {
 	VkImageCreateInfo l_imageInfo { VK_STRUCTURE_TYPE_IMAGE_CREATE_INFO };
 	l_imageInfo.imageType = VK_IMAGE_TYPE_2D;
@@ -74,7 +74,7 @@ void VulkanDepthResource::FillImageInfo(const VkDevice a_device, const uint32_t 
 	l_imageInfo.tiling = a_tiling;
 	l_imageInfo.initialLayout = VK_IMAGE_LAYOUT_UNDEFINED;
 	l_imageInfo.usage = a_usage;
-	l_imageInfo.samples = VK_SAMPLE_COUNT_1_BIT;
+	l_imageInfo.samples = a_numSamples;
 	l_imageInfo.sharingMode = VK_SHARING_MODE_EXCLUSIVE;
 
 	if (vkCreateImage(a_device, &l_imageInfo, nullptr, &a_image) != VK_SUCCESS)

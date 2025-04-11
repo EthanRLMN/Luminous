@@ -43,3 +43,12 @@ VkSampleCountFlagBits VulkanMultiSampling::GetMaxUsableSampleCount(IDevice* a_de
 
     return VK_SAMPLE_COUNT_1_BIT;
 }
+
+void VulkanMultiSampling::CreateColorResources(IDevice* a_device ,IDepthResource* a_depthResource, ISwapChain* a_swapchain)
+{
+    VkFormat l_colorFormat = a_swapchain->CastVulkan()->GetSwapChainImageFormat();
+
+    a_depthResource->CastVulkan()->CreateImage(a_device->CastVulkan()->GetDevice(), a_device->CastVulkan()->GetPhysicalDevice(), a_swapchain->CastVulkan()->GetSwapChainExtent().width, a_swapchain->CastVulkan()->GetSwapChainExtent().height, l_colorFormat, VK_IMAGE_TILING_OPTIMAL, VK_IMAGE_USAGE_DEPTH_STENCIL_ATTACHMENT_BIT, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT, m_colorImage, m_colorImageMemory, a_device->CastVulkan()->GetMSAASamples());
+    m_colorImageView = createImageView(colorImage, colorFormat, VK_IMAGE_ASPECT_COLOR_BIT, 1);
+
+}

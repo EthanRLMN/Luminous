@@ -21,6 +21,7 @@ void VulkanFrameBuffer::Create(IDevice* a_device, ISwapChain* a_swapChain, IRend
 		l_framebufferCreateInfo.width = l_vulkanSwapChain->GetSwapChainExtent().width;
 		l_framebufferCreateInfo.height = l_vulkanSwapChain->GetSwapChainExtent().height;
 		l_framebufferCreateInfo.layers = 1;
+		
 
 		const VkResult l_result = vkCreateFramebuffer(a_device->CastVulkan()->GetDevice(), &l_framebufferCreateInfo, nullptr, &m_frameBuffers[i]);;
 		if (l_result != VK_SUCCESS)

@@ -108,7 +108,7 @@ void VulkanTexture::CreateTextureImage(IDevice* a_device, IDepthResource* a_dept
 
 	stbi_image_free(l_pixels);
 
-	a_depthResource->CastVulkan()->CreateImage(l_vkDevice, l_vkPhysicalDevice, l_texWidth, l_texHeight, VK_FORMAT_R8G8B8A8_SRGB, VK_IMAGE_TILING_OPTIMAL, VK_IMAGE_USAGE_TRANSFER_DST_BIT | VK_IMAGE_USAGE_SAMPLED_BIT, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT, m_textureImage, m_textureImageMemory);
+	a_depthResource->CastVulkan()->CreateImage(l_vkDevice, l_vkPhysicalDevice, l_texWidth, l_texHeight, VK_FORMAT_R8G8B8A8_SRGB, VK_IMAGE_TILING_OPTIMAL, VK_IMAGE_USAGE_TRANSFER_DST_BIT | VK_IMAGE_USAGE_SAMPLED_BIT, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT, m_textureImage, m_textureImageMemory, VK_SAMPLE_COUNT_1_BIT);
 
 	TransitionImageLayout(l_vkDevice, l_vkGraphicsQueue, l_vkCommandPool, m_textureImage, VK_FORMAT_R8G8B8A8_SRGB, VK_IMAGE_LAYOUT_UNDEFINED, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL);
 
@@ -146,6 +146,7 @@ void VulkanTexture::CreateTextureSampler(IDevice* a_device)
 	l_samplerInfo.compareEnable = VK_FALSE;
 	l_samplerInfo.compareOp = VK_COMPARE_OP_ALWAYS;
 	l_samplerInfo.mipmapMode = VK_SAMPLER_MIPMAP_MODE_LINEAR;
+	
 
 	if (vkCreateSampler(a_device->CastVulkan()->GetDevice(), &l_samplerInfo, nullptr, &m_textureSampler) != VK_SUCCESS)
 		DEBUG_LOG_ERROR("Vulkan Texture : Failed to create Texture Sampler!\n");
