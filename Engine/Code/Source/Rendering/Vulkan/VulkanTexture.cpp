@@ -31,7 +31,7 @@ bool VulkanTexture::Create(IResourceManager* a_manager, IResourceParams a_params
         DEBUG_LOG_ERROR("DEVICE IS NULL");
 	}
 
-	CreateTextureImage(l_device, l_depthResource, l_commandPool);
+	CreateTextureImage(l_device, l_depthResource, l_commandPool,a_params.m_texturePath);
 	CreateTextureImageView(l_device, l_swapChain);
 	CreateTextureSampler(l_device);
 	DEBUG_LOG_INFO("Vulkan Texture : Texture Created!\n");
@@ -75,7 +75,7 @@ void VulkanTexture::Destroy(IDevice* a_device)
 }
 
 
-void VulkanTexture::CreateTextureImage(IDevice* a_device, IDepthResource* a_depthResource, ICommandPool* a_commandPool)
+void VulkanTexture::CreateTextureImage(IDevice* a_device, IDepthResource* a_depthResource, ICommandPool* a_commandPool,std::string a_path)
 {
     if (a_device == nullptr)
     {
@@ -91,7 +91,7 @@ void VulkanTexture::CreateTextureImage(IDevice* a_device, IDepthResource* a_dept
 	int l_texWidth, l_texHeight, l_texChannels = -1;
 
 	//stb_image
-	stbi_uc* l_pixels = stbi_load(TEXTURE_PATH.c_str(), &l_texWidth, &l_texHeight, &l_texChannels, STBI_rgb_alpha);
+    stbi_uc* l_pixels = stbi_load(a_path.c_str(), &l_texWidth, &l_texHeight, &l_texChannels, STBI_rgb_alpha);
 	const VkDeviceSize l_imageSize = l_texWidth * l_texHeight * 4;
 
 	if (!l_pixels)
