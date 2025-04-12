@@ -27,5 +27,8 @@ add_subdirectory(assimp)
 add_subdirectory(logger)
 add_subdirectory(luminousmaths)
 
-# Since Jolt doesn't use CMakeLists.txt but instead uses a .cmake file, we must include this file (it does pretty much the same thing than a CMakeLists.txt)
-include(jolt/Jolt/Jolt.cmake)
+
+# Enable some performance tweaks for Jolt (Only available for computers starting from 2008+)
+set(JPH_ENABLE_SSE4_1 ON CACHE BOOL "" FORCE)
+set(JPH_ENABLE_AVX ON CACHE BOOL "" FORCE)
+include(jolt/Jolt/Jolt.cmake) # Since Jolt doesn't use CMakeLists.txt but instead uses a .cmake file, we must include this file (it does pretty much the same thing than a CMakeLists.txt)
