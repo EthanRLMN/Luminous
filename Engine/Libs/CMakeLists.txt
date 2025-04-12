@@ -26,3 +26,6 @@ add_subdirectory(assimp)
 
 add_subdirectory(logger)
 add_subdirectory(luminousmaths)
+
+# Since Jolt doesn't use CMakeLists.txt but instead uses a .cmake file, we must include this file (it does pretty much the same thing than a CMakeLists.txt)
+include(jolt/Jolt/Jolt.cmake)

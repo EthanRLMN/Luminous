@@ -14,3 +14,6 @@
 [submodule "Engine/Libs/luminousmaths"]
 	path = Engine/Libs/luminousmaths
 	url = https://github.com/ZeBaananaa/LuminousMaths.git
+[submodule "Engine/Libs/jolt"]
+	path = Engine/Libs/jolt
+	url = https://github.com/jrouwe/JoltPhysics.git
