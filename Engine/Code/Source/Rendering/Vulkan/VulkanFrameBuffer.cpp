@@ -14,6 +14,12 @@ void VulkanFrameBuffer::Create(IDevice* a_device, ISwapChain* a_swapChain, IRend
 	const VulkanSwapChain* l_vulkanSwapChain = a_swapChain->CastVulkan();
 	for (size_t i = 0; i < l_vulkanSwapChain->GetSwapChainImageViews().size(); ++i)
 	{
+
+		 if (l_vulkanSwapChain->GetSwapChainImageViews()[i] == nullptr) 
+		 {
+             DEBUG_LOG_ERROR("Image view is null");
+		 }
+
         std::array<VkImageView, 3> l_attachments = {
             l_vulkanSwapChain->GetSwapChainImageViews()[i],
             a_depthResource->CastVulkan()->GetDepthImageView(),

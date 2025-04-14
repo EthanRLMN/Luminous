@@ -161,8 +161,9 @@ void VulkanRenderingDraw::RecreateSwapChain(IWindow* a_window, IDevice* a_device
     vkDeviceWaitIdle(a_device->CastVulkan()->GetDevice());
 
     a_swapChain->CastVulkan()->Create(a_window, a_device, a_surface);
-    CreateImageViews(a_device, a_swapChain);
     a_multisampling->CastVulkan()->CreateColorResources(a_device, a_swapChain);
+    CreateImageViews(a_device, a_swapChain);
+   
     a_depthResource->CastVulkan()->Create(a_device, a_swapChain, a_renderPass);
     a_frameBuffer->CastVulkan()->Create(a_device, a_swapChain, a_renderPass, a_depthResource, a_multisampling);
 }
