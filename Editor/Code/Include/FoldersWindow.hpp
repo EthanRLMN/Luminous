@@ -4,8 +4,8 @@
 class FoldersWindow
 {
 public:
-    FoldersWindow();
-    ~FoldersWindow();
+    FoldersWindow() = default;
+    ~FoldersWindow() = default;
 
     void Draw();
 

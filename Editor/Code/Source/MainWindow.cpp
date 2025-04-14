@@ -1,4 +1,4 @@
- #include "MainWindow.hpp"
+#include "MainWindow.hpp"
 
 #include "imgui.h"
 
@@ -7,7 +7,7 @@
 	ImGui::PushStyleColor(ImGuiCol_WindowBg, 0xff323432);
 	ImGui::SetNextWindowSize({ 1920, 1080 }, ImGuiCond_FirstUseEver);
 
-	if (m_isOpen && ImGui::Begin("Luminous", &m_isOpen, ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_MenuBar))
+	if (m_isOpen && ImGui::Begin("Luminous", &m_isOpen, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_MenuBar))
 	{
 		// TODO: Add Draw calls of dependent popup windows here
 		if (ImGui::BeginMenuBar())

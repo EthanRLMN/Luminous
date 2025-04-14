@@ -3,6 +3,9 @@
 #include "backends/imgui_impl_vulkan.h"
 
 #include "Editor.hpp"
+#include "MainWindow.hpp"
+#include "FoldersWindow.hpp"
+#include "InspectorWindow.hpp"
 
 #include "Core/GLFW/GLFWWindow.hpp"
 #include "Rendering/Vulkan/VulkanCommandBuffer.hpp"
@@ -69,6 +72,7 @@ void Editor::SetupImGui() const
 
 void Editor::Update()
 {
+
     while (m_engine->IsRunning())
     {
         m_engine->Update();
@@ -77,7 +81,7 @@ void Editor::Update()
         ImGui_ImplGlfw_NewFrame();
         ImGui::NewFrame();
 
-        ImGui::ShowDemoWindow();
+        DrawWindows();
 
         Render();
         VulkanRenderingDraw::RegisterGuiCallback([&] { ImGui_ImplVulkan_RenderDrawData(ImGui::GetDrawData(), m_engine->GetCommandBuffer()->CastVulkan()->GetCommandBuffers()[m_engine->GetRenderingDraw()->CastVulkan()->GetCurrentFrame()]); });
@@ -94,4 +98,15 @@ void Editor::Update()
 void Editor::Render() const
 {
     ImGui::Render();
+}
+
+void Editor::DrawWindows()
+{
+    MainWindow mainWindow;
+    FoldersWindow foldersWindow;
+    InspectorWindow inspectorWindow;
+
+    mainWindow.Draw();
+    foldersWindow.Draw();
+    inspectorWindow.Draw();
 }
