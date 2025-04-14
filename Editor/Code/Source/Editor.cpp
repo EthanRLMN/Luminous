@@ -1,5 +1,3 @@
-#include <iostream>
-
 #include "imgui.h"
 #include "backends/imgui_impl_glfw.h"
 #include "backends/imgui_impl_vulkan.h"
@@ -8,6 +6,7 @@
 
 #include "Core/GLFW/GLFWWindow.hpp"
 #include "Rendering/Vulkan/VulkanCommandBuffer.hpp"
+#include "Rendering/Vulkan/VulkanCommandPool.hpp"
 #include "Rendering/Vulkan/VulkanDescriptor.hpp"
 #include "Rendering/Vulkan/VulkanDevice.hpp"
 #include "Rendering/Vulkan/VulkanInstance.hpp"
@@ -23,7 +22,7 @@ void Editor::Destroy()
 
     if (m_engine)
     {
-        m_engine->GetUIRenderPass()->Destroy(m_engine->GetDevice());
+        m_engine->GetEditorRenderPass()->Destroy(m_engine->GetDevice());
         m_engine->Destroy();
 
         delete m_engine;
@@ -62,6 +61,10 @@ void Editor::SetupImGui() const
 
     ImGui_ImplVulkan_Init(&l_initInfo);
     ImGui_ImplVulkan_CreateFontsTexture();
+
+    m_engine->GetEditorCommandPool()->CastVulkan()->Create(m_engine->GetDevice(), m_engine->GetSurface());
+    m_engine->GetEditorCommandBuffer()->CastVulkan()->Create(m_engine->GetDevice(), m_engine->GetEditorCommandPool());
+    m_engine->GetEditorRenderPass()->CastVulkan()->CreateUIPass(m_engine->GetSwapChain(), m_engine->GetDevice());
 }
 
 void Editor::Update()
@@ -77,11 +80,14 @@ void Editor::Update()
         ImGui::ShowDemoWindow();
 
         Render();
-        m_engine->GetUIRenderPass()->CastVulkan()->RegisterGuiCallback([&]()
+        VulkanRenderingDraw::RegisterGuiCallback([&] { ImGui_ImplVulkan_RenderDrawData(ImGui::GetDrawData(), m_engine->GetCommandBuffer()->CastVulkan()->GetCommandBuffers()[m_engine->GetRenderingDraw()->CastVulkan()->GetCurrentFrame()]); });
+
+        const ImGuiIO& l_io = ImGui::GetIO();
+        if (l_io.ConfigFlags & ImGuiConfigFlags_ViewportsEnable)
         {
-            ImGui_ImplVulkan_RenderDrawData(ImGui::GetDrawData(), m_engine->GetCommandBuffer()->CastVulkan()->GetCommandBuffers()[m_engine->GetRenderingDraw()->CastVulkan()->GetCurrentFrame()]);
-        });
-        //m_engine->GetUIRenderPass()->CastVulkan()->CreateUIPass(m_engine->GetSwapChain(), m_engine->GetDevice());
+            ImGui::UpdatePlatformWindows();
+            ImGui::RenderPlatformWindowsDefault();
+        }
     }
 }
 

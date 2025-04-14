@@ -98,7 +98,7 @@ void Engine::Init()
     m_renderPass = m_interface->InstantiateRenderPass();
     m_renderPass->Create(m_swapChain, m_device);
 
-    m_uiRenderPass = m_interface->InstantiateRenderPass();
+    m_editorRenderPass = m_interface->InstantiateRenderPass();
 
     m_descriptorSetLayout = m_interface->InstantiateDescriptorSetLayout();
     m_descriptorSetLayout->Create(m_device);
@@ -109,13 +109,15 @@ void Engine::Init()
     m_commandPool = m_interface->InstantiateCommandPool();
     m_commandPool->Create(m_device, m_surface);
 
+    m_editorCommandPool = m_interface->InstantiateCommandPool();
+
     m_depthResource = m_interface->InstantiateDepthResource();
     m_depthResource->Create(m_device, m_swapChain, m_renderPass);
 
     m_frameBuffer = m_interface->InstantiateFrameBuffer();
     m_frameBuffer->Create(m_device, m_swapChain, m_renderPass, m_depthResource);
 
-    IResourceParams l_texParams{ m_device ,m_swapChain,m_depthResource,m_commandPool};
+    IResourceParams l_texParams{ m_device, m_swapChain, m_depthResource, m_commandPool};
     l_texParams.m_texturePath = "Engine/Assets/Textures/Untitled312.png";
     m_texture = m_resourceManager->LoadResource<VulkanTexture>(l_texParams);
 
@@ -133,7 +135,6 @@ void Engine::Init()
     m_commandBuffer->Create(m_device, m_commandPool);
 
     m_editorCommandBuffer = m_interface->InstantiateCommandBuffer();
-    m_editorCommandBuffer->Create(m_device, m_commandPool);
 
     m_synchronization = m_interface->InstantiateSynchronization();
     m_synchronization->Create(m_device);

@@ -10,9 +10,6 @@
 class VulkanRenderPass final : public IRenderPass
 {
 public :
-    using GuiRenderCallback = std::function<void()>;
-
-    void RegisterGuiCallback(GuiRenderCallback a_callback);
     void Create(ISwapChain* a_swapChain, IDevice* a_device) override;
     void Destroy(IDevice* a_device) override;
 

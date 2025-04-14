@@ -60,4 +60,9 @@ void GLFWWindow::SetOpacity(const float& a_alpha) { glfwSetWindowOpacity(m_windo
 std::string GLFWWindow::GetTitle() const { return glfwGetWindowTitle(m_window); }
 
 
+void GLFWWindow::GetFrameBufferSize(int* a_width, int* a_height) { glfwGetFramebufferSize(m_window, a_width, a_height); }
+
+
 void GLFWWindow::SetTitle(const std::string& a_name) { glfwSetWindowTitle(m_window, a_name.c_str()); }
+
+void GLFWWindow::ProcessEvents() { glfwWaitEvents(); }

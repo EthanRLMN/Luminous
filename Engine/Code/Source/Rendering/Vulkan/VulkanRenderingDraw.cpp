@@ -25,6 +25,10 @@
 #include "MathUtils.hpp"
 
 
+static VulkanRenderingDraw::GuiRenderCallback l_editorGuiCallback{ nullptr };
+
+void VulkanRenderingDraw::RegisterGuiCallback(GuiRenderCallback a_callback) { l_editorGuiCallback = std::move(a_callback); }
+
 void VulkanRenderingDraw::Create(IWindow* a_window, IDevice* a_device, ISwapChain* a_swapChain, IPipeline* a_pipeline, IBuffer* a_buffer, IRenderPass* a_renderPass, IDescriptor* a_descriptor, IMesh* a_mesh, ISynchronization* a_synchronization, ICommandBuffer* a_commandBuffer, IFrameBuffer* a_frameBuffer, IDepthResource* a_depthResource, ISurface* a_surface)
 {
     vkWaitForFences(a_device->CastVulkan()->GetDevice(), 1, &a_synchronization->CastVulkan()->GetFences()[m_currentFrame], VK_TRUE, UINT64_MAX);
@@ -93,10 +97,16 @@ void VulkanRenderingDraw::RecordCommandBuffer(const VkCommandBuffer a_commandBuf
     const std::array<VkDeviceSize, 1> l_offsets = { 0 };
     vkCmdBindVertexBuffers(a_commandBuffer, 0, 1, l_vertexBuffers.data(), l_offsets.data());
     vkCmdBindIndexBuffer(a_commandBuffer, a_buffer->CastVulkan()->CastVulkan()->GetIndexBuffer(), 0, VK_INDEX_TYPE_UINT32);
-
     vkCmdBindDescriptorSets(a_commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, a_pipelineLayout, 0, 1, &a_descriptor->CastVulkan()->GetDescriptorSet()[m_currentFrame], 0, nullptr);
     vkCmdDrawIndexed(a_commandBuffer, static_cast<uint32_t>(a_mesh->CastVulkan()->GetIndices().size()), 1, 0, 0, 0);
+
+    // Callback ImGui_ImplVulkan_RenderDrawData
+    if (l_editorGuiCallback)
+        l_editorGuiCallback();
+
     vkCmdEndRenderPass(a_commandBuffer);
+
+
 
     const VkResult l_result = vkEndCommandBuffer(a_commandBuffer);
     if (l_result != VK_SUCCESS)
@@ -124,11 +134,11 @@ void VulkanRenderingDraw::UpdateUniformBuffer(const uint32_t currentImage, ISwap
 void VulkanRenderingDraw::RecreateSwapChain(IWindow* a_window, IDevice* a_device, ISurface* a_surface, ISwapChain* a_swapChain, IDepthResource* a_depthResource, IFrameBuffer* a_frameBuffer, IRenderPass* a_renderPass)
 {
     int l_width, l_height{ 0 };
-    glfwGetFramebufferSize(a_window->CastGLFW()->GetGLFWWindow(), &l_width, &l_height);
+    a_window->CastGLFW()->GetFrameBufferSize(&l_width, &l_height);
     while (l_width == 0 || l_height == 0)
     {
-        glfwGetFramebufferSize(a_window->CastGLFW()->GetGLFWWindow(), &l_width, &l_height);
-        glfwWaitEvents();
+        a_window->CastGLFW()->GetFrameBufferSize(&l_width, &l_height);
+        a_window->CastGLFW()->ProcessEvents();
     }
 
     CleanupSwapChain(a_device, a_swapChain, a_depthResource, a_frameBuffer);

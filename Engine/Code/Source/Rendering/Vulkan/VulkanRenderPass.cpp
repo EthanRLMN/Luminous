@@ -9,13 +9,6 @@
 #include "Rendering/Vulkan/VulkanDevice.hpp"
 #include "Rendering/Vulkan/VulkanSwapChain.hpp"
 
-static VulkanRenderPass::GuiRenderCallback l_editorGuiCallback { nullptr };
-
-void VulkanRenderPass::RegisterGuiCallback(GuiRenderCallback a_callback)
-{
-    l_editorGuiCallback = std::move(a_callback);
-}
-
 void VulkanRenderPass::Create(ISwapChain* a_swapChain, IDevice* a_device)
 {
     VkAttachmentDescription l_colorAttachment = {};
@@ -89,9 +82,6 @@ void VulkanRenderPass::CreateUIPass(ISwapChain* a_swapChain, IDevice* a_device)
     VkRenderPassCreateInfo l_renderPassCreateInfo = {};
     SetupRenderPassCreateInfo(l_renderPassCreateInfo, l_attachments, l_subpass, l_dependency);
 
-    if (l_editorGuiCallback)
-        l_editorGuiCallback();
-
     const VkResult l_result = vkCreateRenderPass(a_device->CastVulkan()->GetDevice(), &l_renderPassCreateInfo, nullptr, &m_renderPass);
     if (l_result != VK_SUCCESS)
         DEBUG_LOG_ERROR("Failed to create a UI render pass\n");
@@ -100,10 +90,7 @@ void VulkanRenderPass::CreateUIPass(ISwapChain* a_swapChain, IDevice* a_device)
 }
 
 
-VkFormat VulkanRenderPass::FindDepthFormat(const VkPhysicalDevice& a_physicalDevice)
-{
-    return FindSupportedFormat(a_physicalDevice, { VK_FORMAT_D32_SFLOAT, VK_FORMAT_D32_SFLOAT_S8_UINT, VK_FORMAT_D24_UNORM_S8_UINT }, VK_IMAGE_TILING_OPTIMAL, VK_FORMAT_FEATURE_DEPTH_STENCIL_ATTACHMENT_BIT);
-}
+VkFormat VulkanRenderPass::FindDepthFormat(const VkPhysicalDevice& a_physicalDevice) { return FindSupportedFormat(a_physicalDevice, { VK_FORMAT_D32_SFLOAT, VK_FORMAT_D32_SFLOAT_S8_UINT, VK_FORMAT_D24_UNORM_S8_UINT }, VK_IMAGE_TILING_OPTIMAL, VK_FORMAT_FEATURE_DEPTH_STENCIL_ATTACHMENT_BIT); }
 
 
 VkFormat VulkanRenderPass::FindSupportedFormat(const VkPhysicalDevice& a_physicalDevice, const std::vector<VkFormat>& a_candidates, const VkImageTiling& a_tiling, const VkFormatFeatureFlags& a_features)

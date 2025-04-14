@@ -1,7 +1,5 @@
 #pragma once
 
-#include <functional>
-
 #include "IRender.hpp"
 #include "ISynchronization.hpp"
 #include "ResourceManager/ResourceManager.hpp"
@@ -26,16 +24,18 @@ public:
 	[[nodiscard]] IDevice* GetDevice() const { return m_device; }
 	[[nodiscard]] ISwapChain* GetSwapChain() const { return m_swapChain; }
 	[[nodiscard]] IRenderPass* GetRenderPass() const { return m_renderPass; }
-	[[nodiscard]] IRenderPass* GetUIRenderPass() const { return m_uiRenderPass; }
+	[[nodiscard]] IRenderPass* GetEditorRenderPass() const { return m_editorRenderPass; }
 	[[nodiscard]] IDescriptorSetLayout* GetDescriptionSetLayout() const { return m_descriptorSetLayout; }
 	[[nodiscard]] IPipeline* GetPipeline() const { return m_pipeline; }
 	[[nodiscard]] ICommandPool* GetCommandPool() const { return m_commandPool; }
+	[[nodiscard]] ICommandPool* GetEditorCommandPool() const { return m_editorCommandPool; }
 	[[nodiscard]] IDepthResource* GetDepthResource() const { return m_depthResource; }
 	[[nodiscard]] IFrameBuffer* GetFrameBuffer() const { return m_frameBuffer; }
 	[[nodiscard]] ITexture* GetTexture() const { return m_texture; }
 	[[nodiscard]] IBuffer* GetBuffer() const { return m_buffer; }
 	[[nodiscard]] IDescriptor* GetDescriptor() const { return m_descriptor; }
 	[[nodiscard]] ICommandBuffer* GetCommandBuffer() const { return m_commandBuffer; }
+	[[nodiscard]] ICommandBuffer* GetEditorCommandBuffer() const { return m_editorCommandBuffer; }
 	[[nodiscard]] ISynchronization* GetSynchronization() const { return m_synchronization; }
 	[[nodiscard]] IRenderingDraw* GetRenderingDraw() const { return m_renderingDraw; }
 
@@ -52,10 +52,11 @@ private:
 	IDevice* m_device { nullptr };
 	ISwapChain* m_swapChain { nullptr };
 	IRenderPass* m_renderPass { nullptr };
-	IRenderPass* m_uiRenderPass { nullptr };
+	IRenderPass* m_editorRenderPass { nullptr };
 	IDescriptorSetLayout* m_descriptorSetLayout { nullptr };
 	IPipeline* m_pipeline { nullptr };
 	ICommandPool* m_commandPool{ nullptr };
+	ICommandPool* m_editorCommandPool{ nullptr };
 	IDepthResource* m_depthResource{ nullptr };
 	IFrameBuffer* m_frameBuffer{ nullptr };
 	ITexture* m_texture{ nullptr };

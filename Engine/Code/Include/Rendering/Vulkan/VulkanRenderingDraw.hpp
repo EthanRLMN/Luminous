@@ -1,5 +1,7 @@
 #pragma once
 
+#include <functional>
+
 #include "IRenderingDraw.hpp"
 
 #include "Core/GLFW/GLFWWindow.hpp"
@@ -9,6 +11,9 @@
 class VulkanRenderingDraw final : public IRenderingDraw
 {
 public:
+    using GuiRenderCallback = std::function<void()>;
+    static void RegisterGuiCallback(GuiRenderCallback a_callback);
+
     void Create(IWindow* a_window, IDevice* a_device, ISwapChain* a_swapChain, IPipeline* a_pipeline, IBuffer* a_buffer, IRenderPass* a_renderPass, IDescriptor* a_descriptor, IMesh* a_mesh, ISynchronization* a_synchronization, ICommandBuffer* a_commandBuffer, IFrameBuffer* a_frameBuffer, IDepthResource* a_depthResource, ISurface* a_surface) override;
 	void Destroy() override {};
     VulkanRenderingDraw* CastVulkan() override { return this; }
