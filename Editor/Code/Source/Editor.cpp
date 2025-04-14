@@ -3,6 +3,8 @@
 #include "backends/imgui_impl_vulkan.h"
 
 #include "Editor.hpp"
+
+#include "EditorStyle.hpp"
 #include "FileExplorerWindow.hpp"
 #include "HierarchyWindow.hpp"
 #include "InspectorWindow.hpp"
@@ -43,12 +45,11 @@ void Editor::SetupImGui() const
 {
     IMGUI_CHECKVERSION();
     ImGui::CreateContext();
+    EditorStyle::SetupImGuiStyle();
     ImGuiIO& l_io = ImGui::GetIO(); static_cast<void>(l_io);
     l_io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard | ImGuiConfigFlags_DockingEnable | ImGuiConfigFlags_IsSRGB | ImGuiDockNodeFlags_NoWindowMenuButton;
     l_io.ConfigDockingAlwaysTabBar = true;
-    l_io.Fonts->AddFontFromFileTTF("Editor/Assets/Fonts/Roboto-Bold.ttf", 16.0f, nullptr, l_io.Fonts->GetGlyphRangesDefault());
-
-    ImGui::StyleColorsDark();
+    l_io.Fonts->AddFontFromFileTTF("Editor/Assets/Fonts/Roboto-Bold.ttf", 18.0f, nullptr, l_io.Fonts->GetGlyphRangesDefault());
 
     ImGui_ImplGlfw_InitForVulkan(m_engine->GetWindow()->CastGLFW()->GetGLFWWindow(), true);
 
@@ -78,7 +79,6 @@ void Editor::Update()
         m_engine->Update();
 
         Render();
-
     }
 }
 
@@ -89,6 +89,7 @@ void Editor::Render() const
     ImGui::NewFrame();
 
     DrawWindows();
+    ImGui::ShowStyleEditor();
 
     ImGui::Render();
 

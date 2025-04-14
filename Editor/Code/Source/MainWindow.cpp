@@ -4,12 +4,12 @@
 
 void MainWindow::Draw()
 {
-    ImGui::PushStyleColor(ImGuiCol_WindowBg, 0xff323432);
     ImGui::SetNextWindowSize({ 1920, 1080 }, ImGuiCond_FirstUseEver);
 
     // TODO: Add Draw calls of dependent popup windows here
     if (ImGui::BeginMainMenuBar())
     {
+        ImGui::PushStyleColor(ImGuiCol_WindowBg, 0xff323432);
         if (ImGui::BeginMenu("File"))
         {
             ImGui::MenuItem("New Project", "", false);
@@ -87,6 +87,7 @@ void MainWindow::Draw()
 
             ImGui::EndMenu();
         }
+        ImGui::PopStyleColor();
         ImGui::EndMainMenuBar();
     }
 
@@ -117,5 +118,4 @@ void MainWindow::Draw()
 
     ImGui::SameLine(0, 115 * ImGui::GetStyle().ItemSpacing.x);
     ImGui::Image(s_saveButton, { 25, 25 }, { 0, 0 }, { 1, 1 });*/
-    ImGui::PopStyleColor();
 }
