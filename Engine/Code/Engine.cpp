@@ -3,6 +3,7 @@
 
 #include "Rendering/Vulkan/VulkanRenderInterface.hpp"
 
+
 void Engine::Destroy() const
 {
     m_resourceManager->DeleteResource<VulkanShader>("v=Engine/Assets/Shaders/vert.spv, f=Engine/Assets/Shaders/frag.spv, t=, g=",m_device);
@@ -146,17 +147,7 @@ void Engine::Init()
 
 void Engine::InitPhysic()
 {
-    m_physicsSystem = new JPH::PhysicsSystem();
-    m_shapeManager = new JPH::ShapeManager();
-    m_physicsSystem->SetGravity(JPH::Vec3(0.0f, -9.81f, 0.0f));
 
-
-    JPH::ShapeSettings* cubeShape = new JPH::BoxShapeSettings(JPH::Vec3(0.5f, 0.5f, 0.5f));
-    JPH::BodyCreationSettings cubeBodySettings(cubeShape, JPH::Vec3(0.0f, 5.0f, 0.0f), JPH::Quat::sIdentity(), 1.0f); 
-    m_bodyInterface = m_physicsSystem->CreateBody(cubeBodySettings);
-
-
-    m_physicsSystem->AddBody(m_bodyInterface);
 }
 
 void Engine::Update()
@@ -172,11 +163,5 @@ void Engine::Update()
 void Engine::UpdatePhysic()
 {
     float deltaTime = m_window->CastGLFW()->GetDeltaTime(); 
-    m_physicsSystem->Update(deltaTime);
 
-
-    JPH::Vec3 cubePosition = m_bodyInterface->GetPosition();
-    Vector3 cubeRaylibPosition = { cubePosition.GetX(), cubePosition.GetY(), cubePosition.GetZ() };
-
-    m_mesh->SetPosition(cubeRaylibPosition); 
 }
