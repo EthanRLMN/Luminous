@@ -3,7 +3,7 @@
 
 void VulkanMultiSampling::Create(IDevice* a_device)
 {
-    a_device->CastVulkan()->SetMSAASamples(GetMaxUsableSampleCount(a_device));
+    //a_device->CastVulkan()->SetMSAASamples(GetMaxUsableSampleCount(a_device));
 }
 
 void VulkanMultiSampling::Destroy(IDevice* a_device)
@@ -51,7 +51,7 @@ void VulkanMultiSampling::CreateColorResources(IDevice* a_device , ISwapChain* a
 {
     VkFormat l_colorFormat = a_swapchain->CastVulkan()->GetSwapChainImageFormat();
 
-    a_swapchain->CastVulkan()->CreateImage(a_device->CastVulkan()->GetDevice(), a_device->CastVulkan()->GetPhysicalDevice(), a_swapchain->CastVulkan()->GetSwapChainExtent().width, a_swapchain->CastVulkan()->GetSwapChainExtent().height, l_colorFormat, VK_IMAGE_TILING_OPTIMAL, VK_IMAGE_USAGE_DEPTH_STENCIL_ATTACHMENT_BIT, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT, m_colorImage, m_colorImageMemory, a_device->CastVulkan()->GetMSAASamples());
+    a_swapchain->CastVulkan()->CreateImage(a_device->CastVulkan()->GetDevice(), a_device->CastVulkan()->GetPhysicalDevice(), a_swapchain->CastVulkan()->GetSwapChainExtent().width, a_swapchain->CastVulkan()->GetSwapChainExtent().height, l_colorFormat, VK_IMAGE_TILING_OPTIMAL, VK_IMAGE_USAGE_TRANSIENT_ATTACHMENT_BIT | VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT, m_colorImage, m_colorImageMemory, a_device->CastVulkan()->GetMSAASamples());
     m_colorImageView = a_swapchain->CastVulkan()->CreateImageView(m_colorImage, a_device->CastVulkan()->GetDevice(), l_colorFormat, VK_IMAGE_ASPECT_COLOR_BIT);
 
 }

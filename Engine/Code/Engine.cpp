@@ -42,6 +42,11 @@ Engine::Engine()
 	m_swapChain = m_interface->InstantiateSwapChain();
 	m_swapChain->Create(m_window, m_device, m_surface);
 
+
+	m_multiSampling = m_interface->InstantiateMultiSampling();
+    m_multiSampling->Create(m_device);
+    m_multiSampling->CastVulkan()->CreateColorResources(m_device, m_swapChain);
+
 	m_renderPass = m_interface->InstantiateRenderPass();
 	m_renderPass->Create(m_swapChain, m_device);
 
@@ -53,10 +58,6 @@ Engine::Engine()
 
 	m_commandPool = m_interface->InstantiateCommandPool();
 	m_commandPool->Create(m_device, m_surface);
-
-	m_multiSampling = m_interface->InstantiateMultiSampling();
-    m_multiSampling->Create(m_device);
-    m_multiSampling->CastVulkan()->CreateColorResources(m_device, m_swapChain);
 
 
 	m_depthResource = m_interface->InstantiateDepthResource();
