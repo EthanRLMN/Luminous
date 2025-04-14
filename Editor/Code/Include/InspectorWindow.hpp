@@ -4,8 +4,8 @@
 class InspectorWindow
 {
 public:
-    InspectorWindow();
-    ~InspectorWindow();
+    InspectorWindow() = default;
+    ~InspectorWindow() = default;
 
     void Draw();
 private:

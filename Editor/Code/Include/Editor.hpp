@@ -19,6 +19,8 @@ public:
     void Update();
     void Render() const;
 
+    void DrawWindows();
+    
     [[nodiscard]] Engine* GetEngine() const { return m_engine; }
     [[nodiscard]] ImguiWindow* GetImguiWindow() const { return m_imguiWindow; }
 
@@ -26,3 +28,4 @@ private:
     Engine* m_engine = nullptr;
     ImguiWindow* m_imguiWindow = nullptr;
 };
+
