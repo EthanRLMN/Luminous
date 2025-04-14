@@ -6,6 +6,7 @@
 #include "MainWindow.hpp"
 #include "FoldersWindow.hpp"
 #include "InspectorWindow.hpp"
+#include "HierarchyWindow.hpp"
 
 #include "Core/GLFW/GLFWWindow.hpp"
 #include "Rendering/Vulkan/VulkanCommandBuffer.hpp"
@@ -105,8 +106,10 @@ void Editor::DrawWindows()
     MainWindow mainWindow;
     FoldersWindow foldersWindow;
     InspectorWindow inspectorWindow;
+    HierarchyWindow hierarchyWindow;
 
     mainWindow.Draw();
     foldersWindow.Draw();
     inspectorWindow.Draw();
+    hierarchyWindow.Draw();
 }
