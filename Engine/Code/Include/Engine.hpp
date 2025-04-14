@@ -5,6 +5,13 @@
 #include "IRender.hpp"
 #include "ISynchronization.hpp"
 #include "ResourceManager/ResourceManager.hpp"
+#include "jolt/Jolt/Jolt.h"
+#include "jolt/Jolt/RegisterTypes.h"
+#include "jolt/Jolt/Core/Factory.h"
+#include "jolt/Jolt/Physics/Collision/Shape/BoxShape.h"
+#include "jolt/Jolt/Physics/Collision/Shape/SphereShape.h"
+#include "jolt/Jolt/Physics/Body/BodyCreationSettings.h"
+
 
 class VulkanRenderInterface;
 
@@ -15,7 +22,9 @@ public:
 	~Engine() = default;
 
     void Init();
+    void InitPhysic();
 	void Update();
+    void UpdatePhysic();
 	void Destroy() const;
 
 	[[nodiscard]] IWindow* GetWindow() const { return m_window; }
@@ -66,6 +75,10 @@ private:
 	ICommandBuffer* m_editorCommandBuffer{ nullptr };
 	ISynchronization* m_synchronization { nullptr };
     IRenderingDraw* m_renderingDraw { nullptr };
+
+	JPH::PhysicsSystem* m_physicsSystem = nullptr; 
+    JPH::BodyInterface* m_bodyInterface = nullptr; 
+    JPH::ShapeManager* m_shapeManager = nullptr; 
 
     bool m_isRunning { false };
 };

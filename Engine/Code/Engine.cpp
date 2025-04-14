@@ -1,4 +1,5 @@
 #include "Include/Engine.hpp"
+#include "jolt/Jolt/Jolt.h"
 
 #include "Rendering/Vulkan/VulkanRenderInterface.hpp"
 
@@ -139,6 +140,13 @@ void Engine::Init()
     m_synchronization->Create(m_device);
 
     m_renderingDraw = m_interface->InstantiateRenderingDraw();
+
+    InitPhysic();
+}
+
+void Engine::InitPhysic()
+{
+
 }
 
 void Engine::Update()
@@ -146,7 +154,13 @@ void Engine::Update()
     m_window->Update();
     m_inputManager->Update(m_window);
     m_renderingDraw->Create(m_window, m_device, m_swapChain, m_pipeline, m_buffer, m_renderPass, m_descriptor, m_mesh, m_synchronization, m_commandBuffer, m_frameBuffer, m_depthResource, m_surface);
-
+    UpdatePhysic();
     if (m_window->ShouldClose())
         m_isRunning = false;
+}
+
+void Engine::UpdatePhysic()
+{
+
+
 }
