@@ -27,7 +27,6 @@ public:
     virtual float GetOpacity() const = 0;
     [[nodiscard]] virtual std::string GetTitle() const = 0;
 
-
     virtual GLFWWindow* CastGLFW()
     {
         DEBUG_LOG_INFO("Wrong Cast\n");

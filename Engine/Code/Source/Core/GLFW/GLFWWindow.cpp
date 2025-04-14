@@ -61,3 +61,12 @@ std::string GLFWWindow::GetTitle() const { return glfwGetWindowTitle(m_window); 
 
 
 void GLFWWindow::SetTitle(const std::string& a_name) { glfwSetWindowTitle(m_window, a_name.c_str()); }
+
+
+float GLFWWindow::GetDeltaTime()
+{
+    double currentTime = glfwGetTime();
+    float deltaTime = static_cast<float>(currentTime - m_lastTime);
+    m_lastTime = currentTime;
+    return deltaTime;
+}

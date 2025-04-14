@@ -23,6 +23,7 @@ public:
     void SetOpacity(const float& a_alpha) override;
     [[nodiscard]] std::string GetTitle() const override;
     void SetTitle(const std::string& a_name) override;
+    [[nodiscard]] float GetDeltaTime();
 
     GLFWWindow* CastGLFW() override { return this; }
 
@@ -31,4 +32,5 @@ public:
 
 private:
     GLFWwindow* m_window = nullptr;
+    float m_lastTime = 0.0f;
 };
