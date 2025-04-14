@@ -29,6 +29,7 @@ public:
     [[nodiscard]] VkPhysicalDevice GetPhysicalDevice() const { return m_physicalDevice; }
     [[nodiscard]] VkQueue GetGraphicsQueue() const { return m_graphicsQueue; }
     [[nodiscard]] VkQueue GetPresentationQueue() const { return m_presentationQueue; }
+    void WaitIdle() const;
 
 
 private :

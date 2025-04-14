@@ -30,6 +30,7 @@ void VulkanDescriptor::SetBuffers(IBuffer* a_buffer)
 
 void VulkanDescriptor::Destroy(IDevice* a_device)
 {
+    vkDeviceWaitIdle(a_device->CastVulkan()->GetDevice());
     vkDestroyDescriptorPool(a_device->CastVulkan()->GetDevice(), m_descriptorPool, nullptr);
     vkDestroyDescriptorPool(a_device->CastVulkan()->GetDevice(), m_imguiDescriptorPool, nullptr);
     DEBUG_LOG_INFO("Vulkan Descriptors : Descriptor Pools Destroyed!\n");

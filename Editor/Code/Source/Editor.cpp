@@ -3,10 +3,11 @@
 #include "backends/imgui_impl_vulkan.h"
 
 #include "Editor.hpp"
-#include "MainWindow.hpp"
 #include "FoldersWindow.hpp"
-#include "InspectorWindow.hpp"
 #include "HierarchyWindow.hpp"
+#include "InspectorWindow.hpp"
+#include "MainWindow.hpp"
+#include "imgui_internal.h"
 
 #include "Core/GLFW/GLFWWindow.hpp"
 #include "Rendering/Vulkan/VulkanCommandBuffer.hpp"
@@ -20,17 +21,14 @@
 
 void Editor::Destroy()
 {
+    m_engine->GetDevice()->CastVulkan()->WaitIdle();
     ImGui_ImplVulkan_Shutdown();
     ImGui_ImplGlfw_Shutdown();
     ImGui::DestroyContext();
 
-    if (m_engine)
-    {
-        m_engine->Destroy();
-
-        delete m_engine;
-        m_engine = nullptr;
-    }
+    m_engine->Destroy();
+    delete m_engine;
+    m_engine = nullptr;
 }
 
 void Editor::Init()
@@ -71,7 +69,6 @@ void Editor::SetupImGui() const
 
 void Editor::Update()
 {
-
     while (m_engine->IsRunning())
     {
         m_engine->Update();
@@ -94,10 +91,7 @@ void Editor::Update()
     }
 }
 
-void Editor::Render() const
-{
-    ImGui::Render();
-}
+void Editor::Render() const { ImGui::Render(); }
 
 void Editor::DrawWindows()
 {

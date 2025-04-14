@@ -142,8 +142,6 @@ void VulkanRenderer::RecreateSwapChain(IWindow* a_window, IDevice* a_device, ISu
         a_window->CastGLFW()->ProcessEvents();
     }
 
-    vkDeviceWaitIdle(a_device->CastVulkan()->GetDevice());
-
     CleanupSwapChain(a_device, a_swapChain, a_depthResource, a_frameBuffer);
 
     a_swapChain->CastVulkan()->Create(a_window, a_device, a_surface);

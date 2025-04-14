@@ -157,6 +157,15 @@ QueueFamilyIndices VulkanDevice::GetQueueFamilies(const VkPhysicalDevice& a_devi
 }
 
 
+void VulkanDevice::WaitIdle() const
+{
+    const VkResult l_idleResult = { vkDeviceWaitIdle(m_device) };
+    if (l_idleResult == VK_SUCCESS)
+        return;
+
+    DEBUG_LOG_ERROR("Device still has commands waiting for execution!");
+}
+
 void VulkanDevice::ProcessLogicalDeviceInfo(const QueueFamilyIndices& a_queueFamilyIndices)
 {
 	const std::set<int> l_queueFamilyIndices = { a_queueFamilyIndices.graphicsFamily, a_queueFamilyIndices.presentationFamily };
