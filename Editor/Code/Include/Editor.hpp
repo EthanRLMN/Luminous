@@ -22,13 +22,13 @@ public:
     void CreateWindows();
     void DrawWindows() const;
     void DestroyWindows() const;
-    
-    [[nodiscard]] Engine* GetEngine() const { return m_engine; }
-    [[nodiscard]] std::vector<IWindowPanel*> GetWindows() const { return m_windows; }
-    [[nodiscard]] IWindowPanel* GetWindow(const size_t a_index) const { return m_windows[a_index]; }
 
     void RegisterWindow(IWindowPanel* a_windowPanel) { m_windows.push_back(a_windowPanel); };
     void UnregisterWindow(IWindowPanel* a_windowPanel) { std::erase(m_windows, a_windowPanel); };
+
+    [[nodiscard]] Engine* GetEngine() const { return m_engine; }
+    [[nodiscard]] std::vector<IWindowPanel*> GetWindows() const { return m_windows; }
+    [[nodiscard]] IWindowPanel* GetWindow(const size_t a_index) const { return m_windows[a_index]; }
 
 
 private:

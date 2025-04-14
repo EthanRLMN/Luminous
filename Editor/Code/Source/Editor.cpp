@@ -43,9 +43,12 @@ void Editor::SetupImGui() const
 {
     IMGUI_CHECKVERSION();
     ImGui::CreateContext();
-    ImGuiIO& l_io = ImGui::GetIO();
-    l_io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard | ImGuiConfigFlags_DockingEnable | ImGuiConfigFlags_IsSRGB;
+    ImGuiIO& l_io = ImGui::GetIO(); static_cast<void>(l_io);
+    l_io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard | ImGuiConfigFlags_DockingEnable | ImGuiConfigFlags_IsSRGB | ImGuiDockNodeFlags_NoWindowMenuButton;
     l_io.ConfigDockingAlwaysTabBar = true;
+    l_io.Fonts->AddFontFromFileTTF("Editor/Assets/Fonts/Roboto-Bold.ttf", 16.0f, nullptr, l_io.Fonts->GetGlyphRangesDefault());
+
+    ImGui::StyleColorsDark();
 
     ImGui_ImplGlfw_InitForVulkan(m_engine->GetWindow()->CastGLFW()->GetGLFWWindow(), true);
 
@@ -61,8 +64,6 @@ void Editor::SetupImGui() const
     l_initInfo.ImageCount = MAX_FRAMES_IN_FLIGHT;
     l_initInfo.MSAASamples = VK_SAMPLE_COUNT_1_BIT;
 
-    ImGui::StyleColorsDark();
-
     ImGui_ImplVulkan_Init(&l_initInfo);
     ImGui_ImplVulkan_CreateFontsTexture();
 
@@ -76,25 +77,30 @@ void Editor::Update()
     {
         m_engine->Update();
 
-        ImGui_ImplVulkan_NewFrame();
-        ImGui_ImplGlfw_NewFrame();
-        ImGui::NewFrame();
-
-        DrawWindows();
-
         Render();
-        VulkanRenderer::RegisterGuiCallback([&] { ImGui_ImplVulkan_RenderDrawData(ImGui::GetDrawData(), m_engine->GetCommandBuffer()->CastVulkan()->GetCommandBuffers()[m_engine->GetRenderingDraw()->CastVulkan()->GetCurrentFrame()]); });
 
-        const ImGuiIO& l_io = ImGui::GetIO();
-        if (l_io.ConfigFlags & ImGuiConfigFlags_ViewportsEnable)
-        {
-            ImGui::UpdatePlatformWindows();
-            ImGui::RenderPlatformWindowsDefault();
-        }
     }
 }
 
-void Editor::Render() const { ImGui::Render(); }
+void Editor::Render() const
+{
+    ImGui_ImplVulkan_NewFrame();
+    ImGui_ImplGlfw_NewFrame();
+    ImGui::NewFrame();
+
+    DrawWindows();
+
+    ImGui::Render();
+
+    VulkanRenderer::RegisterGuiCallback([&] { ImGui_ImplVulkan_RenderDrawData(ImGui::GetDrawData(), m_engine->GetCommandBuffer()->CastVulkan()->GetCommandBuffers()[m_engine->GetRenderingDraw()->CastVulkan()->GetCurrentFrame()]); });
+
+    const ImGuiIO& l_io = ImGui::GetIO();
+    if (l_io.ConfigFlags & ImGuiConfigFlags_ViewportsEnable)
+    {
+        ImGui::UpdatePlatformWindows();
+        ImGui::RenderPlatformWindowsDefault();
+    }
+}
 
 void Editor::CreateWindows()
 {
