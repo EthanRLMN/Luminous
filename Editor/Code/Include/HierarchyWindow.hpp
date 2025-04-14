@@ -1,13 +1,14 @@
-#include "MainWindow.hpp"
-#include "imgui.h"
+#pragma once
 
-class HierarchyWindow
+#include "Interface/IWindowPanel.hpp"
+
+class HierarchyWindow : public IWindowPanel
 {
 public:
-    HierarchyWindow() = default;
-    ~HierarchyWindow() = default;
+    explicit HierarchyWindow(Editor* a_editor, const std::string& a_windowIdentifier) : IWindowPanel(a_editor, a_windowIdentifier) {}
 
-    void Draw();
-private:
-    bool m_isOpen;
+    void Init() override {};
+    void Update() override {};
+    void Draw() override;
+    void Destroy() override {};
 };

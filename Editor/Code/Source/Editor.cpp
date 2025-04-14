@@ -3,11 +3,12 @@
 #include "backends/imgui_impl_vulkan.h"
 
 #include "Editor.hpp"
-#include "FoldersWindow.hpp"
+#include "FileExplorerWindow.hpp"
 #include "HierarchyWindow.hpp"
 #include "InspectorWindow.hpp"
 #include "MainWindow.hpp"
 #include "imgui_internal.h"
+#include "Interface/IWindowPanel.hpp"
 
 #include "Core/GLFW/GLFWWindow.hpp"
 #include "Rendering/Vulkan/VulkanCommandBuffer.hpp"
@@ -17,7 +18,6 @@
 #include "Rendering/Vulkan/VulkanInstance.hpp"
 #include "Rendering/Vulkan/VulkanRenderPass.hpp"
 #include "Rendering/Vulkan/VulkanRenderer.hpp"
-
 
 void Editor::Destroy()
 {
@@ -36,6 +36,7 @@ void Editor::Init()
     m_engine = new Engine();
     m_engine->Init();
     SetupImGui();
+    CreateWindows();
 }
 
 void Editor::SetupImGui() const
@@ -59,6 +60,8 @@ void Editor::SetupImGui() const
     l_initInfo.MinImageCount = MAX_FRAMES_IN_FLIGHT;
     l_initInfo.ImageCount = MAX_FRAMES_IN_FLIGHT;
     l_initInfo.MSAASamples = VK_SAMPLE_COUNT_1_BIT;
+
+    ImGui::StyleColorsDark();
 
     ImGui_ImplVulkan_Init(&l_initInfo);
     ImGui_ImplVulkan_CreateFontsTexture();
@@ -93,15 +96,22 @@ void Editor::Update()
 
 void Editor::Render() const { ImGui::Render(); }
 
-void Editor::DrawWindows()
+void Editor::CreateWindows()
 {
-    MainWindow mainWindow;
-    FoldersWindow foldersWindow;
-    InspectorWindow inspectorWindow;
-    HierarchyWindow hierarchyWindow;
+    new MainWindow(this, "Editor");
+    new FileExplorerWindow(this, "File Explorer");
+    new InspectorWindow(this, "Inspector");
+    new HierarchyWindow(this, "Hierarchy");
+}
 
-    mainWindow.Draw();
-    foldersWindow.Draw();
-    inspectorWindow.Draw();
-    hierarchyWindow.Draw();
+void Editor::DrawWindows() const
+{
+    for (IWindowPanel* l_windowPanel : m_windows)
+        l_windowPanel->Draw();
+}
+
+void Editor::DestroyWindows() const
+{
+    for (const IWindowPanel* l_windowPanel : m_windows)
+        delete l_windowPanel;
 }

@@ -2,10 +2,10 @@
 
 #include "Interface/IWindowPanel.hpp"
 
-class InspectorWindow : public IWindowPanel
+class FileExplorerWindow : public IWindowPanel
 {
 public:
-    explicit InspectorWindow(Editor* a_editor, const std::string& a_windowIdentifier) : IWindowPanel(a_editor, a_windowIdentifier) {}
+    explicit FileExplorerWindow(Editor* a_editor, const std::string& a_windowIdentifier) : IWindowPanel(a_editor, a_windowIdentifier) {}
 
     void Init() override {};
     void Update() override {};

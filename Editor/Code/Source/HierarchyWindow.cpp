@@ -1,13 +1,15 @@
 #include "HierarchyWindow.hpp"
 
+#include "imgui.h"
+
 void HierarchyWindow::Draw()
 {
     ImGui::PushStyleColor(ImGuiCol_WindowBg, 0xff323432);
     ImGui::SetNextWindowSize({ 1920, 1080 }, ImGuiCond_FirstUseEver);
 
-    if (m_isOpen && ImGui::Begin("Hierarchy", &m_isOpen, ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_MenuBar))
+    if (p_isOpen && ImGui::Begin(p_windowIdentifier.c_str(), &p_isOpen, ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_MenuBar))
     {
+        ImGui::End();
     }
-    ImGui::End();
     ImGui::PopStyleColor();
 }

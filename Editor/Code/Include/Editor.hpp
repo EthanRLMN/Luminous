@@ -3,8 +3,8 @@
 #include "Engine.hpp"
 
 class ImguiWindow;
-class GLFWWindow;
 class VulkanInstance;
+class IWindowPanel;
 
 class Editor
 {
@@ -19,13 +19,20 @@ public:
     void Update();
     void Render() const;
 
-    void DrawWindows();
+    void CreateWindows();
+    void DrawWindows() const;
+    void DestroyWindows() const;
     
     [[nodiscard]] Engine* GetEngine() const { return m_engine; }
-    [[nodiscard]] ImguiWindow* GetImguiWindow() const { return m_imguiWindow; }
+    [[nodiscard]] std::vector<IWindowPanel*> GetWindows() const { return m_windows; }
+    [[nodiscard]] IWindowPanel* GetWindow(const size_t a_index) const { return m_windows[a_index]; }
+
+    void RegisterWindow(IWindowPanel* a_windowPanel) { m_windows.push_back(a_windowPanel); };
+    void UnregisterWindow(IWindowPanel* a_windowPanel) { std::erase(m_windows, a_windowPanel); };
+
 
 private:
     Engine* m_engine = nullptr;
-    ImguiWindow* m_imguiWindow = nullptr;
+    std::vector<IWindowPanel*> m_windows;
 };
 

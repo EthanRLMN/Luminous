@@ -42,7 +42,6 @@ void MainWindow::Draw()
 
         if (ImGui::BeginMenu("Edit"))
         {
-
             ImGui::MenuItem("Undo", "", false);
 
             ImGui::MenuItem("Redo", "", false);

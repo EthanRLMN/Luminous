@@ -1,13 +1,13 @@
 #pragma once
+#include "Interface/IWindowPanel.hpp"
 
-class MainWindow
+class MainWindow : public IWindowPanel
 {
   public:
-    MainWindow() = default;
-    ~MainWindow() = default;
+    explicit MainWindow(Editor* a_editor, const std::string& a_windowIdentifier) : IWindowPanel(a_editor, a_windowIdentifier) {}
 
-    void Draw();
-
-private:
-    bool m_isOpen;
+    void Init() override {};
+    void Update() override {};
+    void Draw() override;
+    void Destroy() override {};
 };
