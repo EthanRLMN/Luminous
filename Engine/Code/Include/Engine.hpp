@@ -35,11 +35,9 @@ public:
 	[[nodiscard]] IBuffer* GetBuffer() const { return m_buffer; }
 	[[nodiscard]] IDescriptor* GetDescriptor() const { return m_descriptor; }
 	[[nodiscard]] ICommandBuffer* GetCommandBuffer() const { return m_commandBuffer; }
-	[[nodiscard]] ICommandBuffer* GetEditorCommandBuffer() const { return m_editorCommandBuffer; }
 	[[nodiscard]] ISynchronization* GetSynchronization() const { return m_synchronization; }
-	[[nodiscard]] IRenderingDraw* GetRenderingDraw() const { return m_renderingDraw; }
-
-    bool IsRunning() const { return m_isRunning; }
+	[[nodiscard]] IRenderer* GetRenderingDraw() const { return m_renderer; }
+    [[nodiscard]] bool IsRunning() const { return m_isRunning; }
 
 
 private:
@@ -64,9 +62,8 @@ private:
 	IBuffer* m_buffer { nullptr };
 	IDescriptor* m_descriptor{ nullptr };
 	ICommandBuffer* m_commandBuffer{ nullptr };
-	ICommandBuffer* m_editorCommandBuffer{ nullptr };
 	ISynchronization* m_synchronization { nullptr };
-    IRenderingDraw* m_renderingDraw { nullptr };
+    IRenderer* m_renderer { nullptr };
 
     bool m_isRunning { false };
 };

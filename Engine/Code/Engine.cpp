@@ -6,9 +6,6 @@ void Engine::Destroy() const
 {
     m_resourceManager->DeleteResource<VulkanShader>("v=Engine/Assets/Shaders/vert.spv, f=Engine/Assets/Shaders/frag.spv, t=, g=",m_device);
 
-    m_synchronization->Destroy(m_device);
-    m_interface->DeleteSynchronization(m_synchronization);
-
     m_commandBuffer->Destroy();
     m_interface->DeleteCommandBuffer(m_commandBuffer);
 
@@ -30,7 +27,10 @@ void Engine::Destroy() const
     m_depthResource->Destroy(m_device);
     m_interface->DeleteDepthResource(m_depthResource);
 
-    m_commandPool->Destroy(m_device);
+    m_editorCommandPool->Destroy(m_device, m_synchronization, m_renderer);
+    m_interface->DeleteCommandPool(m_editorCommandPool);
+
+    m_commandPool->Destroy(m_device, m_synchronization, m_renderer);
     m_interface->DeleteCommandPool(m_commandPool);
 
     m_pipeline->Destroy(m_device);
@@ -39,11 +39,17 @@ void Engine::Destroy() const
     m_descriptorSetLayout->Destroy(m_device);
     m_interface->DeleteDescriptorSetLayout(m_descriptorSetLayout);
 
+    m_editorRenderPass->Destroy(m_device);
+    m_interface->DeleteRenderPass(m_editorRenderPass);
+
     m_renderPass->Destroy(m_device);
     m_interface->DeleteRenderPass(m_renderPass);
 
     m_swapChain->Destroy(m_device);
     m_interface->DeleteSwapChain(m_swapChain);
+
+    m_synchronization->Destroy(m_device);
+    m_interface->DeleteSynchronization(m_synchronization);
 
     m_device->Destroy();
     m_interface->DeleteDevice(m_device);
@@ -56,8 +62,8 @@ void Engine::Destroy() const
 
     m_interface->DeleteResourceManager(m_resourceManager);
 
-    m_renderingDraw->Destroy();
-    m_interface->DeleteRenderingDraw(m_renderingDraw);
+    m_renderer->Destroy();
+    m_interface->DeleteRenderingDraw(m_renderer);
 
     m_inputManager->Destroy(m_window);
     m_interface->DeleteInputManager(m_inputManager);
@@ -134,19 +140,17 @@ void Engine::Init()
     m_commandBuffer = m_interface->InstantiateCommandBuffer();
     m_commandBuffer->Create(m_device, m_commandPool);
 
-    m_editorCommandBuffer = m_interface->InstantiateCommandBuffer();
-
     m_synchronization = m_interface->InstantiateSynchronization();
     m_synchronization->Create(m_device);
 
-    m_renderingDraw = m_interface->InstantiateRenderingDraw();
+    m_renderer = m_interface->InstantiateRenderingDraw();
 }
 
 void Engine::Update()
 {
     m_window->Update();
     m_inputManager->Update(m_window);
-    m_renderingDraw->Create(m_window, m_device, m_swapChain, m_pipeline, m_buffer, m_renderPass, m_descriptor, m_mesh, m_synchronization, m_commandBuffer, m_frameBuffer, m_depthResource, m_surface);
+    m_renderer->DrawFrame(m_window, m_device, m_swapChain, m_pipeline, m_buffer, m_renderPass, m_descriptor, m_mesh, m_synchronization, m_commandBuffer, m_frameBuffer, m_depthResource, m_surface);
 
     if (m_window->ShouldClose())
         m_isRunning = false;

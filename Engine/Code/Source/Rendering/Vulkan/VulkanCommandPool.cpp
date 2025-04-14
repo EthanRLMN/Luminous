@@ -1,7 +1,11 @@
 #include "Rendering/Vulkan/VulkanCommandPool.hpp"
 
+#include "IRenderer.hpp"
+#include "ISynchronization.hpp"
 #include "Rendering/Vulkan/VulkanDevice.hpp"
+#include "Rendering/Vulkan/VulkanRenderer.hpp"
 #include "Rendering/Vulkan/VulkanSurface.hpp"
+#include "Rendering/Vulkan/VulkanSynchronization.hpp"
 
 
 void VulkanCommandPool::Create(IDevice* a_device, ISurface* a_surface)
@@ -18,8 +22,11 @@ void VulkanCommandPool::Create(IDevice* a_device, ISurface* a_surface)
     DEBUG_LOG_INFO("Vulkan CommandPool : Create CommandPool!\n");
 }
 
-void VulkanCommandPool::Destroy(IDevice* a_device)
+void VulkanCommandPool::Destroy(IDevice* a_device, ISynchronization* a_synchronization, IRenderer* a_renderingDraw)
 {
-    vkDestroyCommandPool(a_device->CastVulkan()->GetDevice(), m_graphicsCommandPool, nullptr);
-    DEBUG_LOG_INFO("Vulkan CommandPool : Destroy CommandPool!\n");
+    if (vkGetFenceStatus(a_device->CastVulkan()->GetDevice(), a_synchronization->CastVulkan()->GetFences()[a_renderingDraw->CastVulkan()->GetCurrentFrame()]) == VK_SUCCESS)
+    {
+        vkDestroyCommandPool(a_device->CastVulkan()->GetDevice(), m_graphicsCommandPool, nullptr);
+        DEBUG_LOG_INFO("Vulkan CommandPool : Destroy CommandPool!\n");
+    }
 }

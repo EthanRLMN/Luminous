@@ -8,7 +8,7 @@ class VulkanCommandPool final : public ICommandPool
 {
 public:
 	void Create(IDevice* a_device, ISurface* a_surface) override;
-	void Destroy(IDevice* a_device) override;
+	void Destroy(IDevice* a_device, ISynchronization* a_synchronization, IRenderer* a_renderingDraw) override;
 
 	VulkanCommandPool* CastVulkan() override { return this; }
 

@@ -2,21 +2,21 @@
 
 #include <functional>
 
-#include "IRenderingDraw.hpp"
+#include "IRenderer.hpp"
 
 #include "Core/GLFW/GLFWWindow.hpp"
 #include "Rendering/Vulkan/VulkanDevice.hpp"
 
 
-class VulkanRenderingDraw final : public IRenderingDraw
+class VulkanRenderer final : public IRenderer
 {
 public:
     using GuiRenderCallback = std::function<void()>;
     static void RegisterGuiCallback(GuiRenderCallback a_callback);
 
-    void Create(IWindow* a_window, IDevice* a_device, ISwapChain* a_swapChain, IPipeline* a_pipeline, IBuffer* a_buffer, IRenderPass* a_renderPass, IDescriptor* a_descriptor, IMesh* a_mesh, ISynchronization* a_synchronization, ICommandBuffer* a_commandBuffer, IFrameBuffer* a_frameBuffer, IDepthResource* a_depthResource, ISurface* a_surface) override;
+    void DrawFrame(IWindow* a_window, IDevice* a_device, ISwapChain* a_swapChain, IPipeline* a_pipeline, IBuffer* a_buffer, IRenderPass* a_renderPass, IDescriptor* a_descriptor, IMesh* a_mesh, ISynchronization* a_synchronization, ICommandBuffer* a_commandBuffer, IFrameBuffer* a_frameBuffer, IDepthResource* a_depthResource, ISurface* a_surface) override;
 	void Destroy() override {};
-    VulkanRenderingDraw* CastVulkan() override { return this; }
+    VulkanRenderer* CastVulkan() override { return this; }
 
 	void RecordCommandBuffer(VkCommandBuffer a_commandBuffer, VkPipeline a_graphicsPipeline, VkPipelineLayout a_pipelineLayout, uint32_t a_imageIndex, ISwapChain* a_swapChain, IRenderPass* a_renderPass, IBuffer* a_buffer, IDescriptor* a_descriptor, IMesh* a_mesh, IFrameBuffer* a_frameBuffer);
 

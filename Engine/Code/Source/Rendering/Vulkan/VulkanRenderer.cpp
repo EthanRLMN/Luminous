@@ -8,7 +8,7 @@
 #include "ISwapChain.hpp"
 #include "ISynchronization.hpp"
 
-#include "Rendering/Vulkan/VulkanRenderingDraw.hpp"
+#include "Rendering/Vulkan/VulkanRenderer.hpp"
 
 #include "Matrix4.hpp"
 #include "Rendering/Vulkan/VulkanBuffer.hpp"
@@ -25,15 +25,18 @@
 #include "MathUtils.hpp"
 
 
-static VulkanRenderingDraw::GuiRenderCallback l_editorGuiCallback{ nullptr };
+static VulkanRenderer::GuiRenderCallback l_editorGuiCallback{ nullptr };
 
-void VulkanRenderingDraw::RegisterGuiCallback(GuiRenderCallback a_callback) { l_editorGuiCallback = std::move(a_callback); }
+void VulkanRenderer::RegisterGuiCallback(GuiRenderCallback a_callback) { l_editorGuiCallback = std::move(a_callback); }
 
-void VulkanRenderingDraw::Create(IWindow* a_window, IDevice* a_device, ISwapChain* a_swapChain, IPipeline* a_pipeline, IBuffer* a_buffer, IRenderPass* a_renderPass, IDescriptor* a_descriptor, IMesh* a_mesh, ISynchronization* a_synchronization, ICommandBuffer* a_commandBuffer, IFrameBuffer* a_frameBuffer, IDepthResource* a_depthResource, ISurface* a_surface)
+void VulkanRenderer::DrawFrame(IWindow* a_window, IDevice* a_device, ISwapChain* a_swapChain, IPipeline* a_pipeline, IBuffer* a_buffer, IRenderPass* a_renderPass, IDescriptor* a_descriptor, IMesh* a_mesh, ISynchronization* a_synchronization, ICommandBuffer* a_commandBuffer, IFrameBuffer* a_frameBuffer, IDepthResource* a_depthResource, ISurface* a_surface)
 {
-    vkWaitForFences(a_device->CastVulkan()->GetDevice(), 1, &a_synchronization->CastVulkan()->GetFences()[m_currentFrame], VK_TRUE, UINT64_MAX);
+    const VkDevice& l_device { a_device->CastVulkan()->GetDevice() };
+    const VkSwapchainKHR& l_swapchain { a_swapChain->CastVulkan()->GetSwapChain() };
+
+    vkWaitForFences(l_device, 1, &a_synchronization->CastVulkan()->GetFences()[m_currentFrame], VK_TRUE, UINT64_MAX);
     uint32_t l_imageIndex{ 0 };
-    VkResult l_result = vkAcquireNextImageKHR(a_device->CastVulkan()->GetDevice(), a_swapChain->CastVulkan()->GetSwapChain(), UINT64_MAX, a_synchronization->CastVulkan()->GetImageAvailableSemaphores()[m_currentFrame], nullptr, &l_imageIndex);
+    VkResult l_result = vkAcquireNextImageKHR(l_device, l_swapchain, UINT64_MAX, a_synchronization->CastVulkan()->GetImageAvailableSemaphores()[m_currentFrame], nullptr, &l_imageIndex);
 
     if (l_result == VK_ERROR_OUT_OF_DATE_KHR)
     {
@@ -44,7 +47,7 @@ void VulkanRenderingDraw::Create(IWindow* a_window, IDevice* a_device, ISwapChai
         DEBUG_LOG_ERROR("failed to acquire swap chain image");
 
     UpdateUniformBuffer(m_currentFrame, a_swapChain, a_buffer);
-    vkResetFences(a_device->CastVulkan()->GetDevice(), 1, &a_synchronization->CastVulkan()->GetFences()[m_currentFrame]);
+    vkResetFences(l_device, 1, &a_synchronization->CastVulkan()->GetFences()[m_currentFrame]);
 
     VkSubmitInfo l_submitInfo{ VK_STRUCTURE_TYPE_SUBMIT_INFO };
     const std::vector<VkSemaphore> l_waitSemaphores = { a_synchronization->CastVulkan()->GetImageAvailableSemaphores()[m_currentFrame] };
@@ -59,7 +62,7 @@ void VulkanRenderingDraw::Create(IWindow* a_window, IDevice* a_device, ISwapChai
         DEBUG_LOG_ERROR("Failed to submit draw command buffer");
 
     VkPresentInfoKHR l_presentInfo{ VK_STRUCTURE_TYPE_PRESENT_INFO_KHR };
-    const std::vector<VkSwapchainKHR> l_swapChains = { a_swapChain->CastVulkan()->GetSwapChain() };
+    const std::vector<VkSwapchainKHR> l_swapChains = { l_swapchain };
     PresentRendererInfo(l_presentInfo, l_signalSemaphores, l_swapChains);
     l_presentInfo.pImageIndices = &l_imageIndex;
 
@@ -73,7 +76,7 @@ void VulkanRenderingDraw::Create(IWindow* a_window, IDevice* a_device, ISwapChai
 }
 
 
-void VulkanRenderingDraw::RecordCommandBuffer(const VkCommandBuffer a_commandBuffer, const VkPipeline a_graphicsPipeline, const VkPipelineLayout a_pipelineLayout, const uint32_t a_imageIndex, ISwapChain* a_swapChain, IRenderPass* a_renderPass, IBuffer* a_buffer, IDescriptor* a_descriptor, IMesh* a_mesh, IFrameBuffer* a_frameBuffer)
+void VulkanRenderer::RecordCommandBuffer(const VkCommandBuffer a_commandBuffer, const VkPipeline a_graphicsPipeline, const VkPipelineLayout a_pipelineLayout, const uint32_t a_imageIndex, ISwapChain* a_swapChain, IRenderPass* a_renderPass, IBuffer* a_buffer, IDescriptor* a_descriptor, IMesh* a_mesh, IFrameBuffer* a_frameBuffer)
 {
     const VkCommandBufferBeginInfo l_bufferBeginInfo = { VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO };
     if (vkBeginCommandBuffer(a_commandBuffer, &l_bufferBeginInfo) != VK_SUCCESS)
@@ -106,15 +109,13 @@ void VulkanRenderingDraw::RecordCommandBuffer(const VkCommandBuffer a_commandBuf
 
     vkCmdEndRenderPass(a_commandBuffer);
 
-
-
     const VkResult l_result = vkEndCommandBuffer(a_commandBuffer);
     if (l_result != VK_SUCCESS)
         throw std::runtime_error("Failed to stop recording a command buffer ");
 }
 
 
-void VulkanRenderingDraw::UpdateUniformBuffer(const uint32_t currentImage, ISwapChain* a_swapChain, IBuffer* a_buffer)
+void VulkanRenderer::UpdateUniformBuffer(const uint32_t currentImage, ISwapChain* a_swapChain, IBuffer* a_buffer)
 {
     static std::chrono::steady_clock::time_point l_startTime = std::chrono::high_resolution_clock::now();
     const std::chrono::steady_clock::time_point l_currentTime = std::chrono::high_resolution_clock::now();
@@ -131,7 +132,7 @@ void VulkanRenderingDraw::UpdateUniformBuffer(const uint32_t currentImage, ISwap
 }
 
 
-void VulkanRenderingDraw::RecreateSwapChain(IWindow* a_window, IDevice* a_device, ISurface* a_surface, ISwapChain* a_swapChain, IDepthResource* a_depthResource, IFrameBuffer* a_frameBuffer, IRenderPass* a_renderPass)
+void VulkanRenderer::RecreateSwapChain(IWindow* a_window, IDevice* a_device, ISurface* a_surface, ISwapChain* a_swapChain, IDepthResource* a_depthResource, IFrameBuffer* a_frameBuffer, IRenderPass* a_renderPass)
 {
     int l_width, l_height{ 0 };
     a_window->CastGLFW()->GetFrameBufferSize(&l_width, &l_height);
@@ -141,8 +142,9 @@ void VulkanRenderingDraw::RecreateSwapChain(IWindow* a_window, IDevice* a_device
         a_window->CastGLFW()->ProcessEvents();
     }
 
-    CleanupSwapChain(a_device, a_swapChain, a_depthResource, a_frameBuffer);
     vkDeviceWaitIdle(a_device->CastVulkan()->GetDevice());
+
+    CleanupSwapChain(a_device, a_swapChain, a_depthResource, a_frameBuffer);
 
     a_swapChain->CastVulkan()->Create(a_window, a_device, a_surface);
     CreateImageViews(a_device, a_swapChain);
@@ -151,7 +153,7 @@ void VulkanRenderingDraw::RecreateSwapChain(IWindow* a_window, IDevice* a_device
 }
 
 
-void VulkanRenderingDraw::CleanupSwapChain(IDevice* a_device, ISwapChain* a_swapChain, IDepthResource* a_depthResource, IFrameBuffer* a_framebuffer)
+void VulkanRenderer::CleanupSwapChain(IDevice* a_device, ISwapChain* a_swapChain, IDepthResource* a_depthResource, IFrameBuffer* a_framebuffer)
 {
     vkDeviceWaitIdle(a_device->CastVulkan()->GetDevice());
 
@@ -169,7 +171,7 @@ void VulkanRenderingDraw::CleanupSwapChain(IDevice* a_device, ISwapChain* a_swap
 }
 
 
-void VulkanRenderingDraw::CreateImageViews(IDevice* a_device, ISwapChain* a_swapChain)
+void VulkanRenderer::CreateImageViews(IDevice* a_device, ISwapChain* a_swapChain)
 {
     a_swapChain->CastVulkan()->GetSwapChainImageViews().resize(a_swapChain->CastVulkan()->GetSwapChainImages().size());
 
@@ -178,7 +180,7 @@ void VulkanRenderingDraw::CreateImageViews(IDevice* a_device, ISwapChain* a_swap
 }
 
 
-void VulkanRenderingDraw::SetupSubmitInfo(VkSubmitInfo& a_submitInfo, const std::vector<VkSemaphore>& a_waitSemaphores, const std::array<VkPipelineStageFlags, 1>& a_waitStages, const std::vector<VkCommandBuffer>& a_commandBuffer, const std::vector<VkSemaphore>& a_signalSemaphores) const
+void VulkanRenderer::SetupSubmitInfo(VkSubmitInfo& a_submitInfo, const std::vector<VkSemaphore>& a_waitSemaphores, const std::array<VkPipelineStageFlags, 1>& a_waitStages, const std::vector<VkCommandBuffer>& a_commandBuffer, const std::vector<VkSemaphore>& a_signalSemaphores) const
 {
     a_submitInfo.waitSemaphoreCount = 1;
     a_submitInfo.pWaitSemaphores = a_waitSemaphores.data();
@@ -191,7 +193,7 @@ void VulkanRenderingDraw::SetupSubmitInfo(VkSubmitInfo& a_submitInfo, const std:
 }
 
 
-void VulkanRenderingDraw::PresentRendererInfo(VkPresentInfoKHR& a_presentInfo, const std::vector<VkSemaphore>& a_signalSemaphores, const std::vector<VkSwapchainKHR>& a_swapchains)
+void VulkanRenderer::PresentRendererInfo(VkPresentInfoKHR& a_presentInfo, const std::vector<VkSemaphore>& a_signalSemaphores, const std::vector<VkSwapchainKHR>& a_swapchains)
 {
     a_presentInfo.waitSemaphoreCount = 1;
     a_presentInfo.pWaitSemaphores = a_signalSemaphores.data();
@@ -201,7 +203,7 @@ void VulkanRenderingDraw::PresentRendererInfo(VkPresentInfoKHR& a_presentInfo, c
 }
 
 
-void VulkanRenderingDraw::PresentRenderPassInfo(VkRenderPassBeginInfo& a_renderPassBeginInfo, const VkRenderPass& a_renderPass, const VkFramebuffer& a_framebuffer, const VkExtent2D& a_swapchainExtent, std::array<VkClearValue, 2> a_clearValues, const VkCommandBuffer& a_commandBuffer, const VkPipeline& a_graphicsPipeline)
+void VulkanRenderer::PresentRenderPassInfo(VkRenderPassBeginInfo& a_renderPassBeginInfo, const VkRenderPass& a_renderPass, const VkFramebuffer& a_framebuffer, const VkExtent2D& a_swapchainExtent, std::array<VkClearValue, 2> a_clearValues, const VkCommandBuffer& a_commandBuffer, const VkPipeline& a_graphicsPipeline)
 {
     a_renderPassBeginInfo.renderPass = a_renderPass;
     a_renderPassBeginInfo.framebuffer = a_framebuffer;
@@ -217,7 +219,7 @@ void VulkanRenderingDraw::PresentRenderPassInfo(VkRenderPassBeginInfo& a_renderP
     vkCmdBindPipeline(a_commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, a_graphicsPipeline);
 }
 
-void VulkanRenderingDraw::FillViewportInfo(VkViewport& a_viewport, const VkExtent2D& a_swapChainExtent)
+void VulkanRenderer::FillViewportInfo(VkViewport& a_viewport, const VkExtent2D& a_swapChainExtent)
 {
     a_viewport.x = 0.0f;
     a_viewport.y = 0.0f;

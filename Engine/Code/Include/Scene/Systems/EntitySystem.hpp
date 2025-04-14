@@ -13,7 +13,6 @@ public:
     EntitySystem() = delete;
     ~EntitySystem() = default;
 
-
     template<typename T, typename... Args>
     std::shared_ptr<T> AddComponent(Args&&... args)
     {

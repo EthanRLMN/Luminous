@@ -2,6 +2,8 @@
 
 #include "Logger.hpp"
 
+class IRenderer;
+class ISynchronization;
 class VulkanCommandPool;
 class IDevice;
 class ISurface;
@@ -12,7 +14,7 @@ public:
 	virtual ~ICommandPool() = default;
 
 	virtual void Create(IDevice* a_device, ISurface* a_surface) = 0;
-	virtual void Destroy(IDevice* a_device) = 0;
+	virtual void Destroy(IDevice* a_device, ISynchronization* a_synchronization, IRenderer* a_renderingDraw) = 0;
 
 
 	virtual VulkanCommandPool* CastVulkan()

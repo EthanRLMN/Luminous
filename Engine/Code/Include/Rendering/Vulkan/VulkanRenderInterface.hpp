@@ -22,7 +22,7 @@
 #include "Rendering/Vulkan/VulkanSynchronization.hpp"
 #include "Rendering/Vulkan/VulkanTexture.hpp"
 
-#include "Rendering/Vulkan/VulkanRenderingDraw.hpp"
+#include "Rendering/Vulkan/VulkanRenderer.hpp"
 
 class VulkanRenderInterface final : public IRender
 {
@@ -85,7 +85,7 @@ public:
 	inline IResourceManager* InstantiateResourceManager() override { return new IResourceManager(); }
 	void DeleteResourceManager(IResourceManager* a_resourceManager) override { delete a_resourceManager; }
 
-	inline IRenderingDraw* InstantiateRenderingDraw() override { return new VulkanRenderingDraw(); }
-	void DeleteRenderingDraw(IRenderingDraw* a_renderDraw) override { delete a_renderDraw; }
+	inline IRenderer* InstantiateRenderingDraw() override { return new VulkanRenderer(); }
+	void DeleteRenderingDraw(IRenderer* a_renderDraw) override { delete a_renderDraw; }
 
 };
