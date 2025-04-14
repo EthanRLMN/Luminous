@@ -58,6 +58,7 @@ Engine::Engine()
     m_multiSampling->Create(m_device);
     m_multiSampling->CastVulkan()->CreateColorResources(m_device, m_swapChain);
 
+
 	m_depthResource = m_interface->InstantiateDepthResource();
 	m_depthResource->Create(m_device, m_swapChain, m_renderPass);
 
@@ -191,7 +192,7 @@ void Engine::Run() const
 		if (m_inputManager->IsMouseButtonDown(m_window, MouseButton::MOUSE_BUTTON_LEFT))
 			DEBUG_LOG_VERBOSE("x={}, y={}\n", m_inputManager->GetMouseScroll().x, m_inputManager->GetMouseScroll().y);*/
 
-		renderingDraw->Create(m_window, m_device, m_swapChain, m_pipeline, m_buffer, m_renderPass, m_descriptor, m_mesh, m_synchronization, m_commandBuffer, m_frameBuffer, m_depthResource, m_surface);
+		renderingDraw->Create(m_window, m_device, m_swapChain, m_pipeline, m_buffer, m_renderPass, m_descriptor, m_mesh, m_synchronization, m_commandBuffer, m_frameBuffer, m_depthResource, m_surface,m_multiSampling);
 
 		m_inputManager->Update(m_window);
 	}

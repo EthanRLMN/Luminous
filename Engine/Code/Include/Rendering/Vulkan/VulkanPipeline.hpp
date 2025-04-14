@@ -28,7 +28,7 @@ private:
 	void SetupInputAssemblyState(VkPipelineInputAssemblyStateCreateInfo& a_inputAssembly);
 	void SetupViewportState(VkPipelineViewportStateCreateInfo& a_viewportCreateInfo);
 	void SetupRasterizerCreationInfo(VkPipelineRasterizationStateCreateInfo& a_rasterizerCreateInfo);
-	void SetupMultisamplingState(VkPipelineMultisampleStateCreateInfo& a_multisamplingCreateInfo);
+    void SetupMultisamplingState(VkPipelineMultisampleStateCreateInfo& a_multisamplingCreateInfo, VkSampleCountFlagBits a_numsamples);
 	void SetupDepthStencilState(VkPipelineDepthStencilStateCreateInfo& a_depthStencilCreateInfo);
 	void SetupColorBlendAttachmentState(VkPipelineColorBlendAttachmentState& a_colorBlendAttachment);
 	void SetupColorBlendingState(VkPipelineColorBlendStateCreateInfo& a_colorBlendingCreateInfo, const VkPipelineColorBlendAttachmentState& a_colorBlendAttachment);

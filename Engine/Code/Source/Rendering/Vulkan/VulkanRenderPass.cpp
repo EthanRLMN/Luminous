@@ -33,7 +33,7 @@ void VulkanRenderPass::CreateRenderPass(ISwapChain* a_swapChain, IDevice* a_devi
 	l_colorAttachment.stencilLoadOp = VK_ATTACHMENT_LOAD_OP_DONT_CARE;
 	l_colorAttachment.stencilStoreOp = VK_ATTACHMENT_STORE_OP_DONT_CARE;
 	l_colorAttachment.initialLayout = VK_IMAGE_LAYOUT_UNDEFINED;
-    l_colorAttachment.finalLayout = VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL;
+    l_colorAttachment.finalLayout = VK_IMAGE_LAYOUT_PRESENT_SRC_KHR;
 
 	VkAttachmentDescription l_depthAttachment { };
 	l_depthAttachment.format = FindDepthFormat(a_device->CastVulkan()->GetPhysicalDevice());
@@ -67,16 +67,6 @@ void VulkanRenderPass::CreateRenderPass(ISwapChain* a_swapChain, IDevice* a_devi
 	l_dependency.dstStageMask = VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT | VK_PIPELINE_STAGE_EARLY_FRAGMENT_TESTS_BIT;
 	l_dependency.srcAccessMask = VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT | VK_ACCESS_DEPTH_STENCIL_ATTACHMENT_WRITE_BIT;
 
-	const std::array<VkAttachmentDescription, 2> l_attachments = { l_colorAttachment, l_depthAttachment };
-
-	VkRenderPassCreateInfo l_renderPassCreateInfo = { };
-	l_renderPassCreateInfo.sType = VK_STRUCTURE_TYPE_RENDER_PASS_CREATE_INFO;
-	l_renderPassCreateInfo.attachmentCount = static_cast<uint32_t>(l_attachments.size());
-	l_renderPassCreateInfo.pAttachments = l_attachments.data();
-	l_renderPassCreateInfo.subpassCount = 1;
-	l_renderPassCreateInfo.pSubpasses = &l_subpass;
-	l_renderPassCreateInfo.dependencyCount = 1;
-	l_renderPassCreateInfo.pDependencies = &l_dependency;
 
 	VkAttachmentDescription l_colorAttachmentResolve{};
     l_colorAttachmentResolve.format = a_swapChain->CastVulkan()->GetSwapChainImageFormat();
@@ -88,13 +78,23 @@ void VulkanRenderPass::CreateRenderPass(ISwapChain* a_swapChain, IDevice* a_devi
     l_colorAttachmentResolve.initialLayout = VK_IMAGE_LAYOUT_UNDEFINED;
     l_colorAttachmentResolve.finalLayout = VK_IMAGE_LAYOUT_PRESENT_SRC_KHR;
 
-	VkAttachmentReference l_colorAttachmentResolveRef{};
+    VkAttachmentReference l_colorAttachmentResolveRef{};
     l_colorAttachmentResolveRef.attachment = 2;
     l_colorAttachmentResolveRef.layout = VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL;
     l_subpass.pResolveAttachments = &l_colorAttachmentResolveRef;
 
-	std::array<VkAttachmentDescription, 3> l_attachments2 = { l_colorAttachment, l_depthAttachment, l_colorAttachmentResolve };
-    l_renderPassCreateInfo.pAttachments = l_attachments2.data();
+
+	const std::array<VkAttachmentDescription, 3> l_attachments = { l_colorAttachment, l_depthAttachment, l_colorAttachmentResolve };
+
+	VkRenderPassCreateInfo l_renderPassCreateInfo = { };
+	l_renderPassCreateInfo.sType = VK_STRUCTURE_TYPE_RENDER_PASS_CREATE_INFO;
+	l_renderPassCreateInfo.attachmentCount = static_cast<uint32_t>(l_attachments.size());
+	l_renderPassCreateInfo.pAttachments = l_attachments.data();
+	l_renderPassCreateInfo.subpassCount = 1;
+	l_renderPassCreateInfo.pSubpasses = &l_subpass;
+	l_renderPassCreateInfo.dependencyCount = 1;
+	l_renderPassCreateInfo.pDependencies = &l_dependency;
+
 
 	const VkResult l_result = vkCreateRenderPass(a_device->CastVulkan()->GetDevice(), &l_renderPassCreateInfo, nullptr, &m_renderPass);
 
