@@ -14,10 +14,10 @@ public:
 
     void Destroy();
     void Init();
-    void SetupImGui();
+    void SetupImGui() const;
 
-    void Begin();
-    void Launch();
+    void Update();
+    void Render() const;
 
     [[nodiscard]] Engine* GetEngine() const { return m_engine; }
     [[nodiscard]] ImguiWindow* GetImguiWindow() const { return m_imguiWindow; }

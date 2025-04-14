@@ -26,9 +26,9 @@ const std::vector deviceExtensions = { VK_KHR_SWAPCHAIN_EXTENSION_NAME };
 
 struct Vertex
 {
-    Maths::Vector3 pos;
-    Maths::Vector3 color;
-    Maths::Vector2 texCoord;
+    Maths::Vector3 pos = Maths::Vector3::Zero;
+    Maths::Vector3 color = Maths::Vector3::Zero;
+    Maths::Vector2 texCoord = Maths::Vector2::One;
 
     bool operator==(const Vertex& a_other) const noexcept { return pos == a_other.pos && texCoord == a_other.texCoord && color == a_other.color; }
 };

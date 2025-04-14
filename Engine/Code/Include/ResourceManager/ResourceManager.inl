@@ -3,34 +3,58 @@
 #include "Logger.hpp"
 
 #include "ResourceManager.hpp"
+#include "Rendering/Vulkan/VulkanShader.hpp"
+#include "Rendering/Vulkan/VulkanTexture.hpp"
+#include "Rendering/Vulkan/VulkanMesh.hpp"
 
+class VulkanTexture;
+class VulkanMesh;
+class VulkanShader;
 
 template<typename T>
-T* IResourceManager::LoadResource(const std::string& a_file)
+T* IResourceManager::LoadResource(const IResourceParams a_params)
 {
-	if (m_resources[a_file] == nullptr)
+    std::string l_file = "";
+
+	if (typeid(T) == typeid(VulkanTexture)) 
 	{
-		std::string l_info = "Trying to load " + a_file + "...";
+        l_file = a_params.m_texturePath;
+    } else if (typeid(T) == typeid(VulkanMesh))
+    {
+        l_file = a_params.m_meshPath;
+    } else if (typeid(T) == typeid(VulkanShader))
+    {
+        std::string l_path = "v=" + a_params.m_vertexShaderPath + ", f=" + a_params.m_fragmentShaderPath + ", t=" + a_params.m_tesselationShaderPath + ", g=" + a_params.m_geometryShaderPath;
+        l_file = l_path;
+        DEBUG_LOG_INFO("{}", l_file);
+		
+    }
+
+	
+
+	if (m_resources[l_file] == nullptr)
+	{
+        std::string l_info = "Trying to load " + l_file + "...";
 		DEBUG_LOG_INFO("{}", l_info);
 
 		T* l_resource = new T();
-		if (l_resource && l_resource->Initialize(this, a_file))
+		if (l_resource && l_resource->Create(this, a_params))
 		{
-			l_info = "Initialized " + a_file + " file.";
+            l_info = "Initialized " + l_file + " file.";
 			DEBUG_LOG_INFO("{}", l_info);
-			m_resources[a_file] = l_resource;
+            m_resources[l_file] = l_resource;
 			return l_resource;
 		}
 
-		l_info = "Failed to Initialize " + a_file + " file.";
+		l_info = "Failed to Initialize " + l_file + " file.";
 		DEBUG_LOG_ERROR("{}", l_info);
 		delete(l_resource);
 		return nullptr;
 	}
-	std::string l_info = "Trying to get " + a_file + " since it already exists...";
+    std::string l_info = "Trying to get " + l_file + " since it already exists...";
 
 	DEBUG_LOG_INFO("{}", l_info);
-	return GetResource<T>(a_file);
+    return GetResource<T>(l_file);
 }
 
 
@@ -58,7 +82,7 @@ T* IResourceManager::GetResource(const std::string& a_file)
 
 
 template<typename T>
-void IResourceManager::DeleteResource(const std::string& a_file)
+void IResourceManager::DeleteResource(const std::string& a_file , IDevice* a_device)
 {
 	if (m_resources[a_file] == nullptr)
 	{
@@ -68,7 +92,7 @@ void IResourceManager::DeleteResource(const std::string& a_file)
 	{
 		if (typeid(*m_resources[a_file]) == typeid(T))
 		{
-			m_resources[a_file]->Destroy();
+            m_resources[a_file]->Destroy(a_device);
 			m_resources.erase(a_file);
 			if (m_resources[a_file] == nullptr)
 			{

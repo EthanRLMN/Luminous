@@ -10,11 +10,11 @@ class VulkanBuffer final : public IBuffer
 public:
     VulkanBuffer() = default;
 
-    void Create(IDevice* a_device, ITexture* a_texture, ICommandPool* a_commandPool, IDepthResource* a_depthResource, IModel* a_model) override;
+    void Create(IDevice* a_device, ITexture* a_texture, ICommandPool* a_commandPool, IDepthResource* a_depthResource, IMesh* a_mesh) override;
     void Destroy(IDevice* a_device) override;
 
-    void CreateVertexBuffers(IDevice* a_device, ITexture* a_texture, ICommandPool* a_commandPool, IDepthResource* a_depthResource, IModel* a_model);
-    void CreateIndexBuffers(IDevice* a_device, ITexture* a_texture, ICommandPool* a_commandPool, IDepthResource* a_depthResource, IModel* a_model);
+    void CreateVertexBuffers(IDevice* a_device, ITexture* a_texture, ICommandPool* a_commandPool, IDepthResource* a_depthResource, IMesh* a_mesh);
+    void CreateIndexBuffers(IDevice* a_device, ITexture* a_texture, ICommandPool* a_commandPool, IDepthResource* a_depthResource, IMesh* a_mesh);
     void CreateUniformBuffers(IDevice* a_device, ITexture* a_texture, IDepthResource* a_depthResource);
 
     VulkanBuffer* CastVulkan() override { return this; }
@@ -30,7 +30,7 @@ public:
 
 
 private:
-    void CopyBuffer(const VkDevice& a_device, const VkQueue& a_graphicsQueue, const VkCommandPool& a_commandPool, const VkBuffer& a_srcBuffer, const VkBuffer& a_dstBuffer, const VkDeviceSize& a_size, ITexture* a_texture);
+    void CopyBuffer(VkDevice a_device, VkQueue a_graphicsQueue, VkCommandPool a_commandPool, VkBuffer a_srcBuffer, VkBuffer a_dstBuffer, VkDeviceSize a_size, ITexture* a_texture);
 
     VkBuffer m_vertexBuffer { nullptr };
     VkDeviceMemory m_vertexBufferMemory { nullptr };
