@@ -3,7 +3,7 @@
 
 void VulkanMultiSampling::Create(IDevice* a_device)
 {
-    //a_device->CastVulkan()->SetMSAASamples(GetMaxUsableSampleCount(a_device));
+    a_device->CastVulkan()->SetMSAASamples(GetMaxUsableSampleCount(a_device));
 }
 
 void VulkanMultiSampling::Destroy(IDevice* a_device)

@@ -95,6 +95,8 @@ void VulkanRenderPass::CreateRenderPass(ISwapChain* a_swapChain, IDevice* a_devi
 	l_renderPassCreateInfo.dependencyCount = 1;
 	l_renderPassCreateInfo.pDependencies = &l_dependency;
 
+	std::cout << l_renderPassCreateInfo.pAttachments[0].samples << "\n";
+
 
 	const VkResult l_result = vkCreateRenderPass(a_device->CastVulkan()->GetDevice(), &l_renderPassCreateInfo, nullptr, &m_renderPass);
 
