@@ -1,3 +1,5 @@
+
+#include "Logger.hpp"
 #include <iostream>
 #include <cstdarg>
 #include <thread>
@@ -19,9 +21,7 @@
 #include "jolt/Jolt/Physics/Body/BodyCreationSettings.h"
 #include "jolt/Jolt/Physics/Body/BodyActivationListener.h"
 #include "jolt/Physics/PhysicsScene.h"
-#include "Jolt/Renderer/DebugRenderer.h"
-#include <Jolt/Physics/Collision/ObjectLayer.h>
-
+#include "jolt/Jolt/Renderer/DebugRenderer.h"
 
 
 namespace Layers
