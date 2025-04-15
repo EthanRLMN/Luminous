@@ -25,6 +25,9 @@ void VulkanRenderPass::Destroy(IDevice* a_device)
 
 void VulkanRenderPass::CreateRenderPass(ISwapChain* a_swapChain, IDevice* a_device)
 {
+
+	std::cout << a_device->CastVulkan()->GetMSAASamples() << "\n";
+
 	VkAttachmentDescription l_colorAttachment = { };
 	l_colorAttachment.format = a_swapChain->CastVulkan()->GetSwapChainImageFormat();
     l_colorAttachment.samples = a_device->CastVulkan()->GetMSAASamples();
@@ -33,7 +36,7 @@ void VulkanRenderPass::CreateRenderPass(ISwapChain* a_swapChain, IDevice* a_devi
 	l_colorAttachment.stencilLoadOp = VK_ATTACHMENT_LOAD_OP_DONT_CARE;
 	l_colorAttachment.stencilStoreOp = VK_ATTACHMENT_STORE_OP_DONT_CARE;
 	l_colorAttachment.initialLayout = VK_IMAGE_LAYOUT_UNDEFINED;
-    l_colorAttachment.finalLayout = VK_IMAGE_LAYOUT_PRESENT_SRC_KHR;
+    l_colorAttachment.finalLayout = VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL;
 
 	VkAttachmentDescription l_depthAttachment { };
 	l_depthAttachment.format = FindDepthFormat(a_device->CastVulkan()->GetPhysicalDevice());
@@ -96,7 +99,8 @@ void VulkanRenderPass::CreateRenderPass(ISwapChain* a_swapChain, IDevice* a_devi
 	l_renderPassCreateInfo.pDependencies = &l_dependency;
 
 	std::cout << l_renderPassCreateInfo.pAttachments[0].samples << "\n";
-
+    std::cout << l_renderPassCreateInfo.pAttachments[1].samples << "\n";
+    std::cout << l_renderPassCreateInfo.pAttachments[2].samples << "\n";
 
 	const VkResult l_result = vkCreateRenderPass(a_device->CastVulkan()->GetDevice(), &l_renderPassCreateInfo, nullptr, &m_renderPass);
 

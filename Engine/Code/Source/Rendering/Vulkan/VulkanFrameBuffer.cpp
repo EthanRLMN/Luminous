@@ -10,8 +10,11 @@ void VulkanFrameBuffer::Create(IDevice* a_device, ISwapChain* a_swapChain, IRend
 	GetFrameBuffersSize(a_swapChain->CastVulkan()->GetSwapChainImageViews().size());
 
 	
-
+	
 	const VulkanSwapChain* l_vulkanSwapChain = a_swapChain->CastVulkan();
+
+	std::cout << l_vulkanSwapChain->GetSwapChainImageViews().size() << "\n";
+
 	for (size_t i = 0; i < l_vulkanSwapChain->GetSwapChainImageViews().size(); ++i)
 	{
 
@@ -21,9 +24,9 @@ void VulkanFrameBuffer::Create(IDevice* a_device, ISwapChain* a_swapChain, IRend
 		 }
 
         std::array<VkImageView, 3> l_attachments = {
-            l_vulkanSwapChain->GetSwapChainImageViews()[i],
+             a_multiSampling->CastVulkan()->GetColorImageView(),
             a_depthResource->CastVulkan()->GetDepthImageView(),
-            a_multiSampling->CastVulkan()->GetColorImageView()
+            l_vulkanSwapChain->GetSwapChainImageViews()[i]
         };
 
 		
@@ -35,6 +38,9 @@ void VulkanFrameBuffer::Create(IDevice* a_device, ISwapChain* a_swapChain, IRend
 		l_framebufferCreateInfo.width = l_vulkanSwapChain->GetSwapChainExtent().width;
 		l_framebufferCreateInfo.height = l_vulkanSwapChain->GetSwapChainExtent().height;
 		l_framebufferCreateInfo.layers = 1;
+
+		
+		std::cout << l_framebufferCreateInfo.pAttachments[0] << "\n";
 		
 
 		const VkResult l_result = vkCreateFramebuffer(a_device->CastVulkan()->GetDevice(), &l_framebufferCreateInfo, nullptr, &m_frameBuffers[i]);;

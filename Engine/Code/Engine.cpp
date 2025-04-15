@@ -53,6 +53,9 @@ Engine::Engine()
 	m_descriptorSetLayout = m_interface->InstantiateDescriptorSetLayout();
 	m_descriptorSetLayout->Create(m_device);
 
+	m_depthResource = m_interface->InstantiateDepthResource();
+    m_depthResource->Create(m_device, m_swapChain, m_renderPass);
+
 	m_pipeline = m_interface->InstantiatePipeline();
 	m_pipeline->Create(m_device, m_renderPass, m_descriptorSetLayout, m_resourceManager);
 
@@ -60,8 +63,7 @@ Engine::Engine()
 	m_commandPool->Create(m_device, m_surface);
 
 
-	m_depthResource = m_interface->InstantiateDepthResource();
-	m_depthResource->Create(m_device, m_swapChain, m_renderPass);
+	
 
 	m_frameBuffer = m_interface->InstantiateFrameBuffer();
 	m_frameBuffer->Create(m_device, m_swapChain, m_renderPass, m_depthResource,m_multiSampling);

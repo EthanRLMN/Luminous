@@ -28,6 +28,7 @@ void VulkanSwapChain::Create(IWindow* a_window, IDevice* a_device, ISurface* a_s
     l_swapChainCreateInfo.imageExtent = l_extent;
     l_swapChainCreateInfo.imageArrayLayers = 1;
     l_swapChainCreateInfo.imageUsage = VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT;
+    
 
     const QueueFamilyIndices l_indices = GetQueueFamilies(l_vkPhysDevice, l_vkSurface);
     const uint32_t l_queueFamilyIndices[] = { static_cast<uint32_t>(l_indices.graphicsFamily), static_cast<uint32_t>(l_indices.presentationFamily) };
