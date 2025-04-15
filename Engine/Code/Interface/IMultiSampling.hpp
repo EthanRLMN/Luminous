@@ -5,6 +5,7 @@
 
 class VulkanMultiSampling;
 class IDevice;
+class ISwapChain;
 
 
 
@@ -14,7 +15,7 @@ class IMultiSampling
 public:
     virtual ~IMultiSampling() = default;
 
-    virtual void Create(IDevice* a_device) = 0;
+    virtual void Create(IDevice* a_device, ISwapChain* a_swapchain) = 0;
     virtual void Destroy(IDevice* a_device) = 0;
 
     virtual VulkanMultiSampling* CastVulkan()

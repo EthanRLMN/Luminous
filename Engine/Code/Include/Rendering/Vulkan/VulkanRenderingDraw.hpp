@@ -21,6 +21,8 @@ public:
 	void CleanupSwapChain(IDevice* a_device, ISwapChain* a_swapChain, IDepthResource* a_depthResource, IFrameBuffer* a_framebuffer);
 	void CreateImageViews(IDevice* a_device, ISwapChain* a_swapChain);
 
+	
+
 	uint32_t GetCurrentFrame() const { return m_currentFrame; }
 
 

@@ -7,15 +7,17 @@
 #include "Rendering/Vulkan/VulkanDepthResource.hpp"
 #include "Rendering/Vulkan/VulkanSwapChain.hpp"
 #include "IMultiSampling.hpp"
+#include "vulkan/vulkan.hpp"
 
 class VulkanMultiSampling : public IMultiSampling
 {
 public:
-    void Create(IDevice* a_device) override;
+    void Create(IDevice* a_device, ISwapChain* a_swapchain) override;
     void Destroy(IDevice* a_device) override;
 
     VkSampleCountFlagBits GetMaxUsableSampleCount(IDevice* a_device);
     void CreateColorResources(IDevice* a_device, ISwapChain* a_swapchain);
+    void SetSampleCount(IDevice* a_device, VkSampleCountFlagBits a_sampleCount);
 
      VulkanMultiSampling* CastVulkan() override { return this; }
 
