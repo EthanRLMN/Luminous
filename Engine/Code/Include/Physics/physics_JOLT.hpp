@@ -1,61 +1,46 @@
+#pragma once
 
-#include "Logger.hpp"
-#include <iostream>
-#include <cstdarg>
-#include <thread>
+#include "Jolt/Core/Core.h"
+#include "Jolt/Physics/Body/BodyID.h"
 
-
-#include "Struct/Vertex.hpp"
-
-#include "jolt/Jolt/Jolt.h"
-
-
-#include "jolt/Jolt/RegisterTypes.h"
-#include "jolt/Jolt/Core/Factory.h"
-#include "jolt/Jolt/Core/TempAllocator.h"
-#include "jolt/Jolt/Core/JobSystemThreadPool.h"
-#include "jolt/Jolt/Physics/PhysicsSettings.h"
-#include "jolt/Jolt/Physics/PhysicsSystem.h"
-#include "jolt/Jolt/Physics/Collision/Shape/BoxShape.h"
-#include "jolt/Jolt/Physics/Collision/Shape/SphereShape.h"
-#include "jolt/Jolt/Physics/Body/BodyCreationSettings.h"
-#include "jolt/Jolt/Physics/Body/BodyActivationListener.h"
-#include "jolt/Physics/PhysicsScene.h"
-
-
-using namespace JPH;
-
-
+namespace JPH {
+    class JobSystemThreadPool;
+    class ObjectLayerPairFilterImpl;
+    class ObjectVsBroadPhaseLayerFilterImpl;
+    class BPLayerInterfaceImpl;
+    class PhysicsSystem;
+    class BodyInterface;
+    class Body;
+    class TempAllocatorImpl;
+}
 
 
 class Physics
 {
 public:
-    Physics();
-
-    ~Physics() {};
+    Physics() = default;
+    ~Physics() = default;
 
     void Init_JOLT();
     void Update_JOLT();
     void Clean_JOLT();
 
     JPH::Body* CreateBody();
-   
-    
-    
+
 private:
+    [[nodiscard]] JPH::BodyInterface& GetBodyInterface() const;
 
-
+    JPH::uint step { 0.f; }
     float cDeltaTime{ 0.f };
-    uint step{ 0 };
-    PhysicsSystem* physics_system { };
-    const BodyInterface& body_interface { };
-    BodyID* sphere_id{ 0 };
-    
+    JPH::PhysicsSystem* physics_system{ nullptr };
+    BodyID sphere_id{ };
 
-    TempAllocatorImpl* temp_allocator{nullptr};
-    JobSystemThreadPool* job_system{nullptr};
-   
+    JPH::BPLayerInterfaceImpl* broad_phase_layer_interface{ nullptr };
+    JPH::ObjectVsBroadPhaseLayerFilterImpl* object_vs_broadphase_layer_filter{ nullptr };
+    JPH::ObjectLayerPairFilterImpl* object_vs_object_layer_filter{ nullptr };
+
+    JPH::TempAllocatorImpl* temp_allocator{ nullptr };
+    JPH::JobSystemThreadPool* job_system{ nullptr };
 };
 
 

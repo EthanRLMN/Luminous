@@ -1,78 +1,63 @@
 #include "Physics/physics_JOLT.hpp"
-#include "Physics/listener.hpp"
+
+#include <thread>
+
+#include "Jolt/Core/Memory.h"
+#include "Jolt/Core/Factory.h"
+#include "Jolt/RegisterTypes.h"
+#include "Jolt/Core/Core.h"
+#include "Jolt/Physics/PhysicsSettings.h"
 #include "Physics/layers.hpp"
-
-
-Physics::Physics() 
-{
-    temp_allocator = new TempAllocatorImpl(10 * 1024 * 1024);
-    job_system = new JobSystemThreadPool(cMaxPhysicsJobs, cMaxPhysicsBarriers, std::thread::hardware_concurrency() - 1);
-}
-
+#include "Physics/listener.hpp"
 
 
 void Physics::Init_JOLT()
 {
-
     RegisterDefaultAllocator();
-
-    Factory::sInstance = new Factory();
-
+    JPH::Factory::sInstance = new JPH::Factory();
     RegisterTypes();
 
-    const uint cMaxBodies = 1024;
+    temp_allocator = new JPH::TempAllocatorImpl(10 * 1024 * 1024);
+    job_system = new JPH::JobSystemThreadPool(cMaxPhysicsJobs, cMaxPhysicsBarriers, std::thread::hardware_concurrency() - 1);
 
+    const JPH::uint cMaxBodies = 1024;
+    const JPH::uint cNumBodyMutexes = 0;
+    const JPH::uint cMaxBodyPairs = 1024;
+    const JPH::uint cMaxContactConstraints = 1024;
 
-    const uint cNumBodyMutexes = 0;
+    broad_phase_layer_interface = new JPH::BPLayerInterfaceImpl();
+    object_vs_broadphase_layer_filter = new JPH::ObjectVsBroadPhaseLayerFilterImpl();
+    object_vs_object_layer_filter = new JPH::ObjectLayerPairFilterImpl();
 
+    physics_system = new JPH::PhysicsSystem();
+    physics_system->Init(cMaxBodies, cNumBodyMutexes, cMaxBodyPairs, cMaxContactConstraints, *broad_phase_layer_interface, *object_vs_broadphase_layer_filter, *object_vs_object_layer_filter);
 
-    const uint cMaxBodyPairs = 1024;
-
-
-    const uint cMaxContactConstraints = 1024;
-
-
-    BPLayerInterfaceImpl broad_phase_layer_interface;
-
-
-    ObjectVsBroadPhaseLayerFilterImpl object_vs_broadphase_layer_filter;
-
-    ObjectLayerPairFilterImpl object_vs_object_layer_filter;
-
-
-    
-    physics_system->Init(cMaxBodies, cNumBodyMutexes, cMaxBodyPairs, cMaxContactConstraints, broad_phase_layer_interface, object_vs_broadphase_layer_filter, object_vs_object_layer_filter);
-
-
-    MyBodyActivationListener body_activation_listener;
+    JPH::MyBodyActivationListener body_activation_listener;
     physics_system->SetBodyActivationListener(&body_activation_listener);
 
-
-    MyContactListener contact_listener;
+    JPH::MyContactListener contact_listener;
     physics_system->SetContactListener(&contact_listener);
 
+    JPH::BodyInterface &body_interface = physics_system->GetBodyInterface();
 
-    BodyInterface& body_interface = physics_system->GetBodyInterface();
-
-
-    BoxShapeSettings floor_shape_settings(Vec3(100.0f, 1.0f, 100.0f));
-    floor_shape_settings.SetEmbedded(); 
+    JPH::BoxShapeSettings floor_shape_settings(JPH::Vec3(100.0f, 1.0f, 100.0f));
+    floor_shape_settings.SetEmbedded();
 
 
-    ShapeSettings::ShapeResult floor_shape_result = floor_shape_settings.Create();
-    ShapeRefC floor_shape = floor_shape_result.Get(); 
+    JPH::ShapeSettings::ShapeResult floor_shape_result = floor_shape_settings.Create();
+    JPH::ShapeRefC floor_shape = floor_shape_result.Get();
 
-    BodyCreationSettings floor_settings(floor_shape, JPH::RVec3(0.0f, -1.0f, 0.0f), Quat::sIdentity(), EMotionType::Static, Layers::NON_MOVING);
+    JPH::BodyCreationSettings floor_settings(floor_shape, JPH::RVec3(0.0f, -1.0f, 0.0f), JPH::Quat::sIdentity(), JPH::EMotionType::Static, JPH::Layers::NON_MOVING);
 
-    Body* floor = body_interface.CreateBody(floor_settings);
+    JPH::Body* floor = body_interface.CreateBody(floor_settings);
 
 
-    body_interface.AddBody(floor->GetID(), EActivation::DontActivate);
+    body_interface.AddBody(floor->GetID(), JPH::EActivation::DontActivate);
 
-    BodyCreationSettings sphere_settings(new SphereShape(0.5f), JPH::RVec3(0.0f, 2.0f, 0.0f), Quat::sIdentity(), EMotionType::Dynamic, Layers::MOVING);
-    sphere_id = body_interface.CreateAndAddBody(sphere_settings, EActivation::Activate);
+    JPH::BodyCreationSettings sphere_settings(new JPH::SphereShape(0.5f), JPH::RVec3(0.0f, 2.0f, 0.0f), JPH::Quat::sIdentity(), JPH::EMotionType::Dynamic, JPH::Layers::MOVING);
+    sphere_id = body_interface.CreateAndAddBody(sphere_settings, JPH::EActivation::Activate);
 
-    body_interface.SetLinearVelocity(*sphere_id, Vec3(0.0f, -5.0f, 0.0f));
+    body_interface.SetLinearVelocity(sphere_id, JPH::Vec3(0.0f, -5.0f, 0.0f));
 
     cDeltaTime = 1.0f / 60.0f;
 
@@ -83,27 +68,24 @@ void Physics::Init_JOLT()
 void Physics::Update_JOLT()
 {
 
-    ++step;
+    while (GetBodyInterface().IsActive(sphere_id))
+    {
+        ++step;
 
+        JPH::RVec3 position = GetBodyInterface().GetCenterOfMassPosition(sphere_id);
+        JPH::Vec3 velocity = GetBodyInterface().GetLinearVelocity(sphere_id);
+        std::cout << "Step " << step << ": Position = (" << position.GetX() << ", " << position.GetY() << ", " << position.GetZ() << "), Velocity = (" << velocity.GetX() << ", " << velocity.GetY() << ", " << velocity.GetZ() << ")" << std::endl;
 
-    RVec3 position = body_interface.GetCenterOfMassPosition(*sphere_id);
-    Vec3 velocity = body_interface.GetLinearVelocity(*sphere_id);
-    std::cout << "Step " << step << ": Position = (" << position.GetX() << ", " << position.GetY() << ", " << position.GetZ() << "), Velocity = (" << velocity.GetX() << ", " << velocity.GetY() << ", " << velocity.GetZ() << ")" << std::endl;
-
-    const int cCollisionSteps = 1;
-    // Step the world
-    physics_system->Update(cDeltaTime, cCollisionSteps, temp_allocator, job_system);
+        const int cCollisionSteps = 1;
+        // Step the world
+        physics_system->Update(cDeltaTime, cCollisionSteps, temp_allocator, job_system);
+    }
 }
 
 
+void Physics::Clean_JOLT() {}
 
-void Physics::Clean_JOLT()
-{
+JPH::Body* Physics::CreateBody() { return nullptr; }
 
-}
-
-JPH::Body* Physics::CreateBody()
-{
-    return nullptr;
-}
+JPH::BodyInterface& Physics::GetBodyInterface() const { return physics_system->GetBodyInterface(); }
 
