@@ -1,4 +1,6 @@
 #include "Physics/physics_JOLT.hpp"
+#include "Physics/listener.hpp"
+#include "Physics/layers.hpp"
 
 void Physics::Init_JOLT()
 {
@@ -6,9 +8,7 @@ void Physics::Init_JOLT()
     RegisterTypes();
 
 
-    TempAllocatorImpl temp_allocator(10 * 1024 * 1024);
 
-    JobSystemThreadPool job_system(cMaxPhysicsJobs, cMaxPhysicsBarriers, thread::hardware_concurrency() - 1);
 
     const uint cMaxBodies = 1024;
 
@@ -26,7 +26,7 @@ void Physics::Init_JOLT()
     ObjectLayerPairFilterImpl object_vs_object_layer_filter;
 
     m_physicsSystem = new JPH::PhysicsSystem();
-    m_physicsSystem->Init();
+    m_physicsSystem->Init(cMaxBodies,cNumBodyMutexes,cMaxBodyPairs,cMaxContactConstraints,broad_phase_layer_interface,object_vs_broadphase_layer_filter,object_vs_object_layer_filter);
 
 
     m_bodyInterface = &m_physicsSystem->GetBodyInterface();
@@ -34,7 +34,7 @@ void Physics::Init_JOLT()
 
 void Physics::Update_JOLT(float _deltaTime)
 {
-    m_physicsSystem->Update(_deltaTime,);
+   // m_physicsSystem->Update(_deltaTime, cCollisionSteps, &temp_allocator, &job_system);
 }
 
 
@@ -44,13 +44,7 @@ void Physics::Clean_JOLT()
 
 }
 
-JPH::Body* Physics::CreateBody(float _radius)
+JPH::Body* Physics::CreateBody()
 {
-
-    JPH::BodyCreationSettings settings;
-
-
-    JPH::Body* body = m_bodyInterface->CreateBody(settings);
-    return body;
 }
 

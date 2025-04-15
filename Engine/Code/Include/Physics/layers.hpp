@@ -1,5 +1,3 @@
-
-#include "Logger.hpp"
 #include <iostream>
 #include <cstdarg>
 #include <thread>
@@ -22,32 +20,8 @@
 #include "jolt/Jolt/Physics/Body/BodyActivationListener.h"
 #include "jolt/Physics/PhysicsScene.h"
 #include "Jolt/Renderer/DebugRenderer.h"
+#include <Jolt/Physics/Collision/ObjectLayer.h>
 
-
-using namespace JPH;
-
-
-
-
-class Physics
-{
-public:
-    Physics() {};
-    ~Physics() {};
-
-    void Init_JOLT();
-    void Update_JOLT(float _deltaTime);
-    void Clean_JOLT();
-
-    JPH::Body* CreateBody();
-   
-    
-    
-private:
-    JPH::PhysicsSystem* m_physicsSystem = nullptr; 
-    JPH::BodyInterface* m_bodyInterface = nullptr;
-
-};
 
 
 namespace Layers
@@ -55,8 +29,7 @@ namespace Layers
     static constexpr ObjectLayer NON_MOVING = 0;
     static constexpr ObjectLayer MOVING = 1;
     static constexpr ObjectLayer NUM_LAYERS = 2;
-}; // namespace Layers
-
+}; 
 
 class ObjectLayerPairFilterImpl : public ObjectLayerPairFilter
 {
@@ -66,9 +39,9 @@ public:
         switch (inObject1)
         {
             case Layers::NON_MOVING:
-                return inObject2 == Layers::MOVING; // Non moving only collides with moving
+                return inObject2 == Layers::MOVING; 
             case Layers::MOVING:
-                return true; // Moving collides with everything
+                return true; 
             default:
                 JPH_ASSERT(false);
                 return false;
@@ -124,47 +97,5 @@ public:
                 JPH_ASSERT(false);
                 return false;
         }
-    }
-};
-
-
-class MyContactListener : public ContactListener
-{
-public:
-    virtual ValidateResult OnContactValidate(const Body& inBody1, const Body& inBody2, RVec3Arg inBaseOffset, const CollideShapeResult& inCollisionResult) override
-    {
-        std::cout << "Contact validate callback" << std::endl;
-
-        return ValidateResult::AcceptAllContactsForThisBodyPair;
-    }
-
-    virtual void OnContactAdded(const Body& inBody1, const Body& inBody2, const ContactManifold& inManifold, ContactSettings& ioSettings) override
-    {
-        std::cout << "A contact was added" << std::endl;
-    }
-
-    virtual void OnContactPersisted(const Body& inBody1, const Body& inBody2, const ContactManifold& inManifold, ContactSettings& ioSettings) override
-    {
-        std::cout << "A contact was persisted" << std::endl;
-    }
-
-    virtual void OnContactRemoved(const SubShapeIDPair& inSubShapePair) override
-    {
-        std::cout << "A contact was removed" << std::endl;
-    }
-};
-
-
-class MyBodyActivationListener : public BodyActivationListener
-{
-public:
-    virtual void OnBodyActivated(const BodyID& inBodyID, uint64 inBodyUserData) override
-    {
-        std::cout << "A body got activated" << std::endl;
-    }
-
-    virtual void OnBodyDeactivated(const BodyID& inBodyID, uint64 inBodyUserData) override
-    {
-        std::cout << "A body went to sleep" << std::endl;
     }
 };
