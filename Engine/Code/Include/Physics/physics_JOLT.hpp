@@ -1,6 +1,7 @@
 #pragma once
 
-#include "Jolt/Core/Core.h"
+#include "Jolt/Jolt.h"
+#include "Jolt/Physics/Body/Body.h"
 #include "Jolt/Physics/Body/BodyID.h"
 
 namespace JPH {
@@ -12,6 +13,9 @@ namespace JPH {
     class BodyInterface;
     class Body;
     class TempAllocatorImpl;
+    class MyBodyActivationListener;
+    class MyContactListener;
+    class BoxShapeSettings;
 }
 
 
@@ -30,10 +34,11 @@ public:
 private:
     [[nodiscard]] JPH::BodyInterface& GetBodyInterface() const;
 
-    JPH::uint step { 0.f; }
+    JPH::uint step = 0.f;
     float cDeltaTime{ 0.f };
     JPH::PhysicsSystem* physics_system{ nullptr };
-    BodyID sphere_id{ };
+    JPH::BodyID sphere_id{ };
+    JPH::Body* floor{ nullptr };
 
     JPH::BPLayerInterfaceImpl* broad_phase_layer_interface{ nullptr };
     JPH::ObjectVsBroadPhaseLayerFilterImpl* object_vs_broadphase_layer_filter{ nullptr };
@@ -41,6 +46,15 @@ private:
 
     JPH::TempAllocatorImpl* temp_allocator{ nullptr };
     JPH::JobSystemThreadPool* job_system{ nullptr };
+
+    JPH::MyBodyActivationListener* body_activation_listener{ nullptr };
+    JPH::MyContactListener* contact_listener{ nullptr };
+    JPH::BoxShapeSettings* floor_shape_settings { nullptr };
+    JPH::ShapeSettings::ShapeResult floor_shape_result;
+    JPH::ShapeRefC floor_shape;
+
+    JPH::BodyCreationSettings* floor_settings{ nullptr };
+    JPH::BodyCreationSettings* sphere_settings{ nullptr };
 };
 
 
