@@ -32,11 +32,12 @@ using namespace JPH;
 class Physics
 {
 public:
-    Physics() {};
+    Physics();
+
     ~Physics() {};
 
     void Init_JOLT();
-    void Update_JOLT(float _deltaTime);
+    void Update_JOLT();
     void Clean_JOLT();
 
     JPH::Body* CreateBody();
@@ -51,4 +52,11 @@ private:
     PhysicsSystem physics_system;
     BodyInterface& body_interface;
     BodyID sphere_id;
+
+
+    TempAllocatorImpl temp_allocator;
+    JobSystemThreadPool job_system;
+   
 };
+
+

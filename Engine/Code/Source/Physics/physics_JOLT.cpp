@@ -3,24 +3,31 @@
 #include "Physics/layers.hpp"
 
 
+Physics::Physics() :
+    temp_allocator(10 * 1024 * 1024) 
+    ,
+    job_system(cMaxPhysicsJobs, cMaxPhysicsBarriers, std::thread::hardware_concurrency() - 1), physics_system() 
+    ,
+    body_interface(physics_system.GetBodyInterface()) 
+{
+   
+}
+
+
 
 void Physics::Init_JOLT()
 {
 
     RegisterDefaultAllocator();
 
-
+    /*
     Trace = TraceImpl;
     JPH_IF_ENABLE_ASSERTS(AssertFailed = AssertFailedImpl;)
-
+        */
 
     Factory::sInstance = new Factory();
 
     RegisterTypes();
-
-    TempAllocatorImpl temp_allocator(10 * 1024 * 1024);
-
-    JobSystemThreadPool job_system(cMaxPhysicsJobs, cMaxPhysicsBarriers, thread::hardware_concurrency() - 1);
 
     const uint cMaxBodies = 1024;
 
@@ -79,12 +86,10 @@ void Physics::Init_JOLT()
     cDeltaTime = 1.0f / 60.0f;
 
     physics_system.OptimizeBroadPhase();
-
-
     step = 0;
 }
 
-void Physics::Update_JOLT(float _deltaTime)
+void Physics::Update_JOLT()
 {
 
     ++step;
@@ -92,7 +97,7 @@ void Physics::Update_JOLT(float _deltaTime)
 
     RVec3 position = body_interface.GetCenterOfMassPosition(sphere_id);
     Vec3 velocity = body_interface.GetLinearVelocity(sphere_id);
-    std::cout << "Step " << step << ": Position = (" << position.GetX() << ", " << position.GetY() << ", " << position.GetZ() << "), Velocity = (" << velocity.GetX() << ", " << velocity.GetY() << ", " << velocity.GetZ() << ")" << endl;
+    std::cout << "Step " << step << ": Position = (" << position.GetX() << ", " << position.GetY() << ", " << position.GetZ() << "), Velocity = (" << velocity.GetX() << ", " << velocity.GetY() << ", " << velocity.GetZ() << ")" << std::endl;
 
     const int cCollisionSteps = 1;
     // Step the world

@@ -73,5 +73,8 @@ private:
 	ISynchronization* m_synchronization { nullptr };
     IRenderingDraw* m_renderingDraw { nullptr };
 
+	Physics* m_physicsJolt;
+
+
     bool m_isRunning { false };
 };

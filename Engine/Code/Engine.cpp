@@ -147,7 +147,7 @@ void Engine::Init()
 
 void Engine::InitPhysic()
 {
-
+    m_physicsJolt->Init_JOLT();
 }
 
 void Engine::Update()
@@ -162,6 +162,6 @@ void Engine::Update()
 
 void Engine::UpdatePhysic()
 {
-    float deltaTime = m_window->CastGLFW()->GetDeltaTime(); 
+    m_physicsJolt->Update_JOLT();
 
 }
