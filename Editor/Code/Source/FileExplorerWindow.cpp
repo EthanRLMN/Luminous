@@ -3,11 +3,11 @@
 #include "imgui.h"
 
 
-const char* s_AssetsDirectory = "Engine/Assets";
+static const std::filesystem::path s_AssetPath = "Engine/Assets";
     
 void FileExplorerWindow::ContentBrowserPanel() 
 {
-    m_currentDirectory = s_AssetsDirectory;
+    m_currentDirectory = s_AssetPath;
 }
 
 void FileExplorerWindow::Draw()
@@ -20,7 +20,7 @@ void FileExplorerWindow::Draw()
         ImGui::Begin(p_windowIdentifier.c_str(), &p_isOpen, ImGuiWindowFlags_NoCollapse);
         ImGui::PushStyleColor(ImGuiCol_WindowBg, 0xff323432);
 
-        if (m_currentDirectory != std::filesystem::path(s_AssetsDirectory))
+        if (m_currentDirectory != std::filesystem::path(s_AssetPath))
         {
             if (ImGui::Button("<-"))
             {
@@ -28,14 +28,23 @@ void FileExplorerWindow::Draw()
             }
         }
 
-        for (auto& p : std::filesystem::directory_iterator(s_AssetsDirectory))
+        for (auto& directoryEntry : std::filesystem::directory_iterator(s_AssetPath))
+        //for (auto& directoryEntry : std::filesystem::directory_iterator(m_currentDirectory))
         {
-            std::string path = p.path().string();
-            if (p.is_directory())
+            const auto& path = directoryEntry.path();
+            auto relativePath = std::filesystem::relative(path, s_AssetPath);
+            std::string filenameString = relativePath.filename().string();
+            if (directoryEntry.is_directory())
             {
-                if (ImGui::Button(path.c_str()))
+                if (ImGui::Button(filenameString.c_str()))
                 {
-                    m_currentDirectory /= p.path().filename();
+                    m_currentDirectory /= directoryEntry.path().filename();
+                }
+            } 
+            else            
+            {
+                if (ImGui::Button(filenameString.c_str()))
+                {
                 }
             }
         }
