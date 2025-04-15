@@ -2,6 +2,8 @@
 #include "Physics/listener.hpp"
 #include "Physics/layers.hpp"
 
+
+
 void Physics::Init_JOLT()
 {
 
@@ -40,7 +42,7 @@ void Physics::Init_JOLT()
     ObjectLayerPairFilterImpl object_vs_object_layer_filter;
 
 
-    PhysicsSystem physics_system;
+    
     physics_system.Init(cMaxBodies, cNumBodyMutexes, cMaxBodyPairs, cMaxContactConstraints, broad_phase_layer_interface, object_vs_broadphase_layer_filter, object_vs_object_layer_filter);
 
 
@@ -70,21 +72,31 @@ void Physics::Init_JOLT()
     body_interface.AddBody(floor->GetID(), EActivation::DontActivate);
 
     BodyCreationSettings sphere_settings(new SphereShape(0.5f), JPH::RVec3(0.0f, 2.0f, 0.0f), Quat::sIdentity(), EMotionType::Dynamic, Layers::MOVING);
-    BodyID sphere_id = body_interface.CreateAndAddBody(sphere_settings, EActivation::Activate);
+    sphere_id = body_interface.CreateAndAddBody(sphere_settings, EActivation::Activate);
 
     body_interface.SetLinearVelocity(sphere_id, Vec3(0.0f, -5.0f, 0.0f));
 
-    const float cDeltaTime = 1.0f / 60.0f;
+    cDeltaTime = 1.0f / 60.0f;
 
     physics_system.OptimizeBroadPhase();
 
 
-    uint step = 0;
+    step = 0;
 }
 
 void Physics::Update_JOLT(float _deltaTime)
 {
-   // m_physicsSystem->Update(_deltaTime, cCollisionSteps, &temp_allocator, &job_system);
+
+    ++step;
+
+
+    RVec3 position = body_interface.GetCenterOfMassPosition(sphere_id);
+    Vec3 velocity = body_interface.GetLinearVelocity(sphere_id);
+    std::cout << "Step " << step << ": Position = (" << position.GetX() << ", " << position.GetY() << ", " << position.GetZ() << "), Velocity = (" << velocity.GetX() << ", " << velocity.GetY() << ", " << velocity.GetZ() << ")" << endl;
+
+    const int cCollisionSteps = 1;
+    // Step the world
+    physics_system.Update(cDeltaTime, cCollisionSteps, &temp_allocator, &job_system);
 }
 
 

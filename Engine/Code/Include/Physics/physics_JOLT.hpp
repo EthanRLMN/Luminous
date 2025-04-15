@@ -44,7 +44,11 @@ public:
     
     
 private:
-    JPH::PhysicsSystem* m_physicsSystem = nullptr; 
-    JPH::BodyInterface* m_bodyInterface = nullptr;
 
+
+    float cDeltaTime;
+    uint step;
+    PhysicsSystem physics_system;
+    BodyInterface& body_interface;
+    BodyID sphere_id;
 };
