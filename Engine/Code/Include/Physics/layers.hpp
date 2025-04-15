@@ -26,9 +26,6 @@
 
 JPH_NAMESPACE_BEGIN
 
-//#define JPH_DEBUG_RENDERER
-
-
 namespace Layers
 {
     static constexpr ObjectLayer NON_MOVING = 0;

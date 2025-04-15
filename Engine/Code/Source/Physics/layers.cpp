@@ -16,8 +16,6 @@ bool ObjectLayerPairFilterImpl::ShouldCollide(ObjectLayer inObject1, ObjectLayer
     }
 }
 
-
-
 uint BPLayerInterfaceImpl::GetNumBroadPhaseLayers() const 
 {
     return BroadPhaseLayers::NUM_LAYERS;
