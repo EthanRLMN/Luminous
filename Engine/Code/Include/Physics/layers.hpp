@@ -21,7 +21,7 @@
 #include "jolt/Jolt/Physics/Body/BodyCreationSettings.h"
 #include "jolt/Jolt/Physics/Body/BodyActivationListener.h"
 #include "jolt/Physics/PhysicsScene.h"
-#include "jolt/Jolt/Renderer/DebugRenderer.h"
+//#include "jolt/Jolt/Renderer/DebugRenderer.h"
 
 
 namespace Layers
@@ -34,19 +34,7 @@ namespace Layers
 class ObjectLayerPairFilterImpl : public ObjectLayerPairFilter
 {
 public:
-    virtual bool ShouldCollide(ObjectLayer inObject1, ObjectLayer inObject2) const override
-    {
-        switch (inObject1)
-        {
-            case Layers::NON_MOVING:
-                return inObject2 == Layers::MOVING; 
-            case Layers::MOVING:
-                return true; 
-            default:
-                JPH_ASSERT(false);
-                return false;
-        }
-    }
+    virtual bool ShouldCollide(ObjectLayer inObject1, ObjectLayer inObject2) const override;
 };
 
 namespace BroadPhaseLayers
@@ -65,16 +53,9 @@ public:
         mObjectToBroadPhase[Layers::MOVING] = BroadPhaseLayers::MOVING;
     }
 
-    virtual uint GetNumBroadPhaseLayers() const override
-    {
-        return BroadPhaseLayers::NUM_LAYERS;
-    }
+    virtual uint GetNumBroadPhaseLayers() const override;
 
-    virtual BroadPhaseLayer GetBroadPhaseLayer(ObjectLayer inLayer) const override
-    {
-        JPH_ASSERT(inLayer < Layers::NUM_LAYERS);
-        return mObjectToBroadPhase[inLayer];
-    }
+    virtual BroadPhaseLayer GetBroadPhaseLayer(ObjectLayer inLayer) const override;
 
 
 private:
@@ -85,17 +66,5 @@ private:
 class ObjectVsBroadPhaseLayerFilterImpl : public ObjectVsBroadPhaseLayerFilter
 {
 public:
-    virtual bool ShouldCollide(ObjectLayer inLayer1, BroadPhaseLayer inLayer2) const override
-    {
-        switch (inLayer1)
-        {
-            case Layers::NON_MOVING:
-                return inLayer2 == BroadPhaseLayers::MOVING;
-            case Layers::MOVING:
-                return true;
-            default:
-                JPH_ASSERT(false);
-                return false;
-        }
-    }
+    virtual bool ShouldCollide(ObjectLayer inLayer1, BroadPhaseLayer inLayer2) const override;
 };
