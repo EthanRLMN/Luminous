@@ -21,7 +21,6 @@
 #include "jolt/Jolt/Physics/Body/BodyCreationSettings.h"
 #include "jolt/Jolt/Physics/Body/BodyActivationListener.h"
 #include "jolt/Physics/PhysicsScene.h"
-#include "jolt/Jolt/Renderer/DebugRenderer.h"
 #include <Jolt/Core/Core.h>
 
 JPH_NAMESPACE_BEGIN

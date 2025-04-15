@@ -24,7 +24,7 @@
 
 JPH_NAMESPACE_BEGIN
 
-//#define JPH_DEBUG_RENDERER
+
 
 class MyContactListener : public ContactListener
 {

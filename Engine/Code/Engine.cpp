@@ -3,6 +3,7 @@
 
 #include "Rendering/Vulkan/VulkanRenderInterface.hpp"
 
+#define JPH_DEBUG_RENDERER
 
 void Engine::Destroy() const
 {
