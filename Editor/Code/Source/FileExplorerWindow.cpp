@@ -6,8 +6,9 @@ void FileExplorerWindow::Draw()
 {
     ImGui::SetNextWindowSize({ 1920, 215 }, ImGuiCond_FirstUseEver);
 
-    if (p_isOpen && ImGui::Begin(p_windowIdentifier.c_str(), &p_isOpen, ImGuiWindowFlags_NoCollapse))
+    if (p_isOpen)
     {
+        ImGui::Begin(p_windowIdentifier.c_str(), &p_isOpen, ImGuiWindowFlags_NoCollapse);
         ImGui::PushStyleColor(ImGuiCol_WindowBg, 0xff323432);
         if (ImGui::BeginTable("table1", 3, ImGuiTableFlags_BordersInnerH | ImGuiTableFlags_BordersInnerV | ImGuiTableFlags_BordersOuterH | ImGuiTableFlags_BordersOuterV, { 0, 0 }))
         {
