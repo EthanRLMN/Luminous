@@ -2,25 +2,25 @@
 
 #include "imgui.h"
 
+#include <filesystem>
+
 void FileExplorerWindow::Draw()
 {
     ImGui::SetNextWindowSize({ 1920, 215 }, ImGuiCond_FirstUseEver);
+    
+    const char* s_AssetsDirectory = "assets";
 
     if (p_isOpen)
     {
         ImGui::Begin(p_windowIdentifier.c_str(), &p_isOpen, ImGuiWindowFlags_NoCollapse);
         ImGui::PushStyleColor(ImGuiCol_WindowBg, 0xff323432);
-        if (ImGui::BeginTable("table1", 3, ImGuiTableFlags_BordersInnerH | ImGuiTableFlags_BordersInnerV | ImGuiTableFlags_BordersOuterH | ImGuiTableFlags_BordersOuterV, { 0, 0 }))
-        {
-            ImGui::TableSetupColumn("Name", ImGuiTableColumnFlags_None, 0);
-            ImGui::TableSetupColumn("Size", ImGuiTableColumnFlags_None, 0);
-            ImGui::TableSetupColumn("Type", ImGuiTableColumnFlags_None, 0);
-            ImGui::TableHeadersRow();
-            ImGui::TableNextRow(0, 150);
-            ImGui::TableSetColumnIndex(0);
 
-            ImGui::EndTable();
-        }
+        /* for (auto& p : std::filesystem::directory_iterator(s_AssetsDirectory))
+        {
+            std::string path = p.path().string();
+            ImGui::Text("%s", path.c_str());
+        }*/
+
         ImGui::PopStyleColor();
         ImGui::End();
     }
