@@ -26,7 +26,7 @@
 
 JPH_NAMESPACE_BEGIN
 
-#define JPH_DEBUG_RENDERER
+//#define JPH_DEBUG_RENDERER
 
 
 namespace Layers
