@@ -1,18 +1,15 @@
 #include "imgui.h"
+#include "imgui_internal.h"
 #include "backends/imgui_impl_glfw.h"
 #include "backends/imgui_impl_vulkan.h"
 
 #include "Editor.hpp"
-
 #include "EditorStyle.hpp"
-#include "FileExplorerWindow.hpp"
-#include "HierarchyWindow.hpp"
-#include "InspectorWindow.hpp"
-#include "MainWindow.hpp"
-#include "imgui_internal.h"
+
 #include "Interface/IWindowPanel.hpp"
 
 #include "Core/GLFW/GLFWWindow.hpp"
+
 #include "Rendering/Vulkan/VulkanCommandBuffer.hpp"
 #include "Rendering/Vulkan/VulkanCommandPool.hpp"
 #include "Rendering/Vulkan/VulkanDescriptor.hpp"
@@ -20,6 +17,11 @@
 #include "Rendering/Vulkan/VulkanInstance.hpp"
 #include "Rendering/Vulkan/VulkanRenderPass.hpp"
 #include "Rendering/Vulkan/VulkanRenderer.hpp"
+
+#include "WindowPanels/FileExplorerWindow.hpp"
+#include "WindowPanels/HierarchyWindow.hpp"
+#include "WindowPanels/InspectorWindow.hpp"
+#include "WindowPanels/MainWindow.hpp"
 
 void Editor::Destroy()
 {
@@ -48,7 +50,7 @@ void Editor::SetupImGui() const
     EditorStyle::SetupImGuiStyle();
     ImGuiIO& l_io = ImGui::GetIO(); static_cast<void>(l_io);
     l_io.ConfigFlags |= ImGuiConfigFlags_ViewportsEnable | ImGuiConfigFlags_NavEnableKeyboard | ImGuiConfigFlags_DockingEnable | ImGuiConfigFlags_IsSRGB | ImGuiDockNodeFlags_NoWindowMenuButton;
-    l_io.ConfigViewportsNoTaskBarIcon = true;
+    l_io.ConfigViewportsNoTaskBarIcon = false;
     l_io.ConfigViewportsNoAutoMerge = false;
     l_io.ConfigDockingAlwaysTabBar = true;
     l_io.Fonts->AddFontFromFileTTF("Editor/Assets/Fonts/Roboto-Bold.ttf", 18.0f, nullptr, l_io.Fonts->GetGlyphRangesDefault());

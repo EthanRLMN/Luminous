@@ -1,10 +1,11 @@
-#include "MainWindow.hpp"
+#include "../../Include/WindowPanels/MainWindow.hpp"
 
 #include "imgui.h"
 
 void MainWindow::Draw()
 {
-    ImGui::SetNextWindowSize({ 1920, 1080 }, ImGuiCond_FirstUseEver);
+    ImGui::SetNextWindowPos(ImGui::GetMainViewport()->Pos);
+    ImGui::SetNextWindowSize(ImGui::GetMainViewport()->Size, ImGuiCond_FirstUseEver);
 
     // TODO: Add Draw calls of dependent popup windows here
     if (ImGui::BeginMainMenuBar())
