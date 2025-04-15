@@ -1,6 +1,8 @@
 #include "Physics/layers.hpp"
 
-virtual bool ObjectLayerPairFilterImpl::ShouldCollide(ObjectLayer inObject1, ObjectLayer inObject2) const override
+JPH_NAMESPACE_BEGIN
+
+bool ObjectLayerPairFilterImpl::ShouldCollide(ObjectLayer inObject1, ObjectLayer inObject2) const 
 {
     switch (inObject1)
     {
@@ -16,12 +18,12 @@ virtual bool ObjectLayerPairFilterImpl::ShouldCollide(ObjectLayer inObject1, Obj
 
 
 
-virtual uint BPLayerInterfaceImpl::GetNumBroadPhaseLayers() const override
+uint BPLayerInterfaceImpl::GetNumBroadPhaseLayers() const 
 {
     return BroadPhaseLayers::NUM_LAYERS;
 }
 
-virtual BroadPhaseLayer BPLayerInterfaceImpl::GetBroadPhaseLayer(ObjectLayer inLayer) const override
+BroadPhaseLayer BPLayerInterfaceImpl::GetBroadPhaseLayer(ObjectLayer inLayer) const
 {
     JPH_ASSERT(inLayer < Layers::NUM_LAYERS);
     return mObjectToBroadPhase[inLayer];
@@ -29,7 +31,7 @@ virtual BroadPhaseLayer BPLayerInterfaceImpl::GetBroadPhaseLayer(ObjectLayer inL
 
 
 
-virtual bool ObjectVsBroadPhaseLayerFilterImpl::ShouldCollide(ObjectLayer inLayer1, BroadPhaseLayer inLayer2) const override
+bool ObjectVsBroadPhaseLayerFilterImpl::ShouldCollide(ObjectLayer inLayer1, BroadPhaseLayer inLayer2) const
 {
     switch (inLayer1)
     {
@@ -42,3 +44,5 @@ virtual bool ObjectVsBroadPhaseLayerFilterImpl::ShouldCollide(ObjectLayer inLaye
             return false;
     }
 }
+
+JPH_NAMESPACE_END

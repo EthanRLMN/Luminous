@@ -1,35 +1,38 @@
 #include "Physics/listener.hpp"
 
+JPH_NAMESPACE_BEGIN
 
-virtual ValidateResult MyContactListener::ContactValidate(const Body& inBody1, const Body& inBody2, RVec3Arg inBaseOffset, const CollideShapeResult& inCollisionResult) override
+ValidateResult MyContactListener::OnContactValidate(const Body& inBody1, const Body& inBody2, RVec3Arg inBaseOffset, const CollideShapeResult& inCollisionResult)
 {
     std::cout << "Contact validate callback" << std::endl;
 
     return ValidateResult::AcceptAllContactsForThisBodyPair;
 }
 
-virtual void MyContactListener::OnContactAdded(const Body& inBody1, const Body& inBody2, const ContactManifold& inManifold, ContactSettings& ioSettings) override
+void MyContactListener::OnContactAdded(const Body& inBody1, const Body& inBody2, const ContactManifold& inManifold, ContactSettings& ioSettings)
 {
     std::cout << "A contact was added" << std::endl;
 }
 
-virtual void MyContactListener::OnContactPersisted(const Body& inBody1, const Body& inBody2, const ContactManifold& inManifold, ContactSettings& ioSettings) override
+void MyContactListener::OnContactPersisted(const Body& inBody1, const Body& inBody2, const ContactManifold& inManifold, ContactSettings& ioSettings)
 {
     std::cout << "A contact was persisted" << std::endl;
 }
 
-virtual void MyContactListener::OnContactRemoved(const SubShapeIDPair& inSubShapePair) override
+void MyContactListener::OnContactRemoved(const SubShapeIDPair& inSubShapePair) 
 {
     std::cout << "A contact was removed" << std::endl;
 }
 
 
-virtual void MyBodyActivationListener::OnBodyActivated(const BodyID& inBodyID, uint64 inBodyUserData) override
+void MyBodyActivationListener::OnBodyActivated(const BodyID& inBodyID, uint64 inBodyUserData) 
 {
     std::cout << "A body got activated" << std::endl;
 }
 
-virtual void MyBodyActivationListener::OnBodyDeactivated(const BodyID& inBodyID, uint64 inBodyUserData) override
+void MyBodyActivationListener::OnBodyDeactivated(const BodyID& inBodyID, uint64 inBodyUserData) 
 {
     std::cout << "A body went to sleep" << std::endl;
 }
+
+JPH_NAMESPACE_END

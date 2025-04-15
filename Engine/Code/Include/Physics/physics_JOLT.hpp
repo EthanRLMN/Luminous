@@ -21,12 +21,12 @@
 #include "jolt/Jolt/Physics/Body/BodyCreationSettings.h"
 #include "jolt/Jolt/Physics/Body/BodyActivationListener.h"
 #include "jolt/Physics/PhysicsScene.h"
-#include "Jolt/Renderer/DebugRenderer.h"
+//#include "Jolt/Renderer/DebugRenderer.h"
 
 
 using namespace JPH;
 
-
+#define JPH_DEBUG_RENDERER
 
 
 class Physics

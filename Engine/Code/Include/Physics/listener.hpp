@@ -9,7 +9,6 @@
 
 
 #include "jolt/Jolt/Physics/Collision/ObjectLayer.h"
-#include "jolt/Jolt/Renderer/DebugRenderer.h"
 #include "jolt/Jolt/Core/Factory.h"
 #include "jolt/Jolt/Core/JobSystemThreadPool.h"
 #include "jolt/Jolt/Core/TempAllocator.h"
@@ -23,6 +22,10 @@
 #include "jolt/Physics/PhysicsScene.h"
 
 
+JPH_NAMESPACE_BEGIN
+
+#define JPH_DEBUG_RENDERER
+
 class MyContactListener : public ContactListener
 {
 public:
@@ -35,8 +38,6 @@ public:
 
 
     virtual void OnContactRemoved(const SubShapeIDPair& inSubShapePair) override;
-
-
 };
 
 
@@ -48,3 +49,5 @@ public:
     virtual void OnBodyDeactivated(const BodyID& inBodyID, uint64 inBodyUserData) override;
 
 };
+
+JPH_NAMESPACE_END
