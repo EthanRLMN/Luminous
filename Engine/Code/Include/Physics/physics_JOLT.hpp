@@ -46,15 +46,15 @@ public:
 private:
 
 
-    float cDeltaTime;
-    uint step;
-    PhysicsSystem physics_system;
-    BodyInterface& body_interface;
-    BodyID sphere_id;
+    float cDeltaTime{ 0.f };
+    uint step{ 0 };
+    PhysicsSystem* physics_system { };
+    const BodyInterface& body_interface { };
+    BodyID* sphere_id{ 0 };
+    
 
-
-    TempAllocatorImpl temp_allocator;
-    JobSystemThreadPool job_system;
+    TempAllocatorImpl* temp_allocator{nullptr};
+    JobSystemThreadPool* job_system{nullptr};
    
 };
 

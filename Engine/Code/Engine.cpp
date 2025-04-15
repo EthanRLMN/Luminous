@@ -148,6 +148,7 @@ void Engine::Init()
 
 void Engine::InitPhysic()
 {
+    m_physicsJolt = new Physics();
     m_physicsJolt->Init_JOLT();
 }
 
