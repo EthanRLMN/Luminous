@@ -82,7 +82,7 @@ void Engine::Init()
     m_isRunning = true;
 
     m_window = m_interface->InstantiateWindow();
-    m_window->Initialize("Luminous", true);
+    m_window->Initialize("Luminous");
 
     m_inputManager = m_interface->InstantiateInputManager();
     m_inputManager->Initialize(m_window);

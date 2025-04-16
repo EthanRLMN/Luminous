@@ -1,19 +1,16 @@
 #include "Core/GLFW/GLFWWindow.hpp"
 
-GLFWwindow* GLFWWindow::Initialize(const std::string& a_name, const bool& a_fullscreen, const int& a_width, const int& a_height)
+GLFWwindow* GLFWWindow::Initialize(const std::string& a_name, const int& a_width, const int& a_height)
 {
     glfwInit();
     glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
     glfwWindowHint(GLFW_RESIZABLE, GLFW_TRUE);
 
-    if (glfwVulkanSupported()) { DEBUG_LOG_INFO("Vulkan Window : GLFW Vulkan Support enabled!\n"); }
+    if (glfwVulkanSupported())
+        DEBUG_LOG_INFO("Vulkan Window : GLFW Vulkan Support enabled!\n");
 
-    GetMonitorInformation();
-    if (a_fullscreen)
-        m_window = glfwCreateWindow(m_vidMode.width, m_vidMode.height, a_name.c_str(), nullptr, nullptr);
-    else
-        m_window = glfwCreateWindow(a_width, a_height, a_name.c_str(), nullptr, nullptr);
-
+    RetrieveMonitorInformation();
+    m_window = glfwCreateWindow(a_width, a_height, a_name.c_str(), nullptr, nullptr);
     if (m_window)
     {
         DEBUG_LOG_INFO("Vulkan Window : Creation successful!\n");
@@ -22,6 +19,12 @@ GLFWwindow* GLFWWindow::Initialize(const std::string& a_name, const bool& a_full
 
     DEBUG_LOG_ERROR("Vulkan Window : Creation failed!\n");
     return nullptr;
+}
+
+void GLFWWindow::Initialize(const std::string& a_name)
+{
+    Initialize(a_name, 800, 600);
+    SetSize(Maths::Vector2(static_cast<float>(m_vidMode->width), static_cast<float>(m_vidMode->height)));
 }
 
 
@@ -67,10 +70,10 @@ std::string GLFWWindow::GetTitle() const { return glfwGetWindowTitle(m_window); 
 
 void GLFWWindow::GetFrameBufferSize(int* a_width, int* a_height) { glfwGetFramebufferSize(m_window, a_width, a_height); }
 
-void GLFWWindow::GetMonitorInformation()
+void GLFWWindow::RetrieveMonitorInformation()
 {
-    m_monitor = { glfwGetPrimaryMonitor() };
-    m_vidMode = { *glfwGetVideoMode(m_monitor) };
+    m_monitor = glfwGetPrimaryMonitor();
+    m_vidMode = glfwGetVideoMode(m_monitor);
 }
 
 

@@ -11,7 +11,9 @@
 class GLFWWindow final : public IWindow
 {
 public:
-    GLFWwindow* Initialize(const std::string& a_name, const bool& a_fullscreen, const int& a_width = 800, const int& a_height = 600) override;
+    GLFWwindow* Initialize(const std::string& a_name, const int& a_width, const int& a_height) override;
+    void Initialize(const std::string& a_name) override;
+
     void Update() const override;
     void PollEvents() const override;
     void Destroy() const override;
@@ -24,7 +26,7 @@ public:
     [[nodiscard]] Maths::Vector2 GetSize() const override;
     [[nodiscard]] float GetOpacity() const override;
     [[nodiscard]] std::string GetTitle() const override;
-    [[nodiscard]] GLFWvidmode GetMonitorInformation() const { return m_vidMode; };
+    [[nodiscard]] const GLFWvidmode& GetMonitorInformation() const { return *m_vidMode; };
 
     GLFWWindow* CastGLFW() override { return this; }
     [[nodiscard]] GLFWwindow* GetGLFWWindow() const { return m_window; }
@@ -32,9 +34,9 @@ public:
     void GetFrameBufferSize(int* a_width, int* a_height) override;
 
 private:
-    void GetMonitorInformation();
+    void RetrieveMonitorInformation();
 
     GLFWmonitor* m_monitor { nullptr };
     GLFWwindow* m_window { nullptr };
-    GLFWvidmode m_vidMode{};
+    const GLFWvidmode* m_vidMode{};
 };
