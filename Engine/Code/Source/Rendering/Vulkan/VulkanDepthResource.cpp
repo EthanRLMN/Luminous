@@ -11,7 +11,6 @@
 void VulkanDepthResource::Create(IDevice* a_device, ISwapChain* a_swapChain, IRenderPass* a_renderPass)
 {
     const VkFormat l_depthFormat = a_renderPass->CastVulkan()->FindDepthFormat(a_device->CastVulkan()->GetPhysicalDevice());
-    CreateImage(a_device->CastVulkan()->GetDevice(), a_device->CastVulkan()->GetPhysicalDevice(), a_swapChain->CastVulkan()->GetSwapChainExtent().width, a_swapChain->CastVulkan()->GetSwapChainExtent().height, l_depthFormat, VK_IMAGE_TILING_OPTIMAL, VK_IMAGE_USAGE_DEPTH_STENCIL_ATTACHMENT_BIT, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT, m_depthImage, m_depthImageMemory);
 
 	a_swapChain->CastVulkan()->CreateImage(a_device->CastVulkan()->GetDevice(), a_device->CastVulkan()->GetPhysicalDevice(), a_swapChain->CastVulkan()->GetSwapChainExtent().width, a_swapChain->CastVulkan()->GetSwapChainExtent().height, l_depthFormat, VK_IMAGE_TILING_OPTIMAL, VK_IMAGE_USAGE_DEPTH_STENCIL_ATTACHMENT_BIT, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT, m_depthImage, m_depthImageMemory, a_device->CastVulkan()->GetMSAASamples());
 

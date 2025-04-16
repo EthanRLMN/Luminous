@@ -20,11 +20,12 @@ public :
     [[nodiscard]] VkRenderPass GetRenderPass() const { return m_renderPass; }
 
 private:
-    void FillColorAttachmentInfo(VkAttachmentDescription& a_colorAttachment, const VkFormat& a_swapChainImageFormat);
-    void FillDepthAttachmentInfo(VkAttachmentDescription& a_depthAttachment, const VkFormat& a_depthFormat);
+    void FillColorAttachmentInfo(VkAttachmentDescription& a_colorAttachment, const VkFormat& a_swapChainImageFormat, const VkSampleCountFlagBits& a_samples);
+    void FillDepthAttachmentInfo(VkAttachmentDescription& a_depthAttachment, const VkFormat& a_depthFormat, const VkSampleCountFlagBits& a_samples);
+    void FillColorAttachmentResolveInfo(VkAttachmentDescription& a_colorAttachmentResolve, const VkFormat& a_swapchainImageFormat);
     void SetupSubpass(VkSubpassDescription& a_subpass, const VkAttachmentReference& a_colorAttachmentReference, const VkAttachmentReference& a_depthAttachmentReference);
     void SetupSubpassDependency(VkSubpassDependency& a_dependency);
-    void SetupRenderPassCreateInfo(VkRenderPassCreateInfo& a_renderPassCreateInfo, const std::array<VkAttachmentDescription, 2>& a_attachments, const VkSubpassDescription& a_subpass, const VkSubpassDependency& a_dependency);
+    void SetupRenderPassCreateInfo(VkRenderPassCreateInfo& a_renderPassCreateInfo, const std::vector<VkAttachmentDescription>& a_attachments, const VkSubpassDescription& a_subpass, const VkSubpassDependency& a_dependency);
 
     VkRenderPass m_renderPass = nullptr;
 };

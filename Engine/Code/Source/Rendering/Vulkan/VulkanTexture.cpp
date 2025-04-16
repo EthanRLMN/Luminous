@@ -67,10 +67,13 @@ void VulkanTexture::Destroy(IDevice* a_device)
 }
 
 
-void VulkanTexture::CreateTextureImage(IDevice* a_device, ISwapChain* a_swapChain, IDepthResource* a_depthResource, ICommandPool* a_commandPool,std::string a_path)
+void VulkanTexture::CreateTextureImage(IDevice* a_device, ISwapChain* a_swapChain, IDepthResource* a_depthResource, ICommandPool* a_commandPool, const std::string& a_path)
 {
-    if (a_device == nullptr) { DEBUG_LOG_ERROR("DEVICE IS NULL"); }
-
+    if (a_device == nullptr)
+    {
+        DEBUG_LOG_ERROR("DEVICE IS NULL");
+        return;
+    }
 
     const VkDevice l_vkDevice = a_device->CastVulkan()->GetDevice();
     const VkPhysicalDevice l_vkPhysicalDevice = a_device->CastVulkan()->GetPhysicalDevice();
@@ -79,7 +82,7 @@ void VulkanTexture::CreateTextureImage(IDevice* a_device, ISwapChain* a_swapChai
 
     int l_texWidth, l_texHeight, l_texChannels = -1;
     //stb_image
-    stbi_uc* l_pixels = stbi_load(TEXTURE_PATH.c_str(), &l_texWidth, &l_texHeight, &l_texChannels, STBI_rgb_alpha);
+    stbi_uc* l_pixels = stbi_load(a_path.c_str(), &l_texWidth, &l_texHeight, &l_texChannels, STBI_rgb_alpha);
     const VkDeviceSize l_imageSize = l_texWidth * l_texHeight * 4;
 
     if (!l_pixels)
@@ -87,7 +90,7 @@ void VulkanTexture::CreateTextureImage(IDevice* a_device, ISwapChain* a_swapChai
 
     VkBuffer l_stagingBuffer = nullptr;
     VkDeviceMemory l_stagingBufferMemory = nullptr;
-    CreateBuffer(l_vkDevice, l_vkPhysicalDevice, l_imageSize, VK_BUFFER_USAGE_TRANSFER_SRC_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT, l_stagingBuffer, l_stagingBufferMemory, a_depthResource);
+    CreateBuffer(l_vkDevice, l_vkPhysicalDevice, l_imageSize, VK_BUFFER_USAGE_TRANSFER_SRC_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT, l_stagingBuffer, l_stagingBufferMemory, a_swapChain);
 
     void* l_data = nullptr;
     vkMapMemory(l_vkDevice, l_stagingBufferMemory, 0, l_imageSize, 0, &l_data);
@@ -95,7 +98,7 @@ void VulkanTexture::CreateTextureImage(IDevice* a_device, ISwapChain* a_swapChai
     vkUnmapMemory(l_vkDevice, l_stagingBufferMemory);
     stbi_image_free(l_pixels);
 
-    a_depthResource->CastVulkan()->CreateImage(l_vkDevice, l_vkPhysicalDevice, l_texWidth, l_texHeight, VK_FORMAT_R8G8B8A8_SRGB, VK_IMAGE_TILING_OPTIMAL, VK_IMAGE_USAGE_TRANSFER_DST_BIT | VK_IMAGE_USAGE_SAMPLED_BIT, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT, m_textureImage, m_textureImageMemory);
+    a_swapChain->CastVulkan()->CreateImage(l_vkDevice, l_vkPhysicalDevice, l_texWidth, l_texHeight, VK_FORMAT_R8G8B8A8_SRGB, VK_IMAGE_TILING_OPTIMAL, VK_IMAGE_USAGE_TRANSFER_DST_BIT | VK_IMAGE_USAGE_SAMPLED_BIT, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT, m_textureImage, m_textureImageMemory, VK_SAMPLE_COUNT_1_BIT);
 
     TransitionImageLayout(l_vkDevice, l_vkGraphicsQueue, l_vkCommandPool, m_textureImage, VK_FORMAT_R8G8B8A8_SRGB, VK_IMAGE_LAYOUT_UNDEFINED, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL);
     CopyBufferToImage(l_vkDevice, l_vkGraphicsQueue, l_vkCommandPool, l_stagingBuffer, m_textureImage, static_cast<uint32_t>(l_texWidth), static_cast<uint32_t>(l_texHeight));
@@ -106,7 +109,10 @@ void VulkanTexture::CreateTextureImage(IDevice* a_device, ISwapChain* a_swapChai
 }
 
 
-void VulkanTexture::CreateTextureImageView(IDevice* a_device, ISwapChain* a_swapChain) { m_textureImageView = a_swapChain->CastVulkan()->CreateImageView(m_textureImage, a_device->CastVulkan()->GetDevice(), VK_FORMAT_R8G8B8A8_SRGB, VK_IMAGE_ASPECT_COLOR_BIT); }
+void VulkanTexture::CreateTextureImageView(IDevice* a_device, ISwapChain* a_swapChain)
+{
+    m_textureImageView = a_swapChain->CastVulkan()->CreateImageView(m_textureImage, a_device->CastVulkan()->GetDevice(), VK_FORMAT_R8G8B8A8_SRGB, VK_IMAGE_ASPECT_COLOR_BIT);
+}
 
 
 void VulkanTexture::CreateTextureSampler(IDevice* a_device)
@@ -133,7 +139,7 @@ void VulkanTexture::CreateTextureSampler(IDevice* a_device)
 }
 
 
-void VulkanTexture::CreateBuffer(const VkDevice a_device, const VkPhysicalDevice _physicalDevice, const VkDeviceSize a_size, const VkBufferUsageFlags a_usage, const VkMemoryPropertyFlags a_properties, VkBuffer& a_buffer, VkDeviceMemory& a_bufferMemory, ISwapChain* a_swapChain)
+void VulkanTexture::CreateBuffer(const VkDevice& a_device, const VkPhysicalDevice& a_physicalDevice, const VkDeviceSize& a_size, const VkBufferUsageFlags& a_usage, const VkMemoryPropertyFlags& a_properties, VkBuffer& a_buffer, VkDeviceMemory& a_bufferMemory, ISwapChain* a_swapChain)
 {
     VkBufferCreateInfo l_bufferInfo{ VK_STRUCTURE_TYPE_BUFFER_CREATE_INFO };
     l_bufferInfo.size = a_size;
@@ -148,7 +154,7 @@ void VulkanTexture::CreateBuffer(const VkDevice a_device, const VkPhysicalDevice
 
     VkMemoryAllocateInfo l_allocateInfo{ VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO };
     l_allocateInfo.allocationSize = l_memoryRequirements.size;
-    l_allocateInfo.memoryTypeIndex = a_depthResource->CastVulkan()->FindMemoryType(a_physicalDevice, l_memoryRequirements.memoryTypeBits, a_properties);
+    l_allocateInfo.memoryTypeIndex = a_swapChain->CastVulkan()->FindMemoryType(a_physicalDevice, l_memoryRequirements.memoryTypeBits, a_properties);
 
     if (vkAllocateMemory(a_device, &l_allocateInfo, nullptr, &a_bufferMemory) != VK_SUCCESS)
         DEBUG_LOG_ERROR("Vulkan Texture : Failed to allocate Buffer Memory!\n");

@@ -11,11 +11,13 @@
 
 void VulkanRenderPass::Create(ISwapChain* a_swapChain, IDevice* a_device)
 {
+    const VkSampleCountFlagBits& l_sampleCounts = { a_device->CastVulkan()->GetMSAASamples() };
+
     VkAttachmentDescription l_colorAttachment = {};
-    FillColorAttachmentInfo(l_colorAttachment, a_swapChain->CastVulkan()->GetSwapChainImageFormat());
+    FillColorAttachmentInfo(l_colorAttachment, a_swapChain->CastVulkan()->GetSwapChainImageFormat(), l_sampleCounts);
 
     VkAttachmentDescription l_depthAttachment{};
-    FillDepthAttachmentInfo(l_depthAttachment, FindDepthFormat(a_device->CastVulkan()->GetPhysicalDevice()));
+    FillDepthAttachmentInfo(l_depthAttachment, FindDepthFormat(a_device->CastVulkan()->GetPhysicalDevice()), l_sampleCounts);
 
     VkAttachmentReference l_colorAttachmentReference = {};
     l_colorAttachmentReference.attachment = 0;
@@ -31,7 +33,15 @@ void VulkanRenderPass::Create(ISwapChain* a_swapChain, IDevice* a_device)
     VkSubpassDependency l_dependency{};
     SetupSubpassDependency(l_dependency);
 
-    const std::array<VkAttachmentDescription, 2> l_attachments = { l_colorAttachment, l_depthAttachment };
+    VkAttachmentDescription l_colorAttachmentResolve{};
+    FillColorAttachmentResolveInfo(l_colorAttachmentResolve, a_swapChain->CastVulkan()->GetSwapChainImageFormat());
+
+    VkAttachmentReference l_colorAttachmentResolveRef{};
+    l_colorAttachmentResolveRef.attachment = 2;
+    l_colorAttachmentResolveRef.layout = VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL;
+    l_subpass.pResolveAttachments = &l_colorAttachmentResolveRef;
+
+    const std::vector<VkAttachmentDescription> l_attachments = { l_colorAttachment, l_depthAttachment, l_colorAttachmentResolve };
     VkRenderPassCreateInfo l_renderPassCreateInfo = {};
     SetupRenderPassCreateInfo(l_renderPassCreateInfo, l_attachments, l_subpass, l_dependency);
 
@@ -62,7 +72,7 @@ void VulkanRenderPass::CreateUIPass(ISwapChain* a_swapChain, IDevice* a_device)
     l_colorAttachment.finalLayout = VK_IMAGE_LAYOUT_PRESENT_SRC_KHR;
 
     VkAttachmentDescription l_depthAttachment{};
-    FillDepthAttachmentInfo(l_depthAttachment, FindDepthFormat(a_device->CastVulkan()->GetPhysicalDevice()));
+    FillDepthAttachmentInfo(l_depthAttachment, FindDepthFormat(a_device->CastVulkan()->GetPhysicalDevice()), VK_SAMPLE_COUNT_1_BIT);
 
     VkAttachmentReference l_colorAttachmentReference = {};
     l_colorAttachmentReference.attachment = 0;
@@ -78,7 +88,7 @@ void VulkanRenderPass::CreateUIPass(ISwapChain* a_swapChain, IDevice* a_device)
     VkSubpassDependency l_dependency{};
     SetupSubpassDependency(l_dependency);
 
-    const std::array<VkAttachmentDescription, 2> l_attachments = { l_colorAttachment, l_depthAttachment };
+    const std::vector<VkAttachmentDescription> l_attachments = { l_colorAttachment, l_depthAttachment };
     VkRenderPassCreateInfo l_renderPassCreateInfo = {};
     SetupRenderPassCreateInfo(l_renderPassCreateInfo, l_attachments, l_subpass, l_dependency);
 
@@ -112,10 +122,10 @@ VkFormat VulkanRenderPass::FindSupportedFormat(const VkPhysicalDevice& a_physica
 }
 
 
-void VulkanRenderPass::FillColorAttachmentInfo(VkAttachmentDescription& a_colorAttachment, const VkFormat& a_swapChainImageFormat)
+void VulkanRenderPass::FillColorAttachmentInfo(VkAttachmentDescription& a_colorAttachment, const VkFormat& a_swapChainImageFormat, const VkSampleCountFlagBits& a_samples)
 {
     a_colorAttachment.format = a_swapChainImageFormat;
-    a_colorAttachment.samples = VK_SAMPLE_COUNT_1_BIT;
+    a_colorAttachment.samples = a_samples;
     a_colorAttachment.loadOp = VK_ATTACHMENT_LOAD_OP_CLEAR;
     a_colorAttachment.storeOp = VK_ATTACHMENT_STORE_OP_STORE;
     a_colorAttachment.stencilLoadOp = VK_ATTACHMENT_LOAD_OP_DONT_CARE;
@@ -125,16 +135,29 @@ void VulkanRenderPass::FillColorAttachmentInfo(VkAttachmentDescription& a_colorA
 }
 
 
-void VulkanRenderPass::FillDepthAttachmentInfo(VkAttachmentDescription& a_depthAttachment, const VkFormat& a_depthFormat)
+void VulkanRenderPass::FillDepthAttachmentInfo(VkAttachmentDescription& a_depthAttachment, const VkFormat& a_depthFormat, const VkSampleCountFlagBits& a_samples)
 {
     a_depthAttachment.format = a_depthFormat;
-    a_depthAttachment.samples = VK_SAMPLE_COUNT_1_BIT;
+    a_depthAttachment.samples = a_samples;
     a_depthAttachment.loadOp = VK_ATTACHMENT_LOAD_OP_CLEAR;
     a_depthAttachment.storeOp = VK_ATTACHMENT_STORE_OP_DONT_CARE;
     a_depthAttachment.stencilLoadOp = VK_ATTACHMENT_LOAD_OP_DONT_CARE;
     a_depthAttachment.stencilStoreOp = VK_ATTACHMENT_STORE_OP_DONT_CARE;
     a_depthAttachment.initialLayout = VK_IMAGE_LAYOUT_UNDEFINED;
     a_depthAttachment.finalLayout = VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL;
+}
+
+void VulkanRenderPass::FillColorAttachmentResolveInfo(VkAttachmentDescription& a_colorAttachmentResolve, const VkFormat& a_swapchainImageFormat)
+{
+    a_colorAttachmentResolve.format = a_swapchainImageFormat;
+    a_colorAttachmentResolve.samples = VK_SAMPLE_COUNT_1_BIT;
+    a_colorAttachmentResolve.loadOp = VK_ATTACHMENT_LOAD_OP_DONT_CARE;
+    a_colorAttachmentResolve.storeOp = VK_ATTACHMENT_STORE_OP_STORE;
+    a_colorAttachmentResolve.stencilLoadOp = VK_ATTACHMENT_LOAD_OP_DONT_CARE;
+    a_colorAttachmentResolve.stencilStoreOp = VK_ATTACHMENT_STORE_OP_DONT_CARE;
+    a_colorAttachmentResolve.initialLayout = VK_IMAGE_LAYOUT_UNDEFINED;
+    a_colorAttachmentResolve.finalLayout = VK_IMAGE_LAYOUT_PRESENT_SRC_KHR;
+
 }
 
 
@@ -158,7 +181,7 @@ void VulkanRenderPass::SetupSubpassDependency(VkSubpassDependency& a_dependency)
 }
 
 
-void VulkanRenderPass::SetupRenderPassCreateInfo(VkRenderPassCreateInfo& a_renderPassCreateInfo, const std::array<VkAttachmentDescription, 2>& a_attachments, const VkSubpassDescription& a_subpass, const VkSubpassDependency& a_dependency)
+void VulkanRenderPass::SetupRenderPassCreateInfo(VkRenderPassCreateInfo& a_renderPassCreateInfo, const std::vector<VkAttachmentDescription>& a_attachments, const VkSubpassDescription& a_subpass, const VkSubpassDependency& a_dependency)
 {
     a_renderPassCreateInfo.sType = VK_STRUCTURE_TYPE_RENDER_PASS_CREATE_INFO;
     a_renderPassCreateInfo.attachmentCount = static_cast<uint32_t>(a_attachments.size());

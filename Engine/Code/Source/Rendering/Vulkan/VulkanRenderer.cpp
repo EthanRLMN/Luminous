@@ -30,11 +30,10 @@ static VulkanRenderer::GuiRenderCallback l_editorGuiCallback{ nullptr };
 
 void VulkanRenderer::RegisterGuiCallback(GuiRenderCallback a_callback) { l_editorGuiCallback = std::move(a_callback); }
 
-void VulkanRenderer::DrawFrame(IWindow* a_window, IDevice* a_device, ISwapChain* a_swapChain, IPipeline* a_pipeline, IBuffer* a_buffer, IRenderPass* a_renderPass, IDescriptor* a_descriptor, IMesh* a_mesh, ISynchronization* a_synchronization, ICommandBuffer* a_commandBuffer, IFrameBuffer* a_frameBuffer, IDepthResource* a_depthResource, ISurface* a_surface)
-void VulkanRenderingDraw::Create(IWindow* a_window, IDevice* a_device, ISwapChain* a_swapChain, IPipeline* a_pipeline, IBuffer* a_buffer, IRenderPass* a_renderPass, IDescriptor* a_descriptor, IMesh* a_mesh, ISynchronization* a_synchronization, ICommandBuffer* a_commandBuffer, IFrameBuffer* a_frameBuffer, IDepthResource* a_depthResource, ISurface* a_surface,IMultiSampling* a_multisampling)
+void VulkanRenderer::DrawFrame(IWindow* a_window, IDevice* a_device, ISwapChain* a_swapChain, IPipeline* a_pipeline, IBuffer* a_buffer, IRenderPass* a_renderPass, IDescriptor* a_descriptor, IMesh* a_mesh, ISynchronization* a_synchronization, ICommandBuffer* a_commandBuffer, IFrameBuffer* a_frameBuffer, IDepthResource* a_depthResource, ISurface* a_surface, IMultiSampling* a_multisampling)
 {
-    const VkDevice& l_device { a_device->CastVulkan()->GetDevice() };
-    const VkSwapchainKHR& l_swapchain { a_swapChain->CastVulkan()->GetSwapChain() };
+    const VkDevice& l_device{ a_device->CastVulkan()->GetDevice() };
+    const VkSwapchainKHR& l_swapchain{ a_swapChain->CastVulkan()->GetSwapChain() };
 
     vkWaitForFences(l_device, 1, &a_synchronization->CastVulkan()->GetFences()[m_currentFrame], VK_TRUE, UINT64_MAX);
     uint32_t l_imageIndex{ 0 };
@@ -42,7 +41,7 @@ void VulkanRenderingDraw::Create(IWindow* a_window, IDevice* a_device, ISwapChai
 
     if (l_result == VK_ERROR_OUT_OF_DATE_KHR)
     {
-        RecreateSwapChain(a_window, a_device, a_surface, a_swapChain, a_depthResource, a_frameBuffer, a_renderPass,a_multisampling);
+        RecreateSwapChain(a_window, a_device, a_surface, a_swapChain, a_depthResource, a_frameBuffer, a_renderPass, a_multisampling);
         return;
     }
     if (l_result != VK_SUCCESS && l_result != VK_SUBOPTIMAL_KHR)
@@ -70,7 +69,7 @@ void VulkanRenderingDraw::Create(IWindow* a_window, IDevice* a_device, ISwapChai
 
     l_result = vkQueuePresentKHR(a_device->CastVulkan()->GetPresentationQueue(), &l_presentInfo);
     if (l_result == VK_ERROR_OUT_OF_DATE_KHR || l_result == VK_SUBOPTIMAL_KHR)
-        RecreateSwapChain(a_window, a_device, a_surface, a_swapChain, a_depthResource, a_frameBuffer, a_renderPass);
+        RecreateSwapChain(a_window, a_device, a_surface, a_swapChain, a_depthResource, a_frameBuffer, a_renderPass, a_multisampling);
     else if (l_result != VK_SUCCESS)
         DEBUG_LOG_ERROR("failed to present swap chain image");
 
@@ -134,7 +133,7 @@ void VulkanRenderer::UpdateUniformBuffer(const uint32_t currentImage, ISwapChain
 }
 
 
-void VulkanRenderer::RecreateSwapChain(IWindow* a_window, IDevice* a_device, ISurface* a_surface, ISwapChain* a_swapChain, IDepthResource* a_depthResource, IFrameBuffer* a_frameBuffer, IRenderPass* a_renderPass)
+void VulkanRenderer::RecreateSwapChain(IWindow* a_window, IDevice* a_device, ISurface* a_surface, ISwapChain* a_swapChain, IDepthResource* a_depthResource, IFrameBuffer* a_frameBuffer, IRenderPass* a_renderPass, IMultiSampling* a_multisampling)
 {
     int l_width, l_height{ 0 };
     a_window->CastGLFW()->GetFrameBufferSize(&l_width, &l_height);
@@ -147,7 +146,7 @@ void VulkanRenderer::RecreateSwapChain(IWindow* a_window, IDevice* a_device, ISu
     CleanupSwapChain(a_device, a_swapChain, a_depthResource, a_frameBuffer);
 
     a_swapChain->CastVulkan()->Create(a_window, a_device, a_surface);
-   
+
     CreateImageViews(a_device, a_swapChain);
     a_multisampling->CastVulkan()->CreateColorResources(a_device, a_swapChain);
     a_depthResource->CastVulkan()->Create(a_device, a_swapChain, a_renderPass);

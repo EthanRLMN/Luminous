@@ -27,6 +27,9 @@ void Engine::Destroy() const
     m_depthResource->Destroy(m_device);
     m_interface->DeleteDepthResource(m_depthResource);
 
+    m_multiSampling->Destroy(m_device);
+    m_interface->DeleteMultiSampling(m_multiSampling);
+
     m_editorCommandPool->Destroy(m_device, m_synchronization, m_renderer);
     m_interface->DeleteCommandPool(m_editorCommandPool);
 
@@ -101,6 +104,12 @@ void Engine::Init()
     m_swapChain = m_interface->InstantiateSwapChain();
     m_swapChain->Create(m_window, m_device, m_surface);
 
+    //TODO: Cleanup
+    m_multiSampling = m_interface->InstantiateMultiSampling();
+    m_multiSampling->Create(m_device, m_swapChain);
+    m_multiSampling->CastVulkan()->SetSampleCount(m_device, VK_SAMPLE_COUNT_8_BIT);
+    m_multiSampling->CastVulkan()->CreateColorResources(m_device, m_swapChain);
+
     m_renderPass = m_interface->InstantiateRenderPass();
     m_renderPass->Create(m_swapChain, m_device);
 
@@ -121,7 +130,7 @@ void Engine::Init()
     m_depthResource->Create(m_device, m_swapChain, m_renderPass);
 
     m_frameBuffer = m_interface->InstantiateFrameBuffer();
-    m_frameBuffer->Create(m_device, m_swapChain, m_renderPass, m_depthResource);
+    m_frameBuffer->Create(m_device, m_swapChain, m_renderPass, m_depthResource, m_multiSampling);
 
     IResourceParams l_texParams{ m_device, m_swapChain, m_depthResource, m_commandPool};
     l_texParams.m_texturePath = "Engine/Assets/Textures/Untitled312.png";
@@ -132,7 +141,7 @@ void Engine::Init()
     m_mesh = m_resourceManager->LoadResource<VulkanMesh>(l_meshParams);
 
     m_buffer = m_interface->InstantiateBuffer();
-    m_buffer->Create(m_device, m_texture, m_commandPool, m_depthResource, m_mesh);
+    m_buffer->Create(m_device, m_texture, m_commandPool, m_swapChain, m_mesh);
 
     m_descriptor = m_interface->InstantiateDescriptor();
     m_descriptor->Create(m_device, m_descriptorSetLayout, m_texture, m_buffer);
@@ -150,7 +159,7 @@ void Engine::Update()
 {
     m_window->Update();
     m_inputManager->Update(m_window);
-    m_renderer->DrawFrame(m_window, m_device, m_swapChain, m_pipeline, m_buffer, m_renderPass, m_descriptor, m_mesh, m_synchronization, m_commandBuffer, m_frameBuffer, m_depthResource, m_surface);
+    m_renderer->DrawFrame(m_window, m_device, m_swapChain, m_pipeline, m_buffer, m_renderPass, m_descriptor, m_mesh, m_synchronization, m_commandBuffer, m_frameBuffer, m_depthResource, m_surface, m_multiSampling);
 
     if (m_window->ShouldClose())
         m_isRunning = false;
