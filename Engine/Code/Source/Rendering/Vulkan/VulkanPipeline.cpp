@@ -10,6 +10,7 @@
 #include "Rendering/Vulkan/VulkanDevice.hpp"
 #include "Rendering/Vulkan/VulkanRenderPass.hpp"
 #include "Rendering/Vulkan/VulkanShaderModule.hpp"
+#include "Rendering/Vulkan/VulkanMultiSampling.hpp"
 
 
 
@@ -47,7 +48,7 @@ void VulkanPipeline::Create(IDevice* a_device, IRenderPass* a_renderPass, IDescr
 
 	//Multisampling
 	VkPipelineMultisampleStateCreateInfo l_multisamplingCreateInfo = { VK_STRUCTURE_TYPE_PIPELINE_MULTISAMPLE_STATE_CREATE_INFO };
-	SetupMultisamplingState(l_multisamplingCreateInfo);
+	SetupMultisamplingState(l_multisamplingCreateInfo,a_device->CastVulkan()->GetMSAASamples());
 
 	VkPipelineDepthStencilStateCreateInfo l_depthStencil { VK_STRUCTURE_TYPE_PIPELINE_DEPTH_STENCIL_STATE_CREATE_INFO };
 	SetupDepthStencilState(l_depthStencil);
@@ -163,10 +164,12 @@ void VulkanPipeline::SetupRasterizerCreationInfo(VkPipelineRasterizationStateCre
 }
 
 
-void VulkanPipeline::SetupMultisamplingState(VkPipelineMultisampleStateCreateInfo& a_multisamplingCreateInfo)
+void VulkanPipeline::SetupMultisamplingState(VkPipelineMultisampleStateCreateInfo& a_multisamplingCreateInfo,VkSampleCountFlagBits a_numsamples)
 {
-	a_multisamplingCreateInfo.sampleShadingEnable = VK_FALSE;
-	a_multisamplingCreateInfo.rasterizationSamples = VK_SAMPLE_COUNT_1_BIT;
+	a_multisamplingCreateInfo.sampleShadingEnable = VK_TRUE;
+    a_multisamplingCreateInfo.rasterizationSamples = a_numsamples;
+    a_multisamplingCreateInfo.minSampleShading = 0.1f;
+
 }
 
 

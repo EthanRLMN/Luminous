@@ -19,6 +19,10 @@ public:
 	void Destroy(IDevice* a_device) override;
 	VulkanSwapChain* CastVulkan() override { return this; }
 
+	void CreateImage(VkDevice a_device, VkPhysicalDevice a_physicalDevice, uint32_t a_width, uint32_t a_height, VkFormat a_format, VkImageTiling a_tiling, VkImageUsageFlags a_usage, VkMemoryPropertyFlags a_properties, VkImage& a_image, VkDeviceMemory& a_imageMemory, const VkSampleCountFlagBits a_numSamples);
+
+	uint32_t FindMemoryType(VkPhysicalDevice a_physicalDevice, uint32_t a_typeFilter, VkMemoryPropertyFlags a_properties);
+
 	[[nodiscard]] VkSwapchainKHR GetSwapChain() const { return m_swapChain; }
 	[[nodiscard]] VkFormat GetSwapChainImageFormat() const { return m_swapChainImageFormat; }
 	[[nodiscard]] VkExtent2D GetSwapChainExtent() const { return m_swapChainExtent; }
@@ -38,6 +42,8 @@ private:
     void FillSwapChainCreationInfo(VkSwapchainCreateInfoKHR& a_swapChainCreateInfo, const VkSurfaceKHR& a_surface, uint32_t a_imageCount, const VkSurfaceFormatKHR& a_surfaceFormat, const VkExtent2D& a_extent);
     void FillSwapChainGraphicsFamilyData(VkSwapchainCreateInfoKHR& a_swapChainCreateInfo, const QueueFamilyIndices& a_indices, const std::vector<uint32_t>& a_queueFamilyIndices, const SwapChainDetails& a_swapChainDetails, const VkPresentModeKHR& a_presentMode);
     void SendSwapChainData(const VkDevice& a_vkDevice, uint32_t& a_imageCount, const VkSurfaceFormatKHR& a_surfaceFormat, const VkExtent2D& a_extent);
+
+	void FillImageInfo(VkDevice a_device, uint32_t a_width, uint32_t a_height, VkFormat a_format, VkImageTiling a_tiling, VkImageUsageFlags a_usage, VkImage& a_image, const VkSampleCountFlagBits a_numSamples);
 
 	VkSwapchainKHR m_swapChain{ nullptr };
 	VkFormat m_swapChainImageFormat = VK_FORMAT_UNDEFINED;

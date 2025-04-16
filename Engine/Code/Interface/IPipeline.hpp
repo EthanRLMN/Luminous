@@ -6,6 +6,7 @@ class VulkanPipeline;
 class IDevice;
 class IRenderPass;
 class IDescriptorSetLayout;
+class IMultiSampling;
 
 class IResourceManager;
 class IPipeline

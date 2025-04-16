@@ -21,6 +21,7 @@
 #include "Rendering/Vulkan/VulkanSwapChain.hpp"
 #include "Rendering/Vulkan/VulkanSynchronization.hpp"
 #include "Rendering/Vulkan/VulkanTexture.hpp"
+#include "Rendering/Vulkan/VulkanMultiSampling.hpp"
 
 #include "Rendering/Vulkan/VulkanRenderer.hpp"
 
@@ -57,6 +58,8 @@ public:
 
 	inline ICommandPool* InstantiateCommandPool() override { return new VulkanCommandPool(); }
 	void DeleteCommandPool(ICommandPool* a_commandPool) override { delete a_commandPool; }
+
+	inline IMultiSampling* InstantiateMultiSampling() override { return new VulkanMultiSampling(); }
 
 	inline IDepthResource* InstantiateDepthResource() override { return new VulkanDepthResource(); }
 	void DeleteDepthResource(IDepthResource* a_depthResource) override { delete a_depthResource; }

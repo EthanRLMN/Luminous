@@ -23,10 +23,10 @@ bool VulkanTexture::Create(IResourceManager* a_manager, IResourceParams a_params
 
     if (l_device == nullptr) { DEBUG_LOG_ERROR("DEVICE IS NULL"); }
 
-    CreateTextureImage(l_device, l_depthResource, l_commandPool);
-    CreateTextureImageView(l_device, l_swapChain);
-    CreateTextureSampler(l_device);
-    DEBUG_LOG_INFO("Vulkan Texture : Texture Created!\n");
+	CreateTextureImage(l_device,l_swapChain, l_depthResource, l_commandPool,a_params.m_texturePath);
+	CreateTextureImageView(l_device, l_swapChain);
+	CreateTextureSampler(l_device);
+	DEBUG_LOG_INFO("Vulkan Texture : Texture Created!\n");
 
     return true;
 }
@@ -67,7 +67,7 @@ void VulkanTexture::Destroy(IDevice* a_device)
 }
 
 
-void VulkanTexture::CreateTextureImage(IDevice* a_device, IDepthResource* a_depthResource, ICommandPool* a_commandPool)
+void VulkanTexture::CreateTextureImage(IDevice* a_device, ISwapChain* a_swapChain, IDepthResource* a_depthResource, ICommandPool* a_commandPool,std::string a_path)
 {
     if (a_device == nullptr) { DEBUG_LOG_ERROR("DEVICE IS NULL"); }
 
@@ -133,7 +133,7 @@ void VulkanTexture::CreateTextureSampler(IDevice* a_device)
 }
 
 
-void VulkanTexture::CreateBuffer(const VkDevice& a_device, const VkPhysicalDevice& a_physicalDevice, const VkDeviceSize& a_size, const VkBufferUsageFlags& a_usage, const VkMemoryPropertyFlags& a_properties, VkBuffer& a_buffer, VkDeviceMemory& a_bufferMemory, IDepthResource* a_depthResource)
+void VulkanTexture::CreateBuffer(const VkDevice a_device, const VkPhysicalDevice _physicalDevice, const VkDeviceSize a_size, const VkBufferUsageFlags a_usage, const VkMemoryPropertyFlags a_properties, VkBuffer& a_buffer, VkDeviceMemory& a_bufferMemory, ISwapChain* a_swapChain)
 {
     VkBufferCreateInfo l_bufferInfo{ VK_STRUCTURE_TYPE_BUFFER_CREATE_INFO };
     l_bufferInfo.size = a_size;

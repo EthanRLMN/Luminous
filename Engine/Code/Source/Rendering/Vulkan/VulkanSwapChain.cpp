@@ -45,6 +45,36 @@ void VulkanSwapChain::Destroy(IDevice* a_device)
     DEBUG_LOG_INFO("Vulkan SwapChain : SwapChain destroyed!\n");
 }
 
+void VulkanSwapChain::CreateImage(VkDevice a_device, VkPhysicalDevice a_physicalDevice, uint32_t a_width, uint32_t a_height, VkFormat a_format, VkImageTiling a_tiling, VkImageUsageFlags a_usage, VkMemoryPropertyFlags a_properties, VkImage& a_image, VkDeviceMemory& a_imageMemory, const VkSampleCountFlagBits a_numSamples)
+{
+    FillImageInfo(a_device, a_width, a_height, a_format, a_tiling, a_usage, a_image, a_numSamples);
+
+    VkMemoryRequirements l_memoryRequirement{};
+    vkGetImageMemoryRequirements(a_device, a_image, &l_memoryRequirement);
+
+    VkMemoryAllocateInfo l_allocateInfo{ VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO };
+    l_allocateInfo.allocationSize = l_memoryRequirement.size;
+    l_allocateInfo.memoryTypeIndex = FindMemoryType(a_physicalDevice, l_memoryRequirement.memoryTypeBits, a_properties);
+
+    if (vkAllocateMemory(a_device, &l_allocateInfo, nullptr, &a_imageMemory) != VK_SUCCESS)
+        DEBUG_LOG_ERROR("Vulkan DepthResource : Failed to allocated image memory!\n");
+
+    vkBindImageMemory(a_device, a_image, a_imageMemory, 0);
+}
+
+uint32_t VulkanSwapChain::FindMemoryType(VkPhysicalDevice a_physicalDevice, uint32_t a_typeFilter, VkMemoryPropertyFlags a_properties)
+{
+    VkPhysicalDeviceMemoryProperties l_memoryProperties{};
+    vkGetPhysicalDeviceMemoryProperties(a_physicalDevice, &l_memoryProperties);
+
+    for (uint32_t i = 0; i < l_memoryProperties.memoryTypeCount; ++i)
+        if (a_typeFilter & 1 << i && l_memoryProperties.memoryTypes[i].propertyFlags & a_properties)
+            return i;
+
+    DEBUG_LOG_ERROR("Vulkan DepthResource : Failed to find a suitable memory type!\n");
+    return 0;
+}
+
 
 SwapChainDetails VulkanSwapChain::GetSwapChainDetails(const VkPhysicalDevice a_device, const VkSurfaceKHR a_surface)
 {
@@ -182,6 +212,26 @@ void VulkanSwapChain::SendSwapChainData(const VkDevice& a_vkDevice, uint32_t& a_
 
     for (uint32_t i{ 0 }; i < m_swapChainImages.size(); ++i)
         m_swapChainImageViews[i] = CreateImageView(m_swapChainImages[i], a_vkDevice, m_swapChainImageFormat, VK_IMAGE_ASPECT_COLOR_BIT);
+}
+
+void VulkanSwapChain::FillImageInfo(VkDevice a_device, uint32_t a_width, uint32_t a_height, VkFormat a_format, VkImageTiling a_tiling, VkImageUsageFlags a_usage, VkImage& a_image, const VkSampleCountFlagBits a_numSamples)
+{
+    VkImageCreateInfo l_imageInfo{ VK_STRUCTURE_TYPE_IMAGE_CREATE_INFO };
+    l_imageInfo.imageType = VK_IMAGE_TYPE_2D;
+    l_imageInfo.extent.width = a_width;
+    l_imageInfo.extent.height = a_height;
+    l_imageInfo.extent.depth = 1;
+    l_imageInfo.mipLevels = 1;
+    l_imageInfo.arrayLayers = 1;
+    l_imageInfo.format = a_format;
+    l_imageInfo.tiling = a_tiling;
+    l_imageInfo.initialLayout = VK_IMAGE_LAYOUT_UNDEFINED;
+    l_imageInfo.usage = a_usage;
+    l_imageInfo.samples = a_numSamples;
+    l_imageInfo.sharingMode = VK_SHARING_MODE_EXCLUSIVE;
+
+    if (vkCreateImage(a_device, &l_imageInfo, nullptr, &a_image) != VK_SUCCESS)
+        DEBUG_LOG_ERROR("Vulkan DepthResource : Failed to create Image!\n");
 }
 
 

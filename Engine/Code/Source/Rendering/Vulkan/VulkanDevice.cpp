@@ -174,6 +174,7 @@ void VulkanDevice::ProcessLogicalDeviceInfo(const QueueFamilyIndices& a_queueFam
 
 	VkPhysicalDeviceFeatures l_physicalDeviceFeatures = { };
 	l_physicalDeviceFeatures.samplerAnisotropy = VK_TRUE;
+    l_physicalDeviceFeatures.sampleRateShading = VK_TRUE;
 
 	VkDeviceCreateInfo l_deviceCreateInfo = { VK_STRUCTURE_TYPE_DEVICE_CREATE_INFO };
 	l_deviceCreateInfo.queueCreateInfoCount = static_cast<uint32_t>(l_queueCreateInfos.size());
@@ -181,6 +182,7 @@ void VulkanDevice::ProcessLogicalDeviceInfo(const QueueFamilyIndices& a_queueFam
 	l_deviceCreateInfo.pEnabledFeatures = &l_physicalDeviceFeatures;
 	l_deviceCreateInfo.enabledExtensionCount = static_cast<uint32_t>(deviceExtensions.size());
 	l_deviceCreateInfo.ppEnabledExtensionNames = deviceExtensions.data();
+
 
 	if (validationEnabled)
 	{

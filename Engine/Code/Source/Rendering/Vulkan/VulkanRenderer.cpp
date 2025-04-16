@@ -21,6 +21,7 @@
 #include "Rendering/Vulkan/VulkanRenderPass.hpp"
 #include "Rendering/Vulkan/VulkanSwapChain.hpp"
 #include "Rendering/Vulkan/VulkanSynchronization.hpp"
+#include "Rendering/Vulkan/VulkanMultiSampling.hpp"
 
 #include "MathUtils.hpp"
 
@@ -30,6 +31,7 @@ static VulkanRenderer::GuiRenderCallback l_editorGuiCallback{ nullptr };
 void VulkanRenderer::RegisterGuiCallback(GuiRenderCallback a_callback) { l_editorGuiCallback = std::move(a_callback); }
 
 void VulkanRenderer::DrawFrame(IWindow* a_window, IDevice* a_device, ISwapChain* a_swapChain, IPipeline* a_pipeline, IBuffer* a_buffer, IRenderPass* a_renderPass, IDescriptor* a_descriptor, IMesh* a_mesh, ISynchronization* a_synchronization, ICommandBuffer* a_commandBuffer, IFrameBuffer* a_frameBuffer, IDepthResource* a_depthResource, ISurface* a_surface)
+void VulkanRenderingDraw::Create(IWindow* a_window, IDevice* a_device, ISwapChain* a_swapChain, IPipeline* a_pipeline, IBuffer* a_buffer, IRenderPass* a_renderPass, IDescriptor* a_descriptor, IMesh* a_mesh, ISynchronization* a_synchronization, ICommandBuffer* a_commandBuffer, IFrameBuffer* a_frameBuffer, IDepthResource* a_depthResource, ISurface* a_surface,IMultiSampling* a_multisampling)
 {
     const VkDevice& l_device { a_device->CastVulkan()->GetDevice() };
     const VkSwapchainKHR& l_swapchain { a_swapChain->CastVulkan()->GetSwapChain() };
@@ -40,7 +42,7 @@ void VulkanRenderer::DrawFrame(IWindow* a_window, IDevice* a_device, ISwapChain*
 
     if (l_result == VK_ERROR_OUT_OF_DATE_KHR)
     {
-        RecreateSwapChain(a_window, a_device, a_surface, a_swapChain, a_depthResource, a_frameBuffer, a_renderPass);
+        RecreateSwapChain(a_window, a_device, a_surface, a_swapChain, a_depthResource, a_frameBuffer, a_renderPass,a_multisampling);
         return;
     }
     if (l_result != VK_SUCCESS && l_result != VK_SUBOPTIMAL_KHR)
@@ -145,9 +147,11 @@ void VulkanRenderer::RecreateSwapChain(IWindow* a_window, IDevice* a_device, ISu
     CleanupSwapChain(a_device, a_swapChain, a_depthResource, a_frameBuffer);
 
     a_swapChain->CastVulkan()->Create(a_window, a_device, a_surface);
+   
     CreateImageViews(a_device, a_swapChain);
+    a_multisampling->CastVulkan()->CreateColorResources(a_device, a_swapChain);
     a_depthResource->CastVulkan()->Create(a_device, a_swapChain, a_renderPass);
-    a_frameBuffer->CastVulkan()->Create(a_device, a_swapChain, a_renderPass, a_depthResource);
+    a_frameBuffer->CastVulkan()->Create(a_device, a_swapChain, a_renderPass, a_depthResource, a_multisampling);
 }
 
 
