@@ -34,8 +34,8 @@ public:
 private:
     [[nodiscard]] JPH::BodyInterface& GetBodyInterface() const;
 
-    JPH::uint step = 0.f;
     float cDeltaTime{ 0.f };
+    JPH::uint step { 0 };
     JPH::PhysicsSystem* physics_system{ nullptr };
     JPH::BodyID sphere_id{ };
     JPH::Body* floor{ nullptr };
