@@ -1,13 +1,8 @@
-
 #pragma once
 
 #include "vulkan/vulkan.h"
-#include "Struct/VulkanUtilities.hpp"
-#include "Rendering/Vulkan/VulkanDevice.hpp"
-#include "Rendering/Vulkan/VulkanDepthResource.hpp"
-#include "Rendering/Vulkan/VulkanSwapChain.hpp"
+
 #include "IMultiSampling.hpp"
-#include "vulkan/vulkan.hpp"
 
 class VulkanMultiSampling : public IMultiSampling
 {
@@ -21,11 +16,11 @@ public:
 
      VulkanMultiSampling* CastVulkan() override { return this; }
 
-     inline VkImageView GetColorImageView() { return m_colorImageView; }
+    VkImageView GetColorImageView() const { return m_colorImageView; }
 
 private:
 
-    VkImage m_colorImage;
-    VkDeviceMemory m_colorImageMemory;
-    VkImageView m_colorImageView;
+    VkImage m_colorImage { nullptr };
+    VkDeviceMemory m_colorImageMemory { nullptr };
+    VkImageView m_colorImageView { nullptr };
 };

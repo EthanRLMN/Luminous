@@ -13,7 +13,7 @@ public :
     void Create(ISwapChain* a_swapChain, IDevice* a_device) override;
     void Destroy(IDevice* a_device) override;
 
-    void CreateUIPass(ISwapChain* a_swapChain, IDevice* a_device);
+    void CreateEditorPass(ISwapChain* a_swapChain, IDevice* a_device);
     VkFormat FindDepthFormat(const VkPhysicalDevice& a_physicalDevice);
     VkFormat FindSupportedFormat(const VkPhysicalDevice& a_physicalDevice, const std::vector<VkFormat>& a_candidates, const VkImageTiling& a_tiling, const VkFormatFeatureFlags& a_features);
     VulkanRenderPass* CastVulkan() override { return this; }

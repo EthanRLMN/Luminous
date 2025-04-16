@@ -59,7 +59,7 @@ void VulkanRenderPass::Destroy(IDevice* a_device)
     DEBUG_LOG_INFO("Vulkan RenderPass : Destroy RenderPass!\n");
 }
 
-void VulkanRenderPass::CreateUIPass(ISwapChain* a_swapChain, IDevice* a_device)
+void VulkanRenderPass::CreateEditorPass(ISwapChain* a_swapChain, IDevice* a_device)
 {
     VkAttachmentDescription l_colorAttachment = {};
     l_colorAttachment.format = a_swapChain->CastVulkan()->GetSwapChainImageFormat();
@@ -100,7 +100,10 @@ void VulkanRenderPass::CreateUIPass(ISwapChain* a_swapChain, IDevice* a_device)
 }
 
 
-VkFormat VulkanRenderPass::FindDepthFormat(const VkPhysicalDevice& a_physicalDevice) { return FindSupportedFormat(a_physicalDevice, { VK_FORMAT_D32_SFLOAT, VK_FORMAT_D32_SFLOAT_S8_UINT, VK_FORMAT_D24_UNORM_S8_UINT }, VK_IMAGE_TILING_OPTIMAL, VK_FORMAT_FEATURE_DEPTH_STENCIL_ATTACHMENT_BIT); }
+VkFormat VulkanRenderPass::FindDepthFormat(const VkPhysicalDevice& a_physicalDevice)
+{
+    return FindSupportedFormat(a_physicalDevice, {VK_FORMAT_D32_SFLOAT, VK_FORMAT_D32_SFLOAT_S8_UINT, VK_FORMAT_D24_UNORM_S8_UINT }, VK_IMAGE_TILING_OPTIMAL, VK_FORMAT_FEATURE_DEPTH_STENCIL_ATTACHMENT_BIT);
+}
 
 
 VkFormat VulkanRenderPass::FindSupportedFormat(const VkPhysicalDevice& a_physicalDevice, const std::vector<VkFormat>& a_candidates, const VkImageTiling& a_tiling, const VkFormatFeatureFlags& a_features)
@@ -131,7 +134,7 @@ void VulkanRenderPass::FillColorAttachmentInfo(VkAttachmentDescription& a_colorA
     a_colorAttachment.stencilLoadOp = VK_ATTACHMENT_LOAD_OP_DONT_CARE;
     a_colorAttachment.stencilStoreOp = VK_ATTACHMENT_STORE_OP_DONT_CARE;
     a_colorAttachment.initialLayout = VK_IMAGE_LAYOUT_UNDEFINED;
-    a_colorAttachment.finalLayout = VK_IMAGE_LAYOUT_PRESENT_SRC_KHR;
+    a_colorAttachment.finalLayout = VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL;
 }
 
 
@@ -157,7 +160,6 @@ void VulkanRenderPass::FillColorAttachmentResolveInfo(VkAttachmentDescription& a
     a_colorAttachmentResolve.stencilStoreOp = VK_ATTACHMENT_STORE_OP_DONT_CARE;
     a_colorAttachmentResolve.initialLayout = VK_IMAGE_LAYOUT_UNDEFINED;
     a_colorAttachmentResolve.finalLayout = VK_IMAGE_LAYOUT_PRESENT_SRC_KHR;
-
 }
 
 

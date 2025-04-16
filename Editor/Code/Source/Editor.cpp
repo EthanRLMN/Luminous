@@ -67,13 +67,13 @@ void Editor::SetupImGui() const
     l_initInfo.PhysicalDevice = m_engine->GetDevice()->CastVulkan()->GetPhysicalDevice();
     l_initInfo.MinImageCount = MAX_FRAMES_IN_FLIGHT;
     l_initInfo.ImageCount = MAX_FRAMES_IN_FLIGHT;
-    l_initInfo.MSAASamples = VK_SAMPLE_COUNT_1_BIT;
+    l_initInfo.MSAASamples = m_engine->GetDevice()->CastVulkan()->GetMSAASamples();
 
     ImGui_ImplVulkan_Init(&l_initInfo);
     ImGui_ImplVulkan_CreateFontsTexture();
 
     m_engine->GetEditorCommandPool()->CastVulkan()->Create(m_engine->GetDevice(), m_engine->GetSurface());
-    m_engine->GetEditorRenderPass()->CastVulkan()->CreateUIPass(m_engine->GetSwapChain(), m_engine->GetDevice());
+    m_engine->GetEditorRenderPass()->CastVulkan()->CreateEditorPass(m_engine->GetSwapChain(), m_engine->GetDevice());
 }
 
 void Editor::Update()

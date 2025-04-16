@@ -1,4 +1,3 @@
-
 #pragma once
 
 #include "Logger.hpp"
@@ -6,8 +5,6 @@
 class VulkanMultiSampling;
 class IDevice;
 class ISwapChain;
-
-
 
 
 class IMultiSampling
