@@ -13,9 +13,9 @@ void MainWindow::Draw()
         ImGui::PushStyleColor(ImGuiCol_WindowBg, 0xff323432);
         if (ImGui::BeginMenu("File"))
         {
-            ImGui::MenuItem("New Project", "", false);
+            ImGui::MenuItem("New Project", "CTRL + N", false);
 
-            ImGui::MenuItem("Open project ...", "", false);
+            ImGui::MenuItem("Open project ...", "CTRL + O", false);
 
             if (ImGui::BeginMenu("Open recent Project"))
             {
@@ -26,14 +26,14 @@ void MainWindow::Draw()
                 ImGui::EndMenu();
             }
             ImGui::Separator();
-            ImGui::MenuItem("Save all", "", false);
+            ImGui::MenuItem("Save all", "CTRL + S", false);
 
-            ImGui::MenuItem("Save all as ...", "", false);
+            ImGui::MenuItem("Save all as ...", "CTRL + ALT + S", false);
 
             ImGui::Separator();
-            ImGui::MenuItem("Build Project", "", false);
+            ImGui::MenuItem("Build Project", "CTRL + B", false);
 
-            ImGui::MenuItem("Build Project and Run", "", false);
+            ImGui::MenuItem("Build Project and Run", "CTRL + ALT + B", false);
 
             ImGui::Separator();
             ImGui::MenuItem("Exit", "", false);
@@ -43,20 +43,20 @@ void MainWindow::Draw()
 
         if (ImGui::BeginMenu("Edit"))
         {
-            ImGui::MenuItem("Undo", "", false);
+            ImGui::MenuItem("Undo", "CTRL + Z", false);
 
-            ImGui::MenuItem("Redo", "", false);
+            ImGui::MenuItem("Redo", "CTRL + Y", false);
 
             ImGui::Separator();
-            ImGui::MenuItem("Cut", "", false);
+            ImGui::MenuItem("Cut", "CTRL + X", false);
 
-            ImGui::MenuItem("Copy", "", false);
+            ImGui::MenuItem("Copy", "CTRL + C", false);
 
-            ImGui::MenuItem("Paste", "", false);
+            ImGui::MenuItem("Paste", "CTRL + V", false);
 
-            ImGui::MenuItem("Duplicate", "", false);
+            ImGui::MenuItem("Duplicate", "CTRL + D", false);
 
-            ImGui::MenuItem("Delete", "", false);
+            ImGui::MenuItem("Delete", "DEL", false);
 
             ImGui::Separator();
             ImGui::MenuItem("Settings", "", false);
