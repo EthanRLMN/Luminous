@@ -1,6 +1,9 @@
 #include "Include/Engine.hpp"
 
+
 #include "Rendering/Vulkan/VulkanRenderInterface.hpp"
+
+#define JPH_DEBUG_RENDERER
 
 void Engine::Destroy() const
 {
@@ -66,7 +69,7 @@ void Engine::Destroy() const
     m_interface->DeleteResourceManager(m_resourceManager);
 
     m_renderer->Destroy();
-    m_interface->DeleteRenderingDraw(m_renderer);
+    m_interface->DeleteRenderer(m_renderer);
 
     m_inputManager->Destroy(m_window);
     m_interface->DeleteInputManager(m_inputManager);
@@ -152,7 +155,10 @@ void Engine::Init()
     m_synchronization = m_interface->InstantiateSynchronization();
     m_synchronization->Create(m_device);
 
-    m_renderer = m_interface->InstantiateRenderingDraw();
+    m_renderer = m_interface->InstantiateRenderer();
+
+    m_physicsJolt = new Physics();
+    m_physicsJolt->Init_JOLT();
 }
 
 void Engine::Update()
@@ -161,6 +167,13 @@ void Engine::Update()
     m_inputManager->Update(m_window);
     m_renderer->DrawFrame(m_window, m_device, m_swapChain, m_pipeline, m_buffer, m_renderPass, m_descriptor, m_mesh, m_synchronization, m_commandBuffer, m_frameBuffer, m_depthResource, m_surface, m_multiSampling);
 
+    UpdatePhysic();
+
     if (m_window->ShouldClose())
         m_isRunning = false;
+}
+
+void Engine::UpdatePhysic() const
+{
+    m_physicsJolt->Update_JOLT();
 }
