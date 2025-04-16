@@ -4,8 +4,8 @@
 
 void HierarchyWindow::Draw()
 {
-    ImGui::SetNextWindowPos(ImGui::GetMainViewport()->Pos);
-    ImGui::SetNextWindowSize(ImGui::GetMainViewport()->Size, ImGuiCond_FirstUseEver);
+    //ImGui::SetNextWindowPos(ImGui::GetMainViewport()->Pos);
+    ImGui::SetNextWindowSize(ImVec2(800.f, 600.f), ImGuiCond_FirstUseEver);
 
     if (p_isOpen)
     {

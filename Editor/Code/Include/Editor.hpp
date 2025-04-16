@@ -13,7 +13,7 @@ public:
     ~Editor() = default;
 
     void Destroy();
-    void Init();
+    void  Init();
     void SetupImGui() const;
 
     void Update();
