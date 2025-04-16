@@ -25,7 +25,7 @@
 
 
 - ### How to Build using CMake
-  - Clone the project on the latest stable branch
+  - Clone the project on the latest stable branch using `git clone <project> --recursive`
   - Run the `Build.bat` file and execute the `Update Submodules` command (type `2` in the command promt)
   - Open the project folder using cmake and let the project generate the cmake cache
   - Once all submodules have been fully updated, close the command prompt
@@ -36,7 +36,7 @@
 
 
 - ### How to Build using Build.bat
-  - Clone the project on the latest stable branch
+  - Clone the project on the latest stable branch using `git clone <project> --recursive`
   - Run the `Build.bat` file and execute the `Build Project` command (type `1` in the command prompt)
   - Once project is built, it will automatically open the .sln
   - Simply select the Build Type (Debug or Release) and compile the L_EDITOR project
