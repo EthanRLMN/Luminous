@@ -49,7 +49,7 @@ public:
 	virtual ICommandBuffer* InstantiateCommandBuffer() = 0;
 	virtual ISynchronization* InstantiateSynchronization() = 0;
 	virtual IResourceManager* InstantiateResourceManager() = 0;
-	virtual IRenderer* InstantiateRenderingDraw() = 0;
+	virtual IRenderer* InstantiateRenderer() = 0;
 
 
 	virtual void DeleteWindow(IWindow* a_window) { delete a_window; }
@@ -73,5 +73,5 @@ public:
 	virtual void DeleteCommandBuffer(ICommandBuffer* a_commandBuffer) { delete a_commandBuffer; }
 	virtual void DeleteSynchronization(ISynchronization* a_synchronization) { delete a_synchronization; }
 	virtual void DeleteResourceManager(IResourceManager* a_resourceManager) { delete a_resourceManager; }
-	virtual void DeleteRenderingDraw(IRenderer* a_renderingDraw) { delete a_renderingDraw; }
+	virtual void DeleteRenderer(IRenderer* a_renderingDraw) { delete a_renderingDraw; }
 };

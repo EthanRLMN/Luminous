@@ -4,6 +4,10 @@
 #include "ISynchronization.hpp"
 #include "ResourceManager/ResourceManager.hpp"
 
+#include "Physics/physics_JOLT.hpp"
+
+
+
 class VulkanRenderInterface;
 
 class Engine
@@ -13,7 +17,9 @@ public:
 	~Engine() = default;
 
     void Init();
+    void InitPhysic();
 	void Update();
+    void UpdatePhysic() const;
 	void Destroy() const;
 
 	[[nodiscard]] IWindow* GetWindow() const { return m_window; }
@@ -65,6 +71,9 @@ private:
 	ICommandBuffer* m_commandBuffer{ nullptr };
 	ISynchronization* m_synchronization { nullptr };
     IRenderer* m_renderer { nullptr };
+
+	Physics* m_physicsJolt{ nullptr };
+
 
     bool m_isRunning { false };
 };

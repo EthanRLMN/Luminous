@@ -88,7 +88,7 @@ public:
 	inline IResourceManager* InstantiateResourceManager() override { return new IResourceManager(); }
 	void DeleteResourceManager(IResourceManager* a_resourceManager) override { delete a_resourceManager; }
 
-	inline IRenderer* InstantiateRenderingDraw() override { return new VulkanRenderer(); }
-	void DeleteRenderingDraw(IRenderer* a_renderDraw) override { delete a_renderDraw; }
+	inline IRenderer* InstantiateRenderer() override { return new VulkanRenderer(); }
+	void DeleteRenderer(IRenderer* a_renderDraw) override { delete a_renderDraw; }
 
 };

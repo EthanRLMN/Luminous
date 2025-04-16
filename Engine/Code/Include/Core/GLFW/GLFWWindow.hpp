@@ -20,6 +20,7 @@ public:
     void SetSize(const Maths::Vector2& a_size) override;
     void SetOpacity(const float& a_alpha) override;
     void SetTitle(const std::string& a_name) override;
+    [[nodiscard]] float GetDeltaTime();
     void ProcessEvents() override;
 
     [[nodiscard]] bool ShouldClose() const override;
@@ -36,7 +37,9 @@ public:
 private:
     void RetrieveMonitorInformation();
 
-    GLFWmonitor* m_monitor { nullptr };
     GLFWwindow* m_window { nullptr };
-    const GLFWvidmode* m_vidMode{};
+    GLFWmonitor* m_monitor { nullptr };
+    const GLFWvidmode* m_vidMode { nullptr };
+
+    float m_lastTime { 0.0f };
 };
