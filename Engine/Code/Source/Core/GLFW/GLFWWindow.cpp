@@ -25,6 +25,8 @@ void GLFWWindow::Initialize(const std::string& a_name)
 {
     Initialize(a_name, 800, 600);
     SetSize(Maths::Vector2(static_cast<float>(m_vidMode->width), static_cast<float>(m_vidMode->height)));
+
+    glfwSetWindowPos(m_window, 1, 35);
 }
 
 
