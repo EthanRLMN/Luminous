@@ -1,15 +1,15 @@
 #pragma once
 
-#include "Interface/IWindowPanel.hpp"
-
 #include <filesystem>
+#include <string>
+#include "Interface/IWindowPanel.hpp"
 
 class FileExplorerWindow : public IWindowPanel
 {
 public:
-    explicit FileExplorerWindow(Editor* a_editor, const std::string& a_windowIdentifier) : IWindowPanel(a_editor, a_windowIdentifier) {}
-
-    void ContentBrowserPanel();
+    explicit FileExplorerWindow(Editor* a_editor, const std::string& a_windowIdentifier) :
+        IWindowPanel(a_editor, a_windowIdentifier),
+        m_currentDirectory(s_AssetPath) {}
 
     void Init() override {};
     void Update() override {};
@@ -18,4 +18,5 @@ public:
 
 private:
     std::filesystem::path m_currentDirectory;
+    inline static const std::filesystem::path s_AssetPath = "Engine/Assets";
 };

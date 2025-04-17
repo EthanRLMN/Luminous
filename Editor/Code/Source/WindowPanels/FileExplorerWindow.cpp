@@ -3,18 +3,11 @@
 #include "imgui.h"
 
 
-static const std::filesystem::path s_AssetPath = "Engine/Assets";
-    
-void FileExplorerWindow::ContentBrowserPanel() 
-{
-    m_currentDirectory = s_AssetPath;
-}
-
 void FileExplorerWindow::Draw()
 {
     //ImGui::SetNextWindowPos(ImGui::GetMainViewport()->Pos);
     ImGui::SetNextWindowSize(ImVec2(800.f, 600.f), ImGuiCond_FirstUseEver);
-
+    
     if (p_isOpen)
     {
         ImGui::Begin(p_windowIdentifier.c_str(), &p_isOpen, ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_AlwaysAutoResize);
@@ -28,8 +21,7 @@ void FileExplorerWindow::Draw()
             }
         }
 
-        for (auto& directoryEntry : std::filesystem::directory_iterator(s_AssetPath))
-        //for (auto& directoryEntry : std::filesystem::directory_iterator(m_currentDirectory))
+        for (auto& directoryEntry : std::filesystem::directory_iterator(m_currentDirectory))
         {
             const auto& path = directoryEntry.path();
             auto relativePath = std::filesystem::relative(path, s_AssetPath);
