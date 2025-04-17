@@ -1,9 +1,9 @@
 #include "imgui.h"
 
-#include "WindowPanels/ViewportWindow.hpp"
+#include "WindowPanels/Viewport.hpp"
 
 
-void ViewportWindow::Draw()
+void Viewport::Draw()
 {
     ImGui::SetNextWindowPos(ImVec2(5, 70), ImGuiCond_FirstUseEver);
     ImGui::SetNextWindowSize(ImVec2(1935, 880), ImGuiCond_FirstUseEver);

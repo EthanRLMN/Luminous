@@ -18,11 +18,11 @@
 #include "Rendering/Vulkan/VulkanRenderPass.hpp"
 #include "Rendering/Vulkan/VulkanRenderer.hpp"
 
-#include "WindowPanels/FileExplorerWindow.hpp"
-#include "WindowPanels/HierarchyWindow.hpp"
-#include "WindowPanels/InspectorWindow.hpp"
-#include "WindowPanels/MainWindow.hpp"
-#include "WindowPanels/ViewportWindow.hpp"
+#include "WindowPanels/FileExplorer.hpp"
+#include "WindowPanels/Hierarchy.hpp"
+#include "WindowPanels/Inspector.hpp"
+#include "WindowPanels/MainInterface.hpp"
+#include "WindowPanels/Viewport.hpp"
 
 void Editor::Destroy()
 {
@@ -109,11 +109,11 @@ void Editor::Render() const
 
 void Editor::CreateWindows()
 {
-    new MainWindow(this, "Editor");
-    new ViewportWindow(this, "Viewport");
-    new FileExplorerWindow(this, "File Explorer");
-    new InspectorWindow(this, "Inspector");
-    new HierarchyWindow(this, "Hierarchy");
+    new MainInterface(this, "Editor");
+    new Viewport(this, "Viewport");
+    new FileExplorer(this, "File Explorer");
+    new Inspector(this, "Inspector");
+    new Hierarchy(this, "Hierarchy");
 }
 
 void Editor::DrawWindows() const

@@ -1,12 +1,12 @@
-#include "../../Include/WindowPanels/MainWindow.hpp"
+#include "../../Include/WindowPanels/MainInterface.hpp"
 
 #include "imgui.h"
 
-MainWindow::MainWindow(Editor* a_editor, const std::string& a_windowIdentifier) : IWindowPanel(a_editor, a_windowIdentifier)
+MainInterface::MainInterface(Editor* a_editor, const std::string& a_windowIdentifier) : IWindowPanel(a_editor, a_windowIdentifier)
 {
 }
 
-void MainWindow::Draw()
+void MainInterface::Draw()
 {
     // TODO: Add Draw calls of dependent popup windows here
     if (ImGui::BeginMainMenuBar())

@@ -62,7 +62,7 @@ void EditorStyle::SetupImGuiStyle()
     style.Colors[ImGuiCol_Header] = ImVec4(0.1411764770746231f, 0.1647058874368668f, 0.2078431397676468f, 1.0f);
     style.Colors[ImGuiCol_HeaderHovered] = ImVec4(0.23f, 0.24f, 0.25f, 1.0f);
     style.Colors[ImGuiCol_HeaderActive] = ImVec4(0.0784313753247261f, 0.08627451211214066f, 0.1019607856869698f, 1.0f);
-    style.Colors[ImGuiCol_Separator] = ImVec4(0.1294117718935013f, 0.1490196138620377f, 0.1921568661928177f, 1.0f);
+    style.Colors[ImGuiCol_Separator] = ImVec4(0.25, 0.25, 0.25, 1.0f);
     style.Colors[ImGuiCol_SeparatorHovered] = ImVec4(0.23f, 0.24f, 0.25f, 1.0f);
     style.Colors[ImGuiCol_SeparatorActive] = ImVec4(0.1568627506494522f, 0.1843137294054031f, 0.250980406999588f, 1.0f);
     style.Colors[ImGuiCol_ResizeGrip] = ImVec4(0.1450980454683304f, 0.1450980454683304f, 0.1450980454683304f, 1.0f);

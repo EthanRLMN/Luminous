@@ -1,14 +1,14 @@
-#include "WindowPanels/HierarchyWindow.hpp"
+#include "WindowPanels/Inspector.hpp"
 
 #include "imgui.h"
 
 
-void HierarchyWindow::Draw()
+void Inspector::Draw()
 {
     if (p_isOpen)
     {
-        ImGui::SetNextWindowPos(ImVec2(1955, 70), ImGuiCond_FirstUseEver);
-        ImGui::SetNextWindowSize(ImVec2(590, 595), ImGuiCond_FirstUseEver);
+        ImGui::SetNextWindowPos(ImVec2(1950, 670), ImGuiCond_FirstUseEver);
+        ImGui::SetNextWindowSize(ImVec2(590, 700), ImGuiCond_FirstUseEver);
 
         ImGui::Begin(p_windowIdentifier.c_str(), &p_isOpen, ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_MenuBar);
         ImGui::PushStyleColor(ImGuiCol_WindowBg, 0xff323432);

@@ -5,10 +5,10 @@
 #include "Interface/IWindowPanel.hpp"
 
 
-class FileExplorerWindow : public IWindowPanel
+class FileExplorer : public IWindowPanel
 {
 public:
-    explicit FileExplorerWindow(Editor* a_editor, const std::string& a_windowIdentifier);
+    explicit FileExplorer(Editor* a_editor, const std::string& a_windowIdentifier);
 
     void Init() override {};
     void Update() override {};
