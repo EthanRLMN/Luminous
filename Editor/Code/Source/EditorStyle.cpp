@@ -69,8 +69,8 @@ void EditorStyle::SetupImGuiStyle()
     style.Colors[ImGuiCol_ResizeGripHovered] = ImVec4(0.23f, 0.24f, 0.25f, 1.0f);
     style.Colors[ImGuiCol_ResizeGripActive] = ImVec4(1.0f, 1.0f, 1.0f, 1.0f);
     style.Colors[ImGuiCol_Tab] = ImVec4(0.0784313753247261f, 0.08627451211214066f, 0.1019607856869698f, 1.0f);
-    style.Colors[ImGuiCol_TabHovered] = ImVec4(0.125490203499794f, 0.45, 0.572549045085907f, 1.0f);
-    style.Colors[ImGuiCol_TabActive] = ImVec4(0.125490203499794f, 0.65, 0.572549045085907f, 1.0f);
+    style.Colors[ImGuiCol_TabHovered] = ImVec4(0.125490203499794f, 0.45f, 0.572549045085907f, 1.0f);
+    style.Colors[ImGuiCol_TabActive] = ImVec4(0.125490203499794f, 0.65f, 0.572549045085907f, 1.0f);
     style.Colors[ImGuiCol_TabUnfocused] = ImVec4(0.0784313753247261f, 0.08627451211214066f, 0.1019607856869698f, 1.0f);
     style.Colors[ImGuiCol_TabUnfocusedActive] = ImVec4(0.125490203499794f, 0.2745098173618317f, 0.572549045085907f, 1.0f);
     style.Colors[ImGuiCol_PlotLines] = ImVec4(0.5215686559677124f, 0.6000000238418579f, 0.7019608020782471f, 1.0f);
