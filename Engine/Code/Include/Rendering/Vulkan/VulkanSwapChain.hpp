@@ -19,22 +19,22 @@ public:
 	void Destroy(IDevice* a_device) override;
 	VulkanSwapChain* CastVulkan() override { return this; }
 
-	void CreateImage(VkDevice a_device, VkPhysicalDevice a_physicalDevice, uint32_t a_width, uint32_t a_height, VkFormat a_format, VkImageTiling a_tiling, VkImageUsageFlags a_usage, VkMemoryPropertyFlags a_properties, VkImage& a_image, VkDeviceMemory& a_imageMemory, const VkSampleCountFlagBits a_numSamples);
+	void CreateImage(const VkDevice& a_device, const VkPhysicalDevice& a_physicalDevice, const uint32_t& a_width, const uint32_t& a_height, const VkFormat& a_format, const VkImageTiling& a_tiling, const VkImageUsageFlags& a_usage, const VkMemoryPropertyFlags& a_properties, VkImage& a_image, VkDeviceMemory& a_imageMemory, const VkSampleCountFlagBits& a_numSamples);
 
-	uint32_t FindMemoryType(VkPhysicalDevice a_physicalDevice, uint32_t a_typeFilter, VkMemoryPropertyFlags a_properties);
+	uint32_t FindMemoryType(const VkPhysicalDevice& a_physicalDevice, const uint32_t& a_typeFilter, const VkMemoryPropertyFlags& a_properties);
 
 	[[nodiscard]] VkSwapchainKHR GetSwapChain() const { return m_swapChain; }
 	[[nodiscard]] VkFormat GetSwapChainImageFormat() const { return m_swapChainImageFormat; }
 	[[nodiscard]] VkExtent2D GetSwapChainExtent() const { return m_swapChainExtent; }
-	[[nodiscard]] std::vector < VkImage> GetSwapChainImages() const { return m_swapChainImages; }
-	[[nodiscard]] std::vector < VkImageView> GetSwapChainImageViews() const { return m_swapChainImageViews; }
+	[[nodiscard]] std::vector<VkImage> GetSwapChainImages() const { return m_swapChainImages; }
+	[[nodiscard]] std::vector<VkImageView> GetSwapChainImageViews() const { return m_swapChainImageViews; }
 	
 
 	VkImageView CreateImageView(VkImage a_image, VkDevice a_device, VkFormat a_format, VkImageAspectFlags a_aspectFlags);
 
 private:
-	SwapChainDetails GetSwapChainDetails(VkPhysicalDevice a_device, VkSurfaceKHR a_surface);
-	QueueFamilyIndices GetQueueFamilies(VkPhysicalDevice a_device, VkSurfaceKHR a_surface);
+	SwapChainDetails GetSwapChainDetails(const VkPhysicalDevice& a_device, const VkSurfaceKHR& a_surface);
+	QueueFamilyIndices GetQueueFamilies(const VkPhysicalDevice& a_device, const VkSurfaceKHR& a_surface);
 	VkSurfaceFormatKHR ChooseBestSurfaceFormat(const std::vector<VkSurfaceFormatKHR>& a_formats);
 	VkPresentModeKHR ChooseBestPresentationMode(const std::vector<VkPresentModeKHR>& a_presentationModes);
 	VkExtent2D ChooseSwapExtent(const VkSurfaceCapabilitiesKHR& a_surfaceCapabilities, GLFWwindow* a_window);
@@ -43,11 +43,11 @@ private:
     void FillSwapChainGraphicsFamilyData(VkSwapchainCreateInfoKHR& a_swapChainCreateInfo, const QueueFamilyIndices& a_indices, const std::vector<uint32_t>& a_queueFamilyIndices, const SwapChainDetails& a_swapChainDetails, const VkPresentModeKHR& a_presentMode);
     void SendSwapChainData(const VkDevice& a_vkDevice, uint32_t& a_imageCount, const VkSurfaceFormatKHR& a_surfaceFormat, const VkExtent2D& a_extent);
 
-	void FillImageInfo(VkDevice a_device, uint32_t a_width, uint32_t a_height, VkFormat a_format, VkImageTiling a_tiling, VkImageUsageFlags a_usage, VkImage& a_image, const VkSampleCountFlagBits a_numSamples);
+	void FillImageInfo(const VkDevice& a_device, const uint32_t& a_width, const uint32_t& a_height, const VkFormat& a_format, const VkImageTiling& a_tiling, const VkImageUsageFlags& a_usage, VkImage& a_image, const VkSampleCountFlagBits& a_numSamples);
 
 	VkSwapchainKHR m_swapChain{ nullptr };
-	VkFormat m_swapChainImageFormat = VK_FORMAT_UNDEFINED;
-	VkExtent2D m_swapChainExtent = { 0, 0 };
+	VkFormat m_swapChainImageFormat{ VK_FORMAT_UNDEFINED };
+	VkExtent2D m_swapChainExtent{ 0, 0 };
 	std::vector<VkImage> m_swapChainImages{ nullptr };
 	std::vector<VkImageView> m_swapChainImageViews{ nullptr };
 };

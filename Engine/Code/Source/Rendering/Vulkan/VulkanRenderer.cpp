@@ -8,20 +8,20 @@
 #include "ISwapChain.hpp"
 #include "ISynchronization.hpp"
 
-#include "Rendering/Vulkan/VulkanRenderer.hpp"
-
 #include "Matrix4.hpp"
+
+#include "Rendering/Vulkan/VulkanRenderer.hpp"
 #include "Rendering/Vulkan/VulkanBuffer.hpp"
 #include "Rendering/Vulkan/VulkanCommandBuffer.hpp"
 #include "Rendering/Vulkan/VulkanDepthResource.hpp"
 #include "Rendering/Vulkan/VulkanDescriptor.hpp"
 #include "Rendering/Vulkan/VulkanFrameBuffer.hpp"
 #include "Rendering/Vulkan/VulkanMesh.hpp"
+#include "Rendering/Vulkan/VulkanMultiSampling.hpp"
 #include "Rendering/Vulkan/VulkanPipeline.hpp"
 #include "Rendering/Vulkan/VulkanRenderPass.hpp"
 #include "Rendering/Vulkan/VulkanSwapChain.hpp"
 #include "Rendering/Vulkan/VulkanSynchronization.hpp"
-#include "Rendering/Vulkan/VulkanMultiSampling.hpp"
 
 #include "MathUtils.hpp"
 
@@ -77,7 +77,7 @@ void VulkanRenderer::DrawFrame(IWindow* a_window, IDevice* a_device, ISwapChain*
 }
 
 
-void VulkanRenderer::RecordCommandBuffer(const VkCommandBuffer a_commandBuffer, const VkPipeline a_graphicsPipeline, const VkPipelineLayout a_pipelineLayout, const uint32_t a_imageIndex, ISwapChain* a_swapChain, IRenderPass* a_renderPass, IBuffer* a_buffer, IDescriptor* a_descriptor, IMesh* a_mesh, IFrameBuffer* a_frameBuffer)
+void VulkanRenderer::RecordCommandBuffer(const VkCommandBuffer& a_commandBuffer, const VkPipeline& a_graphicsPipeline, const VkPipelineLayout& a_pipelineLayout, const uint32_t& a_imageIndex, ISwapChain* a_swapChain, IRenderPass* a_renderPass, IBuffer* a_buffer, IDescriptor* a_descriptor, IMesh* a_mesh, IFrameBuffer* a_frameBuffer)
 {
     const VkCommandBufferBeginInfo l_bufferBeginInfo = { VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO };
     if (vkBeginCommandBuffer(a_commandBuffer, &l_bufferBeginInfo) != VK_SUCCESS)
@@ -116,7 +116,7 @@ void VulkanRenderer::RecordCommandBuffer(const VkCommandBuffer a_commandBuffer, 
 }
 
 
-void VulkanRenderer::UpdateUniformBuffer(const uint32_t currentImage, ISwapChain* a_swapChain, IBuffer* a_buffer)
+void VulkanRenderer::UpdateUniformBuffer(const uint32_t& a_currentImage, ISwapChain* a_swapChain, IBuffer* a_buffer)
 {
     static std::chrono::steady_clock::time_point l_startTime = std::chrono::high_resolution_clock::now();
     const std::chrono::steady_clock::time_point l_currentTime = std::chrono::high_resolution_clock::now();
@@ -129,7 +129,7 @@ void VulkanRenderer::UpdateUniformBuffer(const uint32_t currentImage, ISwapChain
     l_ubo.proj = Maths::Matrix4::Perspective(Maths::DegToRad(45.f), static_cast<float>(l_swapChainExtent.width) / static_cast<float>(l_swapChainExtent.height), 0.1f, 10.0f);
     l_ubo.proj.mat[1][1] *= -1;
 
-    memcpy(a_buffer->CastVulkan()->GetUniformBuffersMapped()[currentImage], &l_ubo, sizeof(l_ubo));
+    memcpy(a_buffer->CastVulkan()->GetUniformBuffersMapped()[a_currentImage], &l_ubo, sizeof(l_ubo));
 }
 
 
