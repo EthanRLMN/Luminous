@@ -22,6 +22,7 @@
 #include "WindowPanels/HierarchyWindow.hpp"
 #include "WindowPanels/InspectorWindow.hpp"
 #include "WindowPanels/MainWindow.hpp"
+#include "WindowPanels/ViewportWindow.hpp"
 
 void Editor::Destroy()
 {
@@ -93,7 +94,6 @@ void Editor::Render() const
     ImGui::NewFrame();
 
     DrawWindows();
-    ImGui::ShowStyleEditor();
 
     ImGui::Render();
 
@@ -110,6 +110,7 @@ void Editor::Render() const
 void Editor::CreateWindows()
 {
     new MainWindow(this, "Editor");
+    new ViewportWindow(this, "Viewport");
     new FileExplorerWindow(this, "File Explorer");
     new InspectorWindow(this, "Inspector");
     new HierarchyWindow(this, "Hierarchy");
