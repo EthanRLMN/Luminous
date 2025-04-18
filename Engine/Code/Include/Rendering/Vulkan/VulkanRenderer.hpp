@@ -11,8 +11,8 @@
 class VulkanRenderer final : public IRenderer
 {
 public:
-    using GuiRenderCallback = std::function<void()>;
-    static void RegisterGuiCallback(GuiRenderCallback a_callback);
+    using EditorRenderCallback = std::function<void()>;
+    static void RegisterEditorRenderCallback(EditorRenderCallback a_callback);
 
     void DrawFrame(IWindow* a_window, IDevice* a_device, ISwapChain* a_swapChain, IPipeline* a_pipeline, IBuffer* a_buffer, IRenderPass* a_renderPass, IDescriptor* a_descriptor, IMesh* a_mesh, ISynchronization* a_synchronization, ICommandBuffer* a_commandBuffer, IFrameBuffer* a_frameBuffer, IDepthResource* a_depthResource, ISurface* a_surface, IMultiSampling* a_multisampling) override;
 	void Destroy() override {};

@@ -26,9 +26,9 @@
 #include "MathUtils.hpp"
 
 
-static VulkanRenderer::GuiRenderCallback l_editorGuiCallback{ nullptr };
+static VulkanRenderer::EditorRenderCallback l_editorGuiCallback{ nullptr };
 
-void VulkanRenderer::RegisterGuiCallback(GuiRenderCallback a_callback) { l_editorGuiCallback = std::move(a_callback); }
+void VulkanRenderer::RegisterEditorRenderCallback(EditorRenderCallback a_callback) { l_editorGuiCallback = std::move(a_callback); }
 
 void VulkanRenderer::DrawFrame(IWindow* a_window, IDevice* a_device, ISwapChain* a_swapChain, IPipeline* a_pipeline, IBuffer* a_buffer, IRenderPass* a_renderPass, IDescriptor* a_descriptor, IMesh* a_mesh, ISynchronization* a_synchronization, ICommandBuffer* a_commandBuffer, IFrameBuffer* a_frameBuffer, IDepthResource* a_depthResource, ISurface* a_surface, IMultiSampling* a_multisampling)
 {

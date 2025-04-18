@@ -94,9 +94,9 @@ void VulkanRenderPass::CreateEditorPass(ISwapChain* a_swapChain, IDevice* a_devi
 
     const VkResult l_result = vkCreateRenderPass(a_device->CastVulkan()->GetDevice(), &l_renderPassCreateInfo, nullptr, &m_renderPass);
     if (l_result != VK_SUCCESS)
-        DEBUG_LOG_ERROR("Failed to create a UI render pass\n");
+        DEBUG_LOG_ERROR("Vulkan RenderPass : Editor RenderPass creation failed!\n");
 
-    DEBUG_LOG_INFO("Vulkan RenderPass : UI RenderPass created!\n");
+    DEBUG_LOG_INFO("Vulkan RenderPass : Editor RenderPass created!\n");
 }
 
 
