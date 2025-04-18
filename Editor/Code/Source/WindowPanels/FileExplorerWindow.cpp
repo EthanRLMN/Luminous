@@ -2,12 +2,11 @@
 
 #include "imgui.h"
 
-
 void FileExplorerWindow::Draw()
 {
-    //ImGui::SetNextWindowPos(ImGui::GetMainViewport()->Pos);
-    ImGui::SetNextWindowSize(ImVec2(800.f, 600.f), ImGuiCond_FirstUseEver);
-    
+    // ImGui::SetNextWindowPos(ImGui::GetMainViewport()->Pos);
+    ImGui::SetNextWindowSize(ImVec2(1920.f, 600.f), ImGuiCond_FirstUseEver);
+
     if (p_isOpen)
     {
         ImGui::Begin(p_windowIdentifier.c_str(), &p_isOpen, ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_AlwaysAutoResize);
@@ -15,7 +14,7 @@ void FileExplorerWindow::Draw()
 
         if (m_currentDirectory != std::filesystem::path(s_AssetPath))
         {
-            if (ImGui::Button("<-"))
+            if (ImGui::Button("<"))
             {
                 m_currentDirectory = m_currentDirectory.parent_path();
             }
@@ -32,15 +31,11 @@ void FileExplorerWindow::Draw()
                 {
                     m_currentDirectory /= directoryEntry.path().filename();
                 }
-            } 
-            else            
+            } else
             {
-                if (ImGui::Button(filenameString.c_str()))
-                {
-                }
+                ImGui::Button(filenameString.c_str());
             }
         }
-
         ImGui::PopStyleColor();
         ImGui::End();
     }

@@ -11,6 +11,8 @@ public:
         IWindowPanel(a_editor, a_windowIdentifier),
         m_currentDirectory(s_AssetPath) {}
 
+    void RefreshFileList();
+
     void Init() override {};
     void Update() override {};
     void Draw() override;
