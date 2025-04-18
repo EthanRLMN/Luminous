@@ -2,6 +2,7 @@
 
 #include "Logger.hpp"
 
+enum class MULTISAMPLING_SAMPLES;
 class VulkanMultiSampling;
 class IDevice;
 class ISwapChain;
@@ -14,6 +15,8 @@ public:
 
     virtual void Create(IDevice* a_device, ISwapChain* a_swapchain) = 0;
     virtual void Destroy(IDevice* a_device) = 0;
+
+    virtual void SetSampleCount(IDevice* a_device, const MULTISAMPLING_SAMPLES& a_samples) = 0;
 
     virtual VulkanMultiSampling* CastVulkan()
     {
