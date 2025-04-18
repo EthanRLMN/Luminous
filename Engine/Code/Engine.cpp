@@ -109,8 +109,8 @@ void Engine::Init()
 
     // TODO: Fix issue when samplecount is lower than 8 before resizing window
     m_multiSampling = m_interface->InstantiateMultiSampling();
-    m_multiSampling->Create(m_device, m_swapChain);
     m_multiSampling->SetSampleCount(m_device, SamplingCount::MSAA_SAMPLECOUNT_2);
+    m_multiSampling->Create(m_device, m_swapChain);
 
     m_renderPass = m_interface->InstantiateRenderPass();
     m_renderPass->Create(m_swapChain, m_device);
