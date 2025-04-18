@@ -2,11 +2,37 @@
 
 #include "Logger.hpp"
 
-enum class MULTISAMPLING_SAMPLES;
 class VulkanMultiSampling;
 class IDevice;
 class ISwapChain;
 
+enum class SamplingCount
+{
+    MSAA_SAMPLECOUNT_1 = 1,
+    MSAA_SAMPLECOUNT_2 = 2,
+    MSAA_SAMPLECOUNT_4,
+    MSAA_SAMPLECOUNT_8,
+    MSAA_SAMPLECOUNT_16,
+    MSAA_SAMPLECOUNT_32,
+    MSAA_SAMPLECOUNT_64
+};
+
+static constexpr std::array<VkSampleCountFlagBits, 7> VkSampleCount =
+{
+    VK_SAMPLE_COUNT_1_BIT,
+    VK_SAMPLE_COUNT_2_BIT,
+    VK_SAMPLE_COUNT_4_BIT,
+    VK_SAMPLE_COUNT_8_BIT,
+    VK_SAMPLE_COUNT_16_BIT,
+    VK_SAMPLE_COUNT_32_BIT,
+    VK_SAMPLE_COUNT_64_BIT
+};
+
+static VkSampleCountFlagBits CastVulkanSample(const SamplingCount& a_msaa)
+{
+    const int l_msaaIndex = static_cast<int>(a_msaa);
+    return VkSampleCount[l_msaaIndex - 1];
+}
 
 class IMultiSampling
 {
@@ -16,7 +42,7 @@ public:
     virtual void Create(IDevice* a_device, ISwapChain* a_swapchain) = 0;
     virtual void Destroy(IDevice* a_device) = 0;
 
-    virtual void SetSampleCount(IDevice* a_device, const MULTISAMPLING_SAMPLES& a_samples) = 0;
+    virtual void SetSampleCount(IDevice* a_device, const SamplingCount& a_samplingCount) = 0;
 
     virtual VulkanMultiSampling* CastVulkan()
     {

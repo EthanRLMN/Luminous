@@ -154,8 +154,7 @@ VkExtent2D VulkanSwapChain::ChooseSwapExtent(const VkSurfaceCapabilitiesKHR& a_s
     if (a_surfaceCapabilities.currentExtent.width != std::numeric_limits<uint32_t>::max())
         return a_surfaceCapabilities.currentExtent;
 
-    int l_width{ 1280 };
-    int l_height{ 720 };
+    int l_width, l_height{ 0 };
     glfwGetFramebufferSize(a_window, &l_width, &l_height);
 
     VkExtent2D l_newExtent = {

@@ -9,7 +9,7 @@ class VulkanMultiSampling final : public IMultiSampling
 public:
     void Create(IDevice* a_device, ISwapChain* a_swapchain) override;
     void Destroy(IDevice* a_device) override;
-    void SetSampleCount(IDevice* a_device, const MULTISAMPLING_SAMPLES& a_samples) override;
+    void SetSampleCount(IDevice* a_device, const SamplingCount& a_samplingCount) override;
     VulkanMultiSampling* CastVulkan() override { return this; }
 
     void CreateColorResources(IDevice* a_device, ISwapChain* a_swapchain);

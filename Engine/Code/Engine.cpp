@@ -2,7 +2,6 @@
 
 
 #include "Rendering/Vulkan/VulkanRenderInterface.hpp"
-#include "Utils/MsSamplesUtils.hpp"
 
 #define JPH_DEBUG_RENDERER
 
@@ -108,10 +107,10 @@ void Engine::Init()
     m_swapChain = m_interface->InstantiateSwapChain();
     m_swapChain->Create(m_window, m_device, m_surface);
 
-    //TODO: Cleanup
+    // TODO: Fix issue when samplecount is lower than 8 before resizing window
     m_multiSampling = m_interface->InstantiateMultiSampling();
     m_multiSampling->Create(m_device, m_swapChain);
-    m_multiSampling->SetSampleCount(m_device, MULTISAMPLING_SAMPLES::MULTISAMPLING_SAMPLECOUNT_8);
+    m_multiSampling->SetSampleCount(m_device, SamplingCount::MSAA_SAMPLECOUNT_2);
 
     m_renderPass = m_interface->InstantiateRenderPass();
     m_renderPass->Create(m_swapChain, m_device);

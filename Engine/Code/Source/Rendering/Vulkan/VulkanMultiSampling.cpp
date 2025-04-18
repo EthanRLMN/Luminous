@@ -3,7 +3,6 @@
 #include "IDevice.hpp"
 #include "Rendering/Vulkan/VulkanDevice.hpp"
 #include "Rendering/Vulkan/VulkanSwapChain.hpp"
-#include "Utils/MsSamplesUtils.hpp"
 
 void VulkanMultiSampling::Create(IDevice* a_device, ISwapChain* a_swapchain)
 {
@@ -20,9 +19,9 @@ void VulkanMultiSampling::Destroy(IDevice* a_device)
 }
 
 
-void VulkanMultiSampling::SetSampleCount(IDevice* a_device, const MULTISAMPLING_SAMPLES& a_samples)
+void VulkanMultiSampling::SetSampleCount(IDevice* a_device, const SamplingCount& a_samplingCount)
 {
-    const VkSampleCountFlagBits& l_sampleCount = CastVulkanSample(a_samples);
+    const VkSampleCountFlagBits& l_sampleCount = CastVulkanSample(a_samplingCount);
     const VkSampleCountFlagBits& l_maxCount = GetMaxUsableSampleCount(a_device);
     if (l_sampleCount > l_maxCount)
     {
@@ -41,8 +40,8 @@ VkSampleCountFlagBits VulkanMultiSampling::GetMaxUsableSampleCount(IDevice* a_de
     VkPhysicalDeviceProperties l_properties{};
     vkGetPhysicalDeviceProperties(a_device->CastVulkan()->GetPhysicalDevice(), &l_properties);
 
-    const VkSampleCountFlags l_counts = l_properties.limits.framebufferColorSampleCounts & l_properties.limits.framebufferDepthSampleCounts;
-    constexpr VkSampleCountFlagBits l_sampleCounts[] = {
+    const VkSampleCountFlags l_maxSupportedCount = l_properties.limits.framebufferColorSampleCounts & l_properties.limits.framebufferDepthSampleCounts;
+    constexpr std::array<VkSampleCountFlagBits, 7> l_sampleCounts = {
         VK_SAMPLE_COUNT_64_BIT,
         VK_SAMPLE_COUNT_32_BIT,
         VK_SAMPLE_COUNT_16_BIT,
@@ -51,12 +50,9 @@ VkSampleCountFlagBits VulkanMultiSampling::GetMaxUsableSampleCount(IDevice* a_de
         VK_SAMPLE_COUNT_2_BIT
     };
 
-
     for (const VkSampleCountFlagBits l_count : l_sampleCounts)
-    {
-        if (l_counts & l_count)
+        if (l_maxSupportedCount & l_count)
             return l_count;
-    }
 
     return VK_SAMPLE_COUNT_1_BIT;
 }
