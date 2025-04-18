@@ -4,6 +4,8 @@
 #include "Rendering/Vulkan/VulkanRenderInterface.hpp"
 #include "Utils/MsSamplesUtils.hpp"
 
+#include "EntitySystem/Entity.hpp"
+
 #define JPH_DEBUG_RENDERER
 
 void Engine::Destroy() const
