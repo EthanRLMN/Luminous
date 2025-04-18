@@ -6,7 +6,7 @@
 #include "Rendering/Vulkan/VulkanDevice.hpp"
 
 
-void VulkanSwapChain::Create(IWindow* a_window, IDevice* a_device, ISurface* a_surface)
+void VulkanSwapChain::Create(IWindow* a_window, IDevice* a_device, ISurface* a_surface, const uint32_t& a_mipLevels)
 {
     const VkPhysicalDevice l_vkPhysDevice = a_device->CastVulkan()->GetPhysicalDevice();
     const VkDevice l_vkDevice = a_device->CastVulkan()->GetDevice();
@@ -45,9 +45,9 @@ void VulkanSwapChain::Destroy(IDevice* a_device)
     DEBUG_LOG_INFO("Vulkan SwapChain : SwapChain destroyed!\n");
 }
 
-void VulkanSwapChain::CreateImage(const VkDevice& a_device, const VkPhysicalDevice& a_physicalDevice, const uint32_t& a_width, const uint32_t& a_height, const VkFormat& a_format, const VkImageTiling& a_tiling, const VkImageUsageFlags& a_usage, const VkMemoryPropertyFlags& a_properties, VkImage& a_image, VkDeviceMemory& a_imageMemory, const VkSampleCountFlagBits& a_numSamples)
+void VulkanSwapChain::CreateImage(const VkDevice& a_device, const VkPhysicalDevice& a_physicalDevice, const uint32_t& a_width, const uint32_t& a_height, const VkFormat& a_format, const VkImageTiling& a_tiling, const VkImageUsageFlags& a_usage, const VkMemoryPropertyFlags& a_properties, VkImage& a_image, VkDeviceMemory& a_imageMemory, const VkSampleCountFlagBits& a_numSamples, const uint32_t& a_mipLevels)
 {
-    FillImageInfo(a_device, a_width, a_height, a_format, a_tiling, a_usage, a_image, a_numSamples);
+    FillImageInfo(a_device, a_width, a_height, a_format, a_tiling, a_usage, a_image, a_numSamples, a_mipLevels);
 
     VkMemoryRequirements l_memoryRequirement{};
     vkGetImageMemoryRequirements(a_device, a_image, &l_memoryRequirement);
@@ -210,17 +210,17 @@ void VulkanSwapChain::SendSwapChainData(const VkDevice& a_vkDevice, uint32_t& a_
     m_swapChainImageViews.resize(m_swapChainImages.size());
 
     for (uint32_t i{ 0 }; i < m_swapChainImages.size(); ++i)
-        m_swapChainImageViews[i] = CreateImageView(m_swapChainImages[i], a_vkDevice, m_swapChainImageFormat, VK_IMAGE_ASPECT_COLOR_BIT);
+        m_swapChainImageViews[i] = CreateImageView(m_swapChainImages[i], a_vkDevice, m_swapChainImageFormat, VK_IMAGE_ASPECT_COLOR_BIT, 1);
 }
 
-void VulkanSwapChain::FillImageInfo(const VkDevice& a_device, const uint32_t& a_width, const uint32_t& a_height, const VkFormat& a_format, const VkImageTiling& a_tiling, const VkImageUsageFlags& a_usage, VkImage& a_image, const VkSampleCountFlagBits& a_numSamples)
+void VulkanSwapChain::FillImageInfo(const VkDevice& a_device, const uint32_t& a_width, const uint32_t& a_height, const VkFormat& a_format, const VkImageTiling& a_tiling, const VkImageUsageFlags& a_usage, VkImage& a_image, const VkSampleCountFlagBits& a_numSamples, const uint32_t& a_mipLevels)
 {
     VkImageCreateInfo l_imageInfo{ VK_STRUCTURE_TYPE_IMAGE_CREATE_INFO };
     l_imageInfo.imageType = VK_IMAGE_TYPE_2D;
     l_imageInfo.extent.width = a_width;
     l_imageInfo.extent.height = a_height;
     l_imageInfo.extent.depth = 1;
-    l_imageInfo.mipLevels = 1;
+    l_imageInfo.mipLevels = a_mipLevels;
     l_imageInfo.arrayLayers = 1;
     l_imageInfo.format = a_format;
     l_imageInfo.tiling = a_tiling;
@@ -234,7 +234,7 @@ void VulkanSwapChain::FillImageInfo(const VkDevice& a_device, const uint32_t& a_
 }
 
 
-VkImageView VulkanSwapChain::CreateImageView(const VkImage a_image, const VkDevice a_device, const VkFormat a_format, const VkImageAspectFlags a_aspectFlags)
+VkImageView VulkanSwapChain::CreateImageView(const VkImage& a_image, const VkDevice& a_device, const VkFormat& a_format, const VkImageAspectFlags& a_aspectFlags, const uint32_t& a_mipLevels)
 {
     VkImageViewCreateInfo l_viewCreateInfo = { VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO };
     l_viewCreateInfo.image = a_image;
@@ -247,7 +247,7 @@ VkImageView VulkanSwapChain::CreateImageView(const VkImage a_image, const VkDevi
 
     l_viewCreateInfo.subresourceRange.aspectMask = a_aspectFlags;
     l_viewCreateInfo.subresourceRange.baseMipLevel = 0;
-    l_viewCreateInfo.subresourceRange.levelCount = 1;
+    l_viewCreateInfo.subresourceRange.levelCount = a_mipLevels;
     l_viewCreateInfo.subresourceRange.baseArrayLayer = 0;
     l_viewCreateInfo.subresourceRange.layerCount = 1;
 

@@ -124,7 +124,7 @@ void VulkanRenderer::UpdateUniformBuffer(const uint32_t& a_currentImage, ISwapCh
 
     UniformBufferObject l_ubo{};
     const VkExtent2D& l_swapChainExtent = a_swapChain->CastVulkan()->GetSwapChainExtent();
-    l_ubo.model = Maths::Matrix4::Rotate(Maths::Matrix4(1.0f), l_time * 90.0f, Maths::Vector3(0.0f, 0.0f, 1.0f));
+    l_ubo.model = Maths::Matrix4::Rotate(Maths::Matrix4(1.0f), 0.0f, Maths::Vector3(0.0f, 0.0f, 1.0f));
     l_ubo.view = Maths::Matrix4::LookAt(Maths::Vector3(2.0f, 2.0f, 2.0f), Maths::Vector3(0.0f, 0.0f, 0.0f), Maths::Vector3(0.0f, 0.0f, 1.0f));
     l_ubo.proj = Maths::Matrix4::Perspective(Maths::DegToRad(45.f), static_cast<float>(l_swapChainExtent.width) / static_cast<float>(l_swapChainExtent.height), 0.1f, 10.0f);
     l_ubo.proj.mat[1][1] *= -1;
@@ -145,7 +145,7 @@ void VulkanRenderer::RecreateSwapChain(IWindow* a_window, IDevice* a_device, ISu
 
     CleanupSwapChain(a_device, a_swapChain, a_depthResource, a_frameBuffer);
 
-    a_swapChain->CastVulkan()->Create(a_window, a_device, a_surface);
+    a_swapChain->CastVulkan()->Create(a_window, a_device, a_surface, a_swapChain->CastVulkan()->GetMipLevel());
 
     CreateImageViews(a_device, a_swapChain);
     a_multisampling->CastVulkan()->CreateColorResources(a_device, a_swapChain);
@@ -177,7 +177,7 @@ void VulkanRenderer::CreateImageViews(IDevice* a_device, ISwapChain* a_swapChain
     a_swapChain->CastVulkan()->GetSwapChainImageViews().resize(a_swapChain->CastVulkan()->GetSwapChainImages().size());
 
     for (uint32_t i = 0; i < a_swapChain->CastVulkan()->GetSwapChainImages().size(); ++i)
-        a_swapChain->CastVulkan()->GetSwapChainImageViews()[i] = a_swapChain->CastVulkan()->CreateImageView(a_swapChain->CastVulkan()->GetSwapChainImages()[i], a_device->CastVulkan()->GetDevice(), a_swapChain->CastVulkan()->GetSwapChainImageFormat(), VK_IMAGE_ASPECT_COLOR_BIT);
+        a_swapChain->CastVulkan()->GetSwapChainImageViews()[i] = a_swapChain->CastVulkan()->CreateImageView(a_swapChain->CastVulkan()->GetSwapChainImages()[i], a_device->CastVulkan()->GetDevice(), a_swapChain->CastVulkan()->GetSwapChainImageFormat(), VK_IMAGE_ASPECT_COLOR_BIT, 1);
 }
 
 

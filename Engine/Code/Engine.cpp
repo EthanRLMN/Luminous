@@ -105,11 +105,10 @@ void Engine::Init()
     m_device->Create(m_instance, m_window, m_surface);
 
     m_swapChain = m_interface->InstantiateSwapChain();
-    m_swapChain->Create(m_window, m_device, m_surface);
+    m_swapChain->Create(m_window, m_device, m_surface, 0);
 
-    // TODO: Fix issue when samplecount is lower than 8 before resizing window
     m_multiSampling = m_interface->InstantiateMultiSampling();
-    m_multiSampling->SetSampleCount(m_device, SamplingCount::MSAA_SAMPLECOUNT_2);
+    m_multiSampling->SetSampleCount(m_device, SamplingCount::MSAA_SAMPLECOUNT_8);
     m_multiSampling->Create(m_device, m_swapChain);
 
     m_renderPass = m_interface->InstantiateRenderPass();
@@ -135,11 +134,11 @@ void Engine::Init()
     m_frameBuffer->Create(m_device, m_swapChain, m_renderPass, m_depthResource, m_multiSampling);
 
     IResourceParams l_texParams{ m_device, m_swapChain, m_depthResource, m_commandPool};
-    l_texParams.m_texturePath = "Engine/Assets/Textures/Untitled312.png";
+    l_texParams.m_texturePath = "Engine/Assets/Textures/viking_room.png";
     m_texture = m_resourceManager->LoadResource<VulkanTexture>(l_texParams);
 
     IResourceParams l_meshParams{};
-    l_meshParams.m_meshPath = "Engine/Assets/Models/metalSonic.obj";
+    l_meshParams.m_meshPath = "Engine/Assets/Models/viking_room.obj";
     m_mesh = m_resourceManager->LoadResource<VulkanMesh>(l_meshParams);
 
     m_buffer = m_interface->InstantiateBuffer();

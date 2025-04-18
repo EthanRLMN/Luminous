@@ -22,6 +22,8 @@ struct IResourceParams
     std::string m_fragmentShaderPath;
     std::string m_tesselationShaderPath;
     std::string m_geometryShaderPath;
+
+    uint32_t m_mipLevels { 1 };
 };
 
 

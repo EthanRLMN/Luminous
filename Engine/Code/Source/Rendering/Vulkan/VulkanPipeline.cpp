@@ -153,7 +153,7 @@ void VulkanPipeline::SetupRasterizerCreationInfo(VkPipelineRasterizationStateCre
     a_rasterizerCreateInfo.polygonMode = VK_POLYGON_MODE_FILL;
     a_rasterizerCreateInfo.lineWidth = 1.0f;
     a_rasterizerCreateInfo.cullMode = VK_CULL_MODE_BACK_BIT;
-    a_rasterizerCreateInfo.frontFace = VK_FRONT_FACE_CLOCKWISE;
+    a_rasterizerCreateInfo.frontFace = VK_FRONT_FACE_COUNTER_CLOCKWISE;
     a_rasterizerCreateInfo.depthBiasEnable = VK_FALSE;
 }
 
