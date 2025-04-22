@@ -3,7 +3,7 @@
 #include "Vector3.hpp"
 #include "Quaternion.hpp"
 
-class TransformEntity : public EntityComponent
+class CTransform : public EntityComponent
 {
 public:
     Maths::Vector3 position = Maths::Vector3::Zero;
