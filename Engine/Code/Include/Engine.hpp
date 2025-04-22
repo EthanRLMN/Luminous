@@ -17,9 +17,7 @@ public:
 	~Engine() = default;
 
     void Init();
-    void InitPhysic();
 	void Update();
-    void UpdatePhysic() const;
 	void Destroy() const;
 
 	[[nodiscard]] IWindow* GetWindow() const { return m_window; }

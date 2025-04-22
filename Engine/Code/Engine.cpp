@@ -3,6 +3,8 @@
 
 #include "Rendering/Vulkan/VulkanRenderInterface.hpp"
 
+#include "EntitySystem/Entity.hpp"
+
 #define JPH_DEBUG_RENDERER
 
 void Engine::Destroy() const
@@ -155,6 +157,7 @@ void Engine::Init()
 
     m_renderer = m_interface->InstantiateRenderer();
 
+    // a retire
     m_physicsJolt = new Physics();
     m_physicsJolt->Init_JOLT();
 }
@@ -165,13 +168,10 @@ void Engine::Update()
     m_inputManager->Update(m_window);
     m_renderer->DrawFrame(m_window, m_device, m_swapChain, m_pipeline, m_buffer, m_renderPass, m_descriptor, m_mesh, m_synchronization, m_commandBuffer, m_frameBuffer, m_depthResource, m_surface, m_multiSampling);
 
-    UpdatePhysic();
+    //a retire
+    m_physicsJolt->Update_JOLT();
 
     if (m_window->ShouldClose())
         m_isRunning = false;
 }
 
-void Engine::UpdatePhysic() const
-{
-    m_physicsJolt->Update_JOLT();
-}
