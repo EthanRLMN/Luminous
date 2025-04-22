@@ -2,7 +2,7 @@
 #include <iostream>
 #include <unordered_map>
 #include <typeindex>
-#include "BaseComponent.hpp"
+#include "EntityComponent.hpp"
 
 
 class Entity
