@@ -1,5 +1,5 @@
 #pragma once
-#include "BaseComponent.hpp"
+#include "EntityComponent.hpp"
 
 
 #include "Vector3.hpp"

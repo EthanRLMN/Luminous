@@ -8,22 +8,26 @@
 class Entity
 {
 public:
-    std::unordered_map<std::type_index, std::unique_ptr<BaseComponent>> components;
+    bool isDestroyed = false;
+    std::unordered_map<std::type_index, std::shared_ptr<EntityComponent>> components;
 
-    template<typename T>
-    void addComponent(std::unique_ptr<T> component)
+    template<typename T, typename... Args>
+    void AddComponent(Args&&... args)
     {
-        components[typeid(T)] = std::move(component);
+        components[std::type_index(typeid(T))] = std::make_shared<T>(std::forward<Args>(args)...);
     }
 
     template<typename T>
-    T* getComponent()
+    std::shared_ptr<T> GetComponent()
     {
-        auto it = components.find(typeid(T));
+        auto it = components.find(std::type_index(typeid(T)));
         if (it != components.end())
         {
-            return static_cast<T*>(it->second.get());
+            return std::static_pointer_cast<T>(it->second);
         }
-        return nullptr; 
+        return nullptr;
     }
+
+    // soft delete plus explicite tu meurs
+    void Destroy(){ isDestroyed = true; }
 };
