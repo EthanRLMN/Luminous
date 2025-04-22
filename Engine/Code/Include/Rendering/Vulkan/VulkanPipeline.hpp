@@ -6,6 +6,8 @@
 #include "vulkan/vulkan.h"
 
 
+class IRenderPass;
+
 class VulkanPipeline final : public IPipeline
 {
 public:

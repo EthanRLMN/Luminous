@@ -1,22 +1,22 @@
 #include "Rendering/Vulkan/VulkanFrameBuffer.hpp"
 #include "Rendering/Vulkan/VulkanDepthResource.hpp"
 #include "Rendering/Vulkan/VulkanDevice.hpp"
+#include "Rendering/Vulkan/VulkanMultiSampling.hpp"
 #include "Rendering/Vulkan/VulkanRenderPass.hpp"
 #include "Rendering/Vulkan/VulkanSwapChain.hpp"
-#include "Rendering/Vulkan/VulkanMultiSampling.hpp"
 
-void VulkanFrameBuffer::Create(IDevice* a_device, ISwapChain* a_swapChain, IRenderPass* a_renderPass, IDepthResource* a_depthResource, IMultiSampling* a_multiSampling)
+void VulkanFrameBuffer::Create(IDevice* a_device, ISwapChain* a_swapChain, IRenderPass* a_renderPass, IDepthResource* a_depthResource, IMultiSampling* a_multiSampling, const bool& a_isEditor)
 {
     SetFrameBuffersSize(a_swapChain->CastVulkan()->GetSwapChainImageViews().size());
     const VulkanSwapChain* l_vulkanSwapChain = a_swapChain->CastVulkan();
 
     for (size_t i = 0; i < l_vulkanSwapChain->GetSwapChainImageViews().size(); ++i)
     {
-        std::array<VkImageView, 3> l_attachments = {
-            a_multiSampling->CastVulkan()->GetColorImageView(),
-            a_depthResource->CastVulkan()->GetDepthImageView(),
-            l_vulkanSwapChain->GetSwapChainImageViews()[i]
-        };
+        std::vector<VkImageView> l_attachments{};
+        if (!a_isEditor)
+            l_attachments = { a_multiSampling->CastVulkan()->GetColorImageView(), a_depthResource->CastVulkan()->GetDepthImageView(), l_vulkanSwapChain->GetSwapChainImageViews()[i] };
+        else
+            l_attachments = { l_vulkanSwapChain->GetSwapChainImageViews()[i] };
 
         VkFramebufferCreateInfo l_framebufferCreateInfo = { VK_STRUCTURE_TYPE_FRAMEBUFFER_CREATE_INFO };
         l_framebufferCreateInfo.renderPass = a_renderPass->CastVulkan()->GetRenderPass();

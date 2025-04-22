@@ -16,6 +16,7 @@
 #include "Rendering/Vulkan/VulkanDevice.hpp"
 #include "Rendering/Vulkan/VulkanInstance.hpp"
 #include "Rendering/Vulkan/VulkanRenderPass.hpp"
+#include "Rendering/Vulkan/VulkanRenderPassManager.hpp"
 #include "Rendering/Vulkan/VulkanRenderer.hpp"
 
 #include "WindowPanels/FileExplorer.hpp"
@@ -63,7 +64,7 @@ void Editor::SetupImGui() const
     l_initInfo.Instance = m_engine->GetInstance()->CastVulkan()->GetInstance();
     l_initInfo.Queue = m_engine->GetDevice()->CastVulkan()->GetGraphicsQueue();
     l_initInfo.DescriptorPool = m_engine->GetDescriptor()->CastVulkan()->GetImGUIDescriptorPool();
-    l_initInfo.RenderPass = m_engine->GetRenderPass()->CastVulkan()->GetRenderPass();
+    l_initInfo.RenderPass = m_engine->GetRenderPassManager()->GetRenderPassAt(0)->CastVulkan()->GetRenderPass();
     l_initInfo.Device = m_engine->GetDevice()->CastVulkan()->GetDevice();
     l_initInfo.PhysicalDevice = m_engine->GetDevice()->CastVulkan()->GetPhysicalDevice();
     l_initInfo.MinImageCount = MAX_FRAMES_IN_FLIGHT;
@@ -74,7 +75,6 @@ void Editor::SetupImGui() const
     ImGui_ImplVulkan_CreateFontsTexture();
 
     m_engine->GetEditorCommandPool()->CastVulkan()->Create(m_engine->GetDevice(), m_engine->GetSurface());
-    m_engine->GetEditorRenderPass()->CastVulkan()->CreateEditorPass(m_engine->GetSwapChain(), m_engine->GetDevice());
 }
 
 void Editor::Update()

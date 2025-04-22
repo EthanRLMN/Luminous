@@ -8,7 +8,7 @@
 class VulkanFrameBuffer final : public IFrameBuffer
 {
 public:
-    void Create(IDevice* a_device, ISwapChain* a_swapChain, IRenderPass* a_renderPass, IDepthResource* a_depthResource, IMultiSampling* a_multiSampling) override;
+    void Create(IDevice* a_device, ISwapChain* a_swapChain, IRenderPass* a_renderPass, IDepthResource* a_depthResource, IMultiSampling* a_multiSampling, const bool& a_isEditor) override;
     void Destroy(IDevice* a_device) override;
     VulkanFrameBuffer* CastVulkan() override { return this; }
 

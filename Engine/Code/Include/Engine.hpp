@@ -7,7 +7,6 @@
 #include "Physics/physics_JOLT.hpp"
 
 
-
 class VulkanRenderInterface;
 
 class Engine
@@ -17,26 +16,23 @@ public:
 	~Engine() = default;
 
     void Init();
-    void InitPhysic();
 	void Update();
     void UpdatePhysic() const;
 	void Destroy() const;
 
 	[[nodiscard]] IWindow* GetWindow() const { return m_window; }
 	[[nodiscard]] IInputManager* GetInputManager() const { return m_inputManager; }
-
 	[[nodiscard]] IInstance* GetInstance() const { return m_instance; }
 	[[nodiscard]] ISurface* GetSurface() const { return m_surface; }
 	[[nodiscard]] IDevice* GetDevice() const { return m_device; }
 	[[nodiscard]] ISwapChain* GetSwapChain() const { return m_swapChain; }
-	[[nodiscard]] IRenderPass* GetRenderPass() const { return m_renderPass; }
-	[[nodiscard]] IRenderPass* GetEditorRenderPass() const { return m_editorRenderPass; }
+	[[nodiscard]] IRenderPassManager* GetRenderPassManager() const { return m_renderPassManager; }
 	[[nodiscard]] IDescriptorSetLayout* GetDescriptionSetLayout() const { return m_descriptorSetLayout; }
 	[[nodiscard]] IPipeline* GetPipeline() const { return m_pipeline; }
 	[[nodiscard]] ICommandPool* GetCommandPool() const { return m_commandPool; }
 	[[nodiscard]] ICommandPool* GetEditorCommandPool() const { return m_editorCommandPool; }
 	[[nodiscard]] IDepthResource* GetDepthResource() const { return m_depthResource; }
-	[[nodiscard]] IFrameBuffer* GetFrameBuffer() const { return m_frameBuffer; }
+	[[nodiscard]] IFrameBufferManager* GetFrameBufferManager() const { return m_frameBufferManager; }
 	[[nodiscard]] ITexture* GetTexture() const { return m_texture; }
 	[[nodiscard]] IBuffer* GetBuffer() const { return m_buffer; }
 	[[nodiscard]] IDescriptor* GetDescriptor() const { return m_descriptor; }
@@ -55,15 +51,14 @@ private:
 	ISurface* m_surface { nullptr };
 	IDevice* m_device { nullptr };
 	ISwapChain* m_swapChain { nullptr };
-	IRenderPass* m_renderPass { nullptr };
-	IRenderPass* m_editorRenderPass { nullptr };
+	IRenderPassManager* m_renderPassManager { nullptr };
 	IDescriptorSetLayout* m_descriptorSetLayout { nullptr };
 	IPipeline* m_pipeline { nullptr };
 	ICommandPool* m_commandPool{ nullptr };
     IMultiSampling* m_multiSampling{ nullptr };
 	ICommandPool* m_editorCommandPool{ nullptr };
 	IDepthResource* m_depthResource{ nullptr };
-	IFrameBuffer* m_frameBuffer{ nullptr };
+	IFrameBufferManager* m_frameBufferManager{ nullptr };
 	ITexture* m_texture{ nullptr };
 	IMesh* m_mesh{ nullptr };
 	IBuffer* m_buffer { nullptr };
@@ -71,9 +66,7 @@ private:
 	ICommandBuffer* m_commandBuffer{ nullptr };
 	ISynchronization* m_synchronization { nullptr };
     IRenderer* m_renderer { nullptr };
-
 	Physics* m_physicsJolt{ nullptr };
-
 
     bool m_isRunning { false };
 };

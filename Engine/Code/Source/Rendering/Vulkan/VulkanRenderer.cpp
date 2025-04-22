@@ -2,20 +2,19 @@
 #include "IDepthResource.hpp"
 #include "IDescriptor.hpp"
 #include "IFrameBuffer.hpp"
+#include "IFrameBufferManager.hpp"
 #include "IMesh.hpp"
 #include "IPipeline.hpp"
-#include "IRenderPass.hpp"
+#include "IRenderPassManager.hpp"
 #include "ISwapChain.hpp"
 #include "ISynchronization.hpp"
-
-#include "Matrix4.hpp"
 
 #include "Rendering/Vulkan/VulkanRenderer.hpp"
 #include "Rendering/Vulkan/VulkanBuffer.hpp"
 #include "Rendering/Vulkan/VulkanCommandBuffer.hpp"
 #include "Rendering/Vulkan/VulkanDepthResource.hpp"
 #include "Rendering/Vulkan/VulkanDescriptor.hpp"
-#include "Rendering/Vulkan/VulkanFrameBuffer.hpp"
+#include "Rendering/Vulkan/VulkanFrameBufferManager.hpp"
 #include "Rendering/Vulkan/VulkanMesh.hpp"
 #include "Rendering/Vulkan/VulkanMultiSampling.hpp"
 #include "Rendering/Vulkan/VulkanPipeline.hpp"
@@ -24,13 +23,15 @@
 #include "Rendering/Vulkan/VulkanSynchronization.hpp"
 
 #include "MathUtils.hpp"
+#include "Matrix4.hpp"
+#include "Rendering/Vulkan/VulkanFrameBuffer.hpp"
 
 
 static VulkanRenderer::EditorRenderCallback l_editorGuiCallback{ nullptr };
 
 void VulkanRenderer::RegisterEditorRenderCallback(EditorRenderCallback a_callback) { l_editorGuiCallback = std::move(a_callback); }
 
-void VulkanRenderer::DrawFrame(IWindow* a_window, IDevice* a_device, ISwapChain* a_swapChain, IPipeline* a_pipeline, IBuffer* a_buffer, IRenderPass* a_renderPass, IDescriptor* a_descriptor, IMesh* a_mesh, ISynchronization* a_synchronization, ICommandBuffer* a_commandBuffer, IFrameBuffer* a_frameBuffer, IDepthResource* a_depthResource, ISurface* a_surface, IMultiSampling* a_multisampling)
+void VulkanRenderer::DrawFrame(IWindow* a_window, IDevice* a_device, ISwapChain* a_swapChain, IPipeline* a_pipeline, IBuffer* a_buffer, IRenderPassManager* a_renderPassManager, IDescriptor* a_descriptor, IMesh* a_mesh, ISynchronization* a_synchronization, ICommandBuffer* a_commandBuffer, IFrameBufferManager* a_frameBufferManager, IDepthResource* a_depthResource, ISurface* a_surface, IMultiSampling* a_multisampling)
 {
     const VkDevice& l_device{ a_device->CastVulkan()->GetDevice() };
     const VkSwapchainKHR& l_swapchain{ a_swapChain->CastVulkan()->GetSwapChain() };
@@ -41,7 +42,7 @@ void VulkanRenderer::DrawFrame(IWindow* a_window, IDevice* a_device, ISwapChain*
 
     if (l_result == VK_ERROR_OUT_OF_DATE_KHR)
     {
-        RecreateSwapChain(a_window, a_device, a_surface, a_swapChain, a_depthResource, a_frameBuffer, a_renderPass, a_multisampling);
+        RecreateSwapChain(a_window, a_device, a_surface, a_swapChain, a_depthResource, a_frameBufferManager->GetFrameBufferAt(0), a_renderPassManager->GetRenderPassAt(0), a_multisampling);
         return;
     }
     if (l_result != VK_SUCCESS && l_result != VK_SUBOPTIMAL_KHR)
@@ -57,7 +58,7 @@ void VulkanRenderer::DrawFrame(IWindow* a_window, IDevice* a_device, ISwapChain*
     SetupSubmitInfo(l_submitInfo, l_waitSemaphores, l_waitStages, a_commandBuffer->CastVulkan()->GetCommandBuffers(), l_signalSemaphores);
 
     vkResetCommandBuffer(a_commandBuffer->CastVulkan()->GetCommandBuffers()[m_currentFrame], 0);
-    RecordCommandBuffer(a_commandBuffer->CastVulkan()->GetCommandBuffers()[m_currentFrame], a_pipeline->CastVulkan()->GetGraphicsPipeline(), a_pipeline->CastVulkan()->GetPipelineLayout(), l_imageIndex, a_swapChain, a_renderPass, a_buffer, a_descriptor, a_mesh, a_frameBuffer);
+    RecordCommandBuffer(a_commandBuffer->CastVulkan()->GetCommandBuffers()[m_currentFrame], a_pipeline->CastVulkan()->GetGraphicsPipeline(), a_pipeline->CastVulkan()->GetPipelineLayout(), l_imageIndex, a_swapChain, a_renderPassManager, a_buffer, a_descriptor, a_mesh, a_frameBufferManager);
 
     if (vkQueueSubmit(a_device->CastVulkan()->GetGraphicsQueue(), 1, &l_submitInfo, a_synchronization->CastVulkan()->GetFences()[m_currentFrame]) != VK_SUCCESS)
         DEBUG_LOG_ERROR("Failed to submit draw command buffer");
@@ -69,7 +70,7 @@ void VulkanRenderer::DrawFrame(IWindow* a_window, IDevice* a_device, ISwapChain*
 
     l_result = vkQueuePresentKHR(a_device->CastVulkan()->GetPresentationQueue(), &l_presentInfo);
     if (l_result == VK_ERROR_OUT_OF_DATE_KHR || l_result == VK_SUBOPTIMAL_KHR)
-        RecreateSwapChain(a_window, a_device, a_surface, a_swapChain, a_depthResource, a_frameBuffer, a_renderPass, a_multisampling);
+        RecreateSwapChain(a_window, a_device, a_surface, a_swapChain, a_depthResource, a_frameBufferManager->GetFrameBufferAt(0), a_renderPassManager->GetRenderPassAt(0), a_multisampling);
     else if (l_result != VK_SUCCESS)
         DEBUG_LOG_ERROR("failed to present swap chain image");
 
@@ -77,38 +78,51 @@ void VulkanRenderer::DrawFrame(IWindow* a_window, IDevice* a_device, ISwapChain*
 }
 
 
-void VulkanRenderer::RecordCommandBuffer(const VkCommandBuffer& a_commandBuffer, const VkPipeline& a_graphicsPipeline, const VkPipelineLayout& a_pipelineLayout, const uint32_t& a_imageIndex, ISwapChain* a_swapChain, IRenderPass* a_renderPass, IBuffer* a_buffer, IDescriptor* a_descriptor, IMesh* a_mesh, IFrameBuffer* a_frameBuffer)
+void VulkanRenderer::RecordCommandBuffer(const VkCommandBuffer& a_commandBuffer, const VkPipeline& a_graphicsPipeline, const VkPipelineLayout& a_pipelineLayout, const uint32_t& a_imageIndex, ISwapChain* a_swapChain, const IRenderPassManager* a_renderPassManager, IBuffer* a_buffer, IDescriptor* a_descriptor, IMesh* a_mesh, IFrameBufferManager* a_frameBufferManager) const
 {
     const VkCommandBufferBeginInfo l_bufferBeginInfo = { VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO };
     if (vkBeginCommandBuffer(a_commandBuffer, &l_bufferBeginInfo) != VK_SUCCESS)
         DEBUG_LOG_INFO("failed to begin recording command buffer!\n");
 
-    VkRenderPassBeginInfo l_renderPassBeginInfo = { VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO };
-    const std::array<VkClearValue, 2> l_clearValues{};
-    PresentRenderPassInfo(l_renderPassBeginInfo, a_renderPass->CastVulkan()->GetRenderPass(), a_frameBuffer->CastVulkan()->GetFrameBuffers()[a_imageIndex], a_swapChain->CastVulkan()->GetSwapChainExtent(), l_clearValues, a_commandBuffer, a_graphicsPipeline);
+    for (IRenderPass* l_renderPass : a_renderPassManager->GetRenderPasses())
+    {
+        VkRenderPassBeginInfo l_renderPassBeginInfo = { VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO };
+        const std::array<VkClearValue, 2> l_clearValues{};
+        if (l_renderPass == a_renderPassManager->GetRenderPassAt(0))
+            PresentRenderPassInfo(l_renderPassBeginInfo, l_renderPass->CastVulkan()->GetRenderPass(), a_frameBufferManager->GetFrameBufferAt(0)->CastVulkan()->GetFrameBuffers()[a_imageIndex], a_swapChain->CastVulkan()->GetSwapChainExtent(), l_clearValues, a_commandBuffer, a_graphicsPipeline, false);
+        else
+            PresentRenderPassInfo(l_renderPassBeginInfo, l_renderPass->CastVulkan()->GetRenderPass(), a_frameBufferManager->GetFrameBufferAt(1)->CastVulkan()->GetFrameBuffers()[a_imageIndex], a_swapChain->CastVulkan()->GetSwapChainExtent(), l_clearValues, a_commandBuffer, a_graphicsPipeline, true);
 
-    VkViewport l_viewport{};
-    FillViewportInfo(l_viewport, a_swapChain->CastVulkan()->GetSwapChainExtent());
-    vkCmdSetViewport(a_commandBuffer, 0, 1, &l_viewport);
+        vkCmdBeginRenderPass(a_commandBuffer, &l_renderPassBeginInfo, VK_SUBPASS_CONTENTS_INLINE);
+        vkCmdBindPipeline(a_commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, a_graphicsPipeline);
 
-    const VkRect2D l_scissor{
-        .offset = { 0, 0 },
-        .extent = a_swapChain->CastVulkan()->GetSwapChainExtent()
-    };
-    vkCmdSetScissor(a_commandBuffer, 0, 1, &l_scissor);
+        VkViewport l_viewport{};
+        FillViewportInfo(l_viewport, a_swapChain->CastVulkan()->GetSwapChainExtent());
+        vkCmdSetViewport(a_commandBuffer, 0, 1, &l_viewport);
 
-    const std::array<VkBuffer, 1> l_vertexBuffers = { a_buffer->CastVulkan()->GetVertexBuffer() };
-    const std::array<VkDeviceSize, 1> l_offsets = { 0 };
-    vkCmdBindVertexBuffers(a_commandBuffer, 0, 1, l_vertexBuffers.data(), l_offsets.data());
-    vkCmdBindIndexBuffer(a_commandBuffer, a_buffer->CastVulkan()->CastVulkan()->GetIndexBuffer(), 0, VK_INDEX_TYPE_UINT32);
-    vkCmdBindDescriptorSets(a_commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, a_pipelineLayout, 0, 1, &a_descriptor->CastVulkan()->GetDescriptorSet()[m_currentFrame], 0, nullptr);
-    vkCmdDrawIndexed(a_commandBuffer, static_cast<uint32_t>(a_mesh->CastVulkan()->GetIndices().size()), 1, 0, 0, 0);
+        const VkRect2D l_scissor{
+            .offset = { 0, 0 },
+            .extent = a_swapChain->CastVulkan()->GetSwapChainExtent()
+        };
+        vkCmdSetScissor(a_commandBuffer, 0, 1, &l_scissor);
 
-    // Callback ImGui_ImplVulkan_RenderDrawData
-    if (l_editorGuiCallback)
-        l_editorGuiCallback();
+        if (l_renderPass == a_renderPassManager->GetRenderPassAt(0))
+        {
+            const std::array<VkBuffer, 1> l_vertexBuffers = { a_buffer->CastVulkan()->GetVertexBuffer() };
+            const std::array<VkDeviceSize, 1> l_offsets = { 0 };
+            vkCmdBindVertexBuffers(a_commandBuffer, 0, 1, l_vertexBuffers.data(), l_offsets.data());
+            vkCmdBindIndexBuffer(a_commandBuffer, a_buffer->CastVulkan()->GetIndexBuffer(), 0, VK_INDEX_TYPE_UINT32);
+            vkCmdBindDescriptorSets(a_commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, a_pipelineLayout, 0, 1, &a_descriptor->CastVulkan()->GetDescriptorSet()[m_currentFrame], 0, nullptr);
+            vkCmdDrawIndexed(a_commandBuffer, static_cast<uint32_t>(a_mesh->CastVulkan()->GetIndices().size()), 1, 0, 0, 0);
+        }
 
-    vkCmdEndRenderPass(a_commandBuffer);
+        // Callback ImGui_ImplVulkan_RenderDrawData
+        if (l_renderPass == a_renderPassManager->GetRenderPassAt(1))
+            if (l_editorGuiCallback)
+                l_editorGuiCallback();
+
+        vkCmdEndRenderPass(a_commandBuffer);
+    }
 
     const VkResult l_result = vkEndCommandBuffer(a_commandBuffer);
     if (l_result != VK_SUCCESS)
@@ -150,7 +164,7 @@ void VulkanRenderer::RecreateSwapChain(IWindow* a_window, IDevice* a_device, ISu
     CreateImageViews(a_device, a_swapChain);
     a_multisampling->CastVulkan()->CreateColorResources(a_device, a_swapChain);
     a_depthResource->CastVulkan()->Create(a_device, a_swapChain, a_renderPass);
-    a_frameBuffer->CastVulkan()->Create(a_device, a_swapChain, a_renderPass, a_depthResource, a_multisampling);
+    a_frameBuffer->CastVulkan()->Create(a_device, a_swapChain, a_renderPass, a_depthResource, a_multisampling, false);
 }
 
 
@@ -158,10 +172,10 @@ void VulkanRenderer::CleanupSwapChain(IDevice* a_device, ISwapChain* a_swapChain
 {
     vkDeviceWaitIdle(a_device->CastVulkan()->GetDevice());
 
-    for (const VkFramebuffer l_framebuffer : a_framebuffer->CastVulkan()->GetFrameBuffers())
+    for (const VkFramebuffer& l_framebuffer : a_framebuffer->CastVulkan()->GetFrameBuffers())
         vkDestroyFramebuffer(a_device->CastVulkan()->GetDevice(), l_framebuffer, nullptr);
 
-    for (const VkImageView l_imageView : a_swapChain->CastVulkan()->GetSwapChainImageViews())
+    for (const VkImageView& l_imageView : a_swapChain->CastVulkan()->GetSwapChainImageViews())
         vkDestroyImageView(a_device->CastVulkan()->GetDevice(), l_imageView, nullptr);
 
     vkDestroyImageView(a_device->CastVulkan()->GetDevice(), a_depthResource->CastVulkan()->GetDepthImageView(), nullptr);
@@ -177,7 +191,7 @@ void VulkanRenderer::CreateImageViews(IDevice* a_device, ISwapChain* a_swapChain
     a_swapChain->CastVulkan()->GetSwapChainImageViews().resize(a_swapChain->CastVulkan()->GetSwapChainImages().size());
 
     for (uint32_t i = 0; i < a_swapChain->CastVulkan()->GetSwapChainImages().size(); ++i)
-        a_swapChain->CastVulkan()->GetSwapChainImageViews()[i] = a_swapChain->CastVulkan()->CreateImageView(a_swapChain->CastVulkan()->GetSwapChainImages()[i], a_device->CastVulkan()->GetDevice(), a_swapChain->CastVulkan()->GetSwapChainImageFormat(), VK_IMAGE_ASPECT_COLOR_BIT, 1);
+        a_swapChain->CastVulkan()->GetSwapChainImageViews()[i] = VulkanSwapChain::CreateImageView(a_swapChain->CastVulkan()->GetSwapChainImages()[i], a_device->CastVulkan()->GetDevice(), a_swapChain->CastVulkan()->GetSwapChainImageFormat(), VK_IMAGE_ASPECT_COLOR_BIT, 1);
 }
 
 
@@ -204,20 +218,18 @@ void VulkanRenderer::PresentRendererInfo(VkPresentInfoKHR& a_presentInfo, const 
 }
 
 
-void VulkanRenderer::PresentRenderPassInfo(VkRenderPassBeginInfo& a_renderPassBeginInfo, const VkRenderPass& a_renderPass, const VkFramebuffer& a_framebuffer, const VkExtent2D& a_swapchainExtent, std::array<VkClearValue, 2> a_clearValues, const VkCommandBuffer& a_commandBuffer, const VkPipeline& a_graphicsPipeline)
+void VulkanRenderer::PresentRenderPassInfo(VkRenderPassBeginInfo& a_renderPassBeginInfo, const VkRenderPass& a_renderPass, const VkFramebuffer& a_framebuffer, const VkExtent2D& a_swapchainExtent, std::array<VkClearValue, 2> a_clearValues, const VkCommandBuffer& a_commandBuffer, const VkPipeline& a_graphicsPipeline, const bool& a_isEditor)
 {
     a_renderPassBeginInfo.renderPass = a_renderPass;
     a_renderPassBeginInfo.framebuffer = a_framebuffer;
     a_renderPassBeginInfo.renderArea.offset = { 0, 0 };
     a_renderPassBeginInfo.renderArea.extent = a_swapchainExtent;
 
-    a_clearValues[0].color = { { 0.0f, 0.0f, 0.0f, 1.0f } };
+    a_clearValues[0].color = { { 0.1f, 0.1f, 0.1f, 1.0f } };
     a_clearValues[1].depthStencil = { 1.0f, 0 };
 
     a_renderPassBeginInfo.clearValueCount = static_cast<uint32_t>(a_clearValues.size());
     a_renderPassBeginInfo.pClearValues = a_clearValues.data();
-    vkCmdBeginRenderPass(a_commandBuffer, &a_renderPassBeginInfo, VK_SUBPASS_CONTENTS_INLINE);
-    vkCmdBindPipeline(a_commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, a_graphicsPipeline);
 }
 
 void VulkanRenderer::FillViewportInfo(VkViewport& a_viewport, const VkExtent2D& a_swapChainExtent)

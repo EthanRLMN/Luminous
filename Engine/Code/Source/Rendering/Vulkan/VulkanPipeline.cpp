@@ -16,14 +16,13 @@
 
 void VulkanPipeline::Create(IDevice* a_device, IRenderPass* a_renderPass, IDescriptorSetLayout* a_descriptionSetLayout, IResourceManager* a_resourceManager)
 {
-
     IResourceParams l_shaderParams{ a_device };
     l_shaderParams.m_vertexShaderPath = "Engine/Assets/Shaders/vert.spv";
     l_shaderParams.m_fragmentShaderPath = "Engine/Assets/Shaders/frag.spv";
     VulkanShader* l_shader = a_resourceManager->LoadResource<VulkanShader>(l_shaderParams);
 
-    //graphics pipeline creation info requires array  of shader
-    VkPipelineShaderStageCreateInfo l_shaderStages[] = {
+    //graphics pipeline creation info requires an array of shader
+    std::array<VkPipelineShaderStageCreateInfo, 2> l_shaderStages = {
         l_shader->GetVertexShaderModule()->CreateStage(VK_SHADER_STAGE_VERTEX_BIT),
         l_shader->GetFragmentShaderModule()->CreateStage(VK_SHADER_STAGE_FRAGMENT_BIT)
     };
