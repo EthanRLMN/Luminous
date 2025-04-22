@@ -131,9 +131,9 @@ VkSurfaceFormatKHR VulkanSwapChain::ChooseBestSurfaceFormat(const std::vector<Vk
     if (a_formats.size() == 1 && a_formats[0].format == VK_FORMAT_UNDEFINED)
         return { VK_FORMAT_R8G8B8A8_UNORM, VK_COLOR_SPACE_SRGB_NONLINEAR_KHR };
 
-    for (const VkSurfaceFormatKHR& l_format : a_formats)
-        if ((l_format.format == VK_FORMAT_R8G8B8A8_UNORM || l_format.format == VK_FORMAT_B8G8R8A8_UNORM) && l_format.colorSpace == VK_COLOR_SPACE_SRGB_NONLINEAR_KHR)
-            return l_format;
+    for (const auto& l_availableFormat : a_formats)
+        if ((l_availableFormat.format == VK_FORMAT_R8G8B8A8_SRGB || l_availableFormat.format == VK_FORMAT_B8G8R8A8_SRGB) && l_availableFormat.colorSpace == VK_COLOR_SPACE_SRGB_NONLINEAR_KHR)
+            return l_availableFormat;
 
     return a_formats[0];
 }
