@@ -1,10 +1,38 @@
 #include "WindowPanels/FileExplorerWindow.hpp"
+#include "Rendering/Vulkan/VulkanDevice.hpp"
 #include "Editor.hpp"
 
 #include "imgui.h"
 
 void FileExplorerWindow::Draw()
 {
+    if (!m_texturesInitialized)
+    {
+        IResourceParams folderParams;
+        folderParams.m_texturePath = "Assets/Icons/FolderIcon.png";
+        folderParams.m_device = m_editor->GetEngine()->GetDevice();
+        folderParams.m_swapChain = m_editor->GetEngine()->GetSwapChain();
+
+        auto* folderTexture = new VulkanTexture();
+        if (folderTexture->Create(m_editor->GetEngine()->GetResource(), folderParams))
+        {
+            m_folderIcon = reinterpret_cast<ImTextureID>(folderTexture->GetTextureImageView());
+        }
+
+        IResourceParams fileParams;
+        fileParams.m_texturePath = "Assets/Icons/FileIcon.png";
+        fileParams.m_device = folderParams.m_device;
+        fileParams.m_swapChain = folderParams.m_swapChain;
+
+        auto* fileTexture = new VulkanTexture();
+        if (fileTexture->Create(m_editor->GetEngine()->GetResource(), fileParams))
+        {
+            m_fileIcon = reinterpret_cast<ImTextureID>(fileTexture->GetTextureImageView());
+        }
+
+        m_texturesInitialized = true;
+    }
+
     // ImGui::SetNextWindowPos(ImGui::GetMainViewport()->Pos);
     ImGui::SetNextWindowSize(ImVec2(1920.f, 600.f), ImGuiCond_FirstUseEver);
 
@@ -26,23 +54,15 @@ void FileExplorerWindow::Draw()
             const auto& path = directoryEntry.path();
             auto relativePath = std::filesystem::relative(path, s_AssetPath);
             std::string filenameString = relativePath.filename().string();
-            if (directoryEntry.is_directory())
-            {
-                VulkanTexture folderTexture;
 
-                IResourceParams folderParams;
-                folderParams.m_texturePath = "Assets/Icons/FolderIcon.png";
-                folderParams.m_device = m_engine->GetDevice()->CastVulkan()->GetDevice();
-                folderParams.m_swapChain = m_engine->GetSwapChain();
+            ImTextureID icon = directoryEntry.is_directory() ? m_folderIcon : m_fileIcon;
 
-                if (ImGui::Button(filenameString.c_str()))
-                {
-                    m_currentDirectory /= directoryEntry.path().filename();
-                }
-            } else
+            if (ImGui::ImageButton("Folder", icon, ImVec2(64, 64)))
             {
-                ImGui::Button(filenameString.c_str());
+                m_currentDirectory /= directoryEntry.path().filename();
             }
+            ImGui::SameLine();
+            ImGui::Text("%s", filenameString.c_str());
         }
         ImGui::PopStyleColor();
         ImGui::End();

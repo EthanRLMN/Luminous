@@ -141,7 +141,7 @@ void Engine::Init()
 
     IResourceParams l_meshParams{};
     l_meshParams.m_meshPath = "Engine/Assets/Models/metalSonic.obj";
-    m_mesh = m_resourceManager->LoadResource<VulkanMesh>(l_meshParams);
+    m_mesh = m_resourceManager->LoadResource<VulkanMesh>(l_meshParams); 
 
     m_buffer = m_interface->InstantiateBuffer();
     m_buffer->Create(m_device, m_texture, m_commandPool, m_swapChain, m_mesh);
