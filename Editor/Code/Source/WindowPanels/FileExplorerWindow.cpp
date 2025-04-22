@@ -14,7 +14,7 @@ void FileExplorerWindow::Draw()
         folderParams.m_swapChain = m_editor->GetEngine()->GetSwapChain();
 
         auto* folderTexture = new VulkanTexture();
-        if (folderTexture->Create(m_editor->GetEngine()->GetResource(), folderParams))
+        if (folderTexture->Create(IResourceManager::GetResource(), folderParams))
         {
             m_folderIcon = reinterpret_cast<ImTextureID>(folderTexture->GetTextureImageView());
         }
@@ -25,7 +25,7 @@ void FileExplorerWindow::Draw()
         fileParams.m_swapChain = folderParams.m_swapChain;
 
         auto* fileTexture = new VulkanTexture();
-        if (fileTexture->Create(m_editor->GetEngine()->GetResource(), fileParams))
+        if (fileTexture->Create(IResourceManager::GetResource, fileParams))
         {
             m_fileIcon = reinterpret_cast<ImTextureID>(fileTexture->GetTextureImageView());
         }
