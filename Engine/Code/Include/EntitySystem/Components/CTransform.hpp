@@ -1,11 +1,9 @@
 #pragma once
 #include "EntityComponent.hpp"
-
-
 #include "Vector3.hpp"
 #include "Quaternion.hpp"
 
-class TransformEntity : public BaseComponent
+class TransformEntity : public EntityComponent
 {
 public:
     Maths::Vector3 position = Maths::Vector3::Zero;

@@ -1,7 +1,5 @@
 #pragma once
-#include <iostream>
-#include <unordered_map>
-#include <typeindex>
+
 #include "EntityComponent.hpp"
 
 
@@ -28,6 +26,8 @@ public:
         return nullptr;
     }
 
-    // soft delete plus explicite tu meurs
-    void Destroy(){ isDestroyed = true; }
+    virtual void Awake() = 0;
+    virtual void BeginPlay() = 0;
+    virtual void Update() = 0;
+    virtual void Destroy(){ isDestroyed = true; }
 };

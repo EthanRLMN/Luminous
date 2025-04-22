@@ -1,10 +1,8 @@
 #pragma once
-#include "BaseComponent.hpp"
-
-#include <iostream>
+#include "EntityComponent.hpp"
 #include <string.h>
 
-class ModelComponent :public BaseComponent
+class ModelComponent : public EntityComponent
 {
 public:
     std::string model_Path;
