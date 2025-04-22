@@ -1,4 +1,5 @@
 #include "WindowPanels/FileExplorerWindow.hpp"
+#include "Editor.hpp"
 
 #include "imgui.h"
 
@@ -27,6 +28,13 @@ void FileExplorerWindow::Draw()
             std::string filenameString = relativePath.filename().string();
             if (directoryEntry.is_directory())
             {
+                VulkanTexture folderTexture;
+
+                IResourceParams folderParams;
+                folderParams.m_texturePath = "Assets/Icons/FolderIcon.png";
+                folderParams.m_device = m_engine->GetDevice()->CastVulkan()->GetDevice();
+                folderParams.m_swapChain = m_engine->GetSwapChain();
+
                 if (ImGui::Button(filenameString.c_str()))
                 {
                     m_currentDirectory /= directoryEntry.path().filename();
