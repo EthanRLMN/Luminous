@@ -1,10 +1,10 @@
 #include "../../Include/WindowPanels/MainWindow.hpp"
+#include "Editor.hpp"
 
 #include "imgui.h"
 
 void MainWindow::Draw()
 {
-    //ImGui::SetNextWindowPos(ImGui::GetMainViewport()->Pos);
     ImGui::SetNextWindowSize(ImVec2(800.f, 600.f), ImGuiCond_FirstUseEver);
 
     // TODO: Add Draw calls of dependent popup windows here
@@ -37,6 +37,7 @@ void MainWindow::Draw()
 
             ImGui::Separator();
             ImGui::MenuItem("Exit", "", false);
+                
 
             ImGui::EndMenu();
         }
@@ -92,12 +93,12 @@ void MainWindow::Draw()
         ImGui::EndMainMenuBar();
     }
 
-    /*static ImTextureID s_moveButton = LoadTexture("../../Assets/Move Button.png");
-    static ImTextureID s_rotateButton = LoadTexture("../../Assets/Rotate Button.png");
-    static ImTextureID s_resizeButton = LoadTexture("../../Assets/Resize Button.png");
-    static ImTextureID s_playButton = LoadTexture("../../Assets/Play Button.png");
-    static ImTextureID s_stopButton = LoadTexture("../../Assets/Stop Button.png");
-    static ImTextureID s_saveButton = LoadTexture("../../Assets/Save Button.png");
+    /*static ImTextureID s_moveButton = LoadTexture("Assets/Icons/Move Button.png");
+    static ImTextureID s_rotateButton = LoadTexture("Assets/Icons/Rotate Button.png");
+    static ImTextureID s_resizeButton = LoadTexture("Assets/Icons/Resize Button.png");
+    static ImTextureID s_playButton = LoadTexture("Assets/Icons/Play Button.png");
+    static ImTextureID s_stopButton = LoadTexture("Assets/Icons/Stop Button.png");
+    static ImTextureID s_saveButton = LoadTexture("Assets/Icons/Save Button.png");
 
     ImGui::Image(s_moveButton, { 25, 25 }, { 0, 0 }, { 1, 1 });
     //if (ImGui::IsItemClicked())
