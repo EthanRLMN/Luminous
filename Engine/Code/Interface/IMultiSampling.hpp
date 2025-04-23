@@ -17,22 +17,7 @@ enum class SamplingCount
     MSAA_SAMPLECOUNT_64
 };
 
-static constexpr std::array<VkSampleCountFlagBits, 7> VkSampleCount =
-{
-    VK_SAMPLE_COUNT_1_BIT,
-    VK_SAMPLE_COUNT_2_BIT,
-    VK_SAMPLE_COUNT_4_BIT,
-    VK_SAMPLE_COUNT_8_BIT,
-    VK_SAMPLE_COUNT_16_BIT,
-    VK_SAMPLE_COUNT_32_BIT,
-    VK_SAMPLE_COUNT_64_BIT
-};
 
-static VkSampleCountFlagBits CastVulkanSample(const SamplingCount& a_msaa)
-{
-    const int l_msaaIndex = static_cast<int>(a_msaa);
-    return VkSampleCount[l_msaaIndex - 1];
-}
 
 class IMultiSampling
 {
