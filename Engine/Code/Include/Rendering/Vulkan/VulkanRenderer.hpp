@@ -28,6 +28,14 @@ public:
 
 	[[nodiscard]] uint32_t GetCurrentFrame() const { return m_currentFrame; }
 
+	void CreateViewportImage(IDevice* a_device, ISwapChain* a_swapchain);
+    void CopyImageToViewport(ISwapChain* a_swapchain, VkCommandBuffer a_cmdBuffer) const;
+
+	VkImage m_viewportImage;
+    VkImageView m_viewportImageview;
+    VkDeviceMemory m_viewportMemory;
+    VkSampler m_viewportSampler;
+
 private:
     void SetupSubmitInfo(VkSubmitInfo& a_submitInfo, const std::vector<VkSemaphore>& a_waitSemaphores, const std::array<VkPipelineStageFlags, 1>& a_waitStages, const std::vector<VkCommandBuffer>& a_commandBuffer, const std::vector<VkSemaphore>& a_signalSemaphores) const;
     static void PresentRendererInfo(VkPresentInfoKHR& a_presentInfo, const std::vector<VkSemaphore>& a_signalSemaphores, const std::vector<VkSwapchainKHR>& a_swapchains);

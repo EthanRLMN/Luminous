@@ -114,6 +114,11 @@ void VulkanRenderer::RecordCommandBuffer(const VkCommandBuffer& a_commandBuffer,
             vkCmdBindIndexBuffer(a_commandBuffer, a_buffer->CastVulkan()->GetIndexBuffer(), 0, VK_INDEX_TYPE_UINT32);
             vkCmdBindDescriptorSets(a_commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, a_pipelineLayout, 0, 1, &a_descriptor->CastVulkan()->GetDescriptorSet()[m_currentFrame], 0, nullptr);
             vkCmdDrawIndexed(a_commandBuffer, static_cast<uint32_t>(a_mesh->CastVulkan()->GetIndices().size()), 1, 0, 0, 0);
+
+            
+           
+
+
         }
 
         // Callback ImGui_ImplVulkan_RenderDrawData
@@ -122,6 +127,8 @@ void VulkanRenderer::RecordCommandBuffer(const VkCommandBuffer& a_commandBuffer,
                 l_editorGuiCallback();
 
         vkCmdEndRenderPass(a_commandBuffer);
+        if (l_renderPass == a_renderPassManager->GetRenderPassAt(0))
+            CopyImageToViewport(a_swapChain, a_commandBuffer);
     }
 
     const VkResult l_result = vkEndCommandBuffer(a_commandBuffer);
@@ -194,6 +201,142 @@ void VulkanRenderer::CreateImageViews(IDevice* a_device, ISwapChain* a_swapChain
         a_swapChain->CastVulkan()->GetSwapChainImageViews()[i] = VulkanSwapChain::CreateImageView(a_swapChain->CastVulkan()->GetSwapChainImages()[i], a_device->CastVulkan()->GetDevice(), a_swapChain->CastVulkan()->GetSwapChainImageFormat(), VK_IMAGE_ASPECT_COLOR_BIT, 1);
 }
 
+
+void VulkanRenderer::CreateViewportImage(IDevice* a_device,ISwapChain* a_swapchain)
+{
+
+    VkDevice device = a_device->CastVulkan()->GetDevice();
+
+    VkImageCreateInfo imageInfo{};
+    imageInfo.sType = VK_STRUCTURE_TYPE_IMAGE_CREATE_INFO;
+    imageInfo.imageType = VK_IMAGE_TYPE_2D;
+    imageInfo.extent.width = a_swapchain->CastVulkan()->GetSwapChainExtent().width;
+    imageInfo.extent.height = a_swapchain->CastVulkan()->GetSwapChainExtent().height;
+    imageInfo.extent.depth = 1;
+    imageInfo.mipLevels = 1;
+    imageInfo.arrayLayers = 1;
+    imageInfo.format = VK_FORMAT_R8G8B8A8_UNORM;
+    imageInfo.tiling = VK_IMAGE_TILING_OPTIMAL;
+    imageInfo.initialLayout = VK_IMAGE_LAYOUT_UNDEFINED;
+    imageInfo.usage = VK_IMAGE_USAGE_TRANSFER_DST_BIT | VK_IMAGE_USAGE_SAMPLED_BIT;
+    imageInfo.sharingMode = VK_SHARING_MODE_EXCLUSIVE;
+    imageInfo.samples = VK_SAMPLE_COUNT_1_BIT;
+    imageInfo.flags = 0;
+
+    vkCreateImage(device, &imageInfo, nullptr, &m_viewportImage);
+
+    VkMemoryRequirements memRequirements;
+    vkGetImageMemoryRequirements(device, m_viewportImage, &memRequirements);
+
+    VkMemoryAllocateInfo allocInfo{};
+    allocInfo.sType = VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO;
+    allocInfo.allocationSize = memRequirements.size;
+    allocInfo.memoryTypeIndex = VulkanSwapChain::FindMemoryType(a_device->CastVulkan()->GetPhysicalDevice(), memRequirements.memoryTypeBits, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT);
+
+    vkAllocateMemory(device, &allocInfo, nullptr, &m_viewportMemory);
+    vkBindImageMemory(device, m_viewportImage, m_viewportMemory, 0);
+
+    VkImageViewCreateInfo viewInfo{};
+    viewInfo.sType = VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO;
+    viewInfo.image = m_viewportImage;
+    viewInfo.viewType = VK_IMAGE_VIEW_TYPE_2D;
+    viewInfo.format = VK_FORMAT_R8G8B8A8_UNORM;
+    viewInfo.subresourceRange.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
+    viewInfo.subresourceRange.baseMipLevel = 0;
+    viewInfo.subresourceRange.levelCount = 1;
+    viewInfo.subresourceRange.baseArrayLayer = 0;
+    viewInfo.subresourceRange.layerCount = 1;
+
+    vkCreateImageView(device, &viewInfo, nullptr, &m_viewportImageview);
+
+
+    VkSamplerCreateInfo samplerInfo{};
+    samplerInfo.sType = VK_STRUCTURE_TYPE_SAMPLER_CREATE_INFO;
+    samplerInfo.magFilter = VK_FILTER_LINEAR;
+    samplerInfo.minFilter = VK_FILTER_LINEAR;
+    samplerInfo.addressModeU = VK_SAMPLER_ADDRESS_MODE_CLAMP_TO_EDGE;
+    samplerInfo.addressModeV = VK_SAMPLER_ADDRESS_MODE_CLAMP_TO_EDGE;
+    samplerInfo.addressModeW = VK_SAMPLER_ADDRESS_MODE_CLAMP_TO_EDGE;
+    samplerInfo.anisotropyEnable = VK_FALSE;
+    samplerInfo.borderColor = VK_BORDER_COLOR_INT_OPAQUE_BLACK;
+    samplerInfo.unnormalizedCoordinates = VK_FALSE;
+    samplerInfo.compareEnable = VK_FALSE;
+    samplerInfo.mipmapMode = VK_SAMPLER_MIPMAP_MODE_LINEAR;
+
+    vkCreateSampler(device, &samplerInfo, nullptr, &m_viewportSampler);
+}
+
+void VulkanRenderer::CopyImageToViewport(ISwapChain* a_swapChain, VkCommandBuffer a_cmdBuffer) const
+{
+    VkImageMemoryBarrier barrierSrc = {};
+    barrierSrc.sType = VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER;
+    barrierSrc.oldLayout = VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL;
+    barrierSrc.newLayout = VK_IMAGE_LAYOUT_TRANSFER_SRC_OPTIMAL;
+    barrierSrc.srcAccessMask = VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT;
+    barrierSrc.dstAccessMask = VK_ACCESS_TRANSFER_READ_BIT;
+    barrierSrc.image = a_swapChain->CastVulkan()->GetSwapChainImages()[m_currentFrame];
+    barrierSrc.subresourceRange = { VK_IMAGE_ASPECT_COLOR_BIT, 0, 1, 0, 1 };
+
+    vkCmdPipelineBarrier(
+            a_cmdBuffer,
+            VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT,
+            VK_PIPELINE_STAGE_TRANSFER_BIT,
+            0,
+            0, nullptr,
+            0, nullptr,
+            1, &barrierSrc);
+
+    VkImageMemoryBarrier barrierDst = {};
+    barrierDst.sType = VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER;
+    barrierDst.oldLayout = VK_IMAGE_LAYOUT_UNDEFINED;
+    barrierDst.newLayout = VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL;
+    barrierDst.srcAccessMask = 0;
+    barrierDst.dstAccessMask = VK_ACCESS_TRANSFER_WRITE_BIT;
+    barrierDst.image = m_viewportImage;
+    barrierDst.subresourceRange = { VK_IMAGE_ASPECT_COLOR_BIT, 0, 1, 0, 1 };
+
+    vkCmdPipelineBarrier(
+            a_cmdBuffer,
+            VK_PIPELINE_STAGE_TOP_OF_PIPE_BIT,
+            VK_PIPELINE_STAGE_TRANSFER_BIT,
+            0,
+            0, nullptr,
+            0, nullptr,
+            1, &barrierDst);
+
+
+    VkImageCopy copyRegion = {};
+    copyRegion.srcSubresource = { VK_IMAGE_ASPECT_COLOR_BIT, 0, 0, 1 };
+    copyRegion.dstSubresource = { VK_IMAGE_ASPECT_COLOR_BIT, 0, 0, 1 };
+    copyRegion.extent.width = a_swapChain->CastVulkan()->GetSwapChainExtent().width;
+    copyRegion.extent.height = a_swapChain->CastVulkan()->GetSwapChainExtent().height;
+    copyRegion.extent.depth = 1;
+
+    vkCmdCopyImage(
+            a_cmdBuffer,
+            a_swapChain->CastVulkan()->GetSwapChainImages()[m_currentFrame], VK_IMAGE_LAYOUT_TRANSFER_SRC_OPTIMAL,
+            m_viewportImage, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL,
+            1, &copyRegion);
+
+
+    VkImageMemoryBarrier barrierFinal = {};
+    barrierFinal.sType = VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER;
+    barrierFinal.oldLayout = VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL;
+    barrierFinal.newLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
+    barrierFinal.srcAccessMask = VK_ACCESS_TRANSFER_WRITE_BIT;
+    barrierFinal.dstAccessMask = VK_ACCESS_SHADER_READ_BIT;
+    barrierFinal.image = m_viewportImage;
+    barrierFinal.subresourceRange = { VK_IMAGE_ASPECT_COLOR_BIT, 0, 1, 0, 1 };
+
+    vkCmdPipelineBarrier(
+            a_cmdBuffer,
+            VK_PIPELINE_STAGE_TRANSFER_BIT,
+            VK_PIPELINE_STAGE_FRAGMENT_SHADER_BIT,
+            0,
+            0, nullptr,
+            0, nullptr,
+            1, &barrierFinal);
+}
 
 void VulkanRenderer::SetupSubmitInfo(VkSubmitInfo& a_submitInfo, const std::vector<VkSemaphore>& a_waitSemaphores, const std::array<VkPipelineStageFlags, 1>& a_waitStages, const std::vector<VkCommandBuffer>& a_commandBuffer, const std::vector<VkSemaphore>& a_signalSemaphores) const
 {

@@ -11,7 +11,8 @@ void Viewport::Draw()
     ImGui::Begin(p_windowIdentifier.c_str(), nullptr, ImGuiWindowFlags_NoCollapse);
     ImGui::PushStyleVar(ImGuiStyleVar_FrameBorderSize, 5.0f);
     ImGui::PushStyleColor(ImGuiCol_WindowBg, 0xff323432);
-;
+
+    ImGui::Image((ImTextureID) dSets, ImGui::GetWindowSize());
 
     ImGui::PopStyleColor();
     ImGui::PopStyleVar();
