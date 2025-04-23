@@ -1,6 +1,7 @@
 #pragma once
 
 #include "EntityComponent.hpp"
+#include <string.h>
 
 
 class Entity
@@ -26,8 +27,38 @@ public:
         return nullptr;
     }
 
+    /*
     virtual void Awake() = 0;
     virtual void BeginPlay() = 0;
     virtual void Update() = 0;
-    virtual void Destroy(){ isDestroyed = true; }
+    virtual void Destroy(){ isDestroyed = true; }*/
+
+
+    std::string entityName = "default";
+};
+
+class EntityManager
+{
+private:
+    std::unordered_map<size_t, Entity> entities;
+    size_t nextEntityId = 0;
+
+public:
+    size_t CreateEntity()
+    {
+        Entity l_entity;
+        size_t l_id = nextEntityId++;
+        entities[l_id] = std::move(l_entity);
+        return l_id;
+    }
+
+    void DestroyEntity(size_t _id)
+    {
+        entities.erase(_id);
+    }
+
+    Entity& GetEntity(size_t _id)
+    {
+        return entities.at(_id);
+    }
 };

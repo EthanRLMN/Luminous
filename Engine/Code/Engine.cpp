@@ -1,16 +1,44 @@
 #include "Include/Engine.hpp"
-
-
 #include "Rendering/Vulkan/VulkanRenderInterface.hpp"
 #include "Rendering/Vulkan/VulkanRenderPass.hpp"
 
-#include "EntitySystem/Entity.hpp"
-
 #define JPH_DEBUG_RENDERER
+
+void Engine::Init()
+{
+    Debug::Logger& l_logger = Debug::Logger::GetInstance();
+    l_logger.Init("Engine", 1_MiB, 5, true);
+
+    m_interface = new VulkanRenderInterface();
+    m_scene = new Scene();
+    m_physicsJolt = new Physics();
+
+    m_isRunning = true;
+
+    Window();
+    Input();
+    PreRender();
+    InitPhysics();
+}
+
+void Engine::Update()
+{
+    m_window->Update();
+    m_inputManager->Update(m_window);
+
+    m_scene->SceneEntity();
+    m_renderer->DrawFrame(m_window, m_device, m_swapChain, m_pipeline, m_buffer, m_renderPass, m_descriptor, m_mesh, m_synchronization, m_commandBuffer, m_frameBuffer, m_depthResource, m_surface, m_multiSampling);
+
+
+    m_physicsJolt->Update_JOLT();
+
+    if (m_window->ShouldClose())
+        m_isRunning = false;
+}
 
 void Engine::Destroy() const
 {
-    m_resourceManager->DeleteResource<VulkanShader>("v=Engine/Assets/Shaders/vert.spv, f=Engine/Assets/Shaders/frag.spv, t=, g=",m_device);
+    m_resourceManager->DeleteResource<VulkanShader>("v=Engine/Assets/Shaders/vert.spv, f=Engine/Assets/Shaders/frag.spv, t=, g=", m_device);
 
 
     //NEED CLEANUP
@@ -82,21 +110,20 @@ void Engine::Destroy() const
     m_interface->DeleteWindow(m_window);
 }
 
-
-void Engine::Init()
+void Engine::Window()
 {
-    Debug::Logger& l_logger = Debug::Logger::GetInstance();
-    l_logger.Init("Engine", 1_MiB, 5, true);
-
-    m_interface = new VulkanRenderInterface();
-    m_isRunning = true;
-
     m_window = m_interface->InstantiateWindow();
     m_window->Initialize("Luminous");
+}
 
+void Engine::Input()
+{
     m_inputManager = m_interface->InstantiateInputManager();
     m_inputManager->Initialize(m_window);
+}
 
+void Engine::PreRender()
+{
     m_resourceManager = m_interface->InstantiateResourceManager();
 
     m_instance = m_interface->InstantiateContext();
@@ -137,7 +164,7 @@ void Engine::Init()
     m_frameBufferManager->Create(m_device, m_swapChain, m_renderPassManager->GetRenderPasses()[0], m_depthResource, m_multiSampling, false); // Create Renderer Frame Buffer
     m_frameBufferManager->Create(m_device, m_swapChain, m_renderPassManager->GetRenderPasses()[1], m_depthResource, m_multiSampling, true); // Create Editor Frame Buffer
 
-    IResourceParams l_texParams{ m_device, m_swapChain, m_depthResource, m_commandPool};
+    IResourceParams l_texParams{ m_device, m_swapChain, m_depthResource, m_commandPool };
     l_texParams.m_texturePath = "Engine/Assets/Textures/viking_room.png";
     m_texture = m_resourceManager->LoadResource<VulkanTexture>(l_texParams);
 

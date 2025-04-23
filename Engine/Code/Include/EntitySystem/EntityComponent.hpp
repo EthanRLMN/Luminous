@@ -13,7 +13,3 @@ public:
     virtual ~EntityComponent() = default;
 private:
 };
-
-
-
-
