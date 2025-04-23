@@ -7,8 +7,7 @@ public:
     Scene(){};
     ~Scene(){};
 
-    void SceneEntity()
-
+    void SceneEntity();
 private:
 };
 
