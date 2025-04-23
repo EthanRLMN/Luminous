@@ -27,8 +27,7 @@ void Engine::Update()
     m_inputManager->Update(m_window);
 
     m_scene->SceneEntity();
-    m_renderer->DrawFrame(m_window, m_device, m_swapChain, m_pipeline, m_buffer, m_renderPass, m_descriptor, m_mesh, m_synchronization, m_commandBuffer, m_frameBuffer, m_depthResource, m_surface, m_multiSampling);
-
+    m_renderer->DrawFrame(m_window, m_device, m_swapChain, m_pipeline, m_buffer, m_renderPassManager, m_descriptor, m_mesh, m_synchronization, m_commandBuffer, m_frameBufferManager, m_depthResource, m_surface, m_multiSampling);
 
     m_physicsJolt->Update_JOLT();
 
@@ -190,18 +189,5 @@ void Engine::PreRender()
     // a retire
     m_physicsJolt = new Physics();
     m_physicsJolt->Init_JOLT();
-}
-
-void Engine::Update()
-{
-    m_window->Update();
-    m_inputManager->Update(m_window);
-    m_renderer->DrawFrame(m_window, m_device, m_swapChain, m_pipeline, m_buffer, m_renderPassManager, m_descriptor, m_mesh, m_synchronization, m_commandBuffer, m_frameBufferManager, m_depthResource, m_surface, m_multiSampling);
-
-    //a retire
-    m_physicsJolt->Update_JOLT();
-
-    if (m_window->ShouldClose())
-        m_isRunning = false;
 }
 

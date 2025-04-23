@@ -23,12 +23,12 @@ void Scene::SceneEntity()
 
     //Debug player position
 
-    std::cout << "Player Position" << playerEntity.GetComponent<CTransform>()->position.x << std::endl;
+    //std::cout << "Player Position" << playerEntity.GetComponent<CTransform>()->position.x << std::endl;
 
     playerEntity.GetComponent<CTransform>()->position.x = 5;
 
  
-    std::cout << "New Player Position" << playerEntity.GetComponent<CTransform>()->position.x << std::endl;
+    //std::cout << "New Player Position" << playerEntity.GetComponent<CTransform>()->position.x << std::endl;
     
 
 
