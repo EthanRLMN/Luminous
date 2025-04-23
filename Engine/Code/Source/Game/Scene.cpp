@@ -5,10 +5,6 @@
 
 void Scene::SceneEntity()
 {
-    //CReate Manager
-    EntityManager entityManager;
-
-
     //Player TEST
     size_t playerEntityId = entityManager.CreateEntity();
     Entity& playerEntity = entityManager.GetEntity(playerEntityId);
@@ -26,26 +22,13 @@ void Scene::SceneEntity()
 
 
     //Debug player position
-    std::shared_ptr<CTransform> transformComp = playerEntity.GetComponent<CTransform>();
-    if (transformComp)
-    {
-        std::cout << "PlayerEntityID : " << playerEntityId << "    Position :";
-        std::cout << transformComp->position.x << ", ";
-        std::cout << transformComp->position.y << ", ";
-        std::cout << transformComp->position.z  << std::endl;
-    }
 
-  
-     // Debug Floor position
-    std::shared_ptr<CTransform> transformComp2 = FloorEntity.GetComponent<CTransform>();
-    if (transformComp2)
-    {
-        std::cout << "FloorID : " << FloorEntityId << "    Position :";
-        std::cout << transformComp2->position.x << ", ";
-        std::cout << transformComp2->position.y << ", ";
-        std::cout << transformComp2->position.z << std::endl;
-    }
+    std::cout << "Player Position" << playerEntity.GetComponent<CTransform>()->position.x << std::endl;
 
+    playerEntity.GetComponent<CTransform>()->position.x = 5;
+
+ 
+    std::cout << "New Player Position" << playerEntity.GetComponent<CTransform>()->position.x << std::endl;
     
 
 

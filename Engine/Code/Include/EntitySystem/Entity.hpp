@@ -1,6 +1,7 @@
 #pragma once
 
 #include "EntityComponent.hpp"
+#include <string.h>
 
 
 class Entity
@@ -31,6 +32,9 @@ public:
     virtual void BeginPlay() = 0;
     virtual void Update() = 0;
     virtual void Destroy(){ isDestroyed = true; }*/
+
+
+    std::string entityName = "default";
 };
 
 class EntityManager
@@ -42,19 +46,19 @@ private:
 public:
     size_t CreateEntity()
     {
-        Entity entity;
-        size_t id = nextEntityId++;
-        entities[id] = std::move(entity);
-        return id;
+        Entity l_entity;
+        size_t l_id = nextEntityId++;
+        entities[l_id] = std::move(l_entity);
+        return l_id;
     }
 
-    void DestroyEntity(size_t id)
+    void DestroyEntity(size_t _id)
     {
-        entities.erase(id);
+        entities.erase(_id);
     }
 
-    Entity& GetEntity(size_t id)
+    Entity& GetEntity(size_t _id)
     {
-        return entities.at(id);
+        return entities.at(_id);
     }
 };
