@@ -48,18 +48,7 @@ void VulkanSwapChain::Destroy(IDevice* a_device)
 void VulkanSwapChain::CreateImage(const VkDevice& a_device, const VkPhysicalDevice& a_physicalDevice, const uint32_t& a_width, const uint32_t& a_height, const VkFormat& a_format, const VkImageTiling& a_tiling, const VkImageUsageFlags& a_usage, const VkMemoryPropertyFlags& a_properties, VkImage& a_image, VkDeviceMemory& a_imageMemory, const VkSampleCountFlagBits& a_numSamples)
 {
     VkImageCreateInfo l_imageInfo{ VK_STRUCTURE_TYPE_IMAGE_CREATE_INFO };
-    l_imageInfo.imageType = VK_IMAGE_TYPE_2D;
-    l_imageInfo.extent.width = a_width;
-    l_imageInfo.extent.height = a_height;
-    l_imageInfo.extent.depth = 1;
-    l_imageInfo.mipLevels = 1;
-    l_imageInfo.arrayLayers = 1;
-    l_imageInfo.format = a_format;
-    l_imageInfo.tiling = a_tiling;
-    l_imageInfo.initialLayout = VK_IMAGE_LAYOUT_UNDEFINED;
-    l_imageInfo.usage = a_usage;
-    l_imageInfo.samples = a_numSamples;
-    l_imageInfo.sharingMode = VK_SHARING_MODE_EXCLUSIVE;
+    FillImageInfo(l_imageInfo, a_device, a_width, a_height, a_format, a_tiling, a_usage, a_image, a_numSamples);
 
     if (vkCreateImage(a_device, &l_imageInfo, nullptr, &a_image) != VK_SUCCESS)
     {
@@ -236,23 +225,22 @@ void VulkanSwapChain::SendSwapChainData(const VkDevice& a_vkDevice, uint32_t& a_
         m_swapChainImageViews[i] = CreateImageView(m_swapChainImages[i], a_vkDevice, m_swapChainImageFormat, VK_IMAGE_ASPECT_COLOR_BIT);
 }
 
-void VulkanSwapChain::FillImageInfo(const VkDevice& a_device, const uint32_t& a_width, const uint32_t& a_height, const VkFormat& a_format, const VkImageTiling& a_tiling, const VkImageUsageFlags& a_usage, VkImage& a_image, const VkSampleCountFlagBits& a_numSamples)
+void VulkanSwapChain::FillImageInfo(VkImageCreateInfo& a_imageInfo, const VkDevice& a_device, const uint32_t& a_width, const uint32_t& a_height, const VkFormat& a_format, const VkImageTiling& a_tiling, const VkImageUsageFlags& a_usage, VkImage& a_image, const VkSampleCountFlagBits& a_numSamples)
 {
-    VkImageCreateInfo l_imageInfo{ VK_STRUCTURE_TYPE_IMAGE_CREATE_INFO };
-    l_imageInfo.imageType = VK_IMAGE_TYPE_2D;
-    l_imageInfo.extent.width = a_width;
-    l_imageInfo.extent.height = a_height;
-    l_imageInfo.extent.depth = 1;
-    l_imageInfo.mipLevels = 1;
-    l_imageInfo.arrayLayers = 1;
-    l_imageInfo.format = a_format;
-    l_imageInfo.tiling = a_tiling;
-    l_imageInfo.initialLayout = VK_IMAGE_LAYOUT_UNDEFINED;
-    l_imageInfo.usage = a_usage;
-    l_imageInfo.samples = a_numSamples;
-    l_imageInfo.sharingMode = VK_SHARING_MODE_EXCLUSIVE;
+    a_imageInfo.imageType = VK_IMAGE_TYPE_2D;
+    a_imageInfo.extent.width = a_width;
+    a_imageInfo.extent.height = a_height;
+    a_imageInfo.extent.depth = 1;
+    a_imageInfo.mipLevels = 1;
+    a_imageInfo.arrayLayers = 1;
+    a_imageInfo.format = a_format;
+    a_imageInfo.tiling = a_tiling;
+    a_imageInfo.initialLayout = VK_IMAGE_LAYOUT_UNDEFINED;
+    a_imageInfo.usage = a_usage;
+    a_imageInfo.samples = a_numSamples;
+    a_imageInfo.sharingMode = VK_SHARING_MODE_EXCLUSIVE;
 
-    if (vkCreateImage(a_device, &l_imageInfo, nullptr, &a_image) != VK_SUCCESS)
+    if (vkCreateImage(a_device, &a_imageInfo, nullptr, &a_image) != VK_SUCCESS)
         DEBUG_LOG_ERROR("Vulkan DepthResource : Failed to create Image!\n");
 }
 

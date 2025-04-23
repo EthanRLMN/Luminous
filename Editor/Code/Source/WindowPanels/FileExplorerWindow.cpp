@@ -1,6 +1,10 @@
 #include "WindowPanels/FileExplorerWindow.hpp"
-#include "Rendering/Vulkan/VulkanDevice.hpp"
 #include "Editor.hpp"
+
+FileExplorerWindow::FileExplorerWindow(Editor* a_editor, const std::string& a_windowIdentifier) : IWindowPanel(a_editor, a_windowIdentifier), m_currentDirectory(s_AssetPath)
+{
+    m_engine = a_editor->GetEngine();
+}
 
 void FileExplorerWindow::Draw()
 {
@@ -8,12 +12,12 @@ void FileExplorerWindow::Draw()
     {
         IResourceParams folderParams;
         folderParams.m_texturePath = "Assets/Icons/DirectoryIcon.png";
-        folderParams.m_device = m_editor->GetEngine()->GetDevice();
-        folderParams.m_swapChain = m_editor->GetEngine()->GetSwapChain();
-        folderParams.m_commandPool = m_editor->GetEngine()->GetCommandPool();
+        folderParams.m_device = m_engine->GetDevice();
+        folderParams.m_swapChain = m_engine->GetSwapChain();
+        folderParams.m_commandPool = m_engine->GetCommandPool();
 
         auto* folderTexture = new VulkanTexture();
-        if (folderTexture->Create(m_resourceManager, folderParams))
+        if (folderTexture->Create(m_engine->GetResourceManager(), folderParams))
         {
             m_folderIcon = reinterpret_cast<ImTextureID>(folderTexture->GetTextureImageView());
         }
@@ -25,7 +29,7 @@ void FileExplorerWindow::Draw()
         fileParams.m_commandPool = folderParams.m_commandPool;
 
         auto* fileTexture = new VulkanTexture();
-        if (fileTexture->Create(m_resourceManager, fileParams))
+        if (fileTexture->Create(m_engine->GetResourceManager(), fileParams))
         {
             m_fileIcon = reinterpret_cast<ImTextureID>(fileTexture->GetTextureImageView());
         }
@@ -55,7 +59,7 @@ void FileExplorerWindow::Draw()
             auto relativePath = std::filesystem::relative(path, s_AssetPath);
             std::string filenameString = relativePath.filename().string();
 
-            ImTextureID icon = directoryEntry.is_directory() ? m_folderIcon : m_fileIcon;
+            const ImTextureID icon = directoryEntry.is_directory() ? m_folderIcon : m_fileIcon;
 
             if (ImGui::ImageButton("Folder", icon, ImVec2(64, 64)))
             {

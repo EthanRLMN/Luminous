@@ -167,7 +167,7 @@ void Engine::Update()
     m_inputManager->Update(m_window);
     m_renderer->DrawFrame(m_window, m_device, m_swapChain, m_pipeline, m_buffer, m_renderPass, m_descriptor, m_mesh, m_synchronization, m_commandBuffer, m_frameBuffer, m_depthResource, m_surface, m_multiSampling);
 
-    UpdatePhysic();
+    //UpdatePhysic();
 
     if (m_window->ShouldClose())
         m_isRunning = false;

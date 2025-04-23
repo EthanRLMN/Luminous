@@ -21,8 +21,8 @@ public:
     virtual void Draw() = 0;
     virtual void Destroy() = 0;
 
-    virtual bool IsOpen() const { return p_isOpen; }
-    virtual std::string GetWindowIdentifier() const { return p_windowIdentifier; }
+    [[nodiscard]] virtual bool IsOpen() const { return p_isOpen; }
+    [[nodiscard]] virtual std::string GetWindowIdentifier() const { return p_windowIdentifier; }
 
 protected:
     Editor* p_editor{ nullptr };

@@ -30,11 +30,8 @@ public:
     [[nodiscard]] std::vector<IWindowPanel*> GetWindows() const { return m_windows; }
     [[nodiscard]] IWindowPanel* GetWindow(const size_t a_index) const { return m_windows[a_index]; }
 
-    [[nodiscard]] IResourceManager* GetResourceManager() const { return m_resourceManager; }
-
 private:
-    Engine* m_engine = nullptr;
-    IResourceManager* m_resourceManager = nullptr;
-    std::vector<IWindowPanel*> m_windows;
+    Engine* m_engine { nullptr };
+    std::vector<IWindowPanel*> m_windows{};
 };
 

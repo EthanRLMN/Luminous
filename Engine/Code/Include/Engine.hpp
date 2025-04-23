@@ -17,7 +17,6 @@ public:
 	~Engine() = default;
 
     void Init();
-    void InitPhysic();
 	void Update();
     void UpdatePhysic() const;
 	void Destroy() const;
@@ -32,6 +31,7 @@ public:
 	[[nodiscard]] IRenderPass* GetRenderPass() const { return m_renderPass; }
 	[[nodiscard]] IRenderPass* GetEditorRenderPass() const { return m_editorRenderPass; }
 	[[nodiscard]] IDescriptorSetLayout* GetDescriptionSetLayout() const { return m_descriptorSetLayout; }
+	[[nodiscard]] IResourceManager* GetResourceManager() const { return m_resourceManager; }
 	[[nodiscard]] IPipeline* GetPipeline() const { return m_pipeline; }
 	[[nodiscard]] ICommandPool* GetCommandPool() const { return m_commandPool; }
 	[[nodiscard]] ICommandPool* GetEditorCommandPool() const { return m_editorCommandPool; }
@@ -71,9 +71,7 @@ private:
 	ICommandBuffer* m_commandBuffer{ nullptr };
 	ISynchronization* m_synchronization { nullptr };
     IRenderer* m_renderer { nullptr };
-
 	Physics* m_physicsJolt{ nullptr };
-
 
     bool m_isRunning { false };
 };
