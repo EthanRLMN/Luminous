@@ -173,7 +173,7 @@ void VulkanSwapChain::FillSwapChainCreationInfo(VkSwapchainCreateInfoKHR& a_swap
     a_swapChainCreateInfo.imageColorSpace = a_surfaceFormat.colorSpace;
     a_swapChainCreateInfo.imageExtent = a_extent;
     a_swapChainCreateInfo.imageArrayLayers = 1;
-    a_swapChainCreateInfo.imageUsage = VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT;
+    a_swapChainCreateInfo.imageUsage = VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT | VK_IMAGE_USAGE_TRANSFER_SRC_BIT;
 }
 
 
