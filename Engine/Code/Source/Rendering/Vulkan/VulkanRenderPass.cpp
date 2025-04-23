@@ -61,8 +61,6 @@ void VulkanRenderPass::Destroy(IDevice* a_device)
 
 void VulkanRenderPass::CreateEditorPass(ISwapChain* a_swapChain, IDevice* a_device)
 {
-    const VkSampleCountFlagBits& l_sampleCounts = { a_device->CastVulkan()->GetMSAASamples() };
-
     VkAttachmentDescription l_colorAttachment{};
     l_colorAttachment.format = a_swapChain->CastVulkan()->GetSwapChainImageFormat();
     l_colorAttachment.samples = VK_SAMPLE_COUNT_1_BIT;
