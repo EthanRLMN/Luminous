@@ -47,7 +47,25 @@ void VulkanSwapChain::Destroy(IDevice* a_device)
 
 void VulkanSwapChain::CreateImage(const VkDevice& a_device, const VkPhysicalDevice& a_physicalDevice, const uint32_t& a_width, const uint32_t& a_height, const VkFormat& a_format, const VkImageTiling& a_tiling, const VkImageUsageFlags& a_usage, const VkMemoryPropertyFlags& a_properties, VkImage& a_image, VkDeviceMemory& a_imageMemory, const VkSampleCountFlagBits& a_numSamples)
 {
-    FillImageInfo(a_device, a_width, a_height, a_format, a_tiling, a_usage, a_image, a_numSamples);
+    VkImageCreateInfo l_imageInfo{ VK_STRUCTURE_TYPE_IMAGE_CREATE_INFO };
+    l_imageInfo.imageType = VK_IMAGE_TYPE_2D;
+    l_imageInfo.extent.width = a_width;
+    l_imageInfo.extent.height = a_height;
+    l_imageInfo.extent.depth = 1;
+    l_imageInfo.mipLevels = 1;
+    l_imageInfo.arrayLayers = 1;
+    l_imageInfo.format = a_format;
+    l_imageInfo.tiling = a_tiling;
+    l_imageInfo.initialLayout = VK_IMAGE_LAYOUT_UNDEFINED;
+    l_imageInfo.usage = a_usage;
+    l_imageInfo.samples = a_numSamples;
+    l_imageInfo.sharingMode = VK_SHARING_MODE_EXCLUSIVE;
+
+    if (vkCreateImage(a_device, &l_imageInfo, nullptr, &a_image) != VK_SUCCESS)
+    {
+        DEBUG_LOG_ERROR("VulkanSwapChain : Failed to create image!\n");
+        return;
+    }
 
     VkMemoryRequirements l_memoryRequirement{};
     vkGetImageMemoryRequirements(a_device, a_image, &l_memoryRequirement);
@@ -57,10 +75,14 @@ void VulkanSwapChain::CreateImage(const VkDevice& a_device, const VkPhysicalDevi
     l_allocateInfo.memoryTypeIndex = FindMemoryType(a_physicalDevice, l_memoryRequirement.memoryTypeBits, a_properties);
 
     if (vkAllocateMemory(a_device, &l_allocateInfo, nullptr, &a_imageMemory) != VK_SUCCESS)
-        DEBUG_LOG_ERROR("Vulkan DepthResource : Failed to allocated image memory!\n");
+    {
+        DEBUG_LOG_ERROR("VulkanSwapChain : Failed to allocate image memory!\n");
+        return;
+    }
 
     vkBindImageMemory(a_device, a_image, a_imageMemory, 0);
 }
+
 
 uint32_t VulkanSwapChain::FindMemoryType(const VkPhysicalDevice& a_physicalDevice, const uint32_t& a_typeFilter, const VkMemoryPropertyFlags& a_properties)
 {

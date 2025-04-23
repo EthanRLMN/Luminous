@@ -81,9 +81,7 @@ void VulkanTexture::CreateTextureImage(IDevice* a_device, ISwapChain* a_swapChai
     const VkCommandPool l_vkCommandPool = a_commandPool->CastVulkan()->GetCommandPool();
 
     int l_texWidth, l_texHeight, l_texChannels = -1;
-    //stb_image
     stbi_uc* l_pixels = stbi_load(a_path.c_str(), &l_texWidth, &l_texHeight, &l_texChannels, STBI_rgb_alpha);
-    const VkDeviceSize l_imageSize = l_texWidth * l_texHeight * 4;
 
     if (!l_pixels)
     {
@@ -91,6 +89,7 @@ void VulkanTexture::CreateTextureImage(IDevice* a_device, ISwapChain* a_swapChai
         return;
     }
 
+    const VkDeviceSize l_imageSize = l_texWidth * l_texHeight * 4;
     VkBuffer l_stagingBuffer = VK_NULL_HANDLE;
     VkDeviceMemory l_stagingBufferMemory = VK_NULL_HANDLE;
     CreateBuffer(l_vkDevice, l_vkPhysicalDevice, l_imageSize, VK_BUFFER_USAGE_TRANSFER_SRC_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT, l_stagingBuffer, l_stagingBufferMemory, a_swapChain);
