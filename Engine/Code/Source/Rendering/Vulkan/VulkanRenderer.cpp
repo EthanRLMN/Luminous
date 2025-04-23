@@ -270,7 +270,7 @@ void VulkanRenderer::CopyImageToViewport(ISwapChain* a_swapChain, VkCommandBuffe
 {
     VkImageMemoryBarrier barrierSrc = {};
     barrierSrc.sType = VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER;
-    barrierSrc.oldLayout = VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL;
+    barrierSrc.oldLayout = VK_IMAGE_LAYOUT_PRESENT_SRC_KHR;
     barrierSrc.newLayout = VK_IMAGE_LAYOUT_TRANSFER_SRC_OPTIMAL;
     barrierSrc.srcAccessMask = VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT;
     barrierSrc.dstAccessMask = VK_ACCESS_TRANSFER_READ_BIT;
