@@ -61,13 +61,13 @@ void VulkanRenderPass::Destroy(IDevice* a_device)
 
 void VulkanRenderPass::CreateEditorPass(ISwapChain* a_swapChain, IDevice* a_device)
 {
+    const VkSampleCountFlagBits& l_sampleCounts = { a_device->CastVulkan()->GetMSAASamples() };
+
     VkAttachmentDescription l_colorAttachment{};
     l_colorAttachment.format = a_swapChain->CastVulkan()->GetSwapChainImageFormat();
     l_colorAttachment.samples = VK_SAMPLE_COUNT_1_BIT;
-    l_colorAttachment.loadOp = VK_ATTACHMENT_LOAD_OP_LOAD;
+    l_colorAttachment.loadOp = VK_ATTACHMENT_LOAD_OP_CLEAR;
     l_colorAttachment.storeOp = VK_ATTACHMENT_STORE_OP_STORE;
-    l_colorAttachment.stencilLoadOp = VK_ATTACHMENT_LOAD_OP_DONT_CARE;
-    l_colorAttachment.stencilStoreOp = VK_ATTACHMENT_STORE_OP_DONT_CARE;
     l_colorAttachment.initialLayout = VK_IMAGE_LAYOUT_UNDEFINED;
     l_colorAttachment.finalLayout = VK_IMAGE_LAYOUT_PRESENT_SRC_KHR;
 
@@ -80,17 +80,12 @@ void VulkanRenderPass::CreateEditorPass(ISwapChain* a_swapChain, IDevice* a_devi
     l_subpass.colorAttachmentCount = 1;
     l_subpass.pColorAttachments = &l_colorAttachmentReference;
 
-    VkSubpassDependency l_dependency{};
-    l_dependency.srcSubpass = VK_SUBPASS_EXTERNAL;
-    l_dependency.dstSubpass = 0;
-    l_dependency.srcStageMask = VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT | VK_PIPELINE_STAGE_EARLY_FRAGMENT_TESTS_BIT;
-    l_dependency.srcAccessMask = 0;
-    l_dependency.dstStageMask = VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT | VK_PIPELINE_STAGE_EARLY_FRAGMENT_TESTS_BIT;
-    l_dependency.srcAccessMask = VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT;
-
     const std::vector<VkAttachmentDescription> l_attachments = { l_colorAttachment };
-    VkRenderPassCreateInfo l_renderPassCreateInfo = {};
-    SetupRenderPassCreateInfo(l_renderPassCreateInfo, l_attachments, l_subpass, l_dependency);
+    VkRenderPassCreateInfo l_renderPassCreateInfo{ VK_STRUCTURE_TYPE_RENDER_PASS_CREATE_INFO };
+    l_renderPassCreateInfo.attachmentCount = 1;
+    l_renderPassCreateInfo.pAttachments = &l_colorAttachment;
+    l_renderPassCreateInfo.subpassCount = 1;
+    l_renderPassCreateInfo.pSubpasses = &l_subpass;
 
     const VkResult l_result = vkCreateRenderPass(a_device->CastVulkan()->GetDevice(), &l_renderPassCreateInfo, nullptr, &m_renderPass);
     if (l_result != VK_SUCCESS)

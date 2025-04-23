@@ -64,12 +64,11 @@ void Editor::SetupImGui() const
     l_initInfo.Instance = m_engine->GetInstance()->CastVulkan()->GetInstance();
     l_initInfo.Queue = m_engine->GetDevice()->CastVulkan()->GetGraphicsQueue();
     l_initInfo.DescriptorPool = m_engine->GetDescriptor()->CastVulkan()->GetImGUIDescriptorPool();
-    l_initInfo.RenderPass = m_engine->GetRenderPassManager()->GetRenderPassAt(0)->CastVulkan()->GetRenderPass();
+    l_initInfo.RenderPass = m_engine->GetRenderPassManager()->GetRenderPassAt(1)->CastVulkan()->GetRenderPass();
     l_initInfo.Device = m_engine->GetDevice()->CastVulkan()->GetDevice();
     l_initInfo.PhysicalDevice = m_engine->GetDevice()->CastVulkan()->GetPhysicalDevice();
     l_initInfo.MinImageCount = MAX_FRAMES_IN_FLIGHT;
     l_initInfo.ImageCount = MAX_FRAMES_IN_FLIGHT;
-    l_initInfo.MSAASamples = m_engine->GetDevice()->CastVulkan()->GetMSAASamples();
 
     ImGui_ImplVulkan_Init(&l_initInfo);
     ImGui_ImplVulkan_CreateFontsTexture();

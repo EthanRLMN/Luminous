@@ -106,7 +106,7 @@ void Engine::Init()
     m_swapChain->Create(m_window, m_device, m_surface, 0);
 
     m_multiSampling = m_interface->InstantiateMultiSampling();
-    m_multiSampling->SetSampleCount(m_device, SamplingCount::MSAA_SAMPLECOUNT_8);
+    m_multiSampling->SetSampleCount(m_device, SamplingCount::MSAA_SAMPLECOUNT_4);
     m_multiSampling->Create(m_device, m_swapChain);
 
     m_renderPassManager = m_interface->InstantiateRenderPassManager();
