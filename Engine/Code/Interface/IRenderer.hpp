@@ -24,7 +24,7 @@ class IRenderer
 public:
 	virtual ~IRenderer() = default;
     virtual void DrawFrame(IWindow* a_window, IDevice* a_device, ISwapChain* a_swapChain, IPipeline* a_pipeline, IBuffer* a_buffer, IRenderPassManager* a_renderPassManager, IDescriptor* a_descriptor, IMesh* a_mesh, ISynchronization* a_synchronization, ICommandBuffer* a_commandBuffer, IFrameBufferManager* a_frameBufferManager, IDepthResource* a_depthResource, ISurface* a_surface, IMultiSampling* a_multisampling) = 0;
-	virtual void Destroy() = 0;
+    virtual void Destroy() = 0;
 
 	virtual VulkanRenderer* CastVulkan()
 	{

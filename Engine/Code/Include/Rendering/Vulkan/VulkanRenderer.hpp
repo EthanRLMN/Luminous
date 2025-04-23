@@ -16,13 +16,13 @@ public:
     static void RegisterEditorRenderCallback(EditorRenderCallback a_callback);
 
     void DrawFrame(IWindow* a_window, IDevice* a_device, ISwapChain* a_swapChain, IPipeline* a_pipeline, IBuffer* a_buffer, IRenderPassManager* a_renderPassManager, IDescriptor* a_descriptor, IMesh* a_mesh, ISynchronization* a_synchronization, ICommandBuffer* a_commandBuffer, IFrameBufferManager* a_frameBufferManager, IDepthResource* a_depthResource, ISurface* a_surface, IMultiSampling* a_multisampling) override;
-	void Destroy() override {};
+    void Destroy() override {};
     VulkanRenderer* CastVulkan() override { return this; }
 
 	void RecordCommandBuffer(const VkCommandBuffer& a_commandBuffer, const VkPipeline& a_graphicsPipeline, const VkPipelineLayout& a_pipelineLayout, const uint32_t& a_imageIndex, ISwapChain* a_swapChain, const IRenderPassManager* a_renderPassManager, IBuffer* a_buffer, IDescriptor* a_descriptor, IMesh* a_mesh, IFrameBufferManager* a_frameBufferManager) const;
 
 	static void UpdateUniformBuffer(const uint32_t& a_currentImage, ISwapChain* a_swapChain, IBuffer* a_buffer);
-	static void RecreateSwapChain(IWindow* a_window, IDevice* a_device, ISurface* a_surface, ISwapChain* a_swapChain, IDepthResource* a_depthResource, IFrameBuffer* a_frameBuffer, IRenderPass* a_renderPass, IMultiSampling* a_multisampling);
+	void RecreateSwapChain(IWindow* a_window, IDevice* a_device, ISurface* a_surface, ISwapChain* a_swapChain, IDepthResource* a_depthResource, IFrameBuffer* a_frameBuffer, IRenderPass* a_renderPass, IMultiSampling* a_multisampling);
 	static void CleanupSwapChain(IDevice* a_device, ISwapChain* a_swapChain, IDepthResource* a_depthResource, IFrameBuffer* a_framebuffer);
 	static void CreateImageViews(IDevice* a_device, ISwapChain* a_swapChain);
 
@@ -30,6 +30,7 @@ public:
 
 	void CreateViewportImage(IDevice* a_device, ISwapChain* a_swapchain);
     void CopyImageToViewport(ISwapChain* a_swapchain, VkCommandBuffer a_cmdBuffer) const;
+    void DestroyViewportImage(IDevice* a_device);
 
 	VkImage m_viewportImage;
     VkImageView m_viewportImageview;

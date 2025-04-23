@@ -10,6 +10,10 @@ void Engine::Destroy() const
 {
     m_resourceManager->DeleteResource<VulkanShader>("v=Engine/Assets/Shaders/vert.spv, f=Engine/Assets/Shaders/frag.spv, t=, g=",m_device);
 
+
+    //NEED CLEANUP
+    m_renderer->CastVulkan()->DestroyViewportImage(m_device);
+
     m_commandBuffer->Destroy();
     m_interface->DeleteCommandBuffer(m_commandBuffer);
 

@@ -172,6 +172,8 @@ void VulkanRenderer::RecreateSwapChain(IWindow* a_window, IDevice* a_device, ISu
     a_multisampling->CastVulkan()->CreateColorResources(a_device, a_swapChain);
     a_depthResource->CastVulkan()->Create(a_device, a_swapChain, a_renderPass);
     a_frameBuffer->CastVulkan()->Create(a_device, a_swapChain, a_renderPass, a_depthResource, a_multisampling, false);
+
+    CreateViewportImage(a_device,a_swapChain);
 }
 
 
@@ -339,6 +341,15 @@ void VulkanRenderer::CopyImageToViewport(ISwapChain* a_swapChain, VkCommandBuffe
             0, nullptr,
             0, nullptr,
             1, &barrierFinal);
+}
+
+void VulkanRenderer::DestroyViewportImage(IDevice* a_device)
+{
+    VkDevice l_device = a_device->CastVulkan()->GetDevice();
+    vkDestroySampler(l_device, m_viewportSampler,nullptr);
+    vkDestroyImageView(l_device, m_viewportImageview, nullptr);
+    vkFreeMemory(l_device, m_viewportMemory, nullptr);
+    vkDestroyImage(l_device, m_viewportImage, nullptr);
 }
 
 void VulkanRenderer::SetupSubmitInfo(VkSubmitInfo& a_submitInfo, const std::vector<VkSemaphore>& a_waitSemaphores, const std::array<VkPipelineStageFlags, 1>& a_waitStages, const std::vector<VkCommandBuffer>& a_commandBuffer, const std::vector<VkSemaphore>& a_signalSemaphores) const
