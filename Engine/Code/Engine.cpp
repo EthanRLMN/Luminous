@@ -9,21 +9,23 @@ void Engine::Init()
     l_logger.Init("Engine", 1_MiB, 5, true);
 
     m_interface = new VulkanRenderInterface();
+    m_scene = new Scene();
+    m_physicsJolt = new Physics();
+
     m_isRunning = true;
 
     Window();
     Input();
     PreRender();
-   
-
-    m_physicsJolt = new Physics();
-    m_physicsJolt->Init_JOLT();
+    InitPhysics();
 }
 
 void Engine::Update()
 {
     m_window->Update();
     m_inputManager->Update(m_window);
+
+    m_scene->SceneEntity();
     m_renderer->DrawFrame(m_window, m_device, m_swapChain, m_pipeline, m_buffer, m_renderPass, m_descriptor, m_mesh, m_synchronization, m_commandBuffer, m_frameBuffer, m_depthResource, m_surface, m_multiSampling);
 
 
