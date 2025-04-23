@@ -86,10 +86,13 @@ void VulkanTexture::CreateTextureImage(IDevice* a_device, ISwapChain* a_swapChai
     const VkDeviceSize l_imageSize = l_texWidth * l_texHeight * 4;
 
     if (!l_pixels)
+    {
         DEBUG_LOG_ERROR("Vulkan Texture : Failed to load Texture Image!\n");
+        return;
+    }
 
-    VkBuffer l_stagingBuffer = nullptr;
-    VkDeviceMemory l_stagingBufferMemory = nullptr;
+    VkBuffer l_stagingBuffer = VK_NULL_HANDLE;
+    VkDeviceMemory l_stagingBufferMemory = VK_NULL_HANDLE;
     CreateBuffer(l_vkDevice, l_vkPhysicalDevice, l_imageSize, VK_BUFFER_USAGE_TRANSFER_SRC_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT, l_stagingBuffer, l_stagingBufferMemory, a_swapChain);
 
     void* l_data = nullptr;
