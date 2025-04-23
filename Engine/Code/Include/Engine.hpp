@@ -3,7 +3,7 @@
 #include "IRender.hpp"
 #include "ISynchronization.hpp"
 #include "ResourceManager/ResourceManager.hpp"
-
+#include "Game/Scene.hpp"
 #include "Physics/physics_JOLT.hpp"
 
 
@@ -19,6 +19,10 @@ public:
     void Init();
 	void Update();
 	void Destroy() const;
+
+	void Window();
+    void Input();
+	void PreRender();
 
 	[[nodiscard]] IWindow* GetWindow() const { return m_window; }
 	[[nodiscard]] IInputManager* GetInputManager() const { return m_inputManager; }

@@ -26,8 +26,35 @@ public:
         return nullptr;
     }
 
+    /*
     virtual void Awake() = 0;
     virtual void BeginPlay() = 0;
     virtual void Update() = 0;
-    virtual void Destroy(){ isDestroyed = true; }
+    virtual void Destroy(){ isDestroyed = true; }*/
+};
+
+class EntityManager
+{
+private:
+    std::unordered_map<size_t, Entity> entities;
+    size_t nextEntityId = 0;
+
+public:
+    size_t CreateEntity()
+    {
+        Entity entity;
+        size_t id = nextEntityId++;
+        entities[id] = std::move(entity);
+        return id;
+    }
+
+    void DestroyEntity(size_t id)
+    {
+        entities.erase(id);
+    }
+
+    Entity& GetEntity(size_t id)
+    {
+        return entities.at(id);
+    }
 };
