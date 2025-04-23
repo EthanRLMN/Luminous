@@ -2,19 +2,18 @@
 #include "Rendering/Vulkan/VulkanDevice.hpp"
 #include "Editor.hpp"
 
-#include "imgui.h"
-
 void FileExplorerWindow::Draw()
 {
     if (!m_texturesInitialized)
     {
         IResourceParams folderParams;
-        folderParams.m_texturePath = "Assets/Icons/FolderIcon.png";
+        folderParams.m_texturePath = "Assets/Icons/DirectoryIcon.png";
         folderParams.m_device = m_editor->GetEngine()->GetDevice();
         folderParams.m_swapChain = m_editor->GetEngine()->GetSwapChain();
+        folderParams.m_commandPool = m_editor->GetEngine()->GetCommandPool();
 
         auto* folderTexture = new VulkanTexture();
-        if (folderTexture->Create(IResourceManager::GetResource(), folderParams))
+        if (folderTexture->Create(m_resourceManager, folderParams))
         {
             m_folderIcon = reinterpret_cast<ImTextureID>(folderTexture->GetTextureImageView());
         }
@@ -23,9 +22,10 @@ void FileExplorerWindow::Draw()
         fileParams.m_texturePath = "Assets/Icons/FileIcon.png";
         fileParams.m_device = folderParams.m_device;
         fileParams.m_swapChain = folderParams.m_swapChain;
+        fileParams.m_commandPool = folderParams.m_commandPool;
 
         auto* fileTexture = new VulkanTexture();
-        if (fileTexture->Create(IResourceManager::GetResource, fileParams))
+        if (fileTexture->Create(m_resourceManager, fileParams))
         {
             m_fileIcon = reinterpret_cast<ImTextureID>(fileTexture->GetTextureImageView());
         }

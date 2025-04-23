@@ -33,12 +33,18 @@ void Editor::Destroy()
     m_engine->Destroy();
     delete m_engine;
     m_engine = nullptr;
+
+    delete m_resourceManager;
+    m_resourceManager = nullptr;
 }
 
 void Editor::Init()
 {
     m_engine = new Engine();
     m_engine->Init();
+
+    m_resourceManager = new IResourceManager();
+    
     SetupImGui();
     CreateWindows();
 }
@@ -109,10 +115,10 @@ void Editor::Render() const
 
 void Editor::CreateWindows()
 {
-    new MainWindow(this, "Editor");
-    new FileExplorerWindow(this, "File Explorer");
-    new InspectorWindow(this, "Inspector");
-    new HierarchyWindow(this, "Hierarchy");
+    m_windows.push_back(new MainWindow(this, "Editor"));
+    m_windows.push_back(new FileExplorerWindow(this, m_resourceManager, "File Explorer"));
+    m_windows.push_back(new InspectorWindow(this, "Inspector"));
+    m_windows.push_back(new HierarchyWindow(this, "Hierarchy"));
 }
 
 void Editor::DrawWindows() const
