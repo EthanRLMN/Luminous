@@ -21,8 +21,8 @@ public:
         return nullptr;
     }
 
-    virtual std::vector<IFrameBuffer*> GetFrameBuffers() const { return p_frameBuffers; }
-    virtual IFrameBuffer* GetFrameBufferAt(const int& a_index) const { return p_frameBuffers[a_index]; }
+    [[nodiscard]] virtual std::vector<IFrameBuffer*> GetFrameBuffers() const { return p_frameBuffers; }
+    [[nodiscard]] virtual IFrameBuffer* GetFrameBufferAt(const int& a_index) const { return p_frameBuffers[a_index]; }
 
 
 protected:

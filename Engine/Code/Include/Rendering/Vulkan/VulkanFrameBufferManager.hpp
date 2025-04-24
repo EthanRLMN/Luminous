@@ -9,7 +9,7 @@ public:
     void Destroy(IDevice* a_device) override;
     VulkanFrameBufferManager* CastVulkan() override { return this; };
 
-    VulkanFrameBuffer* GetFrameBuffer() const { return m_frameBuffer; }
+    [[nodiscard]] VulkanFrameBuffer* GetFrameBuffer() const { return m_frameBuffer; }
 
 
 private:
