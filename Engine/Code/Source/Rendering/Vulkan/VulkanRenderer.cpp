@@ -91,9 +91,9 @@ void VulkanRenderer::RecordCommandBuffer(const VkCommandBuffer& a_commandBuffer,
         VkRenderPassBeginInfo l_renderPassBeginInfo = { VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO };
         const std::array<VkClearValue, 2> l_clearValues{};
         if (l_renderPass == a_renderPassManager->GetRenderPassAt(0))
-            PresentRenderPassInfo(l_renderPassBeginInfo, l_renderPass->CastVulkan()->GetRenderPass(), a_frameBufferManager->GetFrameBufferAt(0)->CastVulkan()->GetFrameBuffers()[a_imageIndex], a_swapChain->CastVulkan()->GetSwapChainExtent(), l_clearValues, a_commandBuffer, a_graphicsPipeline, false);
+            PresentRenderPassInfo(l_renderPassBeginInfo, l_renderPass->CastVulkan()->GetRenderPass(), a_frameBufferManager->GetFrameBufferAt(0)->CastVulkan()->GetFrameBuffers()[a_imageIndex], a_swapChain->CastVulkan()->GetSwapChainExtent(), l_clearValues, false);
         else
-            PresentRenderPassInfo(l_renderPassBeginInfo, l_renderPass->CastVulkan()->GetRenderPass(), a_frameBufferManager->GetFrameBufferAt(1)->CastVulkan()->GetFrameBuffers()[a_imageIndex], a_swapChain->CastVulkan()->GetSwapChainExtent(), l_clearValues, a_commandBuffer, a_graphicsPipeline, true);
+            PresentRenderPassInfo(l_renderPassBeginInfo, l_renderPass->CastVulkan()->GetRenderPass(), a_frameBufferManager->GetFrameBufferAt(1)->CastVulkan()->GetFrameBuffers()[a_imageIndex], a_swapChain->CastVulkan()->GetSwapChainExtent(), l_clearValues, true);
 
         vkCmdBeginRenderPass(a_commandBuffer, &l_renderPassBeginInfo, VK_SUBPASS_CONTENTS_INLINE);
         vkCmdBindPipeline(a_commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, a_graphicsPipeline);
@@ -162,7 +162,6 @@ void VulkanRenderer::RecreateSwapChain(IWindow* a_window, IDevice* a_device, ISu
     }
 
     CleanupSwapChain(a_device, a_swapChain, a_depthResource, a_frameBuffer);
-
     a_swapChain->CastVulkan()->Create(a_window, a_device, a_surface, a_swapChain->CastVulkan()->GetMipLevel());
 
     CreateImageViews(a_device, a_swapChain);
@@ -262,7 +261,7 @@ void VulkanRenderer::CreateViewportImage(IDevice* a_device,ISwapChain* a_swapcha
     vkCreateSampler(l_device, &samplerInfo, nullptr, &m_viewportSampler);
 }
 
-void VulkanRenderer::CopyImageToViewport(ISwapChain* a_swapChain, VkCommandBuffer a_cmdBuffer) const
+void VulkanRenderer::CopyImageToViewport(ISwapChain* a_swapChain, const VkCommandBuffer& a_cmdBuffer) const
 {
     VkImageMemoryBarrier barrierSrc = {};
     barrierSrc.sType = VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER;
@@ -366,18 +365,26 @@ void VulkanRenderer::PresentRendererInfo(VkPresentInfoKHR& a_presentInfo, const 
 }
 
 
-void VulkanRenderer::PresentRenderPassInfo(VkRenderPassBeginInfo& a_renderPassBeginInfo, const VkRenderPass& a_renderPass, const VkFramebuffer& a_framebuffer, const VkExtent2D& a_swapchainExtent, std::array<VkClearValue, 2> a_clearValues, const VkCommandBuffer& a_commandBuffer, const VkPipeline& a_graphicsPipeline, const bool& a_isEditor)
+void VulkanRenderer::PresentRenderPassInfo(VkRenderPassBeginInfo& a_renderPassBeginInfo, const VkRenderPass& a_renderPass, const VkFramebuffer& a_framebuffer, const VkExtent2D& a_swapchainExtent, std::array<VkClearValue, 2> a_clearValues, const bool& isEditor)
 {
     a_renderPassBeginInfo.renderPass = a_renderPass;
     a_renderPassBeginInfo.framebuffer = a_framebuffer;
     a_renderPassBeginInfo.renderArea.offset = { 0, 0 };
     a_renderPassBeginInfo.renderArea.extent = a_swapchainExtent;
 
-    a_clearValues[0].color = { { 0.1f, 0.1f, 0.1f, 1.0f } };
-    a_clearValues[1].depthStencil = { 1.0f, 0 };
+    if (!isEditor)
+    {
+        a_clearValues[0].color = { { 0.1f, 0.1f, 0.1f, 1.0f } };
+        a_clearValues[1].depthStencil = { 1.0f, 0 };
 
-    a_renderPassBeginInfo.clearValueCount = static_cast<uint32_t>(a_clearValues.size());
-    a_renderPassBeginInfo.pClearValues = a_clearValues.data();
+        a_renderPassBeginInfo.clearValueCount = static_cast<uint32_t>(a_clearValues.size());
+        a_renderPassBeginInfo.pClearValues = a_clearValues.data();
+    }
+    else
+    {
+        a_renderPassBeginInfo.clearValueCount = 0;
+        a_renderPassBeginInfo.pClearValues = nullptr;
+    }
 }
 
 void VulkanRenderer::FillViewportInfo(VkViewport& a_viewport, const VkExtent2D& a_swapChainExtent)

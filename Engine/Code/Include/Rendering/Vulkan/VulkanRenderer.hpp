@@ -7,7 +7,9 @@
 #include "Core/GLFW/GLFWWindow.hpp"
 #include "Rendering/Vulkan/VulkanDevice.hpp"
 
+
 class IFrameBuffer;
+
 
 class VulkanRenderer final : public IRenderer
 {
@@ -27,22 +29,27 @@ public:
 	static void CreateImageViews(IDevice* a_device, ISwapChain* a_swapChain);
 
 	[[nodiscard]] uint32_t GetCurrentFrame() const { return m_currentFrame; }
+	[[nodiscard]] VkImage GetViewportImage() const { return m_viewportImage; }
+	[[nodiscard]] VkImageView GetViewportImageView() const { return m_viewportImageview; }
+	[[nodiscard]] VkDeviceMemory GetViewportImageMemory() const { return m_viewportMemory; }
+	[[nodiscard]] VkSampler GetViewportImageSampler() const { return m_viewportSampler; }
 
 	void CreateViewportImage(IDevice* a_device, ISwapChain* a_swapchain);
-    void CopyImageToViewport(ISwapChain* a_swapchain, VkCommandBuffer a_cmdBuffer) const;
+    void CopyImageToViewport(ISwapChain* a_swapChain, const VkCommandBuffer& a_cmdBuffer) const;
     void DestroyViewportImage(IDevice* a_device);
 
-	VkImage m_viewportImage;
-    VkImageView m_viewportImageview;
-    VkDeviceMemory m_viewportMemory;
-    VkSampler m_viewportSampler;
 
 private:
     void SetupSubmitInfo(VkSubmitInfo& a_submitInfo, const std::vector<VkSemaphore>& a_waitSemaphores, const std::array<VkPipelineStageFlags, 1>& a_waitStages, const std::vector<VkCommandBuffer>& a_commandBuffer, const std::vector<VkSemaphore>& a_signalSemaphores) const;
     static void PresentRendererInfo(VkPresentInfoKHR& a_presentInfo, const std::vector<VkSemaphore>& a_signalSemaphores, const std::vector<VkSwapchainKHR>& a_swapchains);
-    static void PresentRenderPassInfo(VkRenderPassBeginInfo& a_renderPassBeginInfo, const VkRenderPass& a_renderPass, const VkFramebuffer& a_framebuffer, const VkExtent2D& a_swapchainExtent, std::array<VkClearValue, 2> a_clearValues, const VkCommandBuffer& a_commandBuffer, const VkPipeline& a_graphicsPipeline, const bool& a_isEditor);
+    static void PresentRenderPassInfo(VkRenderPassBeginInfo& a_renderPassBeginInfo, const VkRenderPass& a_renderPass, const VkFramebuffer& a_framebuffer, const VkExtent2D& a_swapchainExtent, std::array<VkClearValue, 2> a_clearValues, const bool& isEditor);
     static void FillViewportInfo(VkViewport& a_viewport, const VkExtent2D& a_swapChainExtent);
 
 	bool m_framebufferResized { false };
 	uint32_t m_currentFrame { 0 };
+
+    VkImage m_viewportImage{ nullptr };
+    VkImageView m_viewportImageview{ nullptr };
+    VkDeviceMemory m_viewportMemory{ nullptr };
+    VkSampler m_viewportSampler{ nullptr };
 };
