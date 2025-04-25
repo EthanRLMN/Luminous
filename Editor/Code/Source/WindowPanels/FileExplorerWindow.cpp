@@ -11,7 +11,7 @@ void FileExplorerWindow::Draw()
     if (!m_texturesInitialized)
     {
         IResourceParams folderParams;
-        folderParams.m_texturePath = "Assets/Icons/DirectoryIcon.png";
+        folderParams.m_texturePath = "./Editor/Assets/Icons/DirectoryIcon.png";
         folderParams.m_device = m_engine->GetDevice();
         folderParams.m_swapChain = m_engine->GetSwapChain();
         folderParams.m_commandPool = m_engine->GetCommandPool();
@@ -23,7 +23,7 @@ void FileExplorerWindow::Draw()
         }
 
         IResourceParams fileParams;
-        fileParams.m_texturePath = "Assets/Icons/FileIcon.png";
+        fileParams.m_texturePath = "./Editor/Assets/Icons/FileIcon.png";
         fileParams.m_device = folderParams.m_device;
         fileParams.m_swapChain = folderParams.m_swapChain;
         fileParams.m_commandPool = folderParams.m_commandPool;
@@ -61,7 +61,8 @@ void FileExplorerWindow::Draw()
 
             const ImTextureID icon = directoryEntry.is_directory() ? m_folderIcon : m_fileIcon;
 
-            if (ImGui::ImageButton("Folder", icon, ImVec2(64, 64)))
+            std::string buttonId = "##" + filenameString;
+            if (ImGui::ImageButton(buttonId.c_str(), icon, ImVec2(64, 64)))
             {
                 m_currentDirectory /= directoryEntry.path().filename();
             }
