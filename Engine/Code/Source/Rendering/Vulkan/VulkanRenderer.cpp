@@ -42,11 +42,13 @@ void VulkanRenderer::DrawFrame(IWindow* a_window, IDevice* a_device, ISwapChain*
     uint32_t l_imageIndex{ 0 };
     VkResult l_result = vkAcquireNextImageKHR(l_device, l_swapchain, UINT64_MAX, a_synchronization->CastVulkan()->GetImageAvailableSemaphores()[m_currentFrame], nullptr, &l_imageIndex);
 
+    /*
     if (l_result == VK_ERROR_OUT_OF_DATE_KHR)
     {
+
         RecreateSwapChain(a_window, a_device, a_surface, a_swapChain, a_depthResource, a_frameBufferManager->GetFrameBufferAt(0), a_renderPassManager->GetRenderPassAt(0), a_multisampling);
         return;
-    }
+    }*/
     if (l_result != VK_SUCCESS && l_result != VK_SUBOPTIMAL_KHR)
         DEBUG_LOG_ERROR("failed to acquire swap chain image");
 
@@ -72,7 +74,7 @@ void VulkanRenderer::DrawFrame(IWindow* a_window, IDevice* a_device, ISwapChain*
 
     l_result = vkQueuePresentKHR(a_device->CastVulkan()->GetPresentationQueue(), &l_presentInfo);
     if (l_result == VK_ERROR_OUT_OF_DATE_KHR || l_result == VK_SUBOPTIMAL_KHR)
-        RecreateSwapChain(a_window, a_device, a_surface, a_swapChain, a_depthResource, a_frameBufferManager->GetFrameBufferAt(0), a_renderPassManager->GetRenderPassAt(0), a_multisampling);
+        RecreateSwapChain(a_window, a_device, a_surface, a_swapChain, a_depthResource, a_frameBufferManager, a_renderPassManager, a_multisampling);
     else if (l_result != VK_SUCCESS)
         DEBUG_LOG_ERROR("failed to present swap chain image");
 
@@ -151,7 +153,7 @@ void VulkanRenderer::UpdateUniformBuffer(const uint32_t& a_currentImage, ISwapCh
 }
 
 
-void VulkanRenderer::RecreateSwapChain(IWindow* a_window, IDevice* a_device, ISurface* a_surface, ISwapChain* a_swapChain, IDepthResource* a_depthResource, IFrameBuffer* a_frameBuffer, IRenderPass* a_renderPass, IMultiSampling* a_multisampling)
+void VulkanRenderer::RecreateSwapChain(IWindow* a_window, IDevice* a_device, ISurface* a_surface, ISwapChain* a_swapChain, IDepthResource* a_depthResource, IFrameBufferManager* a_frameBuffer, IRenderPassManager* a_renderPass, IMultiSampling* a_multisampling)
 {
     int l_width, l_height{ 0 };
     a_window->CastGLFW()->GetFrameBufferSize(&l_width, &l_height);
@@ -166,19 +168,30 @@ void VulkanRenderer::RecreateSwapChain(IWindow* a_window, IDevice* a_device, ISu
 
     CreateImageViews(a_device, a_swapChain);
     a_multisampling->CastVulkan()->CreateColorResources(a_device, a_swapChain);
-    a_depthResource->CastVulkan()->Create(a_device, a_swapChain, a_renderPass);
-    a_frameBuffer->CastVulkan()->Create(a_device, a_swapChain, a_renderPass, a_depthResource, a_multisampling, false);
 
-    CreateViewportImage(a_device,a_swapChain);
+
+    a_depthResource->CastVulkan()->Create(a_device, a_swapChain, a_renderPass->GetRenderPassAt(0));
+    
+    a_frameBuffer->GetFrameBufferAt(0)->CastVulkan()->Create(a_device, a_swapChain, a_renderPass->GetRenderPassAt(0), a_depthResource, a_multisampling, false);
+    CreateViewportImage(a_device, a_swapChain);
+    a_frameBuffer->GetFrameBufferAt(1)->CastVulkan()->Create(a_device, a_swapChain, a_renderPass->GetRenderPassAt(1), a_depthResource, a_multisampling, true);
+    
+
+    
 }
 
 
-void VulkanRenderer::CleanupSwapChain(IDevice* a_device, ISwapChain* a_swapChain, IDepthResource* a_depthResource, IFrameBuffer* a_framebuffer)
+void VulkanRenderer::CleanupSwapChain(IDevice* a_device, ISwapChain* a_swapChain, IDepthResource* a_depthResource, IFrameBufferManager* a_framebuffer)
 {
     vkDeviceWaitIdle(a_device->CastVulkan()->GetDevice());
 
-    for (const VkFramebuffer& l_framebuffer : a_framebuffer->CastVulkan()->GetFrameBuffers())
+    for (const VkFramebuffer& l_framebuffer2 : a_framebuffer->GetFrameBufferAt(1)->CastVulkan()->GetFrameBuffers())
+        vkDestroyFramebuffer(a_device->CastVulkan()->GetDevice(), l_framebuffer2, nullptr);
+
+    for (const VkFramebuffer& l_framebuffer : a_framebuffer->GetFrameBufferAt(0)->CastVulkan()->GetFrameBuffers())
         vkDestroyFramebuffer(a_device->CastVulkan()->GetDevice(), l_framebuffer, nullptr);
+
+    
 
     for (const VkImageView& l_imageView : a_swapChain->CastVulkan()->GetSwapChainImageViews())
         vkDestroyImageView(a_device->CastVulkan()->GetDevice(), l_imageView, nullptr);

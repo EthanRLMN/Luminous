@@ -88,11 +88,18 @@ void Editor::Update()
 
 void Editor::Render() const
 {
+
+    
+
     ImGui_ImplVulkan_NewFrame();
     ImGui_ImplGlfw_NewFrame();
     ImGui::NewFrame();
 
+
+    ImGuiID dockSpaceID = ImGui::DockSpaceOverViewport(0, ImGui::GetMainViewport(), ImGuiDockNodeFlags_PassthruCentralNode);
     DrawWindows();
+
+
 
     ImGui::Render();
 

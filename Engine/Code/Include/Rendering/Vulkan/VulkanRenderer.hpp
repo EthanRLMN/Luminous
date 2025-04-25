@@ -6,7 +6,8 @@
 
 #include "Core/GLFW/GLFWWindow.hpp"
 #include "Rendering/Vulkan/VulkanDevice.hpp"
-
+#include "Rendering/Vulkan/VulkanFrameBufferManager.hpp"
+#include "Rendering/Vulkan/VulkanRenderpassManager.hpp"
 
 class IFrameBuffer;
 
@@ -24,8 +25,8 @@ public:
 	void RecordCommandBuffer(const VkCommandBuffer& a_commandBuffer, const VkPipeline& a_graphicsPipeline, const VkPipelineLayout& a_pipelineLayout, const uint32_t& a_imageIndex, ISwapChain* a_swapChain, const IRenderPassManager* a_renderPassManager, IBuffer* a_buffer, IDescriptor* a_descriptor, IMesh* a_mesh, IFrameBufferManager* a_frameBufferManager) const;
 
 	static void UpdateUniformBuffer(const uint32_t& a_currentImage, ISwapChain* a_swapChain, IBuffer* a_buffer);
-	void RecreateSwapChain(IWindow* a_window, IDevice* a_device, ISurface* a_surface, ISwapChain* a_swapChain, IDepthResource* a_depthResource, IFrameBuffer* a_frameBuffer, IRenderPass* a_renderPass, IMultiSampling* a_multisampling);
-	static void CleanupSwapChain(IDevice* a_device, ISwapChain* a_swapChain, IDepthResource* a_depthResource, IFrameBuffer* a_framebuffer);
+	void RecreateSwapChain(IWindow* a_window, IDevice* a_device, ISurface* a_surface, ISwapChain* a_swapChain, IDepthResource* a_depthResource, IFrameBufferManager* a_frameBuffer, IRenderPassManager* a_renderPass, IMultiSampling* a_multisampling);
+    static void CleanupSwapChain(IDevice* a_device, ISwapChain* a_swapChain, IDepthResource* a_depthResource, IFrameBufferManager* a_framebuffer);
 	static void CreateImageViews(IDevice* a_device, ISwapChain* a_swapChain);
 
 	[[nodiscard]] uint32_t GetCurrentFrame() const { return m_currentFrame; }
