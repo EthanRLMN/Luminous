@@ -171,13 +171,12 @@ void VulkanRenderer::RecreateSwapChain(IWindow* a_window, IDevice* a_device, ISu
 
 
     a_depthResource->CastVulkan()->Create(a_device, a_swapChain, a_renderPass->GetRenderPassAt(0));
-    
+
     a_frameBuffer->GetFrameBufferAt(0)->CastVulkan()->Create(a_device, a_swapChain, a_renderPass->GetRenderPassAt(0), a_depthResource, a_multisampling, false);
     CreateViewportImage(a_device, a_swapChain);
     a_frameBuffer->GetFrameBufferAt(1)->CastVulkan()->Create(a_device, a_swapChain, a_renderPass->GetRenderPassAt(1), a_depthResource, a_multisampling, true);
-    
 
-    
+
 }
 
 
@@ -191,7 +190,6 @@ void VulkanRenderer::CleanupSwapChain(IDevice* a_device, ISwapChain* a_swapChain
     for (const VkFramebuffer& l_framebuffer : a_framebuffer->GetFrameBufferAt(0)->CastVulkan()->GetFrameBuffers())
         vkDestroyFramebuffer(a_device->CastVulkan()->GetDevice(), l_framebuffer, nullptr);
 
-    
 
     for (const VkImageView& l_imageView : a_swapChain->CastVulkan()->GetSwapChainImageViews())
         vkDestroyImageView(a_device->CastVulkan()->GetDevice(), l_imageView, nullptr);
@@ -213,7 +211,7 @@ void VulkanRenderer::CreateImageViews(IDevice* a_device, ISwapChain* a_swapChain
 }
 
 
-void VulkanRenderer::CreateViewportImage(IDevice* a_device,ISwapChain* a_swapchain)
+void VulkanRenderer::CreateViewportImage(IDevice* a_device, ISwapChain* a_swapchain)
 {
     const VkDevice& l_device = a_device->CastVulkan()->GetDevice();
     const VkExtent2D l_extent = a_swapchain->CastVulkan()->GetSwapChainExtent();
@@ -349,7 +347,7 @@ void VulkanRenderer::CopyImageToViewport(ISwapChain* a_swapChain, const VkComman
 void VulkanRenderer::DestroyViewportImage(IDevice* a_device)
 {
     VkDevice l_device = a_device->CastVulkan()->GetDevice();
-    vkDestroySampler(l_device, m_viewportSampler,nullptr);
+    vkDestroySampler(l_device, m_viewportSampler, nullptr);
     vkDestroyImageView(l_device, m_viewportImageview, nullptr);
     vkFreeMemory(l_device, m_viewportMemory, nullptr);
     vkDestroyImage(l_device, m_viewportImage, nullptr);
@@ -385,19 +383,19 @@ void VulkanRenderer::PresentRenderPassInfo(VkRenderPassBeginInfo& a_renderPassBe
     a_renderPassBeginInfo.renderArea.offset = { 0, 0 };
     a_renderPassBeginInfo.renderArea.extent = a_swapchainExtent;
 
-    if (!isEditor)
-    {
-        a_clearValues[0].color = { { 0.1f, 0.1f, 0.1f, 1.0f } };
-        a_clearValues[1].depthStencil = { 1.0f, 0 };
+    /*if (!isEditor)
+    {*/
+    a_clearValues[0].color = { { 0.1f, 0.1f, 0.1f, 1.0f } };
+    a_clearValues[1].depthStencil = { 1.0f, 0 };
 
-        a_renderPassBeginInfo.clearValueCount = static_cast<uint32_t>(a_clearValues.size());
-        a_renderPassBeginInfo.pClearValues = a_clearValues.data();
-    }
+    a_renderPassBeginInfo.clearValueCount = static_cast<uint32_t>(a_clearValues.size());
+    a_renderPassBeginInfo.pClearValues = a_clearValues.data();
+    /*}
     else
     {
         a_renderPassBeginInfo.clearValueCount = 0;
         a_renderPassBeginInfo.pClearValues = nullptr;
-    }
+    }*/
 }
 
 void VulkanRenderer::FillViewportInfo(VkViewport& a_viewport, const VkExtent2D& a_swapChainExtent)
