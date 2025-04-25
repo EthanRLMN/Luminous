@@ -106,10 +106,10 @@ void VulkanPipeline::BindShaderAttributes(VkVertexInputBindingDescription& a_bin
     a_bindingDescription.inputRate = VK_VERTEX_INPUT_RATE_VERTEX;
 
     //Position Attributes
-    a_attributeDescriptions[0].binding = 0; //which binding the data is at (should be same above)
+    a_attributeDescriptions[0].binding = 0; //which binding the data is at (should be the same as above)
     a_attributeDescriptions[0].location = 0; //location in shader where data will be reset
-    a_attributeDescriptions[0].format = VK_FORMAT_R32G32B32_SFLOAT; // format the date will take (also helps define size of data
-    a_attributeDescriptions[0].offset = offsetof(Vertex, pos); // attribute is defined in the data for single vertex
+    a_attributeDescriptions[0].format = VK_FORMAT_R32G32B32_SFLOAT; // format the date will take (also helps define the size of data
+    a_attributeDescriptions[0].offset = offsetof(Vertex, pos); // attribute is defined in the data for a single vertex
 
     //Colour attribute
     a_attributeDescriptions[1].binding = 0;
@@ -208,8 +208,7 @@ void VulkanPipeline::SetupDescriptorSetLayout(const VkDescriptorSetLayout& a_des
 
     //Create pipeline layout
     const VkResult l_result = vkCreatePipelineLayout(a_device, &a_pipelineLayoutInfo, nullptr, &m_pipelineLayout);
-    if (l_result != VK_SUCCESS)
-        throw std::runtime_error("Failed to create Pipeline layout");
+    LOG_ASSERT_ERROR(l_result == VK_SUCCESS, "Vulkan Pipeline: Failed to create Pipeline layout!\n");
 }
 
 
@@ -232,6 +231,5 @@ void VulkanPipeline::PushPipelineInfo(VkGraphicsPipelineCreateInfo& a_pipelineCr
     a_pipelineCreateInfo.basePipelineIndex = -1;
 
     const VkResult l_result = vkCreateGraphicsPipelines(a_device, nullptr, 1, &a_pipelineCreateInfo, nullptr, &m_graphicsPipeline);
-    if (l_result != VK_SUCCESS)
-        DEBUG_LOG_ERROR("Failed to create a Graphics Pipeline!\n");
+    LOG_ASSERT_ERROR(l_result == VK_SUCCESS, "Vulkan Pipeline: Failed to create a Graphics Pipeline!\n");
 }

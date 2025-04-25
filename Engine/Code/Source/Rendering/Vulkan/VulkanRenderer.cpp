@@ -91,9 +91,9 @@ void VulkanRenderer::RecordCommandBuffer(const VkCommandBuffer& a_commandBuffer,
         VkRenderPassBeginInfo l_renderPassBeginInfo = { VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO };
         const std::array<VkClearValue, 2> l_clearValues{};
         if (l_renderPass == a_renderPassManager->GetRenderPassAt(0))
-            PresentRenderPassInfo(l_renderPassBeginInfo, l_renderPass->CastVulkan()->GetRenderPass(), a_frameBufferManager->GetFrameBufferAt(0)->CastVulkan()->GetFrameBuffers()[a_imageIndex], a_swapChain->CastVulkan()->GetSwapChainExtent(), l_clearValues, false);
+            PresentRenderPassInfo(l_renderPassBeginInfo, l_renderPass->CastVulkan()->GetRenderPass(), a_frameBufferManager->GetFrameBufferAt(0)->CastVulkan()->GetFrameBuffers()[a_imageIndex], a_swapChain->CastVulkan()->GetSwapChainExtent(), l_clearValues);
         else
-            PresentRenderPassInfo(l_renderPassBeginInfo, l_renderPass->CastVulkan()->GetRenderPass(), a_frameBufferManager->GetFrameBufferAt(1)->CastVulkan()->GetFrameBuffers()[a_imageIndex], a_swapChain->CastVulkan()->GetSwapChainExtent(), l_clearValues, true);
+            PresentRenderPassInfo(l_renderPassBeginInfo, l_renderPass->CastVulkan()->GetRenderPass(), a_frameBufferManager->GetFrameBufferAt(1)->CastVulkan()->GetFrameBuffers()[a_imageIndex], a_swapChain->CastVulkan()->GetSwapChainExtent(), l_clearValues);
 
         vkCmdBeginRenderPass(a_commandBuffer, &l_renderPassBeginInfo, VK_SUBPASS_CONTENTS_INLINE);
         vkCmdBindPipeline(a_commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, a_graphicsPipeline);
@@ -171,12 +171,10 @@ void VulkanRenderer::RecreateSwapChain(IWindow* a_window, IDevice* a_device, ISu
     a_frameBuffer->GetFrameBufferAt(0)->CastVulkan()->Create(a_device, a_swapChain, a_renderPass->GetRenderPassAt(0), a_depthResource, a_multisampling, false);
     CreateViewportImage(a_device, a_swapChain);
     a_frameBuffer->GetFrameBufferAt(1)->CastVulkan()->Create(a_device, a_swapChain, a_renderPass->GetRenderPassAt(1), a_depthResource, a_multisampling, true);
-
-
 }
 
 
-void VulkanRenderer::CleanupSwapChain(IDevice* a_device, ISwapChain* a_swapChain, IDepthResource* a_depthResource, IFrameBufferManager* a_framebuffer)
+void VulkanRenderer::CleanupSwapChain(IDevice* a_device, ISwapChain* a_swapChain, IDepthResource* a_depthResource, const IFrameBufferManager* a_framebuffer)
 {
     vkDeviceWaitIdle(a_device->CastVulkan()->GetDevice());
 
@@ -207,10 +205,10 @@ void VulkanRenderer::CreateImageViews(IDevice* a_device, ISwapChain* a_swapChain
 }
 
 
-void VulkanRenderer::CreateViewportImage(IDevice* a_device, ISwapChain* a_swapchain)
+void VulkanRenderer::CreateViewportImage(IDevice* a_device, ISwapChain* a_swapChain)
 {
     const VkDevice& l_device = a_device->CastVulkan()->GetDevice();
-    const VkExtent2D l_extent = a_swapchain->CastVulkan()->GetSwapChainExtent();
+    const VkExtent2D l_extent = a_swapChain->CastVulkan()->GetSwapChainExtent();
 
     VkImageCreateInfo imageInfo{ VK_STRUCTURE_TYPE_IMAGE_CREATE_INFO };
     imageInfo.imageType = VK_IMAGE_TYPE_2D;
@@ -219,7 +217,7 @@ void VulkanRenderer::CreateViewportImage(IDevice* a_device, ISwapChain* a_swapch
     imageInfo.extent.depth = 1;
     imageInfo.mipLevels = 1;
     imageInfo.arrayLayers = 1;
-    imageInfo.format = a_swapchain->CastVulkan()->GetSwapChainImageFormat();
+    imageInfo.format = a_swapChain->CastVulkan()->GetSwapChainImageFormat();
     imageInfo.tiling = VK_IMAGE_TILING_OPTIMAL;
     imageInfo.initialLayout = VK_IMAGE_LAYOUT_UNDEFINED;
     imageInfo.usage = VK_IMAGE_USAGE_TRANSFER_DST_BIT | VK_IMAGE_USAGE_SAMPLED_BIT;
@@ -242,7 +240,7 @@ void VulkanRenderer::CreateViewportImage(IDevice* a_device, ISwapChain* a_swapch
     VkImageViewCreateInfo viewInfo{ VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO };
     viewInfo.image = m_viewportImage;
     viewInfo.viewType = VK_IMAGE_VIEW_TYPE_2D;
-    viewInfo.format = a_swapchain->CastVulkan()->GetSwapChainImageFormat();
+    viewInfo.format = a_swapChain->CastVulkan()->GetSwapChainImageFormat();
     viewInfo.subresourceRange.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
     viewInfo.subresourceRange.baseMipLevel = 0;
     viewInfo.subresourceRange.levelCount = 1;
@@ -252,8 +250,7 @@ void VulkanRenderer::CreateViewportImage(IDevice* a_device, ISwapChain* a_swapch
     vkCreateImageView(l_device, &viewInfo, nullptr, &m_viewportImageview);
 
 
-    VkSamplerCreateInfo samplerInfo{};
-    samplerInfo.sType = VK_STRUCTURE_TYPE_SAMPLER_CREATE_INFO;
+    VkSamplerCreateInfo samplerInfo{ VK_STRUCTURE_TYPE_SAMPLER_CREATE_INFO };
     samplerInfo.magFilter = VK_FILTER_LINEAR;
     samplerInfo.minFilter = VK_FILTER_LINEAR;
     samplerInfo.addressModeU = VK_SAMPLER_ADDRESS_MODE_CLAMP_TO_EDGE;
@@ -268,85 +265,59 @@ void VulkanRenderer::CreateViewportImage(IDevice* a_device, ISwapChain* a_swapch
     vkCreateSampler(l_device, &samplerInfo, nullptr, &m_viewportSampler);
 }
 
+
 void VulkanRenderer::CopyImageToViewport(ISwapChain* a_swapChain, const VkCommandBuffer& a_cmdBuffer) const
 {
-    VkImageMemoryBarrier barrierSrc{ VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER };
-    barrierSrc.oldLayout = VK_IMAGE_LAYOUT_UNDEFINED;
-    barrierSrc.newLayout = VK_IMAGE_LAYOUT_TRANSFER_SRC_OPTIMAL;
-    barrierSrc.srcAccessMask = VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT;
-    barrierSrc.dstAccessMask = VK_ACCESS_TRANSFER_READ_BIT;
-    barrierSrc.image = a_swapChain->CastVulkan()->GetSwapChainImages()[m_currentFrame];
-    barrierSrc.subresourceRange = { VK_IMAGE_ASPECT_COLOR_BIT, 0, 1, 0, 1 };
+    VkImageMemoryBarrier l_barrierSrc{ VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER };
+    l_barrierSrc.oldLayout = VK_IMAGE_LAYOUT_UNDEFINED;
+    l_barrierSrc.newLayout = VK_IMAGE_LAYOUT_TRANSFER_SRC_OPTIMAL;
+    l_barrierSrc.srcAccessMask = VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT;
+    l_barrierSrc.dstAccessMask = VK_ACCESS_TRANSFER_READ_BIT;
+    l_barrierSrc.image = a_swapChain->CastVulkan()->GetSwapChainImages()[m_currentFrame];
+    l_barrierSrc.subresourceRange = { VK_IMAGE_ASPECT_COLOR_BIT, 0, 1, 0, 1 };
 
-    vkCmdPipelineBarrier(
-            a_cmdBuffer,
-            VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT,
-            VK_PIPELINE_STAGE_TRANSFER_BIT,
-            0,
-            0, nullptr,
-            0, nullptr,
-            1, &barrierSrc);
+    vkCmdPipelineBarrier(a_cmdBuffer, VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT, VK_PIPELINE_STAGE_TRANSFER_BIT, 0, 0, nullptr, 0, nullptr, 1, &l_barrierSrc);
 
-    VkImageMemoryBarrier barrierDst = {};
-    barrierDst.sType = VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER;
-    barrierDst.oldLayout = VK_IMAGE_LAYOUT_UNDEFINED;
-    barrierDst.newLayout = VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL;
-    barrierDst.srcAccessMask = 0;
-    barrierDst.dstAccessMask = VK_ACCESS_TRANSFER_WRITE_BIT;
-    barrierDst.image = m_viewportImage;
-    barrierDst.subresourceRange = { VK_IMAGE_ASPECT_COLOR_BIT, 0, 1, 0, 1 };
+    VkImageMemoryBarrier l_barrierDst{ VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER };
+    l_barrierDst.oldLayout = VK_IMAGE_LAYOUT_UNDEFINED;
+    l_barrierDst.newLayout = VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL;
+    l_barrierDst.srcAccessMask = 0;
+    l_barrierDst.dstAccessMask = VK_ACCESS_TRANSFER_WRITE_BIT;
+    l_barrierDst.image = m_viewportImage;
+    l_barrierDst.subresourceRange = { VK_IMAGE_ASPECT_COLOR_BIT, 0, 1, 0, 1 };
 
-    vkCmdPipelineBarrier(
-            a_cmdBuffer,
-            VK_PIPELINE_STAGE_TOP_OF_PIPE_BIT,
-            VK_PIPELINE_STAGE_TRANSFER_BIT,
-            0,
-            0, nullptr,
-            0, nullptr,
-            1, &barrierDst);
+    vkCmdPipelineBarrier(a_cmdBuffer, VK_PIPELINE_STAGE_TOP_OF_PIPE_BIT, VK_PIPELINE_STAGE_TRANSFER_BIT, 0, 0, nullptr, 0, nullptr, 1, &l_barrierDst);
 
+    VkImageCopy l_copyRegion{};
+    l_copyRegion.srcSubresource = { VK_IMAGE_ASPECT_COLOR_BIT, 0, 0, 1 };
+    l_copyRegion.dstSubresource = { VK_IMAGE_ASPECT_COLOR_BIT, 0, 0, 1 };
+    l_copyRegion.extent.width = a_swapChain->CastVulkan()->GetSwapChainExtent().width;
+    l_copyRegion.extent.height = a_swapChain->CastVulkan()->GetSwapChainExtent().height;
+    l_copyRegion.extent.depth = 1;
 
-    VkImageCopy copyRegion = {};
-    copyRegion.srcSubresource = { VK_IMAGE_ASPECT_COLOR_BIT, 0, 0, 1 };
-    copyRegion.dstSubresource = { VK_IMAGE_ASPECT_COLOR_BIT, 0, 0, 1 };
-    copyRegion.extent.width = a_swapChain->CastVulkan()->GetSwapChainExtent().width;
-    copyRegion.extent.height = a_swapChain->CastVulkan()->GetSwapChainExtent().height;
-    copyRegion.extent.depth = 1;
+    vkCmdCopyImage(a_cmdBuffer, a_swapChain->CastVulkan()->GetSwapChainImages()[m_currentFrame], VK_IMAGE_LAYOUT_TRANSFER_SRC_OPTIMAL, m_viewportImage, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, 1, &l_copyRegion);
 
-    vkCmdCopyImage(
-            a_cmdBuffer,
-            a_swapChain->CastVulkan()->GetSwapChainImages()[m_currentFrame], VK_IMAGE_LAYOUT_TRANSFER_SRC_OPTIMAL,
-            m_viewportImage, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL,
-            1, &copyRegion);
+    VkImageMemoryBarrier l_barrierFinal{ VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER };
+    l_barrierFinal.oldLayout = VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL;
+    l_barrierFinal.newLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
+    l_barrierFinal.srcAccessMask = VK_ACCESS_TRANSFER_WRITE_BIT;
+    l_barrierFinal.dstAccessMask = VK_ACCESS_SHADER_READ_BIT;
+    l_barrierFinal.image = m_viewportImage;
+    l_barrierFinal.subresourceRange = { VK_IMAGE_ASPECT_COLOR_BIT, 0, 1, 0, 1 };
 
-
-    VkImageMemoryBarrier barrierFinal = {};
-    barrierFinal.sType = VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER;
-    barrierFinal.oldLayout = VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL;
-    barrierFinal.newLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
-    barrierFinal.srcAccessMask = VK_ACCESS_TRANSFER_WRITE_BIT;
-    barrierFinal.dstAccessMask = VK_ACCESS_SHADER_READ_BIT;
-    barrierFinal.image = m_viewportImage;
-    barrierFinal.subresourceRange = { VK_IMAGE_ASPECT_COLOR_BIT, 0, 1, 0, 1 };
-
-    vkCmdPipelineBarrier(
-            a_cmdBuffer,
-            VK_PIPELINE_STAGE_TRANSFER_BIT,
-            VK_PIPELINE_STAGE_FRAGMENT_SHADER_BIT,
-            0,
-            0, nullptr,
-            0, nullptr,
-            1, &barrierFinal);
+    vkCmdPipelineBarrier(a_cmdBuffer, VK_PIPELINE_STAGE_TRANSFER_BIT, VK_PIPELINE_STAGE_FRAGMENT_SHADER_BIT, 0, 0, nullptr, 0, nullptr, 1, &l_barrierFinal);
 }
 
-void VulkanRenderer::DestroyViewportImage(IDevice* a_device)
+
+void VulkanRenderer::DestroyViewportImage(IDevice* a_device) const
 {
-    VkDevice l_device = a_device->CastVulkan()->GetDevice();
+    const VkDevice& l_device = a_device->CastVulkan()->GetDevice();
     vkDestroySampler(l_device, m_viewportSampler, nullptr);
     vkDestroyImageView(l_device, m_viewportImageview, nullptr);
     vkFreeMemory(l_device, m_viewportMemory, nullptr);
     vkDestroyImage(l_device, m_viewportImage, nullptr);
 }
+
 
 void VulkanRenderer::SetupSubmitInfo(VkSubmitInfo& a_submitInfo, const std::vector<VkSemaphore>& a_waitSemaphores, const std::array<VkPipelineStageFlags, 1>& a_waitStages, const std::vector<VkCommandBuffer>& a_commandBuffer, const std::vector<VkSemaphore>& a_signalSemaphores) const
 {
@@ -371,27 +342,20 @@ void VulkanRenderer::PresentRendererInfo(VkPresentInfoKHR& a_presentInfo, const 
 }
 
 
-void VulkanRenderer::PresentRenderPassInfo(VkRenderPassBeginInfo& a_renderPassBeginInfo, const VkRenderPass& a_renderPass, const VkFramebuffer& a_framebuffer, const VkExtent2D& a_swapchainExtent, std::array<VkClearValue, 2> a_clearValues, const bool& isEditor)
+void VulkanRenderer::PresentRenderPassInfo(VkRenderPassBeginInfo& a_renderPassBeginInfo, const VkRenderPass& a_renderPass, const VkFramebuffer& a_framebuffer, const VkExtent2D& a_swapchainExtent, std::array<VkClearValue, 2> a_clearValues)
 {
     a_renderPassBeginInfo.renderPass = a_renderPass;
     a_renderPassBeginInfo.framebuffer = a_framebuffer;
     a_renderPassBeginInfo.renderArea.offset = { 0, 0 };
     a_renderPassBeginInfo.renderArea.extent = a_swapchainExtent;
 
-    /*if (!isEditor)
-    {*/
     a_clearValues[0].color = { { 0.1f, 0.1f, 0.1f, 1.0f } };
     a_clearValues[1].depthStencil = { 1.0f, 0 };
 
     a_renderPassBeginInfo.clearValueCount = static_cast<uint32_t>(a_clearValues.size());
     a_renderPassBeginInfo.pClearValues = a_clearValues.data();
-    /*}
-    else
-    {
-        a_renderPassBeginInfo.clearValueCount = 0;
-        a_renderPassBeginInfo.pClearValues = nullptr;
-    }*/
 }
+
 
 void VulkanRenderer::FillViewportInfo(VkViewport& a_viewport, const VkExtent2D& a_swapChainExtent)
 {
