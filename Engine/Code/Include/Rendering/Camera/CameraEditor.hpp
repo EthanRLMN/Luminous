@@ -10,10 +10,9 @@ public:
     CameraEditor() {};
     ~CameraEditor() {};
 
-    //void CameraInputUpdate(IWindow* a_window);
+    void InitCameraEditor(IWindow* a_window, float a_aspectRatio);
+    // void CameraInputUpdate(IWindow* a_window);
 
 private:
-
-    
 };
 
