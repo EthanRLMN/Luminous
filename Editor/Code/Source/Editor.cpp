@@ -101,7 +101,7 @@ void Editor::Render() const
     VulkanRenderer::RegisterGuiCallback([&] { ImGui_ImplVulkan_RenderDrawData(ImGui::GetDrawData(), m_engine->GetCommandBuffer()->CastVulkan()->GetCommandBuffers()[m_engine->GetRenderingDraw()->CastVulkan()->GetCurrentFrame()]); });
 
     const ImGuiIO& l_io = ImGui::GetIO();
-    if (l_io.ConfigFlags & ImGuiConfigFlags_ViewportsEnable)
+    if (l_io.ConfigFlags & ImGuiConfigFlags_ViewportsEnable | ImGuiConfigFlags_DockingEnable)
     {
         ImGui::UpdatePlatformWindows();
         ImGui::RenderPlatformWindowsDefault();
