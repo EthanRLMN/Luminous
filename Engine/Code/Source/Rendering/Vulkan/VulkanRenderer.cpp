@@ -40,17 +40,15 @@ void VulkanRenderer::DrawFrame(IWindow* a_window, IDevice* a_device, ISwapChain*
 
     vkWaitForFences(l_device, 1, &a_synchronization->CastVulkan()->GetFences()[m_currentFrame], VK_TRUE, UINT64_MAX);
     uint32_t l_imageIndex{ 0 };
-    VkResult l_result = vkAcquireNextImageKHR(l_device, l_swapchain, UINT64_MAX, a_synchronization->CastVulkan()->GetImageAvailableSemaphores()[m_currentFrame], nullptr, &l_imageIndex);
 
-    /*
+    VkResult l_result = vkAcquireNextImageKHR(l_device, l_swapchain, UINT64_MAX, a_synchronization->CastVulkan()->GetImageAvailableSemaphores()[m_currentFrame], nullptr, &l_imageIndex);
     if (l_result == VK_ERROR_OUT_OF_DATE_KHR)
     {
-
-        RecreateSwapChain(a_window, a_device, a_surface, a_swapChain, a_depthResource, a_frameBufferManager->GetFrameBufferAt(0), a_renderPassManager->GetRenderPassAt(0), a_multisampling);
+        RecreateSwapChain(a_window, a_device, a_surface, a_swapChain, a_depthResource, a_frameBufferManager, a_renderPassManager, a_multisampling);
         return;
-    }*/
+    }
     if (l_result != VK_SUCCESS && l_result != VK_SUBOPTIMAL_KHR)
-        DEBUG_LOG_ERROR("failed to acquire swap chain image");
+        throw std::runtime_error("failed to present swap chain image");
 
     UpdateUniformBuffer(m_currentFrame, a_swapChain, a_buffer);
     vkResetFences(l_device, 1, &a_synchronization->CastVulkan()->GetFences()[m_currentFrame]);
