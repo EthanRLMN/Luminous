@@ -51,7 +51,7 @@ void Editor::SetupImGui() const
     ImGui::CreateContext();
     EditorStyle::SetupImGuiStyle();
     ImGuiIO& l_io = ImGui::GetIO(); static_cast<void>(l_io);
-    l_io.ConfigFlags |= ImGuiConfigFlags_ViewportsEnable | ImGuiConfigFlags_NavEnableKeyboard | ImGuiConfigFlags_DockingEnable | ImGuiConfigFlags_IsSRGB | ImGuiDockNodeFlags_NoWindowMenuButton;
+    l_io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard | ImGuiConfigFlags_DockingEnable | ImGuiConfigFlags_IsSRGB | ImGuiDockNodeFlags_NoWindowMenuButton;
     l_io.ConfigViewportsNoTaskBarIcon = false;
     l_io.ConfigViewportsNoAutoMerge = false;
     l_io.ConfigDockingAlwaysTabBar = true;

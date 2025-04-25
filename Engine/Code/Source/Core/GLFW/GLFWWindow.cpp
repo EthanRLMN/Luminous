@@ -1,5 +1,7 @@
 #include "Core/GLFW/GLFWWindow.hpp"
 
+#include "Vector2.hpp"
+
 GLFWwindow* GLFWWindow::Initialize(const std::string& a_name, const int& a_width, const int& a_height)
 {
     glfwInit();
@@ -37,11 +39,6 @@ void GLFWWindow::Update() const
 }
 
 
-void GLFWWindow::PollEvents() const { glfwPollEvents(); }
-
-bool GLFWWindow::ShouldClose() const { return glfwWindowShouldClose(m_window); }
-
-
 void GLFWWindow::Destroy() const
 {
     glfwDestroyWindow(m_window);
@@ -58,30 +55,11 @@ Maths::Vector2 GLFWWindow::GetSize() const
 }
 
 
-void GLFWWindow::SetSize(const Maths::Vector2& a_size) { glfwSetWindowSize(m_window, static_cast<int>(a_size.x), static_cast<int>(a_size.y)); }
-
-
-float GLFWWindow::GetOpacity() const { return glfwGetWindowOpacity(m_window); }
-
-
-void GLFWWindow::SetOpacity(const float& a_alpha) { glfwSetWindowOpacity(m_window, a_alpha); }
-
-
-std::string GLFWWindow::GetTitle() const { return glfwGetWindowTitle(m_window); }
-
-
-void GLFWWindow::GetFrameBufferSize(int* a_width, int* a_height) { glfwGetFramebufferSize(m_window, a_width, a_height); }
-
 void GLFWWindow::RetrieveMonitorInformation()
 {
     m_monitor = glfwGetPrimaryMonitor();
     m_vidMode = glfwGetVideoMode(m_monitor);
 }
-
-
-void GLFWWindow::SetTitle(const std::string& a_name) { glfwSetWindowTitle(m_window, a_name.c_str()); }
-
-void GLFWWindow::ProcessEvents() { glfwWaitEvents(); }
 
 float GLFWWindow::GetDeltaTime()
 {

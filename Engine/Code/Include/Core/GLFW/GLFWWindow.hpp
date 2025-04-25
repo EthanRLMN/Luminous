@@ -5,7 +5,7 @@
 
 #include "IWindow.hpp"
 
-#include "Vector2.hpp"
+class Vector2;
 
 
 class GLFWWindow final : public IWindow
@@ -15,24 +15,27 @@ public:
     void Initialize(const std::string& a_name) override;
 
     void Update() const override;
-    void PollEvents() const override;
+    inline void PollEvents() const override { glfwPollEvents(); }
     void Destroy() const override;
-    void SetSize(const Maths::Vector2& a_size) override;
-    void SetOpacity(const float& a_alpha) override;
-    void SetTitle(const std::string& a_name) override;
-    [[nodiscard]] float GetDeltaTime();
-    void ProcessEvents() override;
 
-    [[nodiscard]] bool ShouldClose() const override;
+    inline void SetSize(const Maths::Vector2& a_size) override { glfwSetWindowSize(m_window, static_cast<int>(a_size.x), static_cast<int>(a_size.y)); }
+    inline void SetOpacity(const float& a_alpha) override { glfwSetWindowOpacity(m_window, a_alpha); }
+    inline void SetTitle(const std::string& a_name) override { glfwSetWindowTitle(m_window, a_name.c_str()); }
+    inline void ProcessEvents() override { glfwWaitEvents(); }
+
+    [[nodiscard]] inline bool ShouldClose() const override { return glfwWindowShouldClose(m_window); }
+    [[nodiscard]] inline float GetOpacity() const override { return glfwGetWindowOpacity(m_window); }
+    [[nodiscard]] inline std::string GetTitle() const override { return glfwGetWindowTitle(m_window); }
+
     [[nodiscard]] Maths::Vector2 GetSize() const override;
-    [[nodiscard]] float GetOpacity() const override;
-    [[nodiscard]] std::string GetTitle() const override;
-    [[nodiscard]] const GLFWvidmode& GetMonitorInformation() const { return *m_vidMode; };
+    [[nodiscard]] static float GetDeltaTime();
 
-    GLFWWindow* CastGLFW() override { return this; }
+    void GetFrameBufferSize(int* a_width, int* a_height) override { glfwGetFramebufferSize(m_window, a_width, a_height); }
+    [[nodiscard]] const GLFWvidmode& GetMonitorInformation() const { return *m_vidMode; }
     [[nodiscard]] GLFWwindow* GetGLFWWindow() const { return m_window; }
 
-    void GetFrameBufferSize(int* a_width, int* a_height) override;
+    GLFWWindow* CastGLFW() override { return this; }
+    
 
 private:
     void RetrieveMonitorInformation();
