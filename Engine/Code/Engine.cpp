@@ -182,6 +182,7 @@ void Engine::PreRender()
 
     m_renderer = m_interface->InstantiateRenderer();
     m_renderer->CastVulkan()->CreateViewportImage(m_device, m_swapChain);
+
 }
 
 void Engine::DestroyWindow()

@@ -9,10 +9,12 @@ public:
     Camera() {};
     ~Camera() {};
 
+
+protected:
     void UpdateProjectionMatrix();
     void UpdateViewMatrix();  
 
-protected:
+
     //Windows aspect , Need to be changed to match the actual Window 
     float aspectRatio = 800.0f / 600.0f;
 

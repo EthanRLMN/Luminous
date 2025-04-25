@@ -30,6 +30,12 @@
 
 static VulkanRenderer::EditorRenderCallback l_editorGuiCallback{ nullptr };
 
+
+void VulkanRenderer::Create(IWindow* a_window, ISwapChain* a_swapChain)
+{
+    m_cameraEditor.InitCameraEditor(a_window, static_cast<float>(a_swapChain->CastVulkan()->GetSwapChainExtent().width) / static_cast<float>(a_swapChain->CastVulkan()->GetSwapChainExtent().height));
+}
+
 void VulkanRenderer::RegisterEditorRenderCallback(EditorRenderCallback a_callback) { l_editorGuiCallback = std::move(a_callback); }
 
 void VulkanRenderer::DrawFrame(IWindow* a_window, IDevice* a_device, ISwapChain* a_swapChain, IPipeline* a_pipeline, IBuffer* a_buffer, IRenderPassManager* a_renderPassManager, IDescriptor* a_descriptor, IMesh* a_mesh, ISynchronization* a_synchronization, ICommandBuffer* a_commandBuffer, IFrameBufferManager* a_frameBufferManager, IDepthResource* a_depthResource, ISurface* a_surface, IMultiSampling* a_multisampling)
@@ -143,10 +149,19 @@ void VulkanRenderer::UpdateUniformBuffer(const uint32_t& a_currentImage, ISwapCh
     const VkExtent2D& l_swapChainExtent = a_swapChain->CastVulkan()->GetSwapChainExtent();
 
     //Camera Settings Here
+    /*
     l_ubo.model = Maths::Matrix4::Rotate(Maths::Matrix4(1.0f), 0.0f, Maths::Vector3(0.0f, 0.0f, 1.0f));
     l_ubo.view = Maths::Matrix4::LookAt(Maths::Vector3(2.0f, 2.0f, 2.0f), Maths::Vector3(0.0f, 0.0f, 0.0f), Maths::Vector3(0.0f, 0.0f, 1.0f));
     l_ubo.proj = Maths::Matrix4::Perspective(Maths::DegToRad(45.f), static_cast<float>(l_swapChainExtent.width) / static_cast<float>(l_swapChainExtent.height), 0.1f, 10.0f);
     l_ubo.proj.mat[1][1] *= -1;
+
+    */
+
+
+    l_ubo.model = Maths::Matrix4::Rotate(Maths::Matrix4(1.0f), 0.0f, Maths::Vector3(0.0f, 0.0f, 1.0f));
+    //l_ubo.view = m_cameraEditor.UpdateViewMatrix();
+    //l_ubo.proj = m_cameraEditor.UpdateProjectionMatrix();
+
 
     memcpy(a_buffer->CastVulkan()->GetUniformBuffersMapped()[a_currentImage], &l_ubo, sizeof(l_ubo));
 }

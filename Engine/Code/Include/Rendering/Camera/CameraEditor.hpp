@@ -4,15 +4,19 @@
 #include "IInputManager.hpp"
 #include "IWindow.hpp"
 
-class CameraEditor : Camera
+class CameraEditor : public Camera
 {
 public:
     CameraEditor() {};
     ~CameraEditor() {};
 
+    //CameraEditor(float a_aspectRatio);
+
     void InitCameraEditor(IWindow* a_window, float a_aspectRatio);
+    void CameraInputUpdate(IWindow* a_window);
     // void CameraInputUpdate(IWindow* a_window);
 
 private:
+
 };
 
