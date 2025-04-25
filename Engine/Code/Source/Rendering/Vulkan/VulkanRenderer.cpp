@@ -33,7 +33,7 @@ static VulkanRenderer::EditorRenderCallback l_editorGuiCallback{ nullptr };
 
 void VulkanRenderer::Create(IWindow* a_window, ISwapChain* a_swapChain)
 {
-    m_cameraEditor.InitCameraEditor(a_window, static_cast<float>(a_swapChain->CastVulkan()->GetSwapChainExtent().width) / static_cast<float>(a_swapChain->CastVulkan()->GetSwapChainExtent().height));
+    m_cameraEditor.InitCameraEditor(a_window, static_cast<float>(a_swapChain->CastVulkan()->GetSwapChainExtent().width) / static_cast<float>(a_swapChain->CastVulkan()->GetSwapChainExtent().height),45.f,0.1f,1000.f);
 }
 
 void VulkanRenderer::RegisterEditorRenderCallback(EditorRenderCallback a_callback) { l_editorGuiCallback = std::move(a_callback); }
@@ -63,20 +63,20 @@ void VulkanRenderer::DrawFrame(IWindow* a_window, IDevice* a_device, ISwapChain*
     const VkExtent2D& l_swapChainExtent = a_swapChain->CastVulkan()->GetSwapChainExtent();
 
     //OLD Camera Settings Here
-    /*
+    
     l_ubo.model = Maths::Matrix4::Rotate(Maths::Matrix4(1.0f), 0.0f, Maths::Vector3(0.0f, 0.0f, 1.0f));
     l_ubo.view = Maths::Matrix4::LookAt(Maths::Vector3(2.0f, 2.0f, 2.0f), Maths::Vector3(0.0f, 0.0f, 0.0f), Maths::Vector3(0.0f, 0.0f, 1.0f));
-    l_ubo.proj = Maths::Matrix4::Perspective(Maths::DegToRad(45.f), static_cast<float>(l_swapChainExtent.width) / static_cast<float>(l_swapChainExtent.height), 0.1f, 10.0f);
-    l_ubo.proj.mat[1][1] *= -1;
+    l_ubo.proj = m_cameraEditor.m_projectionMatrix;
+    //l_ubo.proj.mat[1][1] *= -1;
 
-    */
+    
     
     m_cameraEditor.CameraEditorUpdate();
 
-    l_ubo.model = Maths::Matrix4::Rotate(Maths::Matrix4(1.0f), 0.0f, Maths::Vector3(0.0f, 0.0f, 1.0f));
-    l_ubo.view = m_cameraEditor.m_viewMatrix;
-    l_ubo.proj = m_cameraEditor.m_projectionMatrix;
-
+    //l_ubo.model = Maths::Matrix4::Rotate(Maths::Matrix4(1.0f), 0.0f, Maths::Vector3(0.0f, 0.0f, 1.0f));
+    //l_ubo.view = m_cameraEditor.m_viewMatrix;
+    //l_ubo.proj = m_cameraEditor.m_projectionMatrix;
+    
 
     memcpy(a_buffer->CastVulkan()->GetUniformBuffersMapped()[m_currentFrame], &l_ubo, sizeof(l_ubo));
 

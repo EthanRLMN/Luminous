@@ -181,6 +181,7 @@ void Engine::PreRender()
     m_synchronization->Create(m_device);
 
     m_renderer = m_interface->InstantiateRenderer();
+    m_renderer->Create(m_window, m_swapChain);
     m_renderer->CastVulkan()->CreateViewportImage(m_device, m_swapChain);
 
 }
