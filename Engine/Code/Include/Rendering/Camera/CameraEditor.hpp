@@ -18,8 +18,8 @@ public:
     Maths::Matrix4 m_viewMatrix = Maths::Matrix4::identity;
 
 private:
-    Maths::Vector3 m_positionCameraEditor = Maths::Vector3::One;
-    Maths::Vector3 m_directionCameraEditor = Maths::Vector3::One;
-    Maths::Vector3 m_upCameraEditor = Maths::Vector3::One;
+    Maths::Vector3 m_positionCameraEditor = Maths::Vector3(2.0f, 2.0f, 2.0f);
+    Maths::Vector3 m_directionCameraEditor = Maths::Vector3(0.0f, 0.0f, 0.0f);
+    Maths::Vector3 m_upCameraEditor = Maths::Vector3(0.0f, 0.0f, 1.0f);
 };
 
