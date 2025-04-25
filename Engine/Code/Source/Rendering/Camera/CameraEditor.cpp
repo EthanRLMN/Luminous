@@ -14,8 +14,8 @@ void CameraEditor::InitCameraEditor(IWindow* a_window , float a_aspectRatio,floa
 
 void CameraEditor::CameraEditorUpdate()
 {
-    m_projectionMatrix = UpdateProjectionMatrix();
     m_viewMatrix = UpdateViewMatrix();
+    m_projectionMatrix = UpdateProjectionMatrix();
 }
 
 
