@@ -7,6 +7,11 @@
 #include "Core/GLFW/GLFWWindow.hpp"
 #include "Rendering/Vulkan/VulkanDevice.hpp"
 
+
+
+//TEST CAMERA
+#include "Rendering/Camera/CameraEditor.hpp"
+
 class IFrameBuffer;
 
 class VulkanRenderer final : public IRenderer
@@ -45,4 +50,6 @@ private:
 
 	bool m_framebufferResized { false };
 	uint32_t m_currentFrame { 0 };
+
+    CameraEditor m_cameraEditor;
 };
