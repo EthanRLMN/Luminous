@@ -19,7 +19,7 @@ void CameraEditor::CameraEditorUpdate()
 }
 
 
-void CameraEditor::CameraInputUpdate(IWindow* a_window)
+void CameraEditor::CameraInputUpdate(IWindow* a_window,IInputManager* a_input)
 {
-
+        DEBUG_LOG_ERROR("TEST");
 }
