@@ -1,4 +1,3 @@
-#include "imgui.h"
 #include "imgui_internal.h"
 #include "backends/imgui_impl_glfw.h"
 #include "backends/imgui_impl_vulkan.h"
@@ -88,18 +87,14 @@ void Editor::Update()
 
 void Editor::Render() const
 {
-
-    
-
     ImGui_ImplVulkan_NewFrame();
     ImGui_ImplGlfw_NewFrame();
     ImGui::NewFrame();
 
+    // Update the main docking space every frame
+    ImGuiID id = ImGui::DockSpaceOverViewport(0, ImGui::GetMainViewport(), ImGuiDockNodeFlags_PassthruCentralNode);
 
-    ImGuiID dockSpaceID = ImGui::DockSpaceOverViewport(0, ImGui::GetMainViewport(), ImGuiDockNodeFlags_PassthruCentralNode);
     DrawWindows();
-
-
 
     ImGui::Render();
 

@@ -6,13 +6,9 @@
 
 void Viewport::Draw()
 {
-    ImGui::SetNextWindowPos(ImVec2(5, 70), ImGuiCond_FirstUseEver);
-    ImGui::SetNextWindowSize(ImVec2(1935, 880), ImGuiCond_FirstUseEver);
+    IWindowPanel::Draw();
 
     ImGui::Begin(p_windowIdentifier.c_str(), nullptr, ImGuiWindowFlags_NoCollapse);
-    ImGui::PushStyleVar(ImGuiStyleVar_FrameBorderSize, 5.0f);
-    ImGui::PushStyleColor(ImGuiCol_WindowBg, 0xff323432);
-
     VkExtent2D l_extent = p_editor->GetEngine()->GetSwapChain()->CastVulkan()->GetSwapChainExtent();
 
     float l_texWidth = static_cast<float>(l_extent.width);
@@ -29,18 +25,15 @@ void Viewport::Draw()
         l_fitWidth = l_fitHeight * l_aspectRatio;
     }
 
-    ImVec2 l_imageSize(l_fitWidth, l_fitHeight);
+    const ImVec2 l_imageSize(l_fitWidth, l_fitHeight);
 
-    ImVec2 l_screenPos = ImGui::GetCursorScreenPos();
-    float l_offsetX = (l_avail.x - l_imageSize.x) * 0.5f;
-    float l_offsetY = (l_avail.y - l_imageSize.y) * 0.5f;
+    const ImVec2 l_screenPos = ImGui::GetCursorScreenPos();
+    const float l_offsetX = (l_avail.x - l_imageSize.x) * 0.5f;
+    const float l_offsetY = (l_avail.y - l_imageSize.y) * 0.5f;
 
     ImGui::SetCursorScreenPos(ImVec2(l_screenPos.x + l_offsetX, l_screenPos.y + l_offsetY));
 
 
-    ImGui::Image((ImTextureID) dSets, l_imageSize);
-
-    ImGui::PopStyleColor();
-    ImGui::PopStyleVar();
+    ImGui::Image(reinterpret_cast<ImTextureID>(dSets), l_imageSize);
     ImGui::End();
 }

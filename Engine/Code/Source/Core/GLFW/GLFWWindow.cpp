@@ -7,6 +7,7 @@ GLFWwindow* GLFWWindow::Initialize(const std::string& a_name, const int& a_width
     glfwInit();
     glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
     glfwWindowHint(GLFW_RESIZABLE, GLFW_TRUE);
+    glfwWindowHint(GLFW_SRGB_CAPABLE, GLFW_TRUE);
 
     if (glfwVulkanSupported())
         DEBUG_LOG_INFO("Vulkan Window : GLFW Vulkan Support enabled!\n");
@@ -25,10 +26,7 @@ GLFWwindow* GLFWWindow::Initialize(const std::string& a_name, const int& a_width
 
 void GLFWWindow::Initialize(const std::string& a_name)
 {
-    Initialize(a_name, 800, 600);
-    SetSize(Maths::Vector2(static_cast<float>(m_vidMode->width), static_cast<float>(m_vidMode->height)));
-
-    glfwSetWindowPos(m_window, 1, 35);
+    Initialize(a_name, DefaultWidth, DefaultHeight);
 }
 
 
@@ -43,7 +41,7 @@ void GLFWWindow::Destroy() const
 {
     glfwDestroyWindow(m_window);
     glfwTerminate();
-    DEBUG_LOG_INFO("GLFW Window : Destroy!\n");
+    DEBUG_LOG_INFO("GLFW Window : Window destroyed!\n");
 }
 
 

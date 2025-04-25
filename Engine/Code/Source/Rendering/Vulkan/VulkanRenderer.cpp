@@ -151,7 +151,7 @@ void VulkanRenderer::UpdateUniformBuffer(const uint32_t& a_currentImage, ISwapCh
 }
 
 
-void VulkanRenderer::RecreateSwapChain(IWindow* a_window, IDevice* a_device, ISurface* a_surface, ISwapChain* a_swapChain, IDepthResource* a_depthResource, IFrameBufferManager* a_frameBuffer, IRenderPassManager* a_renderPass, IMultiSampling* a_multisampling)
+void VulkanRenderer::RecreateSwapChain(IWindow* a_window, IDevice* a_device, ISurface* a_surface, ISwapChain* a_swapChain, IDepthResource* a_depthResource, const IFrameBufferManager* a_frameBuffer, const IRenderPassManager* a_renderPass, IMultiSampling* a_multisampling)
 {
     int l_width, l_height{ 0 };
     a_window->CastGLFW()->GetFrameBufferSize(&l_width, &l_height);

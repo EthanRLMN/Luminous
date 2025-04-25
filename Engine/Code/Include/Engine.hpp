@@ -2,9 +2,9 @@
 
 #include "IRender.hpp"
 #include "ISynchronization.hpp"
-#include "ResourceManager/ResourceManager.hpp"
 #include "Game/Scene.hpp"
 #include "Physics/physics_JOLT.hpp"
+#include "ResourceManager/ResourceManager.hpp"
 
 
 class VulkanRenderInterface;
@@ -22,7 +22,7 @@ public:
 	void Window();
     void Input();
 	void PreRender();
-    void InitPhysics() { m_physicsJolt->Init_JOLT(); };
+    inline void InitPhysics() const { m_physicsJolt->Init_JOLT(); };
 
 	[[nodiscard]] IWindow* GetWindow() const { return m_window; }
 	[[nodiscard]] IInputManager* GetInputManager() const { return m_inputManager; }
@@ -70,8 +70,6 @@ private:
 	ICommandBuffer* m_commandBuffer{ nullptr };
 	ISynchronization* m_synchronization { nullptr };
     IRenderer* m_renderer { nullptr };
-
-
 	Scene* m_scene{ nullptr };
 	Physics* m_physicsJolt{ nullptr };
 

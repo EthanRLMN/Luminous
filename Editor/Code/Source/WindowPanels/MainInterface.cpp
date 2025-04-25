@@ -11,7 +11,6 @@ void MainInterface::Draw()
     // TODO: Add Draw calls of dependent popup windows here
     if (ImGui::BeginMainMenuBar())
     {
-        ImGui::PushStyleColor(ImGuiCol_WindowBg, 0xff323432);
         if (ImGui::BeginMenu("File"))
         {
             ImGui::MenuItem("New Project", "CTRL + N", false);
@@ -89,7 +88,6 @@ void MainInterface::Draw()
 
             ImGui::EndMenu();
         }
-        ImGui::PopStyleColor();
         ImGui::EndMainMenuBar();
     }
 

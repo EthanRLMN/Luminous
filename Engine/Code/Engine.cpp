@@ -40,7 +40,7 @@ void Engine::Destroy() const
     m_resourceManager->DeleteResource<VulkanShader>("v=Engine/Assets/Shaders/vert.spv, f=Engine/Assets/Shaders/frag.spv, t=, g=", m_device);
 
 
-    //NEED CLEANUP
+    // TODO: Cleanup
     m_renderer->CastVulkan()->DestroyViewportImage(m_device);
 
     m_commandBuffer->Destroy();
@@ -183,10 +183,11 @@ void Engine::PreRender()
     m_synchronization = m_interface->InstantiateSynchronization();
     m_synchronization->Create(m_device);
 
+    // TODO : Fix CastVulkan Call
     m_renderer = m_interface->InstantiateRenderer();
     m_renderer->CastVulkan()->CreateViewportImage(m_device, m_swapChain);
 
-    // a retire
+    // TODO : Remove
     m_physicsJolt = new Physics();
     m_physicsJolt->Init_JOLT();
 }

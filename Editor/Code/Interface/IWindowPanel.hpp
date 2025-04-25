@@ -6,8 +6,12 @@ class Editor;
 class IWindowPanel
 {
 public:
-    virtual ~IWindowPanel() { delete p_editor; };
-    explicit IWindowPanel(Editor* a_editor, const std::string& a_windowIdentifier)
+    static constexpr int s_defaultPanelWidth = 600;
+    static constexpr int s_defaultPanelHeight = 400;
+
+    inline virtual ~IWindowPanel() { delete p_editor; p_editor = nullptr; delete this; };
+
+    inline explicit IWindowPanel(Editor* a_editor, const std::string& a_windowIdentifier)
     {
         if (a_editor)
         {
@@ -16,13 +20,14 @@ public:
         }
         p_windowIdentifier = { a_windowIdentifier };
     }
+
     virtual void Init() = 0;
     virtual void Update() = 0;
-    virtual void Draw() = 0;
+    inline virtual void Draw() { ImGui::SetNextWindowSize(ImVec2(s_defaultPanelWidth, s_defaultPanelHeight), ImGuiCond_FirstUseEver); };
     virtual void Destroy() = 0;
 
-    virtual bool IsOpen() const { return p_isOpen; }
-    virtual std::string GetWindowIdentifier() const { return p_windowIdentifier; }
+    inline virtual bool IsOpen() const { return p_isOpen; }
+    inline virtual std::string GetWindowIdentifier() const { return p_windowIdentifier; }
 
 protected:
     Editor* p_editor{ nullptr };

@@ -5,12 +5,11 @@
 
 void Hierarchy::Draw()
 {
+    IWindowPanel::Draw();
+
     if (p_isOpen)
     {
-        ImGui::SetNextWindowPos(ImVec2(1955, 70), ImGuiCond_FirstUseEver);
-        ImGui::SetNextWindowSize(ImVec2(590, 595), ImGuiCond_FirstUseEver);
-
-        ImGui::Begin(p_windowIdentifier.c_str(), &p_isOpen, ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_MenuBar);
+        ImGui::Begin(p_windowIdentifier.c_str(), &p_isOpen, ImGuiWindowFlags_NoCollapse);
         ImGui::PushStyleColor(ImGuiCol_WindowBg, 0xff323432);
 
         ImGui::PopStyleColor();
