@@ -96,6 +96,7 @@ void Editor::Render() const
 
     ImGui::Render();
 
+    // We need to re-register the callback every frame since it needs to get the current frame rendered
     VulkanRenderer::RegisterEditorRenderCallback([&] { ImGui_ImplVulkan_RenderDrawData(ImGui::GetDrawData(), m_engine->GetCommandBuffer()->CastVulkan()->GetCommandBuffers()[m_engine->GetRenderingDraw()->CastVulkan()->GetCurrentFrame()]); });
 
     const ImGuiIO& l_io = ImGui::GetIO();

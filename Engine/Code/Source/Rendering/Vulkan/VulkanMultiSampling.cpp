@@ -1,8 +1,9 @@
-#include "Rendering/Vulkan/VulkanMultiSampling.hpp"
-
 #include "IDevice.hpp"
+
+#include "Rendering/Vulkan/VulkanMultiSampling.hpp"
 #include "Rendering/Vulkan/VulkanDevice.hpp"
 #include "Rendering/Vulkan/VulkanSwapChain.hpp"
+
 
 void VulkanMultiSampling::Create(IDevice* a_device, ISwapChain* a_swapchain)
 {
@@ -38,7 +39,6 @@ VkSampleCountFlagBits VulkanMultiSampling::GetMaxUsableSampleCount(IDevice* a_de
 {
     VkPhysicalDeviceProperties l_properties{};
     vkGetPhysicalDeviceProperties(a_device->CastVulkan()->GetPhysicalDevice(), &l_properties);
-
     const VkSampleCountFlags l_maxSupportedCount = l_properties.limits.framebufferColorSampleCounts & l_properties.limits.framebufferDepthSampleCounts;
     constexpr std::array<VkSampleCountFlagBits, 7> l_sampleCounts = {
         VK_SAMPLE_COUNT_64_BIT,
@@ -59,10 +59,9 @@ VkSampleCountFlagBits VulkanMultiSampling::GetMaxUsableSampleCount(IDevice* a_de
 
 void VulkanMultiSampling::CreateColorResources(IDevice* a_device, ISwapChain* a_swapchain)
 {
-    const VkFormat l_colorFormat = a_swapchain->CastVulkan()->GetSwapChainImageFormat();
     const VulkanDevice& l_device = *a_device->CastVulkan();
     const VulkanSwapChain& l_swapchain = *a_swapchain->CastVulkan();
 
-    a_swapchain->CastVulkan()->CreateImage(l_device.GetDevice(), l_device.GetPhysicalDevice(), l_swapchain.GetSwapChainExtent().width, l_swapchain.GetSwapChainExtent().height, l_colorFormat, VK_IMAGE_TILING_OPTIMAL, VK_IMAGE_USAGE_TRANSIENT_ATTACHMENT_BIT | VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT, m_colorImage, m_colorImageMemory, l_device.GetMSAASamples(), 1);
-    m_colorImageView = a_swapchain->CastVulkan()->CreateImageView(m_colorImage, l_device.GetDevice(), l_colorFormat, VK_IMAGE_ASPECT_COLOR_BIT, 1);
+    VulkanSwapChain::CreateImage(l_device.GetDevice(), l_device.GetPhysicalDevice(), l_swapchain.GetSwapChainExtent().width, l_swapchain.GetSwapChainExtent().height, VK_FORMAT_B8G8R8A8_UNORM, VK_IMAGE_TILING_OPTIMAL, VK_IMAGE_USAGE_TRANSIENT_ATTACHMENT_BIT | VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT, m_colorImage, m_colorImageMemory, l_device.GetMSAASamples(), 1);
+    m_colorImageView = VulkanSwapChain::CreateImageView(m_colorImage, l_device.GetDevice(), VK_FORMAT_B8G8R8A8_UNORM, VK_IMAGE_ASPECT_COLOR_BIT, 1);
 }

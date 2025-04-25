@@ -22,7 +22,7 @@ bool VulkanTexture::Create(IResourceManager* a_manager, const IResourceParams& a
         DEBUG_LOG_ERROR("DEVICE IS NULL");
 
     CreateTextureImage(l_device, l_swapChain, l_commandPool, a_params.m_texturePath);
-    CreateTextureImageView(l_device, l_swapChain);
+    CreateTextureImageView(l_device);
     CreateTextureSampler(l_device);
     DEBUG_LOG_INFO("Vulkan Texture : Texture Created!\n");
 
@@ -63,6 +63,7 @@ void VulkanTexture::Destroy(IDevice* a_device)
 }
 
 
+// TODO: Cleanup
 void VulkanTexture::CreateTextureImage(IDevice* a_device, ISwapChain* a_swapChain, ICommandPool* a_commandPool, const std::string& a_path)
 {
     if (a_device == nullptr)
@@ -94,18 +95,18 @@ void VulkanTexture::CreateTextureImage(IDevice* a_device, ISwapChain* a_swapChai
     vkUnmapMemory(l_vkDevice, l_stagingBufferMemory);
     stbi_image_free(l_pixels);
 
-    VulkanSwapChain::CreateImage(l_vkDevice, l_vkPhysicalDevice, l_texWidth, l_texHeight, VK_FORMAT_R8G8B8A8_SRGB, VK_IMAGE_TILING_OPTIMAL, VK_IMAGE_USAGE_TRANSFER_SRC_BIT | VK_IMAGE_USAGE_TRANSFER_DST_BIT | VK_IMAGE_USAGE_SAMPLED_BIT, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT, m_textureImage, m_textureImageMemory, VK_SAMPLE_COUNT_1_BIT, m_mipLevels);
+    VulkanSwapChain::CreateImage(l_vkDevice, l_vkPhysicalDevice, l_texWidth, l_texHeight, VK_FORMAT_B8G8R8A8_SRGB, VK_IMAGE_TILING_OPTIMAL, VK_IMAGE_USAGE_TRANSFER_SRC_BIT | VK_IMAGE_USAGE_TRANSFER_DST_BIT | VK_IMAGE_USAGE_SAMPLED_BIT, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT, m_textureImage, m_textureImageMemory, VK_SAMPLE_COUNT_1_BIT, m_mipLevels);
 
-    TransitionImageLayout(l_vkDevice, l_vkGraphicsQueue, l_vkCommandPool, m_textureImage, VK_FORMAT_R8G8B8A8_SRGB, VK_IMAGE_LAYOUT_UNDEFINED, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, m_mipLevels);
+    TransitionImageLayout(l_vkDevice, l_vkGraphicsQueue, l_vkCommandPool, m_textureImage, VK_FORMAT_B8G8R8A8_SRGB, VK_IMAGE_LAYOUT_UNDEFINED, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, m_mipLevels);
     CopyBufferToImage(l_vkDevice, l_vkGraphicsQueue, l_vkCommandPool, l_stagingBuffer, m_textureImage, static_cast<uint32_t>(l_texWidth), static_cast<uint32_t>(l_texHeight));
 
     vkDestroyBuffer(l_vkDevice, l_stagingBuffer, nullptr);
     vkFreeMemory(l_vkDevice, l_stagingBufferMemory, nullptr);
-    GenerateMipMaps(a_device, l_vkGraphicsQueue, a_commandPool->CastVulkan()->GetCommandPool(), m_textureImage, VK_FORMAT_R8G8B8A8_SRGB, l_texWidth, l_texHeight);
+    GenerateMipMaps(a_device, l_vkGraphicsQueue, a_commandPool->CastVulkan()->GetCommandPool(), m_textureImage, VK_FORMAT_B8G8R8A8_SRGB, l_texWidth, l_texHeight);
 }
 
 
-void VulkanTexture::CreateTextureImageView(IDevice* a_device, ISwapChain* a_swapChain)
+void VulkanTexture::CreateTextureImageView(IDevice* a_device)
 {
     m_textureImageView = VulkanSwapChain::CreateImageView(m_textureImage, a_device->CastVulkan()->GetDevice(), VK_FORMAT_R8G8B8A8_SRGB, VK_IMAGE_ASPECT_COLOR_BIT, m_mipLevels);
 }
@@ -129,7 +130,7 @@ void VulkanTexture::CreateTextureSampler(IDevice* a_device)
     l_samplerInfo.compareEnable = VK_FALSE;
     l_samplerInfo.compareOp = VK_COMPARE_OP_ALWAYS;
     l_samplerInfo.mipmapMode = VK_SAMPLER_MIPMAP_MODE_LINEAR;
-    l_samplerInfo.minLod = static_cast<float>(m_mipLevels / 32);
+    l_samplerInfo.minLod = static_cast<float>(m_mipLevels) / 32;
     l_samplerInfo.maxLod = static_cast<float>(m_mipLevels);
     l_samplerInfo.mipLodBias = 0.0f;
 
@@ -153,7 +154,7 @@ void VulkanTexture::CreateBuffer(const VkDevice& a_device, const VkPhysicalDevic
 
     VkMemoryAllocateInfo l_allocateInfo{ VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO };
     l_allocateInfo.allocationSize = l_memoryRequirements.size;
-    l_allocateInfo.memoryTypeIndex = a_swapChain->CastVulkan()->FindMemoryType(a_physicalDevice, l_memoryRequirements.memoryTypeBits, a_properties);
+    l_allocateInfo.memoryTypeIndex = VulkanSwapChain::FindMemoryType(a_physicalDevice, l_memoryRequirements.memoryTypeBits, a_properties);
 
     if (vkAllocateMemory(a_device, &l_allocateInfo, nullptr, &a_bufferMemory) != VK_SUCCESS)
         DEBUG_LOG_ERROR("Vulkan Texture : Failed to allocate Buffer Memory!\n");
@@ -261,7 +262,8 @@ void VulkanTexture::CopyBufferToImage(const VkDevice& a_device, const VkQueue& a
     EndSingleTimeCommands(a_device, a_graphicsQueue, a_commandPool, l_commandBuffer);
 }
 
-void VulkanTexture::GenerateMipMaps(IDevice* a_device, const VkQueue& a_graphicsQueue, const VkCommandPool& a_commandPool, const VkImage& a_image, const VkFormat& a_imageFormat, const uint32_t& a_width, const uint32_t& a_height)
+// TODO: Cleanup
+void VulkanTexture::GenerateMipMaps(IDevice* a_device, const VkQueue& a_graphicsQueue, const VkCommandPool& a_commandPool, const VkImage& a_image, const VkFormat& a_imageFormat, const uint32_t& a_width, const uint32_t& a_height) const
 {
     VkFormatProperties l_formatProperties{};
     vkGetPhysicalDeviceFormatProperties(a_device->CastVulkan()->GetPhysicalDevice(), a_imageFormat, &l_formatProperties);
@@ -279,8 +281,8 @@ void VulkanTexture::GenerateMipMaps(IDevice* a_device, const VkQueue& a_graphics
     l_barrier.subresourceRange.layerCount = 1;
     l_barrier.subresourceRange.levelCount = 1;
 
-    int32_t l_mipWidth = a_width;
-    int32_t l_mipHeight = a_height;
+    int32_t l_mipWidth = static_cast<int32_t>(a_width);
+    int32_t l_mipHeight = static_cast<int32_t>(a_height);
     for (uint32_t i = 1; i < m_mipLevels; ++i)
     {
         l_barrier.subresourceRange.baseMipLevel = i - 1;

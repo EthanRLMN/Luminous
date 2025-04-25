@@ -103,7 +103,7 @@ VkFormat VulkanRenderPass::FindSupportedFormat(const VkPhysicalDevice& a_physica
 {
     for (const VkFormat l_format : a_candidates)
     {
-        VkFormatProperties l_props;
+        VkFormatProperties l_props{};
         vkGetPhysicalDeviceFormatProperties(a_physicalDevice, l_format, &l_props);
 
         if (a_tiling == VK_IMAGE_TILING_LINEAR && (l_props.linearTilingFeatures & a_features) == a_features)

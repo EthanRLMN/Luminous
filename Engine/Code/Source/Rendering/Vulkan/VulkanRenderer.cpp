@@ -14,7 +14,7 @@
 #include "Rendering/Vulkan/VulkanCommandBuffer.hpp"
 #include "Rendering/Vulkan/VulkanDepthResource.hpp"
 #include "Rendering/Vulkan/VulkanDescriptor.hpp"
-#include "Rendering/Vulkan/VulkanFrameBufferManager.hpp"
+#include "Rendering/Vulkan/VulkanFrameBuffer.hpp"
 #include "Rendering/Vulkan/VulkanMesh.hpp"
 #include "Rendering/Vulkan/VulkanMultiSampling.hpp"
 #include "Rendering/Vulkan/VulkanPipeline.hpp"
@@ -24,13 +24,15 @@
 
 #include "MathUtils.hpp"
 #include "Matrix4.hpp"
-#include "Rendering/Vulkan/VulkanFrameBuffer.hpp"
 
 
 static VulkanRenderer::EditorRenderCallback l_editorGuiCallback{ nullptr };
 
+
 void VulkanRenderer::RegisterEditorRenderCallback(EditorRenderCallback a_callback) { l_editorGuiCallback = std::move(a_callback); }
 
+
+// TODO: Cleanup
 void VulkanRenderer::DrawFrame(IWindow* a_window, IDevice* a_device, ISwapChain* a_swapChain, IPipeline* a_pipeline, IBuffer* a_buffer, IRenderPassManager* a_renderPassManager, IDescriptor* a_descriptor, IMesh* a_mesh, ISynchronization* a_synchronization, ICommandBuffer* a_commandBuffer, IFrameBufferManager* a_frameBufferManager, IDepthResource* a_depthResource, ISurface* a_surface, IMultiSampling* a_multisampling)
 {
     const VkDevice& l_device{ a_device->CastVulkan()->GetDevice() };
@@ -201,17 +203,13 @@ void VulkanRenderer::CreateImageViews(IDevice* a_device, ISwapChain* a_swapChain
 
 void VulkanRenderer::CreateViewportImage(IDevice* a_device,ISwapChain* a_swapchain)
 {
+    const VkDevice& l_device = a_device->CastVulkan()->GetDevice();
+    const VkExtent2D l_extent = a_swapchain->CastVulkan()->GetSwapChainExtent();
 
-    VkDevice device = a_device->CastVulkan()->GetDevice();
-
-
-    std::cout << a_swapchain->CastVulkan()->GetSwapChainImageFormat() << "\n";
-
-    VkImageCreateInfo imageInfo{};
-    imageInfo.sType = VK_STRUCTURE_TYPE_IMAGE_CREATE_INFO;
+    VkImageCreateInfo imageInfo{ VK_STRUCTURE_TYPE_IMAGE_CREATE_INFO };
     imageInfo.imageType = VK_IMAGE_TYPE_2D;
-    imageInfo.extent.width = a_swapchain->CastVulkan()->GetSwapChainExtent().width;
-    imageInfo.extent.height = a_swapchain->CastVulkan()->GetSwapChainExtent().height;
+    imageInfo.extent.width = l_extent.width;
+    imageInfo.extent.height = l_extent.height;
     imageInfo.extent.depth = 1;
     imageInfo.mipLevels = 1;
     imageInfo.arrayLayers = 1;
@@ -223,21 +221,19 @@ void VulkanRenderer::CreateViewportImage(IDevice* a_device,ISwapChain* a_swapcha
     imageInfo.samples = VK_SAMPLE_COUNT_1_BIT;
     imageInfo.flags = 0;
 
-    vkCreateImage(device, &imageInfo, nullptr, &m_viewportImage);
+    vkCreateImage(l_device, &imageInfo, nullptr, &m_viewportImage);
 
     VkMemoryRequirements memRequirements;
-    vkGetImageMemoryRequirements(device, m_viewportImage, &memRequirements);
+    vkGetImageMemoryRequirements(l_device, m_viewportImage, &memRequirements);
 
-    VkMemoryAllocateInfo allocInfo{};
-    allocInfo.sType = VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO;
+    VkMemoryAllocateInfo allocInfo{ VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO };
     allocInfo.allocationSize = memRequirements.size;
     allocInfo.memoryTypeIndex = VulkanSwapChain::FindMemoryType(a_device->CastVulkan()->GetPhysicalDevice(), memRequirements.memoryTypeBits, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT);
 
-    vkAllocateMemory(device, &allocInfo, nullptr, &m_viewportMemory);
-    vkBindImageMemory(device, m_viewportImage, m_viewportMemory, 0);
+    vkAllocateMemory(l_device, &allocInfo, nullptr, &m_viewportMemory);
+    vkBindImageMemory(l_device, m_viewportImage, m_viewportMemory, 0);
 
-    VkImageViewCreateInfo viewInfo{};
-    viewInfo.sType = VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO;
+    VkImageViewCreateInfo viewInfo{ VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO };
     viewInfo.image = m_viewportImage;
     viewInfo.viewType = VK_IMAGE_VIEW_TYPE_2D;
     viewInfo.format = a_swapchain->CastVulkan()->GetSwapChainImageFormat();
@@ -247,7 +243,7 @@ void VulkanRenderer::CreateViewportImage(IDevice* a_device,ISwapChain* a_swapcha
     viewInfo.subresourceRange.baseArrayLayer = 0;
     viewInfo.subresourceRange.layerCount = 1;
 
-    vkCreateImageView(device, &viewInfo, nullptr, &m_viewportImageview);
+    vkCreateImageView(l_device, &viewInfo, nullptr, &m_viewportImageview);
 
 
     VkSamplerCreateInfo samplerInfo{};
@@ -263,7 +259,7 @@ void VulkanRenderer::CreateViewportImage(IDevice* a_device,ISwapChain* a_swapcha
     samplerInfo.compareEnable = VK_FALSE;
     samplerInfo.mipmapMode = VK_SAMPLER_MIPMAP_MODE_LINEAR;
 
-    vkCreateSampler(device, &samplerInfo, nullptr, &m_viewportSampler);
+    vkCreateSampler(l_device, &samplerInfo, nullptr, &m_viewportSampler);
 }
 
 void VulkanRenderer::CopyImageToViewport(ISwapChain* a_swapChain, VkCommandBuffer a_cmdBuffer) const
