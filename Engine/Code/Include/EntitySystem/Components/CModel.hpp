@@ -5,8 +5,8 @@
 class CModel : public EntityComponent
 {
 public:
-    std::string model_Path;
-    std::string texture_Path;
+    std::string m_modelPath;
+    std::string m_texturePath;
 
 private:
 
