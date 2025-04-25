@@ -62,6 +62,6 @@ void VulkanMultiSampling::CreateColorResources(IDevice* a_device, ISwapChain* a_
     const VulkanDevice& l_device = *a_device->CastVulkan();
     const VulkanSwapChain& l_swapchain = *a_swapchain->CastVulkan();
 
-    VulkanSwapChain::CreateImage(l_device.GetDevice(), l_device.GetPhysicalDevice(), l_swapchain.GetSwapChainExtent().width, l_swapchain.GetSwapChainExtent().height, VK_FORMAT_B8G8R8A8_UNORM, VK_IMAGE_TILING_OPTIMAL, VK_IMAGE_USAGE_TRANSIENT_ATTACHMENT_BIT | VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT, m_colorImage, m_colorImageMemory, l_device.GetMSAASamples(), 1);
-    m_colorImageView = VulkanSwapChain::CreateImageView(m_colorImage, l_device.GetDevice(), VK_FORMAT_B8G8R8A8_UNORM, VK_IMAGE_ASPECT_COLOR_BIT, 1);
+    VulkanSwapChain::CreateImage(l_device.GetDevice(), l_device.GetPhysicalDevice(), l_swapchain.GetSwapChainExtent().width, l_swapchain.GetSwapChainExtent().height, VK_FORMAT_B8G8R8A8_SRGB, VK_IMAGE_TILING_OPTIMAL, VK_IMAGE_USAGE_TRANSIENT_ATTACHMENT_BIT | VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT, m_colorImage, m_colorImageMemory, l_device.GetMSAASamples(), 1);
+    m_colorImageView = VulkanSwapChain::CreateImageView(m_colorImage, l_device.GetDevice(), VK_FORMAT_B8G8R8A8_SRGB, VK_IMAGE_ASPECT_COLOR_BIT, 1);
 }
