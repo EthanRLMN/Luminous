@@ -7,7 +7,9 @@
 #include "Core/GLFW/GLFWWindow.hpp"
 #include "Rendering/Vulkan/VulkanDevice.hpp"
 
+
 class IFrameBuffer;
+
 
 class VulkanRenderer final : public IRenderer
 {
@@ -27,15 +29,15 @@ public:
 	static void CreateImageViews(IDevice* a_device, ISwapChain* a_swapChain);
 
 	[[nodiscard]] uint32_t GetCurrentFrame() const { return m_currentFrame; }
+	[[nodiscard]] VkImage GetViewportImage() const { return m_viewportImage; }
+	[[nodiscard]] VkImageView GetViewportImageView() const { return m_viewportImageview; }
+	[[nodiscard]] VkDeviceMemory GetViewportImageMemory() const { return m_viewportMemory; }
+	[[nodiscard]] VkSampler GetViewportImageSampler() const { return m_viewportSampler; }
 
 	void CreateViewportImage(IDevice* a_device, ISwapChain* a_swapchain);
     void CopyImageToViewport(ISwapChain* a_swapChain, const VkCommandBuffer& a_cmdBuffer) const;
     void DestroyViewportImage(IDevice* a_device);
 
-	VkImage m_viewportImage;
-    VkImageView m_viewportImageview;
-    VkDeviceMemory m_viewportMemory;
-    VkSampler m_viewportSampler;
 
 private:
     void SetupSubmitInfo(VkSubmitInfo& a_submitInfo, const std::vector<VkSemaphore>& a_waitSemaphores, const std::array<VkPipelineStageFlags, 1>& a_waitStages, const std::vector<VkCommandBuffer>& a_commandBuffer, const std::vector<VkSemaphore>& a_signalSemaphores) const;
@@ -45,4 +47,9 @@ private:
 
 	bool m_framebufferResized { false };
 	uint32_t m_currentFrame { 0 };
+
+    VkImage m_viewportImage{ nullptr };
+    VkImageView m_viewportImageview{ nullptr };
+    VkDeviceMemory m_viewportMemory{ nullptr };
+    VkSampler m_viewportSampler{ nullptr };
 };
