@@ -54,8 +54,34 @@ void VulkanRenderer::DrawFrame(IWindow* a_window, IDevice* a_device, ISwapChain*
     }
     if (l_result != VK_SUCCESS && l_result != VK_SUBOPTIMAL_KHR)
         DEBUG_LOG_ERROR("failed to acquire swap chain image");
+    //***********************************//
+    static std::chrono::steady_clock::time_point l_startTime = std::chrono::high_resolution_clock::now();
+    const std::chrono::steady_clock::time_point l_currentTime = std::chrono::high_resolution_clock::now();
+    const float l_time = std::chrono::duration<float, std::chrono::seconds::period>(l_currentTime - l_startTime).count();
 
-    UpdateUniformBuffer(m_currentFrame, a_swapChain, a_buffer);
+    UniformBufferObject l_ubo{};
+    const VkExtent2D& l_swapChainExtent = a_swapChain->CastVulkan()->GetSwapChainExtent();
+
+    //OLD Camera Settings Here
+    /*
+    l_ubo.model = Maths::Matrix4::Rotate(Maths::Matrix4(1.0f), 0.0f, Maths::Vector3(0.0f, 0.0f, 1.0f));
+    l_ubo.view = Maths::Matrix4::LookAt(Maths::Vector3(2.0f, 2.0f, 2.0f), Maths::Vector3(0.0f, 0.0f, 0.0f), Maths::Vector3(0.0f, 0.0f, 1.0f));
+    l_ubo.proj = Maths::Matrix4::Perspective(Maths::DegToRad(45.f), static_cast<float>(l_swapChainExtent.width) / static_cast<float>(l_swapChainExtent.height), 0.1f, 10.0f);
+    l_ubo.proj.mat[1][1] *= -1;
+
+    */
+    
+    m_cameraEditor.CameraEditorUpdate();
+
+    l_ubo.model = Maths::Matrix4::Rotate(Maths::Matrix4(1.0f), 0.0f, Maths::Vector3(0.0f, 0.0f, 1.0f));
+    l_ubo.view = m_cameraEditor.m_viewMatrix;
+    l_ubo.proj = m_cameraEditor.m_projectionMatrix;
+
+
+    memcpy(a_buffer->CastVulkan()->GetUniformBuffersMapped()[m_currentFrame], &l_ubo, sizeof(l_ubo));
+
+
+    ///*************************************************///
     vkResetFences(l_device, 1, &a_synchronization->CastVulkan()->GetFences()[m_currentFrame]);
 
     VkSubmitInfo l_submitInfo{ VK_STRUCTURE_TYPE_SUBMIT_INFO };
@@ -156,10 +182,10 @@ void VulkanRenderer::UpdateUniformBuffer(const uint32_t& a_currentImage, ISwapCh
     l_ubo.proj.mat[1][1] *= -1;
 
     */
-
+    
 
     l_ubo.model = Maths::Matrix4::Rotate(Maths::Matrix4(1.0f), 0.0f, Maths::Vector3(0.0f, 0.0f, 1.0f));
-    //l_ubo.view = m_cameraEditor.UpdateViewMatrix();
+    //l_ubo.view = m_cameraEditor.
     //l_ubo.proj = m_cameraEditor.UpdateProjectionMatrix();
 
 

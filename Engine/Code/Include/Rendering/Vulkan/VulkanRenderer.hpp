@@ -10,7 +10,6 @@
 
 
 //TEST CAMERA
-#include "Rendering/Camera/Camera.hpp"
 #include "Rendering/Camera/CameraEditor.hpp"
 
 class IFrameBuffer;
