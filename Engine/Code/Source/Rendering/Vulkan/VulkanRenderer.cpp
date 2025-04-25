@@ -168,8 +168,6 @@ void VulkanRenderer::RecreateSwapChain(IWindow* a_window, IDevice* a_device, ISu
 
     CreateImageViews(a_device, a_swapChain);
     a_multisampling->CastVulkan()->CreateColorResources(a_device, a_swapChain);
-
-
     a_depthResource->CastVulkan()->Create(a_device, a_swapChain, a_renderPass->GetRenderPassAt(0));
 
     a_frameBuffer->GetFrameBufferAt(0)->CastVulkan()->Create(a_device, a_swapChain, a_renderPass->GetRenderPassAt(0), a_depthResource, a_multisampling, false);
@@ -274,9 +272,8 @@ void VulkanRenderer::CreateViewportImage(IDevice* a_device, ISwapChain* a_swapch
 
 void VulkanRenderer::CopyImageToViewport(ISwapChain* a_swapChain, const VkCommandBuffer& a_cmdBuffer) const
 {
-    VkImageMemoryBarrier barrierSrc = {};
-    barrierSrc.sType = VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER;
-    barrierSrc.oldLayout = VK_IMAGE_LAYOUT_PRESENT_SRC_KHR;
+    VkImageMemoryBarrier barrierSrc{ VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER };
+    barrierSrc.oldLayout = VK_IMAGE_LAYOUT_UNDEFINED;
     barrierSrc.newLayout = VK_IMAGE_LAYOUT_TRANSFER_SRC_OPTIMAL;
     barrierSrc.srcAccessMask = VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT;
     barrierSrc.dstAccessMask = VK_ACCESS_TRANSFER_READ_BIT;
