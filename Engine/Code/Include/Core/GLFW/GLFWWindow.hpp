@@ -8,6 +8,7 @@
 #include "Vector2.hpp"
 
 
+
 class GLFWWindow final : public IWindow
 {
 public:
@@ -20,7 +21,7 @@ public:
     void SetSize(const Maths::Vector2& a_size) override;
     void SetOpacity(const float& a_alpha) override;
     void SetTitle(const std::string& a_name) override;
-    [[nodiscard]] float GetDeltaTime();
+    float GetDeltaTime();
     void ProcessEvents() override;
 
     [[nodiscard]] bool ShouldClose() const override;

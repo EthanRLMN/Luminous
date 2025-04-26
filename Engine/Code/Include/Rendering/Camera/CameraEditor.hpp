@@ -1,6 +1,7 @@
 #pragma once
 #include "Camera.hpp"
 #include "Core/GLFW/GLFWInputManager.hpp"
+#include "Core/GLFW/GLFWWindow.hpp"
 #include "IInputManager.hpp"
 #include "IWindow.hpp"
 
@@ -17,6 +18,8 @@ public:
 
     Maths::Matrix4 m_projectionMatrix = Maths::Matrix4::identity;
     Maths::Matrix4 m_viewMatrix = Maths::Matrix4::identity;
+
+    float movementSpeed = 5.f;
 
 private:
     Maths::Vector3 m_positionCameraEditor = Maths::Vector3(2.0f, 2.0f, 2.0f);
