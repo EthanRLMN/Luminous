@@ -19,6 +19,9 @@ public:
     void Draw() override;
     void Destroy() override {};
 
+    void InitializeVulkanDescriptorAndTexture();
+    void CreateTextureAndDescriptorForFile(const std::string& texturePath);
+
 private:
     std::filesystem::path m_currentDirectory{};
     inline static const std::filesystem::path s_AssetPath { "Engine/Assets" };

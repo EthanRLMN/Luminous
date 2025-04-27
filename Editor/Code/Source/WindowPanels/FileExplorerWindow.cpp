@@ -1,7 +1,11 @@
 #include "WindowPanels/FileExplorerWindow.hpp"
 #include "Editor.hpp"
+#include "Rendering/Vulkan/VulkanDescriptor.hpp"
+#include "Rendering/Vulkan/VulkanDevice.hpp"
+#include "Rendering/Vulkan/VulkanTexture.hpp"
 
-FileExplorerWindow::FileExplorerWindow(Editor* a_editor, const std::string& a_windowIdentifier) : IWindowPanel(a_editor, a_windowIdentifier), m_currentDirectory(s_AssetPath)
+FileExplorerWindow::FileExplorerWindow(Editor* a_editor, const std::string& a_windowIdentifier) :
+    IWindowPanel(a_editor, a_windowIdentifier), m_currentDirectory(s_AssetPath)
 {
     m_engine = a_editor->GetEngine();
 }
@@ -37,7 +41,6 @@ void FileExplorerWindow::Draw()
         m_texturesInitialized = true;
     }
 
-    // ImGui::SetNextWindowPos(ImGui::GetMainViewport()->Pos);
     ImGui::SetNextWindowSize(ImVec2(1920.f, 600.f), ImGuiCond_FirstUseEver);
 
     if (p_isOpen)
@@ -64,12 +67,46 @@ void FileExplorerWindow::Draw()
             std::string buttonId = "##" + filenameString;
             if (ImGui::ImageButton(buttonId.c_str(), icon, ImVec2(64, 64)))
             {
-                m_currentDirectory /= directoryEntry.path().filename();
+                if (directoryEntry.is_directory())
+                {
+                    m_currentDirectory /= directoryEntry.path().filename();
+                } else
+                {
+                    CreateTextureAndDescriptorForFile(path.string());
+                }
             }
             ImGui::SameLine();
             ImGui::Text("%s", filenameString.c_str());
         }
         ImGui::PopStyleColor();
         ImGui::End();
+    }
+}
+
+void FileExplorerWindow::InitializeVulkanDescriptorAndTexture()
+{
+    IDescriptorSetLayout* descriptorSetLayout = m_engine->GetDescriptionSetLayout();
+    ITexture* texture = m_engine->GetTexture();
+    IBuffer* buffer = m_engine->GetBuffer();
+
+    VulkanDescriptor descriptor;
+    descriptor.Create(m_engine->GetDevice(), descriptorSetLayout, texture, buffer);
+}
+
+void FileExplorerWindow::CreateTextureAndDescriptorForFile(const std::string& texturePath)
+{
+    IResourceParams textureParams;
+    textureParams.m_texturePath = texturePath;
+    textureParams.m_device = m_engine->GetDevice();
+    textureParams.m_swapChain = m_engine->GetSwapChain();
+    textureParams.m_commandPool = m_engine->GetCommandPool();
+
+    auto* texture = new VulkanTexture();
+    if (texture->Create(m_engine->GetResourceManager(), textureParams))
+    {
+        InitializeVulkanDescriptorAndTexture();
+    } else
+    {
+        DEBUG_LOG_ERROR("Failed to create Vulkan texture from path: %s", texturePath.c_str());
     }
 }
