@@ -27,7 +27,7 @@ void Engine::Update()
     m_inputManager->Update(m_window);
 
     m_scene->SceneEntity();
-    m_renderer->DrawFrame(m_window, m_device, m_swapChain, m_pipeline, m_buffer, m_renderPassManager, m_descriptor, m_mesh, m_synchronization, m_commandBuffer, m_frameBufferManager, m_depthResource, m_surface, m_multiSampling);
+    m_renderer->DrawFrame(m_window, m_device, m_swapChain, m_pipeline, m_buffer, m_renderPassManager, m_descriptor, m_mesh, m_synchronization, m_commandBuffer, m_frameBufferManager, m_depthResource, m_surface, m_multiSampling,m_inputManager);
 
     m_physicsJolt->Update_JOLT();
 
@@ -35,79 +35,76 @@ void Engine::Update()
         m_isRunning = false;
 }
 
-void Engine::Destroy() const
-{
-    m_resourceManager->DeleteResource<VulkanShader>("v=Engine/Assets/Shaders/vert.spv, f=Engine/Assets/Shaders/frag.spv, t=, g=", m_device);
+void Engine::Destroy()  
+{  
+   m_resourceManager->DeleteResource<VulkanShader>("v=Engine/Assets/Shaders/vert.spv, f=Engine/Assets/Shaders/frag.spv, t=, g=", m_device);  
 
+   //NEED CLEANUP  
+   m_renderer->CastVulkan()->DestroyViewportImage(m_device);  
 
     // TODO: Cleanup
     m_renderer->CastVulkan()->DestroyViewportImage(m_device);
 
-    m_commandBuffer->Destroy();
-    m_interface->DeleteCommandBuffer(m_commandBuffer);
+   m_descriptor->Destroy(m_device);  
+   m_interface->DeleteDescriptor(m_descriptor);  
 
-    m_descriptor->Destroy(m_device);
-    m_interface->DeleteDescriptor(m_descriptor);
+   m_buffer->Destroy(m_device);  
+   m_interface->DeleteBuffer(m_buffer);  
 
-    m_buffer->Destroy(m_device);
-    m_interface->DeleteBuffer(m_buffer);
+   m_mesh->Destroy(m_device);  
+   m_interface->DeleteModel(m_mesh);  
 
-    m_mesh->Destroy(m_device);
-    m_interface->DeleteModel(m_mesh);
+   m_texture->Destroy(m_device);  
+   m_interface->DeleteTexture(m_texture);  
 
-    m_texture->Destroy(m_device);
-    m_interface->DeleteTexture(m_texture);
+   m_frameBufferManager->Destroy(m_device);  
+   m_interface->DeleteFrameBufferManager(m_frameBufferManager);  
 
-    m_frameBufferManager->Destroy(m_device);
-    m_interface->DeleteFrameBufferManager(m_frameBufferManager);
+   m_depthResource->Destroy(m_device);  
+   m_interface->DeleteDepthResource(m_depthResource);  
 
-    m_depthResource->Destroy(m_device);
-    m_interface->DeleteDepthResource(m_depthResource);
+   m_multiSampling->Destroy(m_device);  
+   m_interface->DeleteMultiSampling(m_multiSampling);  
 
-    m_multiSampling->Destroy(m_device);
-    m_interface->DeleteMultiSampling(m_multiSampling);
+   m_editorCommandPool->Destroy(m_device, m_synchronization, m_renderer);  
+   m_interface->DeleteCommandPool(m_editorCommandPool);  
 
-    m_editorCommandPool->Destroy(m_device, m_synchronization, m_renderer);
-    m_interface->DeleteCommandPool(m_editorCommandPool);
+   m_commandPool->Destroy(m_device, m_synchronization, m_renderer);  
+   m_interface->DeleteCommandPool(m_commandPool);  
 
-    m_commandPool->Destroy(m_device, m_synchronization, m_renderer);
-    m_interface->DeleteCommandPool(m_commandPool);
+   m_pipeline->Destroy(m_device);  
+   m_interface->DeletePipeline(m_pipeline);  
 
-    m_pipeline->Destroy(m_device);
-    m_interface->DeletePipeline(m_pipeline);
+   m_descriptorSetLayout->Destroy(m_device);  
+   m_interface->DeleteDescriptorSetLayout(m_descriptorSetLayout);  
 
-    m_descriptorSetLayout->Destroy(m_device);
-    m_interface->DeleteDescriptorSetLayout(m_descriptorSetLayout);
+   m_renderPassManager->Destroy(m_device);  
+   m_interface->DeleteRenderPassManager(m_renderPassManager);  
 
-    m_renderPassManager->Destroy(m_device);
-    m_interface->DeleteRenderPassManager(m_renderPassManager);
+   m_swapChain->Destroy(m_device);  
+   m_interface->DeleteSwapChain(m_swapChain);  
 
-    m_swapChain->Destroy(m_device);
-    m_interface->DeleteSwapChain(m_swapChain);
+   m_synchronization->Destroy(m_device);  
+   m_interface->DeleteSynchronization(m_synchronization);  
 
-    m_synchronization->Destroy(m_device);
-    m_interface->DeleteSynchronization(m_synchronization);
+   m_device->Destroy();  
+   m_interface->DeleteDevice(m_device);  
 
-    m_device->Destroy();
-    m_interface->DeleteDevice(m_device);
+   m_surface->Destroy(m_instance);  
+   m_interface->DeleteSurface(m_surface);  
 
-    m_surface->Destroy(m_instance);
-    m_interface->DeleteSurface(m_surface);
+   m_instance->Destroy();  
+   m_interface->DeleteContext(m_instance);  
 
-    m_instance->Destroy();
-    m_interface->DeleteContext(m_instance);
+   m_interface->DeleteResourceManager(m_resourceManager);  
 
-    m_interface->DeleteResourceManager(m_resourceManager);
+   m_renderer->Destroy();  
+   m_interface->DeleteRenderer(m_renderer);  
 
-    m_renderer->Destroy();
-    m_interface->DeleteRenderer(m_renderer);
+   DestroyInput();  
+   DestroyWindow();  
+}    
 
-    m_inputManager->Destroy(m_window);
-    m_interface->DeleteInputManager(m_inputManager);
-
-    m_window->Destroy();
-    m_interface->DeleteWindow(m_window);
-}
 
 void Engine::Window()
 {
@@ -185,10 +182,20 @@ void Engine::PreRender()
 
     // TODO : Fix CastVulkan Call
     m_renderer = m_interface->InstantiateRenderer();
+    m_renderer->Create(m_window, m_swapChain);
     m_renderer->CastVulkan()->CreateViewportImage(m_device, m_swapChain);
 
-    // TODO : Remove
-    m_physicsJolt = new Physics();
-    m_physicsJolt->Init_JOLT();
+}
+
+void Engine::DestroyWindow()
+{
+    m_window->Destroy();
+    m_interface->DeleteWindow(m_window);
+}
+
+void Engine::DestroyInput() const
+{
+    m_inputManager->Destroy(m_window);
+    m_interface->DeleteInputManager(m_inputManager);
 }
 

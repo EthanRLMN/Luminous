@@ -17,12 +17,16 @@ public:
 
     void Init();
 	void Update();
-	void Destroy() const;
+	void Destroy();
 
 	void Window();
     void Input();
 	void PreRender();
     inline void InitPhysics() const { m_physicsJolt->Init_JOLT(); };
+
+
+	void DestroyWindow();
+    void DestroyInput() const;
 
 	[[nodiscard]] IWindow* GetWindow() const { return m_window; }
 	[[nodiscard]] IInputManager* GetInputManager() const { return m_inputManager; }

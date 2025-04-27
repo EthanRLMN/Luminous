@@ -8,6 +8,7 @@
 class Vector2;
 
 
+
 class GLFWWindow final : public IWindow
 {
 public:

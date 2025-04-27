@@ -26,14 +26,18 @@
 #include "Matrix4.hpp"
 
 
+
 static VulkanRenderer::EditorRenderCallback l_editorGuiCallback{ nullptr };
 
 
+void VulkanRenderer::Create(IWindow* a_window, ISwapChain* a_swapChain)
+{
+    m_cameraEditor.InitCameraEditor(a_window, static_cast<float>(a_swapChain->CastVulkan()->GetSwapChainExtent().width) / static_cast<float>(a_swapChain->CastVulkan()->GetSwapChainExtent().height),45.f,0.1f,1000.f);
+}
+
 void VulkanRenderer::RegisterEditorRenderCallback(EditorRenderCallback a_callback) { l_editorGuiCallback = std::move(a_callback); }
 
-
-// TODO: Cleanup
-void VulkanRenderer::DrawFrame(IWindow* a_window, IDevice* a_device, ISwapChain* a_swapChain, IPipeline* a_pipeline, IBuffer* a_buffer, IRenderPassManager* a_renderPassManager, IDescriptor* a_descriptor, IMesh* a_mesh, ISynchronization* a_synchronization, ICommandBuffer* a_commandBuffer, IFrameBufferManager* a_frameBufferManager, IDepthResource* a_depthResource, ISurface* a_surface, IMultiSampling* a_multisampling)
+void VulkanRenderer::DrawFrame(IWindow* a_window, IDevice* a_device, ISwapChain* a_swapChain, IPipeline* a_pipeline, IBuffer* a_buffer, IRenderPassManager* a_renderPassManager, IDescriptor* a_descriptor, IMesh* a_mesh, ISynchronization* a_synchronization, ICommandBuffer* a_commandBuffer, IFrameBufferManager* a_frameBufferManager, IDepthResource* a_depthResource, ISurface* a_surface, IMultiSampling* a_multisampling,IInputManager* a_inputManager)
 {
     const VkDevice& l_device{ a_device->CastVulkan()->GetDevice() };
     const VkSwapchainKHR& l_swapchain{ a_swapChain->CastVulkan()->GetSwapChain() };
@@ -50,7 +54,31 @@ void VulkanRenderer::DrawFrame(IWindow* a_window, IDevice* a_device, ISwapChain*
     if (l_result != VK_SUCCESS && l_result != VK_SUBOPTIMAL_KHR)
         throw std::runtime_error("failed to present swap chain image");
 
-    UpdateUniformBuffer(m_currentFrame, a_swapChain, a_buffer);
+    //***********************************//
+    static std::chrono::steady_clock::time_point l_startTime = std::chrono::high_resolution_clock::now();
+    const std::chrono::steady_clock::time_point l_currentTime = std::chrono::high_resolution_clock::now();
+    const float l_time = std::chrono::duration<float, std::chrono::seconds::period>(l_currentTime - l_startTime).count();
+
+    UniformBufferObject l_ubo{};
+    const VkExtent2D& l_swapChainExtent = a_swapChain->CastVulkan()->GetSwapChainExtent();
+
+    //OLD Camera Settings Here
+    
+    m_cameraEditor.CameraEditorUpdate();
+    m_cameraEditor.CameraInputUpdate(a_window,a_inputManager);
+
+    l_ubo.model = Maths::Matrix4::Rotate(Maths::Matrix4(1.0f), 0.0f, Maths::Vector3(0.0f, 0.0f, 1.0f));
+    l_ubo.view = m_cameraEditor.m_viewMatrix;
+    l_ubo.proj = m_cameraEditor.m_projectionMatrix;
+    l_ubo.proj.mat[1][1] *= -1;
+
+   
+    memcpy(a_buffer->CastVulkan()->GetUniformBuffersMapped()[m_currentFrame], &l_ubo, sizeof(l_ubo));
+
+    ///*************************************************//
+
+
+
     vkResetFences(l_device, 1, &a_synchronization->CastVulkan()->GetFences()[m_currentFrame]);
 
     VkSubmitInfo l_submitInfo{ VK_STRUCTURE_TYPE_SUBMIT_INFO };

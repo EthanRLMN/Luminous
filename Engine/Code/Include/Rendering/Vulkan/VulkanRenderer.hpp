@@ -9,6 +9,11 @@
 #include "Rendering/Vulkan/VulkanFrameBufferManager.hpp"
 #include "Rendering/Vulkan/VulkanRenderpassManager.hpp"
 
+
+
+//TEST CAMERA
+#include "Rendering/Camera/CameraEditor.hpp"
+
 class IFrameBuffer;
 
 
@@ -16,9 +21,10 @@ class VulkanRenderer final : public IRenderer
 {
 public:
     using EditorRenderCallback = std::function<void()>;
+    void Create(IWindow* a_window, ISwapChain* a_swapChain) override;
     static void RegisterEditorRenderCallback(EditorRenderCallback a_callback);
 
-    void DrawFrame(IWindow* a_window, IDevice* a_device, ISwapChain* a_swapChain, IPipeline* a_pipeline, IBuffer* a_buffer, IRenderPassManager* a_renderPassManager, IDescriptor* a_descriptor, IMesh* a_mesh, ISynchronization* a_synchronization, ICommandBuffer* a_commandBuffer, IFrameBufferManager* a_frameBufferManager, IDepthResource* a_depthResource, ISurface* a_surface, IMultiSampling* a_multisampling) override;
+    void DrawFrame(IWindow* a_window, IDevice* a_device, ISwapChain* a_swapChain, IPipeline* a_pipeline, IBuffer* a_buffer, IRenderPassManager* a_renderPassManager, IDescriptor* a_descriptor, IMesh* a_mesh, ISynchronization* a_synchronization, ICommandBuffer* a_commandBuffer, IFrameBufferManager* a_frameBufferManager, IDepthResource* a_depthResource, ISurface* a_surface, IMultiSampling* a_multisampling, IInputManager* a_inputManager) override;
     void Destroy() override {};
     VulkanRenderer* CastVulkan() override { return this; }
 
@@ -50,6 +56,7 @@ private:
 	bool m_framebufferResized { false };
 	uint32_t m_currentFrame { 0 };
 
+    CameraEditor m_cameraEditor;
     VkImage m_viewportImage{ nullptr };
     VkImageView m_viewportImageview{ nullptr };
     VkDeviceMemory m_viewportMemory{ nullptr };
