@@ -1,4 +1,6 @@
 #include "Include/Engine.hpp"
+
+#include "Game/Systems/Time.inl"
 #include "Rendering/Vulkan/VulkanRenderInterface.hpp"
 #include "Rendering/Vulkan/VulkanRenderPass.hpp"
 
@@ -23,6 +25,8 @@ void Engine::Init()
 
 void Engine::Update()
 {
+    Time::Update();
+
     m_window->Update();
     m_inputManager->Update(m_window);
 

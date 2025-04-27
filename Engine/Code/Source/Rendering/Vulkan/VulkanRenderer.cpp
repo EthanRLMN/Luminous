@@ -32,7 +32,7 @@ static VulkanRenderer::EditorRenderCallback l_editorGuiCallback{ nullptr };
 
 void VulkanRenderer::Create(IWindow* a_window, ISwapChain* a_swapChain)
 {
-    m_cameraEditor.InitCameraEditor(a_window, static_cast<float>(a_swapChain->CastVulkan()->GetSwapChainExtent().width) / static_cast<float>(a_swapChain->CastVulkan()->GetSwapChainExtent().height),45.f,0.1f,1000.f);
+    m_cameraEditor.Init(a_window, static_cast<float>(a_swapChain->CastVulkan()->GetSwapChainExtent().width) / static_cast<float>(a_swapChain->CastVulkan()->GetSwapChainExtent().height),45.f,0.1f,1000.f);
 }
 
 void VulkanRenderer::RegisterEditorRenderCallback(EditorRenderCallback a_callback) { l_editorGuiCallback = std::move(a_callback); }
@@ -64,8 +64,8 @@ void VulkanRenderer::DrawFrame(IWindow* a_window, IDevice* a_device, ISwapChain*
 
     //OLD Camera Settings Here
     
-    m_cameraEditor.CameraEditorUpdate();
-    m_cameraEditor.CameraInputUpdate(a_window,a_inputManager);
+    m_cameraEditor.Update();
+    m_cameraEditor.UpdateInput(a_window,a_inputManager);
 
     l_ubo.model = Maths::Matrix4::Rotate(Maths::Matrix4(1.0f), 0.0f, Maths::Vector3(0.0f, 0.0f, 1.0f));
     l_ubo.view = m_cameraEditor.m_viewMatrix;

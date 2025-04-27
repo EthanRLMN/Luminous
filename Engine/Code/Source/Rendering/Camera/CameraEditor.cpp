@@ -1,46 +1,45 @@
 #include "Rendering/Camera/CameraEditor.hpp"
 
+#include "Game/Systems/Time.inl"
 
-void CameraEditor::InitCameraEditor(IWindow* a_window , float a_aspectRatio,float a_fov,float a_nearPlane,float a_farPlane)
+
+void CameraEditor::Init(IWindow* a_window, const float a_aspectRatio, const float a_fov, const float a_nearPlane, const float a_farPlane)
 {
     aspectRatio = a_aspectRatio;
     fov = a_fov;
     nearPlane = a_nearPlane;
     farPlane = a_farPlane;
 
-    m_position = m_positionCameraEditor;
-    m_direction = m_directionCameraEditor;
-    m_up = m_upCameraEditor;
+    m_position = m_camPosition;
+    m_direction = m_camDirection;
+    m_up = m_camUp;
 }
 
-void CameraEditor::CameraEditorUpdate()
+void CameraEditor::Update()
 {
-    m_position = m_positionCameraEditor;
-    m_direction = m_directionCameraEditor;
-    m_up = m_upCameraEditor;
+    m_position = m_camPosition;
+    m_direction = m_camDirection;
+    m_up = m_camUp;
 
     m_viewMatrix = UpdateViewMatrix();
     m_projectionMatrix = UpdateProjectionMatrix();
 }
 
 
-void CameraEditor::CameraInputUpdate(IWindow* a_window,IInputManager* a_input)
+void CameraEditor::UpdateInput(IWindow* a_window, IInputManager* a_input)
 {
-     if (a_input->IsKeyDown(a_window, Key::KEY_W)) {
-         m_positionCameraEditor.x = m_positionCameraEditor.x * -movementSpeed * a_window->CastGLFW()->GetDeltaTime();
-     }
-     if (a_input->IsKeyDown(a_window, Key::KEY_S))
-     {
-         //m_positionCameraEditor.x++;
-         m_positionCameraEditor.x = m_positionCameraEditor.x * movementSpeed * a_window->CastGLFW()->GetDeltaTime();
-     }
-     if (a_input->IsKeyDown(a_window, Key::KEY_A))
-     {
-         
-     }
-     if (a_input->IsKeyDown(a_window, Key::KEY_D))
-     {
-        
-     }
+    if (a_input->IsKeyDown(a_window, Key::KEY_W))
+    {
+        m_camPosition.x *= -m_movementSpeed * Time::GetDeltaTime();
+        DEBUG_LOG_VERBOSE("FORWARD : {}", Time::GetDeltaTime());
+    }
+    if (a_input->IsKeyDown(a_window, Key::KEY_S))
+    {
+        //m_positionCameraEditor.x++;
+        m_camPosition.x = m_camPosition.x * m_movementSpeed * Time::GetDeltaTime();
+        DEBUG_LOG_VERBOSE("BACKWARDS");
+    }
+    if (a_input->IsKeyDown(a_window, Key::KEY_A)) {}
+    if (a_input->IsKeyDown(a_window, Key::KEY_D)) {}
 
 }

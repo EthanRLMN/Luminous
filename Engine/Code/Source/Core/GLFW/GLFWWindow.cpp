@@ -58,11 +58,3 @@ void GLFWWindow::RetrieveMonitorInformation()
     m_monitor = glfwGetPrimaryMonitor();
     m_vidMode = glfwGetVideoMode(m_monitor);
 }
-
-float GLFWWindow::GetDeltaTime()
-{
-    const double l_currentTime = glfwGetTime();
-    const float l_deltaTime = static_cast<float>(l_currentTime - m_lastTime);
-    m_lastTime = l_currentTime;
-    return l_deltaTime;
-}
