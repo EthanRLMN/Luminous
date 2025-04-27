@@ -1,4 +1,4 @@
-#include "Physics/physics_JOLT.hpp"
+#include "Physics/PhysicsSystem.hpp"
 
 #include <thread>
 
@@ -6,8 +6,8 @@
 #include "Jolt/Core/Factory.h"
 #include "Jolt/Core/Memory.h"
 #include "Jolt/Physics/PhysicsSettings.h"
-#include "Physics/layers.hpp"
-#include "Physics/listener.hpp"
+#include "Physics/Layers.hpp"
+#include "Physics/Listener.hpp"
 
 
 void Physics::Init_JOLT()

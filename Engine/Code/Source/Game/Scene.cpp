@@ -1,7 +1,7 @@
 #include "Game/Scene.hpp"
 #include "Logger.hpp"
 
-#include "EntitySystem/Components/CTransform.hpp"
+#include "EntitySystem/Components/TransformComponent.hpp"
 
 void Scene::SceneEntity()
 {
@@ -9,7 +9,7 @@ void Scene::SceneEntity()
     size_t playerEntityId = entityManager.CreateEntity();
     Entity& playerEntity = entityManager.GetEntity(playerEntityId);
 
-    playerEntity.AddComponent<CTransform>();
+    playerEntity.AddComponent<TransformComponent>();
 
 
 
@@ -17,7 +17,7 @@ void Scene::SceneEntity()
     size_t FloorEntityId = entityManager.CreateEntity();
     Entity& FloorEntity = entityManager.GetEntity(FloorEntityId);
 
-    FloorEntity.AddComponent<CTransform>();
+    FloorEntity.AddComponent<TransformComponent>();
 
 
 
@@ -25,7 +25,7 @@ void Scene::SceneEntity()
 
     //std::cout << "Player Position" << playerEntity.GetComponent<CTransform>()->position.x << std::endl;
 
-    playerEntity.GetComponent<CTransform>()->position.x = 5;
+    playerEntity.GetComponent<TransformComponent>()->position.x = 5;
 
  
     //std::cout << "New Player Position" << playerEntity.GetComponent<CTransform>()->position.x << std::endl;

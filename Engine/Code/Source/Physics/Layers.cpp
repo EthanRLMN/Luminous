@@ -1,4 +1,4 @@
-#include "Physics/layers.hpp"
+#include "Physics/Layers.hpp"
 
 JPH_NAMESPACE_BEGIN
 

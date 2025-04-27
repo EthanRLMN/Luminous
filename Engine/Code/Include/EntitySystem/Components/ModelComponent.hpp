@@ -2,7 +2,7 @@
 #include "EntityComponent.hpp"
 #include <string.h>
 
-class CModel : public EntityComponent
+class ModelComponent : public EntityComponent
 {
 public:
     std::string m_modelPath;

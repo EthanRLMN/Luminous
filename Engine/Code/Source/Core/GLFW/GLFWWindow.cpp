@@ -61,8 +61,8 @@ void GLFWWindow::RetrieveMonitorInformation()
 
 float GLFWWindow::GetDeltaTime()
 {
-    double currentTime = glfwGetTime();
-    float deltaTime = static_cast<float>(currentTime - m_lastTime);
-    m_lastTime = currentTime;
-    return deltaTime;
+    const double l_currentTime = glfwGetTime();
+    const float l_deltaTime = static_cast<float>(l_currentTime - m_lastTime);
+    m_lastTime = l_currentTime;
+    return l_deltaTime;
 }

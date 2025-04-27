@@ -2,7 +2,7 @@
 #include "Rendering/Camera/Camera.hpp"
 #include "EntitySystem/EntityComponent.hpp"
 
-class CCamera : public Camera, public EntityComponent
+class CameraComponent : public Camera, public EntityComponent
 {
 public:
 
