@@ -7,7 +7,7 @@
 
 constexpr bool validationEnabled = true;
 
-const std::vector<const char*> validationLayers = { "VK_LAYER_KHRONOS_validation" };
+const std::vector<const char*> validationLayers = { "VK_LAYER_KHRONOS_validation", "VK_LAYER_LUNARG_monitor" };
 
 // Callback function for validation debugging (will be called when validation information record)
 static VkBool32 VKAPI_CALL DebugCallback(VkDebugUtilsMessageSeverityFlagBitsEXT a_messageSeverity, VkDebugUtilsMessageTypeFlagsEXT a_messageTypes, const VkDebugUtilsMessengerCallbackDataEXT* a_pCallbackData, void* a_pUserData)
