@@ -17,7 +17,7 @@ static VkBool32 VKAPI_CALL DebugCallback(VkDebugUtilsMessageSeverityFlagBitsEXT 
 }
 
 
-static VkResult CreateDebugUtilsMessengerEXT(const VkInstance a_instance, const VkDebugUtilsMessengerCreateInfoEXT* a_pCreateInfo, const VkAllocationCallbacks* a_pAllocator, VkDebugUtilsMessengerEXT* a_pDebugMessenger)
+static VkResult CreateDebugUtilsMessengerEXT(const VkInstance& a_instance, const VkDebugUtilsMessengerCreateInfoEXT* a_pCreateInfo, const VkAllocationCallbacks* a_pAllocator, VkDebugUtilsMessengerEXT* a_pDebugMessenger)
 {
 	const auto l_func = reinterpret_cast<PFN_vkCreateDebugUtilsMessengerEXT>(vkGetInstanceProcAddr(a_instance, "vkCreateDebugUtilsMessengerEXT"));
 
@@ -28,7 +28,7 @@ static VkResult CreateDebugUtilsMessengerEXT(const VkInstance a_instance, const 
 }
 
 
-static void DestroyDebugReportCallbackEXT(const VkInstance a_instance, const VkDebugReportCallbackEXT a_callback, const VkAllocationCallbacks* a_pAllocator)
+static void DestroyDebugReportCallbackEXT(const VkInstance& a_instance, const VkDebugReportCallbackEXT& a_callback, const VkAllocationCallbacks* a_pAllocator)
 {
 	const auto l_func = reinterpret_cast<PFN_vkDestroyDebugReportCallbackEXT>(vkGetInstanceProcAddr(a_instance, "vkDestroyDebugReportCallbackEXT"));
 

@@ -63,7 +63,7 @@ void VulkanRenderer::DrawFrame(IWindow* a_window, IDevice* a_device, ISwapChain*
     ///*************************************************//
 
 
-    UpdateUniformBuffer(m_currentFrame, a_buffer);
+    UpdateUniformBuffer(m_currentFrame, a_swapChain, a_buffer);
     vkResetFences(l_device, 1, &a_synchronization->CastVulkan()->GetFences()[m_currentFrame]);
 
     VkSubmitInfo l_submitInfo{ VK_STRUCTURE_TYPE_SUBMIT_INFO };
@@ -148,16 +148,16 @@ void VulkanRenderer::RecordCommandBuffer(const VkCommandBuffer& a_commandBuffer,
 
 
 // TODO: Cleanup
-void VulkanRenderer::UpdateUniformBuffer(const uint32_t& a_currentFrame, IBuffer* a_buffer)
+void VulkanRenderer::UpdateUniformBuffer(const uint32_t& a_currentFrame, ISwapChain* a_swapChain, IBuffer* a_buffer)
 {
     UniformBufferObject l_ubo{};
-
-    l_ubo.model = Maths::Matrix4::Rotate(Maths::Matrix4(10.0f), Time::GetDeltaTime() * 90.0f, Maths::Vector3(50.0f, -100.0f, 1.0f));
+    l_ubo.model = Maths::Matrix4::Rotate(Maths::Matrix4(1.0f), static_cast<float>(Time::GetTotalTimeElapsed()) * 90.0f, Maths::Vector3(0.0f, 0.0f, 1.0f));
     l_ubo.view = m_cameraEditor.m_viewMatrix;
     l_ubo.proj = m_cameraEditor.m_projectionMatrix;
     l_ubo.proj.mat[1][1] *= -1;
 
     memcpy(a_buffer->CastVulkan()->GetUniformBuffersMapped()[a_currentFrame], &l_ubo, sizeof(l_ubo));
+
 }
 
 
