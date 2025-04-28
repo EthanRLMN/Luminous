@@ -1,11 +1,11 @@
-#include "WindowPanels/Inspector.hpp"
+#include "WindowPanels/InspectorPanel.hpp"
 
 #include "imgui.h"
 
 
-void Inspector::Draw()
+void InspectorPanel::Render()
 {
-    IWindowPanel::Draw();
+    IWindowPanel::Render();
 
     if (p_isOpen)
     {

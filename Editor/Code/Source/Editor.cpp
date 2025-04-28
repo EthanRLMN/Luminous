@@ -18,11 +18,11 @@
 #include "Rendering/Vulkan/VulkanRenderPassManager.hpp"
 #include "Rendering/Vulkan/VulkanRenderer.hpp"
 
-#include "WindowPanels/FileExplorer.hpp"
-#include "WindowPanels/Hierarchy.hpp"
-#include "WindowPanels/Inspector.hpp"
-#include "WindowPanels/MainInterface.hpp"
-#include "WindowPanels/Viewport.hpp"
+#include "WindowPanels/FileExplorerPanel.hpp"
+#include "WindowPanels/HierarchyPanel.hpp"
+#include "WindowPanels/InspectorPanel.hpp"
+#include "WindowPanels/MainPanel.hpp"
+#include "WindowPanels/ViewportPanel.hpp"
 
 void Editor::Destroy()
 {
@@ -41,12 +41,12 @@ void Editor::Init()
     m_engine = new Engine();
     m_engine->Init();
     SetupImGui();
-    CreateWindows();
+    CreateWindowPanels();
 }
 
 void Editor::SetupImGui() const
 {
-    IMGUI_CHECKVERSION();
+    //
     ImGui::CreateContext();
 
     ImGuiIO& l_io = ImGui::GetIO(); static_cast<void>(l_io);
@@ -55,6 +55,7 @@ void Editor::SetupImGui() const
     l_io.ConfigViewportsNoAutoMerge = false;
     l_io.ConfigDockingAlwaysTabBar = true;
     l_io.Fonts->AddFontFromFileTTF("Editor/Assets/Fonts/Roboto-Bold.ttf", 18.0f, nullptr, l_io.Fonts->GetGlyphRangesDefault());
+
     EditorStyle::SetupImGuiStyle();
 
     ImGui_ImplGlfw_InitForVulkan(m_engine->GetWindow()->CastGLFW()->GetGLFWWindow(), true);
@@ -95,7 +96,7 @@ void Editor::Render() const
     // Update the main docking space every frame
     ImGuiID id = ImGui::DockSpaceOverViewport(0, ImGui::GetMainViewport(), ImGuiDockNodeFlags_PassthruCentralNode);
 
-    DrawWindows();
+    RenderWindowPanels();
 
     ImGui::Render();
 
@@ -110,22 +111,22 @@ void Editor::Render() const
     }
 }
 
-void Editor::CreateWindows()
+void Editor::CreateWindowPanels()
 {
-    new MainInterface(this, "Editor");
+    new MainPanel(this, "Editor");
     new Viewport(this, "Viewport");
-    new FileExplorer(this, "File Explorer");
-    new Inspector(this, "Inspector");
-    new Hierarchy(this, "Hierarchy");
+    new FileExplorerPanel(this, "File Explorer");
+    new InspectorPanel(this, "Inspector");
+    new HierarchyPanel(this, "Hierarchy");
 }
 
-void Editor::DrawWindows() const
+void Editor::RenderWindowPanels() const
 {
     for (IWindowPanel* l_windowPanel : m_windows)
-        l_windowPanel->Draw();
+        l_windowPanel->Render();
 }
 
-void Editor::DestroyWindows() const
+void Editor::DestroyWindowPanels() const
 {
     for (const IWindowPanel* l_windowPanel : m_windows)
         delete l_windowPanel;

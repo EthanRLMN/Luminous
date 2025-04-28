@@ -22,6 +22,6 @@ public:
 
     void Init() override {};
     void Update() override {};
-    void Draw() override;
+    void Render() override;
     void Destroy() override {};
 };

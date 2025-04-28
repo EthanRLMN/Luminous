@@ -1,13 +1,12 @@
 #pragma once
 
 #include "Engine.hpp"
-#include "imgui.h"
+
 
 class ImguiWindow;
 class VulkanInstance;
 class IWindowPanel;
 
-static const std::string s_defaultConfigFilePath = "DefaultEditorLayout.ini";
 
 class Editor
 {
@@ -22,9 +21,9 @@ public:
     void Update();
     void Render() const;
 
-    void CreateWindows();
-    void DrawWindows() const;
-    void DestroyWindows() const;
+    void CreateWindowPanels();
+    void RenderWindowPanels() const;
+    void DestroyWindowPanels() const;
 
     void RegisterWindow(IWindowPanel* a_windowPanel) { m_windows.push_back(a_windowPanel); };
     void UnregisterWindow(IWindowPanel* a_windowPanel) { std::erase(m_windows, a_windowPanel); };
@@ -35,7 +34,7 @@ public:
 
 
 private:
-    Engine* m_engine = nullptr;
-    std::vector<IWindowPanel*> m_windows;
+    Engine* m_engine { nullptr };
+    std::vector<IWindowPanel*> m_windows {};
 };
 

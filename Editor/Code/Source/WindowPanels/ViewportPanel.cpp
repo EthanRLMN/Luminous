@@ -1,13 +1,13 @@
 #define IMGUI_DEFINE_MATH_OPERATORS
 #include "imgui.h"
 
-#include "WindowPanels/Viewport.hpp"
+#include "WindowPanels/ViewportPanel.hpp"
 
 
 
-void Viewport::Draw()
+void Viewport::Render()
 {
-    IWindowPanel::Draw();
+    IWindowPanel::Render();
 
     ImGui::Begin(p_windowIdentifier.c_str(), nullptr, ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoBackground);
     

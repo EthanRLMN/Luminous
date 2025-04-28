@@ -1,12 +1,9 @@
-#include "../../Include/WindowPanels/MainInterface.hpp"
+#include "WindowPanels/MainPanel.hpp"
 
 #include "imgui.h"
 
-MainInterface::MainInterface(Editor* a_editor, const std::string& a_windowIdentifier) : IWindowPanel(a_editor, a_windowIdentifier)
-{
-}
 
-void MainInterface::Draw()
+void MainPanel::Render()
 {
     // TODO: Add Draw calls of dependent popup windows here
     if (ImGui::BeginMainMenuBar())
@@ -75,19 +72,7 @@ void MainInterface::Draw()
             ImGui::EndMenu();
         }
 
-        if (ImGui::BeginMenu("Help"))
-        {
-            ImGui::MenuItem("About", "", false);
 
-            ImGui::Separator();
-            ImGui::MenuItem("Luminous Engine Docmentation", "", false);
-
-            ImGui::MenuItem("Credits", "", false);
-
-            ImGui::MenuItem("Report a bug", "", false);
-
-            ImGui::EndMenu();
-        }
         ImGui::EndMainMenuBar();
     }
 
@@ -118,4 +103,27 @@ void MainInterface::Draw()
 
     ImGui::SameLine(0, 115 * ImGui::GetStyle().ItemSpacing.x);
     ImGui::Image(s_saveButton, { 25, 25 }, { 0, 0 }, { 1, 1 });*/
+}
+
+void MainPanel::FileContextMenu() {}
+
+void MainPanel::EditContextMenu() {}
+
+void MainPanel::WindowContextMenu() {}
+
+void MainPanel::HelpContextMenu()
+{
+    if (ImGui::BeginMenu("Help"))
+    {
+        ImGui::MenuItem("About", "", false);
+
+        ImGui::Separator();
+        ImGui::MenuItem("Luminous Engine Docmentation", "", false);
+
+        ImGui::MenuItem("Credits", "", false);
+
+        ImGui::MenuItem("Report a bug", "", false);
+
+        ImGui::EndMenu();
+    }
 }

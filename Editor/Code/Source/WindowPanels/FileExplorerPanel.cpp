@@ -1,19 +1,19 @@
 #include "imgui.h"
 
-#include "WindowPanels/FileExplorer.hpp"
+#include "WindowPanels/FileExplorerPanel.hpp"
 
 
 static const std::filesystem::path s_AssetPath = "Engine/Assets";
 
 
-FileExplorer::FileExplorer(Editor* a_editor, const std::string& a_windowIdentifier) : IWindowPanel(a_editor, a_windowIdentifier)
+FileExplorerPanel::FileExplorerPanel(Editor* a_editor, const std::string& a_windowIdentifier) : IWindowPanel(a_editor, a_windowIdentifier)
 {
     m_currentDirectory = s_AssetPath;
 }
 
-void FileExplorer::Draw()
+void FileExplorerPanel::Render()
 {
-    IWindowPanel::Draw();
+    IWindowPanel::Render();
 
     if (p_isOpen)
     {

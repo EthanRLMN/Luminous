@@ -1,11 +1,11 @@
-#include "WindowPanels/Hierarchy.hpp"
+#include "WindowPanels/HierarchyPanel.hpp"
 
 #include "imgui.h"
 
 
-void Hierarchy::Draw()
+void HierarchyPanel::Render()
 {
-    IWindowPanel::Draw();
+    IWindowPanel::Render();
 
     if (p_isOpen)
     {

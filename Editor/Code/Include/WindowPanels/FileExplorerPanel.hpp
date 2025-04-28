@@ -5,14 +5,14 @@
 #include "Interface/IWindowPanel.hpp"
 
 
-class FileExplorer : public IWindowPanel
+class FileExplorerPanel : public IWindowPanel
 {
 public:
-    explicit FileExplorer(Editor* a_editor, const std::string& a_windowIdentifier);
+    explicit FileExplorerPanel(Editor* a_editor, const std::string& a_windowIdentifier);
 
     void Init() override {};
     void Update() override {};
-    void Draw() override;
+    void Render() override;
     void Destroy() override {};
 
 private:

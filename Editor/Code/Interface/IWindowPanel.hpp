@@ -1,7 +1,12 @@
 #pragma once
+
+#include "imgui.h"
+
 #include "Editor.hpp"
 
+
 class Editor;
+
 
 class IWindowPanel
 {
@@ -23,7 +28,7 @@ public:
 
     virtual void Init() = 0;
     virtual void Update() = 0;
-    inline virtual void Draw() { ImGui::SetNextWindowSize(ImVec2(s_defaultPanelWidth, s_defaultPanelHeight), ImGuiCond_FirstUseEver); };
+    inline virtual void Render() { ImGui::SetNextWindowSize(ImVec2(s_defaultPanelWidth, s_defaultPanelHeight), ImGuiCond_FirstUseEver); };
     virtual void Destroy() = 0;
 
     inline virtual bool IsOpen() const { return p_isOpen; }
