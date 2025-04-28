@@ -242,6 +242,9 @@ void ImGui::StyleColorsDark(ImGuiStyle* dst)
     colors[ImGuiCol_NavWindowingHighlight]  = ImVec4(1.00f, 1.00f, 1.00f, 0.70f);
     colors[ImGuiCol_NavWindowingDimBg]      = ImVec4(0.80f, 0.80f, 0.80f, 0.20f);
     colors[ImGuiCol_ModalWindowDimBg]       = ImVec4(0.80f, 0.80f, 0.80f, 0.35f);
+
+    if (GImGui && (ImGui::GetIO().ConfigFlags & ImGuiConfigFlags_IsSRGB))
+        ImGui::ForceStyleColorSpaceConversion(style, true);
 }
 
 void ImGui::StyleColorsClassic(ImGuiStyle* dst)
@@ -307,6 +310,9 @@ void ImGui::StyleColorsClassic(ImGuiStyle* dst)
     colors[ImGuiCol_NavWindowingHighlight]  = ImVec4(1.00f, 1.00f, 1.00f, 0.70f);
     colors[ImGuiCol_NavWindowingDimBg]      = ImVec4(0.80f, 0.80f, 0.80f, 0.20f);
     colors[ImGuiCol_ModalWindowDimBg]       = ImVec4(0.20f, 0.20f, 0.20f, 0.35f);
+
+    if (GImGui && (ImGui::GetIO().ConfigFlags & ImGuiConfigFlags_IsSRGB))
+        ImGui::ForceStyleColorSpaceConversion(style, true);
 }
 
 // Those light colors are better suited with a thicker font than the default one + FrameBorder
@@ -373,6 +379,9 @@ void ImGui::StyleColorsLight(ImGuiStyle* dst)
     colors[ImGuiCol_NavWindowingHighlight]  = ImVec4(0.70f, 0.70f, 0.70f, 0.70f);
     colors[ImGuiCol_NavWindowingDimBg]      = ImVec4(0.20f, 0.20f, 0.20f, 0.20f);
     colors[ImGuiCol_ModalWindowDimBg]       = ImVec4(0.20f, 0.20f, 0.20f, 0.35f);
+
+    if (GImGui && (ImGui::GetIO().ConfigFlags & ImGuiConfigFlags_IsSRGB))
+        ImGui::ForceStyleColorSpaceConversion(style, true);
 }
 
 //-----------------------------------------------------------------------------

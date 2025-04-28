@@ -48,13 +48,14 @@ void Editor::SetupImGui() const
 {
     IMGUI_CHECKVERSION();
     ImGui::CreateContext();
-    EditorStyle::SetupImGuiStyle();
+
     ImGuiIO& l_io = ImGui::GetIO(); static_cast<void>(l_io);
     l_io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard | ImGuiConfigFlags_DockingEnable | ImGuiConfigFlags_IsSRGB | ImGuiDockNodeFlags_NoWindowMenuButton;
     l_io.ConfigViewportsNoTaskBarIcon = false;
     l_io.ConfigViewportsNoAutoMerge = false;
     l_io.ConfigDockingAlwaysTabBar = true;
     l_io.Fonts->AddFontFromFileTTF("Editor/Assets/Fonts/Roboto-Bold.ttf", 18.0f, nullptr, l_io.Fonts->GetGlyphRangesDefault());
+    EditorStyle::SetupImGuiStyle();
 
     ImGui_ImplGlfw_InitForVulkan(m_engine->GetWindow()->CastGLFW()->GetGLFWWindow(), true);
 
