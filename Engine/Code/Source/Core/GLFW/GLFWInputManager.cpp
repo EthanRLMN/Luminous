@@ -138,11 +138,5 @@ void GLFWInputManager::Update(IWindow* a_window)
     {
         m_mouseScroll[0] = 0;
         m_mouseScroll[1] = 0;
-        DEBUG_LOG_INFO("PAS ACTIVER");
-    }
-
-    if (m_mouseScrollUsed)
-    {
-        DEBUG_LOG_ERROR("ACTIVE");
     }
 }
