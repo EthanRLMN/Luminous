@@ -22,20 +22,14 @@
 #include "Rendering/Vulkan/VulkanSwapChain.hpp"
 #include "Rendering/Vulkan/VulkanSynchronization.hpp"
 
-#include "MathUtils.hpp"
 #include "Matrix4.hpp"
 #include "Game/Systems/Time.inl"
-
-
-static VulkanRenderer::EditorRenderCallback l_editorGuiCallback{ nullptr };
 
 
 void VulkanRenderer::Create(IWindow* a_window, ISwapChain* a_swapChain)
 {
     m_cameraEditor.Init(a_window, static_cast<float>(a_swapChain->CastVulkan()->GetSwapChainExtent().width) / static_cast<float>(a_swapChain->CastVulkan()->GetSwapChainExtent().height),45.f,0.1f,1000.f);
 }
-
-void VulkanRenderer::RegisterEditorRenderCallback(EditorRenderCallback a_callback) { l_editorGuiCallback = std::move(a_callback); }
 
 void VulkanRenderer::DrawFrame(IWindow* a_window, IDevice* a_device, ISwapChain* a_swapChain, IPipeline* a_pipeline, IBuffer* a_buffer, IRenderPassManager* a_renderPassManager, IDescriptor* a_descriptor, IMesh* a_mesh, ISynchronization* a_synchronization, ICommandBuffer* a_commandBuffer, IFrameBufferManager* a_frameBufferManager, IDepthResource* a_depthResource, ISurface* a_surface, IMultiSampling* a_multisampling,IInputManager* a_inputManager)
 {
@@ -63,7 +57,7 @@ void VulkanRenderer::DrawFrame(IWindow* a_window, IDevice* a_device, ISwapChain*
     ///*************************************************//
 
 
-    UpdateUniformBuffer(m_currentFrame, a_swapChain, a_buffer);
+    UpdateUniformBuffer(m_currentFrame, a_buffer);
     vkResetFences(l_device, 1, &a_synchronization->CastVulkan()->GetFences()[m_currentFrame]);
 
     VkSubmitInfo l_submitInfo{ VK_STRUCTURE_TYPE_SUBMIT_INFO };
@@ -133,8 +127,8 @@ void VulkanRenderer::RecordCommandBuffer(const VkCommandBuffer& a_commandBuffer,
 
         // Callback ImGui_ImplVulkan_RenderDrawData
         if (l_renderPass == a_renderPassManager->GetRenderPassAt(1))
-            if (l_editorGuiCallback)
-                l_editorGuiCallback();
+            if (s_editorGuiCallback)
+                s_editorGuiCallback();
 
         vkCmdEndRenderPass(a_commandBuffer);
         if (l_renderPass == a_renderPassManager->GetRenderPassAt(0))
@@ -148,7 +142,7 @@ void VulkanRenderer::RecordCommandBuffer(const VkCommandBuffer& a_commandBuffer,
 
 
 // TODO: Cleanup
-void VulkanRenderer::UpdateUniformBuffer(const uint32_t& a_currentFrame, ISwapChain* a_swapChain, IBuffer* a_buffer)
+void VulkanRenderer::UpdateUniformBuffer(const uint32_t& a_currentFrame, IBuffer* a_buffer) const
 {
     UniformBufferObject l_ubo{};
     l_ubo.model = Maths::Matrix4::Rotate(Maths::Matrix4(1.0f), static_cast<float>(Time::GetTotalTimeElapsed()) * 90.0f, Maths::Vector3(0.0f, 0.0f, 1.0f));
@@ -157,7 +151,6 @@ void VulkanRenderer::UpdateUniformBuffer(const uint32_t& a_currentFrame, ISwapCh
     l_ubo.proj.mat[1][1] *= -1;
 
     memcpy(a_buffer->CastVulkan()->GetUniformBuffersMapped()[a_currentFrame], &l_ubo, sizeof(l_ubo));
-
 }
 
 
@@ -195,7 +188,6 @@ void VulkanRenderer::CleanupSwapChain(IDevice* a_device, ISwapChain* a_swapChain
 
     for (const VkFramebuffer& l_framebuffer : a_framebuffer->GetFrameBufferAt(0)->CastVulkan()->GetFrameBuffers())
         vkDestroyFramebuffer(a_device->CastVulkan()->GetDevice(), l_framebuffer, nullptr);
-
 
     for (const VkImageView& l_imageView : a_swapChain->CastVulkan()->GetSwapChainImageViews())
         vkDestroyImageView(a_device->CastVulkan()->GetDevice(), l_imageView, nullptr);
@@ -293,8 +285,6 @@ void VulkanRenderer::CreateViewportImage(IDevice* a_device, ISwapChain* a_swapCh
 void VulkanRenderer::ReCreateViewportImage(IDevice* a_device, ISwapChain* a_swapChain)
 {
     const VkDevice& l_device = a_device->CastVulkan()->GetDevice();
-    const VkExtent2D l_extent = a_swapChain->CastVulkan()->GetSwapChainExtent();
-
 
     VkImageCreateInfo imageInfo{ VK_STRUCTURE_TYPE_IMAGE_CREATE_INFO };
     imageInfo.imageType = VK_IMAGE_TYPE_2D;
