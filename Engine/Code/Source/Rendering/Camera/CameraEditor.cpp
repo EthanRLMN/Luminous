@@ -60,6 +60,9 @@ void CameraEditor::MovementCamera(IWindow* a_window, IInputManager* a_input, flo
 
     Maths::Vector2 l_scroll = a_input->GetMouseScroll();
     std::cout << "Current Scroll TEST3: x: " << l_scroll.x << ", y: " << l_scroll.y << std::endl;
+    a_input->MouseScrollFinish();
+    std::cout << "Current Scroll TEST3: x: " << l_scroll.x << ", y: " << l_scroll.y << std::endl;
+
 }
 
 void CameraEditor::TurnCamera(IWindow* a_window, IInputManager* a_input, float a_cameraSpeed)

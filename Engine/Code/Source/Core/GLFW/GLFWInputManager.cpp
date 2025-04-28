@@ -1,8 +1,6 @@
 #include "IWindow.hpp"
-
 #include "Core/GLFW/GLFWInputManager.hpp"
 #include "Core/GLFW/GLFWWindow.hpp"
-#include <vector>
 #include <iostream>
 
 std::array<int, 349> GLFWInputManager::m_keyPressed { };
@@ -11,12 +9,9 @@ std::array<Action, 349> GLFWInputManager::m_keyStatus { };
 std::array<int, 12> GLFWInputManager::m_mouseButtonPressed { };
 std::array<Action, 12> GLFWInputManager::m_mouseButtonStatus { };
 
-std::array<float, 2> GLFWInputManager::m_mouseScroll { };
-
-double test{ 0.f };
-double test2{ 0.f };
-
-std::vector<double> test3{0,0};
+std::array<double, 2> GLFWInputManager::m_mouseScroll { };
+//std::array<double,2> test3{0,0};
+bool m_mouseScrollUsed = false;
 
 
 int GLFWInputManager::IsKeyDown(IWindow* a_window, const Key& a_key)
@@ -101,34 +96,21 @@ void GLFWInputManager::MouseButtonCallback(GLFWwindow* a_window, const int a_but
 
 void GLFWInputManager::MouseScrollCallback(GLFWwindow* a_window, const double a_xOffset, const double a_yOffset)
 {
-    m_mouseScroll[0] = static_cast<float>(a_xOffset);
-    m_mouseScroll[1] = static_cast<float>(a_yOffset);
-
-    test = a_xOffset;
-    test2 = a_yOffset;
-
-
-    test3 = { a_xOffset, a_yOffset };
-    /*
-    DEBUG_LOG_ERROR("Mouse Scroll1 : xOffset: {}, yOffset: {}", a_xOffset, a_yOffset);
-    DEBUG_LOG_VERBOSE("Mouse Scroll1 : m_mouse x:{}, m_mouse y{} ", m_mouseScroll[0], m_mouseScroll[1]);
-    DEBUG_LOG_VERBOSE("Mouse Scroll1 TEST : test: {}, test2: {}", test,test2);
-
-    DEBUG_LOG_VERBOSE("Mouse Scroll TEST : test3: {}, test3: {}", test3[0], test3[1]);*/
-    
+   // test3 = { a_xOffset, a_yOffset };
+   m_mouseScroll = { a_xOffset, a_yOffset };
+   m_mouseScrollUsed = true;
 }
 
 Maths::Vector2 GLFWInputManager::GetMouseScroll() { 
-    /*
-    DEBUG_LOG_VERBOSE("Mouse Scroll TEST 2: xOffset: {}, yOffset: {}", m_mouseScroll[0], m_mouseScroll[1]);
-    DEBUG_LOG_VERBOSE("Mouse Scroll TEST 2: test: {}, test2: {}", test, test2);
-    DEBUG_LOG_VERBOSE("Mouse Scroll TEST 2: test: {}, test2: {}", static_cast<float>(test), static_cast<float>(test2));
-    DEBUG_LOG_VERBOSE("Mouse Scroll TEST 2: test3: {}, test3: {}", test3[0], test3[1]);*/
-
-
-   // return Maths::Vector2{ m_mouseScroll[0], m_mouseScroll[1]}; 
-    return Maths::Vector2{ static_cast<float>(test3[0]), static_cast<float>(test3[1]) };
+    //return Maths::Vector2{ static_cast<float>(test3[0]), static_cast<float>(test3[1]) };
+    return Maths::Vector2{ static_cast<float>(m_mouseScroll[0]), static_cast<float>(m_mouseScroll[1]) };
 }
+
+void GLFWInputManager::MouseScrollFinish()
+{
+    m_mouseScrollUsed = false;
+}
+
 
 Maths::Vector2 GLFWInputManager::GetCursorPosition(IWindow* a_window)
 {
@@ -162,6 +144,18 @@ void GLFWInputManager::Destroy(IWindow* a_window)
 
 void GLFWInputManager::Update(IWindow* a_window)
 {
-    m_mouseScroll[0] = 0;
-    m_mouseScroll[1] = 0;
+
+    if (!m_mouseScrollUsed)
+    {
+        m_mouseScroll[0] = 0;
+        m_mouseScroll[1] = 0;
+        DEBUG_LOG_INFO("PAS ACTIVER");
+    }
+
+    if (m_mouseScrollUsed)
+    {
+        DEBUG_LOG_ERROR("ACTIVE");
+    }
+
+    std::cout << "Mouse Scroll: xOffset3 = " << m_mouseScroll[0] << ", yOffset = " << m_mouseScroll[1] << std::endl;
 }

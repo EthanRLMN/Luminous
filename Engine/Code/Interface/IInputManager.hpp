@@ -25,6 +25,7 @@ public:
 
 	virtual Maths::Vector2 GetMouseScroll() = 0;
 	virtual void SetMouseScroll(const Maths::Vector2& a_vec) = 0;
+    virtual void MouseScrollFinish() = 0;
 
 	virtual Maths::Vector2 GetCursorPosition(IWindow* a_window) = 0;
 	virtual void SetCursorPosition(IWindow* a_window, const Maths::Vector2& a_pos) = 0;
