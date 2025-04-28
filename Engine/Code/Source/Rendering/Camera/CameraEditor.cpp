@@ -1,5 +1,5 @@
 #include "Rendering/Camera/CameraEditor.hpp"
-
+#include <iostream>
 #include "Game/Systems/Time.inl"
 
 
@@ -56,6 +56,10 @@ void CameraEditor::MovementCamera(IWindow* a_window, IInputManager* a_input, flo
         m_camEditorPosition.y += l_velocity;
         DEBUG_LOG_VERBOSE("Camera Editor : RIGHT");
     }
+
+
+    Maths::Vector2 l_scroll = a_input->GetMouseScroll();
+    std::cout << "Current Scroll TEST3: x: " << l_scroll.x << ", y: " << l_scroll.y << std::endl;
 }
 
 void CameraEditor::TurnCamera(IWindow* a_window, IInputManager* a_input, float a_cameraSpeed)

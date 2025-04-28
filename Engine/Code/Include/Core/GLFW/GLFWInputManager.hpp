@@ -47,7 +47,7 @@ private:
     static std::array<int, 12> m_mouseButtonPressed;
     static std::array<Action, 12> m_mouseButtonStatus;
 
-    static std::array<int, 2> m_mouseScroll;
+    static std::array<float, 2> m_mouseScroll;
 
     GLFWwindow* m_window = nullptr;
 };
