@@ -152,7 +152,7 @@ void VulkanRenderer::UpdateUniformBuffer(const uint32_t& a_currentFrame, IBuffer
 {
     UniformBufferObject l_ubo{};
 
-    l_ubo.model = Maths::Matrix4::Rotate(Maths::Matrix4(1.0f), Time::GetDeltaTime() * 90.0f, Maths::Vector3(0.0f, 0.0f, 1.0f));
+    l_ubo.model = Maths::Matrix4::Rotate(Maths::Matrix4(10.0f), Time::GetDeltaTime() * 90.0f, Maths::Vector3(50.0f, -100.0f, 1.0f));
     l_ubo.view = m_cameraEditor.m_viewMatrix;
     l_ubo.proj = m_cameraEditor.m_projectionMatrix;
     l_ubo.proj.mat[1][1] *= -1;
