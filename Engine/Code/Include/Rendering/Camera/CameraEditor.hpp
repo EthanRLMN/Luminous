@@ -22,13 +22,14 @@ public:
 private:
     void MovementCamera(IWindow* a_window, IInputManager* a_input,float a_movementSpeed);
     void TurnCamera(IWindow* a_window, IInputManager* a_input, float a_movementSpeed);
-    void SpeedCamera(IWindow* a_window, IInputManager* a_input, float a_cameraSpeed);
+    void SpeedCamera(IWindow* a_window, IInputManager* a_input, float a_cameraSpeed, float& a_movementSpeed);
 
     Maths::Vector3 m_camEditorPosition { Maths::Vector3(2.0f, 2.0f, 2.0f) };
     Maths::Vector3 m_camEditorDirection { Maths::Vector3::One };
     Maths::Vector3 m_camEditorUp { Maths::Vector3::ZAxis };
 
     float m_movementSpeed { 1.0f };
-    float m_cameraSpeed{ 1.0f };
+    float m_cameraTurnSpeed{ 1.0f };
+    float m_cameraSpeed{ 0.1f };
 };
 

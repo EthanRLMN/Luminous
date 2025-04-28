@@ -29,8 +29,10 @@ void CameraEditor::Update()
 void CameraEditor::UpdateInput(IWindow* a_window, IInputManager* a_input)
 {
     MovementCamera(a_window, a_input, m_movementSpeed);
-    TurnCamera(a_window, a_input, m_cameraSpeed);
-    SpeedCamera(a_window, a_input, 5.f);
+    TurnCamera(a_window, a_input, m_cameraTurnSpeed);
+    SpeedCamera(a_window, a_input, m_cameraSpeed,m_movementSpeed);
+
+    DEBUG_LOG_ERROR("Movement Speed :{}", m_movementSpeed);
 }
 
 void CameraEditor::MovementCamera(IWindow* a_window, IInputManager* a_input, float a_movementSpeed)
@@ -73,8 +75,21 @@ void CameraEditor::TurnCamera(IWindow* a_window, IInputManager* a_input, float a
     }
 }
 
-void CameraEditor::SpeedCamera(IWindow* a_window, IInputManager* a_input, float a_cameraSpeed)
+void CameraEditor::SpeedCamera(IWindow* a_window, IInputManager* a_input, float a_cameraSpeed, float& a_movementSpeed)
 {
-    Maths::Vector2 l_scroll = a_input->GetMouseScroll();
-    a_input->MouseScrollFinish();
+    if (a_input->IsKeyDown(a_window, Key::KEY_LEFT_CONTROL))
+    {
+        Maths::Vector2 l_scroll = a_input->GetMouseScroll();
+
+        if (l_scroll.y > 0)
+            a_movementSpeed += a_cameraSpeed; 
+
+        else if (l_scroll.y < 0)
+            a_movementSpeed -= a_cameraSpeed; 
+    
+        if (a_movementSpeed < 0.1f)
+            a_movementSpeed = 0.1f;
+
+       a_input->MouseScrollFinish();
+    }
 }
