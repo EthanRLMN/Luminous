@@ -17,7 +17,7 @@ void FileExplorer::Draw()
 
     if (p_isOpen)
     {
-        ImGui::Begin(p_windowIdentifier.c_str(), &p_isOpen, ImGuiWindowFlags_NoCollapse);
+        ImGui::Begin(p_windowIdentifier.c_str(), nullptr, ImGuiWindowFlags_NoCollapse);
 
         if (m_currentDirectory != std::filesystem::path(s_AssetPath))
             if (ImGui::Button("<-"))

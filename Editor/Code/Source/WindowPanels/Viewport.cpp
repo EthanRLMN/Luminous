@@ -9,7 +9,7 @@ void Viewport::Draw()
 {
     IWindowPanel::Draw();
 
-    ImGui::Begin(p_windowIdentifier.c_str(), nullptr, ImGuiWindowFlags_NoCollapse);
+    ImGui::Begin(p_windowIdentifier.c_str(), nullptr, ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoBackground);
     
     ISwapChain* l_swapchain = p_editor->GetEngine()->GetSwapChain();
 
