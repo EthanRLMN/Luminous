@@ -1,13 +1,10 @@
 #include "Core/GLFW/GLFWWindow.hpp"
 
-#include "Vector2.hpp"
-
 GLFWwindow* GLFWWindow::Initialize(const std::string& a_name, const int& a_width, const int& a_height)
 {
     glfwInit();
     glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
     glfwWindowHint(GLFW_RESIZABLE, GLFW_TRUE);
-    glfwWindowHint(GLFW_SRGB_CAPABLE, GLFW_TRUE);
 
     if (glfwVulkanSupported())
         DEBUG_LOG_INFO("Vulkan Window : GLFW Vulkan Support enabled!\n");
@@ -26,7 +23,8 @@ GLFWwindow* GLFWWindow::Initialize(const std::string& a_name, const int& a_width
 
 void GLFWWindow::Initialize(const std::string& a_name)
 {
-    Initialize(a_name, DefaultWidth, DefaultHeight);
+    Initialize(a_name, 800, 600);
+    SetSize(Maths::Vector2(static_cast<float>(m_vidMode->width), static_cast<float>(m_vidMode->height)));
 }
 
 
@@ -37,11 +35,16 @@ void GLFWWindow::Update() const
 }
 
 
+void GLFWWindow::PollEvents() const { glfwPollEvents(); }
+
+bool GLFWWindow::ShouldClose() const { return glfwWindowShouldClose(m_window); }
+
+
 void GLFWWindow::Destroy() const
 {
     glfwDestroyWindow(m_window);
     glfwTerminate();
-    DEBUG_LOG_INFO("GLFW Window : Window destroyed!\n");
+    DEBUG_LOG_INFO("GLFW Window : Destroy!\n");
 }
 
 
@@ -53,8 +56,38 @@ Maths::Vector2 GLFWWindow::GetSize() const
 }
 
 
+void GLFWWindow::SetSize(const Maths::Vector2& a_size) { glfwSetWindowSize(m_window, static_cast<int>(a_size.x), static_cast<int>(a_size.y)); }
+
+
+float GLFWWindow::GetOpacity() const { return glfwGetWindowOpacity(m_window); }
+
+
+void GLFWWindow::SetOpacity(const float& a_alpha) { glfwSetWindowOpacity(m_window, a_alpha); }
+
+
+std::string GLFWWindow::GetTitle() const { return glfwGetWindowTitle(m_window); }
+
+
+void GLFWWindow::GetFrameBufferSize(int* a_width, int* a_height) { glfwGetFramebufferSize(m_window, a_width, a_height); }
+
 void GLFWWindow::RetrieveMonitorInformation()
 {
     m_monitor = glfwGetPrimaryMonitor();
     m_vidMode = glfwGetVideoMode(m_monitor);
+}
+
+
+void GLFWWindow::SetTitle(const std::string& a_name) { glfwSetWindowTitle(m_window, a_name.c_str()); }
+
+void GLFWWindow::ProcessEvents() { glfwWaitEvents(); }
+
+float GLFWWindow::GetDeltaTime()
+{
+    /*
+    double currentTime = glfwGetTime();
+    float deltaTime = static_cast<float>(currentTime - m_lastTime);
+    m_lastTime = currentTime;
+    return deltaTime;*/
+
+    return 0.0f;
 }

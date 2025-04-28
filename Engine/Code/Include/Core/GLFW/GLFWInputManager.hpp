@@ -6,7 +6,6 @@
 
 #include "IInputManager.hpp"
 
-
 class IWindow;
 
 
@@ -31,7 +30,9 @@ public:
     Maths::Vector2 GetMouseScroll() override;
 
 
-    void SetMouseScroll(const Maths::Vector2& a_vec) override { };
+    void SetMouseScroll(const Maths::Vector2& a_vec) override
+    {
+    };
 
     GLFWInputManager* CastGLFW() override { return this; }
 

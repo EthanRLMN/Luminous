@@ -6,7 +6,7 @@
 #include "Rendering/Vulkan/VulkanDevice.hpp"
 
 
-void VulkanSwapChain::Create(IWindow* a_window, IDevice* a_device, ISurface* a_surface, const uint32_t& a_mipLevels)
+void VulkanSwapChain::Create(IWindow* a_window, IDevice* a_device, ISurface* a_surface)
 {
     const VkPhysicalDevice l_vkPhysDevice = a_device->CastVulkan()->GetPhysicalDevice();
     const VkDevice l_vkDevice = a_device->CastVulkan()->GetDevice();
@@ -45,9 +45,16 @@ void VulkanSwapChain::Destroy(IDevice* a_device)
     DEBUG_LOG_INFO("Vulkan SwapChain : SwapChain destroyed!\n");
 }
 
-void VulkanSwapChain::CreateImage(const VkDevice& a_device, const VkPhysicalDevice& a_physicalDevice, const uint32_t& a_width, const uint32_t& a_height, const VkFormat& a_format, const VkImageTiling& a_tiling, const VkImageUsageFlags& a_usage, const VkMemoryPropertyFlags& a_properties, VkImage& a_image, VkDeviceMemory& a_imageMemory, const VkSampleCountFlagBits& a_numSamples, const uint32_t& a_mipLevels)
+void VulkanSwapChain::CreateImage(const VkDevice& a_device, const VkPhysicalDevice& a_physicalDevice, const uint32_t& a_width, const uint32_t& a_height, const VkFormat& a_format, const VkImageTiling& a_tiling, const VkImageUsageFlags& a_usage, const VkMemoryPropertyFlags& a_properties, VkImage& a_image, VkDeviceMemory& a_imageMemory, const VkSampleCountFlagBits& a_numSamples)
 {
-    FillImageInfo(a_device, a_width, a_height, a_format, a_tiling, a_usage, a_image, a_numSamples, a_mipLevels);
+    VkImageCreateInfo l_imageInfo{ VK_STRUCTURE_TYPE_IMAGE_CREATE_INFO };
+    FillImageInfo(l_imageInfo, a_device, a_width, a_height, a_format, a_tiling, a_usage, a_image, a_numSamples);
+
+    if (vkCreateImage(a_device, &l_imageInfo, nullptr, &a_image) != VK_SUCCESS)
+    {
+        DEBUG_LOG_ERROR("VulkanSwapChain : Failed to create image!\n");
+        return;
+    }
 
     VkMemoryRequirements l_memoryRequirement{};
     vkGetImageMemoryRequirements(a_device, a_image, &l_memoryRequirement);
@@ -57,10 +64,14 @@ void VulkanSwapChain::CreateImage(const VkDevice& a_device, const VkPhysicalDevi
     l_allocateInfo.memoryTypeIndex = FindMemoryType(a_physicalDevice, l_memoryRequirement.memoryTypeBits, a_properties);
 
     if (vkAllocateMemory(a_device, &l_allocateInfo, nullptr, &a_imageMemory) != VK_SUCCESS)
-        DEBUG_LOG_ERROR("Vulkan DepthResource : Failed to allocated image memory!\n");
+    {
+        DEBUG_LOG_ERROR("VulkanSwapChain : Failed to allocate image memory!\n");
+        return;
+    }
 
     vkBindImageMemory(a_device, a_image, a_imageMemory, 0);
 }
+
 
 uint32_t VulkanSwapChain::FindMemoryType(const VkPhysicalDevice& a_physicalDevice, const uint32_t& a_typeFilter, const VkMemoryPropertyFlags& a_properties)
 {
@@ -128,9 +139,12 @@ QueueFamilyIndices VulkanSwapChain::GetQueueFamilies(const VkPhysicalDevice& a_d
 
 VkSurfaceFormatKHR VulkanSwapChain::ChooseBestSurfaceFormat(const std::vector<VkSurfaceFormatKHR>& a_formats)
 {
-    for (const auto& l_availableFormat : a_formats)
-        if (l_availableFormat.format == VK_FORMAT_B8G8R8A8_SRGB && l_availableFormat.colorSpace == VK_COLOR_SPACE_SRGB_NONLINEAR_KHR)
-            return l_availableFormat;
+    if (a_formats.size() == 1 && a_formats[0].format == VK_FORMAT_UNDEFINED)
+        return { VK_FORMAT_R8G8B8A8_UNORM, VK_COLOR_SPACE_SRGB_NONLINEAR_KHR };
+
+    for (const VkSurfaceFormatKHR& l_format : a_formats)
+        if ((l_format.format == VK_FORMAT_R8G8B8A8_UNORM || l_format.format == VK_FORMAT_B8G8R8A8_UNORM) && l_format.colorSpace == VK_COLOR_SPACE_SRGB_NONLINEAR_KHR)
+            return l_format;
 
     return a_formats[0];
 }
@@ -151,7 +165,8 @@ VkExtent2D VulkanSwapChain::ChooseSwapExtent(const VkSurfaceCapabilitiesKHR& a_s
     if (a_surfaceCapabilities.currentExtent.width != std::numeric_limits<uint32_t>::max())
         return a_surfaceCapabilities.currentExtent;
 
-    int l_width, l_height{ 0 };
+    int l_width{ 1280 };
+    int l_height{ 720 };
     glfwGetFramebufferSize(a_window, &l_width, &l_height);
 
     VkExtent2D l_newExtent = {
@@ -170,7 +185,7 @@ void VulkanSwapChain::FillSwapChainCreationInfo(VkSwapchainCreateInfoKHR& a_swap
     a_swapChainCreateInfo.imageColorSpace = a_surfaceFormat.colorSpace;
     a_swapChainCreateInfo.imageExtent = a_extent;
     a_swapChainCreateInfo.imageArrayLayers = 1;
-    a_swapChainCreateInfo.imageUsage = VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT | VK_IMAGE_USAGE_TRANSFER_SRC_BIT;
+    a_swapChainCreateInfo.imageUsage = VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT;
 }
 
 
@@ -207,31 +222,30 @@ void VulkanSwapChain::SendSwapChainData(const VkDevice& a_vkDevice, uint32_t& a_
     m_swapChainImageViews.resize(m_swapChainImages.size());
 
     for (uint32_t i{ 0 }; i < m_swapChainImages.size(); ++i)
-        m_swapChainImageViews[i] = CreateImageView(m_swapChainImages[i], a_vkDevice, m_swapChainImageFormat, VK_IMAGE_ASPECT_COLOR_BIT, 1);
+        m_swapChainImageViews[i] = CreateImageView(m_swapChainImages[i], a_vkDevice, m_swapChainImageFormat, VK_IMAGE_ASPECT_COLOR_BIT);
 }
 
-void VulkanSwapChain::FillImageInfo(const VkDevice& a_device, const uint32_t& a_width, const uint32_t& a_height, const VkFormat& a_format, const VkImageTiling& a_tiling, const VkImageUsageFlags& a_usage, VkImage& a_image, const VkSampleCountFlagBits& a_numSamples, const uint32_t& a_mipLevels)
+void VulkanSwapChain::FillImageInfo(VkImageCreateInfo& a_imageInfo, const VkDevice& a_device, const uint32_t& a_width, const uint32_t& a_height, const VkFormat& a_format, const VkImageTiling& a_tiling, const VkImageUsageFlags& a_usage, VkImage& a_image, const VkSampleCountFlagBits& a_numSamples)
 {
-    VkImageCreateInfo l_imageInfo{ VK_STRUCTURE_TYPE_IMAGE_CREATE_INFO };
-    l_imageInfo.imageType = VK_IMAGE_TYPE_2D;
-    l_imageInfo.extent.width = a_width;
-    l_imageInfo.extent.height = a_height;
-    l_imageInfo.extent.depth = 1;
-    l_imageInfo.mipLevels = a_mipLevels;
-    l_imageInfo.arrayLayers = 1;
-    l_imageInfo.format = a_format;
-    l_imageInfo.tiling = a_tiling;
-    l_imageInfo.initialLayout = VK_IMAGE_LAYOUT_UNDEFINED;
-    l_imageInfo.usage = a_usage;
-    l_imageInfo.samples = a_numSamples;
-    l_imageInfo.sharingMode = VK_SHARING_MODE_EXCLUSIVE;
+    a_imageInfo.imageType = VK_IMAGE_TYPE_2D;
+    a_imageInfo.extent.width = a_width;
+    a_imageInfo.extent.height = a_height;
+    a_imageInfo.extent.depth = 1;
+    a_imageInfo.mipLevels = 1;
+    a_imageInfo.arrayLayers = 1;
+    a_imageInfo.format = a_format;
+    a_imageInfo.tiling = a_tiling;
+    a_imageInfo.initialLayout = VK_IMAGE_LAYOUT_UNDEFINED;
+    a_imageInfo.usage = a_usage;
+    a_imageInfo.samples = a_numSamples;
+    a_imageInfo.sharingMode = VK_SHARING_MODE_EXCLUSIVE;
 
-    if (vkCreateImage(a_device, &l_imageInfo, nullptr, &a_image) != VK_SUCCESS)
+    if (vkCreateImage(a_device, &a_imageInfo, nullptr, &a_image) != VK_SUCCESS)
         DEBUG_LOG_ERROR("Vulkan DepthResource : Failed to create Image!\n");
 }
 
 
-VkImageView VulkanSwapChain::CreateImageView(const VkImage& a_image, const VkDevice& a_device, const VkFormat& a_format, const VkImageAspectFlags& a_aspectFlags, const uint32_t& a_mipLevels)
+VkImageView VulkanSwapChain::CreateImageView(const VkImage a_image, const VkDevice a_device, const VkFormat a_format, const VkImageAspectFlags a_aspectFlags)
 {
     VkImageViewCreateInfo l_viewCreateInfo = { VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO };
     l_viewCreateInfo.image = a_image;
@@ -244,7 +258,7 @@ VkImageView VulkanSwapChain::CreateImageView(const VkImage& a_image, const VkDev
 
     l_viewCreateInfo.subresourceRange.aspectMask = a_aspectFlags;
     l_viewCreateInfo.subresourceRange.baseMipLevel = 0;
-    l_viewCreateInfo.subresourceRange.levelCount = a_mipLevels;
+    l_viewCreateInfo.subresourceRange.levelCount = 1;
     l_viewCreateInfo.subresourceRange.baseArrayLayer = 0;
     l_viewCreateInfo.subresourceRange.layerCount = 1;
 

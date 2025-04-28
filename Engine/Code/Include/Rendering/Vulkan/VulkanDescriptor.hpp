@@ -1,9 +1,11 @@
 #pragma once
 
-#include <vulkan/vulkan.h>
+#include <vulkan/vulkan.hpp>
 
 #include "IBuffer.hpp"
 #include "IDescriptor.hpp"
+
+#include "Rendering/Vulkan/VulkanDescriptorSetLayout.hpp"
 
 
 class VulkanDescriptor final : public IDescriptor
@@ -24,7 +26,7 @@ private:
     void CreateImGUIDescriptorPool(IDevice* a_device);
 	void CreateDescriptorSets(IDevice* a_device, IDescriptorSetLayout* a_descriptorSetLayout, ITexture* a_texture);
 	void SetBuffers(IBuffer* a_buffer);
-	void UpdateDescriptorSets(IDevice* a_device, ITexture* a_texture) const;
+	void UpdateDescriptorSets(IDevice* a_device, ITexture* a_texture);
 
 	VkDescriptorPool m_descriptorPool { nullptr };
 	VkDescriptorPool m_imguiDescriptorPool { nullptr };

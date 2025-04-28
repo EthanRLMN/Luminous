@@ -1,3 +1,4 @@
+#include "imgui.h"
 #include "imgui_internal.h"
 #include "backends/imgui_impl_glfw.h"
 #include "backends/imgui_impl_vulkan.h"
@@ -15,14 +16,12 @@
 #include "Rendering/Vulkan/VulkanDevice.hpp"
 #include "Rendering/Vulkan/VulkanInstance.hpp"
 #include "Rendering/Vulkan/VulkanRenderPass.hpp"
-#include "Rendering/Vulkan/VulkanRenderPassManager.hpp"
 #include "Rendering/Vulkan/VulkanRenderer.hpp"
 
-#include "WindowPanels/FileExplorer.hpp"
-#include "WindowPanels/Hierarchy.hpp"
-#include "WindowPanels/Inspector.hpp"
-#include "WindowPanels/MainInterface.hpp"
-#include "WindowPanels/Viewport.hpp"
+#include "WindowPanels/FileExplorerWindow.hpp"
+#include "WindowPanels/HierarchyWindow.hpp"
+#include "WindowPanels/InspectorWindow.hpp"
+#include "WindowPanels/MainWindow.hpp"
 
 void Editor::Destroy()
 {
@@ -40,6 +39,7 @@ void Editor::Init()
 {
     m_engine = new Engine();
     m_engine->Init();
+    
     SetupImGui();
     CreateWindows();
 }
@@ -50,7 +50,7 @@ void Editor::SetupImGui() const
     ImGui::CreateContext();
     EditorStyle::SetupImGuiStyle();
     ImGuiIO& l_io = ImGui::GetIO(); static_cast<void>(l_io);
-    l_io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard | ImGuiConfigFlags_DockingEnable | ImGuiConfigFlags_IsSRGB | ImGuiDockNodeFlags_NoWindowMenuButton;
+    l_io.ConfigFlags |= ImGuiConfigFlags_ViewportsEnable | ImGuiConfigFlags_NavEnableKeyboard | ImGuiConfigFlags_DockingEnable | ImGuiConfigFlags_IsSRGB | ImGuiDockNodeFlags_NoWindowMenuButton;
     l_io.ConfigViewportsNoTaskBarIcon = false;
     l_io.ConfigViewportsNoAutoMerge = false;
     l_io.ConfigDockingAlwaysTabBar = true;
@@ -63,16 +63,18 @@ void Editor::SetupImGui() const
     l_initInfo.Instance = m_engine->GetInstance()->CastVulkan()->GetInstance();
     l_initInfo.Queue = m_engine->GetDevice()->CastVulkan()->GetGraphicsQueue();
     l_initInfo.DescriptorPool = m_engine->GetDescriptor()->CastVulkan()->GetImGUIDescriptorPool();
-    l_initInfo.RenderPass = m_engine->GetRenderPassManager()->GetRenderPassAt(1)->CastVulkan()->GetRenderPass();
+    l_initInfo.RenderPass = m_engine->GetRenderPass()->CastVulkan()->GetRenderPass();
     l_initInfo.Device = m_engine->GetDevice()->CastVulkan()->GetDevice();
     l_initInfo.PhysicalDevice = m_engine->GetDevice()->CastVulkan()->GetPhysicalDevice();
     l_initInfo.MinImageCount = MAX_FRAMES_IN_FLIGHT;
     l_initInfo.ImageCount = MAX_FRAMES_IN_FLIGHT;
+    l_initInfo.MSAASamples = m_engine->GetDevice()->CastVulkan()->GetMSAASamples();
 
     ImGui_ImplVulkan_Init(&l_initInfo);
     ImGui_ImplVulkan_CreateFontsTexture();
 
     m_engine->GetEditorCommandPool()->CastVulkan()->Create(m_engine->GetDevice(), m_engine->GetSurface());
+    m_engine->GetEditorRenderPass()->CastVulkan()->CreateEditorPass(m_engine->GetSwapChain(), m_engine->GetDevice());
 }
 
 void Editor::Update()
@@ -91,18 +93,15 @@ void Editor::Render() const
     ImGui_ImplGlfw_NewFrame();
     ImGui::NewFrame();
 
-    // Update the main docking space every frame
-    ImGuiID id = ImGui::DockSpaceOverViewport(0, ImGui::GetMainViewport(), ImGuiDockNodeFlags_PassthruCentralNode);
-
     DrawWindows();
+    ImGui::ShowStyleEditor();
 
     ImGui::Render();
 
-    // We need to re-register the callback every frame since it needs to get the current frame rendered
-    VulkanRenderer::RegisterEditorRenderCallback([&] { ImGui_ImplVulkan_RenderDrawData(ImGui::GetDrawData(), m_engine->GetCommandBuffer()->CastVulkan()->GetCommandBuffers()[m_engine->GetRenderingDraw()->CastVulkan()->GetCurrentFrame()]); });
+    VulkanRenderer::RegisterGuiCallback([&] { ImGui_ImplVulkan_RenderDrawData(ImGui::GetDrawData(), m_engine->GetCommandBuffer()->CastVulkan()->GetCommandBuffers()[m_engine->GetRenderingDraw()->CastVulkan()->GetCurrentFrame()]); });
 
     const ImGuiIO& l_io = ImGui::GetIO();
-    if (l_io.ConfigFlags & ImGuiConfigFlags_ViewportsEnable)
+    if (l_io.ConfigFlags & ImGuiConfigFlags_ViewportsEnable | ImGuiConfigFlags_DockingEnable)
     {
         ImGui::UpdatePlatformWindows();
         ImGui::RenderPlatformWindowsDefault();
@@ -111,11 +110,10 @@ void Editor::Render() const
 
 void Editor::CreateWindows()
 {
-    new MainInterface(this, "Editor");
-    new Viewport(this, "Viewport");
-    new FileExplorer(this, "File Explorer");
-    new Inspector(this, "Inspector");
-    new Hierarchy(this, "Hierarchy");
+    m_windows.push_back(new MainWindow(this, "Editor"));
+    m_windows.push_back(new FileExplorerWindow(this, "File Explorer"));
+    m_windows.push_back(new InspectorWindow(this, "Inspector"));
+    m_windows.push_back(new HierarchyWindow(this, "Hierarchy"));
 }
 
 void Editor::DrawWindows() const

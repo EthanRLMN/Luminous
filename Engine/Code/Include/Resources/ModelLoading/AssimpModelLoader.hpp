@@ -11,8 +11,8 @@ public:
 	AssimpModelLoader() = default;
 	~AssimpModelLoader() = default;
 
-    static void LoadModel(IMesh* a_mesh, const char* a_file);
-    static std::vector<Vertex> SetupVertices(const aiMesh* a_mesh);
-    static std::vector<unsigned int> SetupIndices(const aiMesh* a_mesh);
-    static void DebugExtensionsList(const Assimp::Importer* a_importer);
+	void LoadModel(IMesh* a_mesh, const char* a_file);
+    std::vector<Vertex> SetupVertices(const aiMesh* a_mesh);
+	std::vector<unsigned int> SetupIndices(const aiMesh* a_mesh);
+	void DebugExtensionsList(const Assimp::Importer* a_importer);
 };

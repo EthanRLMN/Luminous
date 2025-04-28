@@ -5,7 +5,7 @@
 [submodule "Engine/Libs/assimp"]
 	path = Engine/Libs/assimp
 	url = https://github.com/assimp/assimp.git
-[submodule "Engine/Libs/logger"]
+[submodule "Libs/logger"]
 	path = Engine/Libs/logger
 	url = https://github.com/ZeBaananaa/LuminousLogger.git
 [submodule "Engine/Libs/vulkanmemoryallocator"]

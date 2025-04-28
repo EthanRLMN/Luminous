@@ -3,9 +3,14 @@
 #include "Rendering/Vulkan/VulkanMesh.hpp"
 #include "ResourceManager/ResourceManager.hpp"
 
-bool VulkanMesh::Create(IResourceManager* a_manager, const IResourceParams& a_params)
+bool VulkanMesh::Create(IResourceManager* a_manager, IResourceParams a_params)
 {
     a_manager->GetMeshLoader()->LoadModel(this, a_params.m_meshPath.c_str());
+    return isLoaded;
+}
 
-    return IsLoaded();
+
+void VulkanMesh::Destroy(IDevice* a_device)
+{
+    
 }

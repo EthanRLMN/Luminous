@@ -3,10 +3,7 @@
 #include "IDevice.hpp"
 
 #include "Rendering/Vulkan/VulkanDescriptor.hpp"
-
-#include "IDescriptorSetLayout.hpp"
 #include "Rendering/Vulkan/VulkanBuffer.hpp"
-#include "Rendering/Vulkan/VulkanDescriptorSetLayout.hpp"
 #include "Rendering/Vulkan/VulkanDevice.hpp"
 #include "Rendering/Vulkan/VulkanTexture.hpp"
 
@@ -62,7 +59,7 @@ void VulkanDescriptor::CreateDescriptorPool(IDevice* a_device)
 
 void VulkanDescriptor::CreateImGUIDescriptorPool(IDevice* a_device)
 {
-    constexpr std::array<VkDescriptorPoolSize, 11> l_poolSizes = {
+    const std::array<VkDescriptorPoolSize, 11> l_poolSizes = {
         VkDescriptorPoolSize{ VK_DESCRIPTOR_TYPE_SAMPLER, 1000 },
         VkDescriptorPoolSize{ VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER, 1000 },
         VkDescriptorPoolSize{ VK_DESCRIPTOR_TYPE_SAMPLED_IMAGE, 1000 },
@@ -106,7 +103,7 @@ void VulkanDescriptor::CreateDescriptorSets(IDevice* a_device, IDescriptorSetLay
 }
 
 
-void VulkanDescriptor::UpdateDescriptorSets(IDevice* a_device, ITexture* a_texture) const
+void VulkanDescriptor::UpdateDescriptorSets(IDevice* a_device, ITexture* a_texture)
 {
     for (size_t i = 0; i < MAX_FRAMES_IN_FLIGHT; ++i)
     {

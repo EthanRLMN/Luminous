@@ -28,7 +28,6 @@ public:
     [[nodiscard]] virtual std::string GetTitle() const = 0;
     [[nodiscard]] virtual Maths::Vector2 GetSize() const = 0;
 
-
     virtual void GetFrameBufferSize(int* a_width, int* a_height) = 0;
 
     virtual GLFWWindow* CastGLFW()
