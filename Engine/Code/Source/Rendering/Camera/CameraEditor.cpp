@@ -30,6 +30,7 @@ void CameraEditor::UpdateInput(IWindow* a_window, IInputManager* a_input)
 {
     MovementCamera(a_window, a_input, m_movementSpeed);
     TurnCamera(a_window, a_input, m_cameraSpeed);
+    SpeedCamera(a_window, a_input, 5.f);
 }
 
 void CameraEditor::MovementCamera(IWindow* a_window, IInputManager* a_input, float a_movementSpeed)
@@ -56,13 +57,6 @@ void CameraEditor::MovementCamera(IWindow* a_window, IInputManager* a_input, flo
         m_camEditorPosition.y += l_velocity;
         DEBUG_LOG_VERBOSE("Camera Editor : RIGHT");
     }
-
-
-    Maths::Vector2 l_scroll = a_input->GetMouseScroll();
-    std::cout << "Current Scroll TEST3: x: " << l_scroll.x << ", y: " << l_scroll.y << std::endl;
-    a_input->MouseScrollFinish();
-    std::cout << "Current Scroll TEST3: x: " << l_scroll.x << ", y: " << l_scroll.y << std::endl;
-
 }
 
 void CameraEditor::TurnCamera(IWindow* a_window, IInputManager* a_input, float a_cameraSpeed)
@@ -77,4 +71,11 @@ void CameraEditor::TurnCamera(IWindow* a_window, IInputManager* a_input, float a
 
 
     }
+}
+
+void CameraEditor::SpeedCamera(IWindow* a_window, IInputManager* a_input, float a_cameraSpeed)
+{
+    Maths::Vector2 l_scroll = a_input->GetMouseScroll();
+    std::cout << "Current Scroll : x: " << l_scroll.x << ", y: " << l_scroll.y << std::endl;
+    a_input->MouseScrollFinish();
 }

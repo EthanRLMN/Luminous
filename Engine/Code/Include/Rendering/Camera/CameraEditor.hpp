@@ -1,7 +1,5 @@
 #pragma once
-
 #include "IInputManager.hpp"
-
 #include "Camera.hpp"
 
 
@@ -24,6 +22,7 @@ public:
 private:
     void MovementCamera(IWindow* a_window, IInputManager* a_input,float a_movementSpeed);
     void TurnCamera(IWindow* a_window, IInputManager* a_input, float a_movementSpeed);
+    void SpeedCamera(IWindow* a_window, IInputManager* a_input, float a_cameraSpeed);
 
     Maths::Vector3 m_camEditorPosition { Maths::Vector3(2.0f, 2.0f, 2.0f) };
     Maths::Vector3 m_camEditorDirection { Maths::Vector3::One };

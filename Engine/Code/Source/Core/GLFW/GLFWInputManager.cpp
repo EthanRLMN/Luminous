@@ -1,7 +1,6 @@
 #include "IWindow.hpp"
 #include "Core/GLFW/GLFWInputManager.hpp"
 #include "Core/GLFW/GLFWWindow.hpp"
-#include <iostream>
 
 std::array<int, 349> GLFWInputManager::m_keyPressed { };
 std::array<Action, 349> GLFWInputManager::m_keyStatus { };
@@ -10,7 +9,6 @@ std::array<int, 12> GLFWInputManager::m_mouseButtonPressed { };
 std::array<Action, 12> GLFWInputManager::m_mouseButtonStatus { };
 
 std::array<double, 2> GLFWInputManager::m_mouseScroll { };
-//std::array<double,2> test3{0,0};
 bool m_mouseScrollUsed = false;
 
 
@@ -96,21 +94,15 @@ void GLFWInputManager::MouseButtonCallback(GLFWwindow* a_window, const int a_but
 
 void GLFWInputManager::MouseScrollCallback(GLFWwindow* a_window, const double a_xOffset, const double a_yOffset)
 {
-   // test3 = { a_xOffset, a_yOffset };
    m_mouseScroll = { a_xOffset, a_yOffset };
    m_mouseScrollUsed = true;
 }
 
 Maths::Vector2 GLFWInputManager::GetMouseScroll() { 
-    //return Maths::Vector2{ static_cast<float>(test3[0]), static_cast<float>(test3[1]) };
     return Maths::Vector2{ static_cast<float>(m_mouseScroll[0]), static_cast<float>(m_mouseScroll[1]) };
 }
 
-void GLFWInputManager::MouseScrollFinish()
-{
-    m_mouseScrollUsed = false;
-}
-
+void GLFWInputManager::MouseScrollFinish(){ m_mouseScrollUsed = false;}
 
 Maths::Vector2 GLFWInputManager::GetCursorPosition(IWindow* a_window)
 {
@@ -121,8 +113,6 @@ Maths::Vector2 GLFWInputManager::GetCursorPosition(IWindow* a_window)
 
 
 void GLFWInputManager::SetCursorPosition(IWindow* a_window, const Maths::Vector2& a_pos) { glfwSetCursorPos(m_window, a_pos.x, a_pos.y); }
-
-//Maths::Vector2 GLFWInputManager::GetMouseScroll() { return Maths::Vector2 { static_cast<float>(m_mouseScroll[0]), static_cast<float>(m_mouseScroll[1]) }; }
 
 
 void GLFWInputManager::Initialize(IWindow* a_window)
@@ -144,7 +134,6 @@ void GLFWInputManager::Destroy(IWindow* a_window)
 
 void GLFWInputManager::Update(IWindow* a_window)
 {
-
     if (!m_mouseScrollUsed)
     {
         m_mouseScroll[0] = 0;
@@ -156,6 +145,4 @@ void GLFWInputManager::Update(IWindow* a_window)
     {
         DEBUG_LOG_ERROR("ACTIVE");
     }
-
-    std::cout << "Mouse Scroll: xOffset3 = " << m_mouseScroll[0] << ", yOffset = " << m_mouseScroll[1] << std::endl;
 }
