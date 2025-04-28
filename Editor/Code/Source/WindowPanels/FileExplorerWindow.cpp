@@ -1,13 +1,24 @@
 #include "WindowPanels/FileExplorerWindow.hpp"
-#include "Editor.hpp"
-#include "Rendering/Vulkan/VulkanDescriptor.hpp"
 #include "Rendering/Vulkan/VulkanDevice.hpp"
 #include "Rendering/Vulkan/VulkanTexture.hpp"
+#include "Editor.hpp"
 
 FileExplorerWindow::FileExplorerWindow(Editor* a_editor, const std::string& a_windowIdentifier) :
     IWindowPanel(a_editor, a_windowIdentifier), m_currentDirectory(s_AssetPath)
 {
     m_engine = a_editor->GetEngine();
+}
+
+FileExplorerWindow::~FileExplorerWindow()
+{
+    if (m_folderDescriptor)
+        delete m_folderDescriptor;
+    if (m_fileDescriptor)
+        delete m_fileDescriptor;
+    if (m_folderTexture)
+        delete m_folderTexture;
+    if (m_fileTexture)
+        delete m_fileTexture;
 }
 
 void FileExplorerWindow::Draw()
@@ -20,10 +31,12 @@ void FileExplorerWindow::Draw()
         folderParams.m_swapChain = m_engine->GetSwapChain();
         folderParams.m_commandPool = m_engine->GetCommandPool();
 
-        auto* folderTexture = new VulkanTexture();
-        if (folderTexture->Create(m_engine->GetResourceManager(), folderParams))
+        m_folderTexture = new VulkanTexture();
+        if (m_folderTexture->Create(m_engine->GetResourceManager(), folderParams))
         {
-            m_folderIcon = reinterpret_cast<ImTextureID>(folderTexture->GetTextureImageView());
+            m_folderDescriptor = new VulkanDescriptor();
+            m_folderDescriptor->Create(m_engine->GetDevice(), m_engine->GetDescriptionSetLayout(), m_folderTexture, nullptr);
+            m_folderIcon = reinterpret_cast<ImTextureID>(m_folderTexture->GetTextureImage());
         }
 
         IResourceParams fileParams;
@@ -33,9 +46,11 @@ void FileExplorerWindow::Draw()
         fileParams.m_commandPool = folderParams.m_commandPool;
 
         auto* fileTexture = new VulkanTexture();
-        if (fileTexture->Create(m_engine->GetResourceManager(), fileParams))
+        if (m_fileTexture->Create(m_engine->GetResourceManager(), folderParams))
         {
-            m_fileIcon = reinterpret_cast<ImTextureID>(fileTexture->GetTextureImageView());
+            m_fileDescriptor = new VulkanDescriptor();
+            m_fileDescriptor->Create(m_engine->GetDevice(), m_engine->GetDescriptionSetLayout(), m_fileTexture, nullptr);
+            m_fileIcon = reinterpret_cast<ImTextureID>(m_fileTexture->GetTextureImage());
         }
 
         m_texturesInitialized = true;
@@ -70,9 +85,6 @@ void FileExplorerWindow::Draw()
                 if (directoryEntry.is_directory())
                 {
                     m_currentDirectory /= directoryEntry.path().filename();
-                } else
-                {
-                    CreateTextureAndDescriptorForFile(path.string());
                 }
             }
             ImGui::SameLine();
@@ -80,33 +92,5 @@ void FileExplorerWindow::Draw()
         }
         ImGui::PopStyleColor();
         ImGui::End();
-    }
-}
-
-void FileExplorerWindow::InitializeVulkanDescriptorAndTexture()
-{
-    IDescriptorSetLayout* descriptorSetLayout = m_engine->GetDescriptionSetLayout();
-    ITexture* texture = m_engine->GetTexture();
-    IBuffer* buffer = m_engine->GetBuffer();
-
-    VulkanDescriptor descriptor;
-    descriptor.Create(m_engine->GetDevice(), descriptorSetLayout, texture, buffer);
-}
-
-void FileExplorerWindow::CreateTextureAndDescriptorForFile(const std::string& texturePath)
-{
-    IResourceParams textureParams;
-    textureParams.m_texturePath = texturePath;
-    textureParams.m_device = m_engine->GetDevice();
-    textureParams.m_swapChain = m_engine->GetSwapChain();
-    textureParams.m_commandPool = m_engine->GetCommandPool();
-
-    auto* texture = new VulkanTexture();
-    if (texture->Create(m_engine->GetResourceManager(), textureParams))
-    {
-        InitializeVulkanDescriptorAndTexture();
-    } else
-    {
-        DEBUG_LOG_ERROR("Failed to create Vulkan texture from path: %s", texturePath.c_str());
     }
 }
