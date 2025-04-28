@@ -35,7 +35,7 @@ void FileExplorerWindow::Draw()
         if (m_folderTexture->Create(m_engine->GetResourceManager(), folderParams))
         {
             m_folderDescriptor = new VulkanDescriptor();
-            m_folderDescriptor->Create(m_engine->GetDevice(), m_engine->GetDescriptionSetLayout(), m_folderTexture, nullptr);
+            m_folderDescriptor->Create(m_engine->GetDevice(), m_engine->GetDescriptionSetLayout(), m_folderTexture, m_engine->GetBuffer());
             m_folderIcon = reinterpret_cast<ImTextureID>(m_folderTexture->GetTextureImage());
         }
 
@@ -49,7 +49,7 @@ void FileExplorerWindow::Draw()
         if (m_fileTexture->Create(m_engine->GetResourceManager(), folderParams))
         {
             m_fileDescriptor = new VulkanDescriptor();
-            m_fileDescriptor->Create(m_engine->GetDevice(), m_engine->GetDescriptionSetLayout(), m_fileTexture, nullptr);
+            m_fileDescriptor->Create(m_engine->GetDevice(), m_engine->GetDescriptionSetLayout(), m_fileTexture, m_engine->GetBuffer());
             m_fileIcon = reinterpret_cast<ImTextureID>(m_fileTexture->GetTextureImage());
         }
 
