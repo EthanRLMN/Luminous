@@ -30,7 +30,6 @@ public:
     [[nodiscard]] inline std::string GetTitle() const override { return glfwGetWindowTitle(m_window); }
 
     [[nodiscard]] Maths::Vector2 GetSize() const override;
-    [[nodiscard]] static float GetDeltaTime();
 
     void GetFrameBufferSize(int* a_width, int* a_height) override { glfwGetFramebufferSize(m_window, a_width, a_height); }
     [[nodiscard]] const GLFWvidmode& GetMonitorInformation() const { return *m_vidMode; }

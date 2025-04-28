@@ -29,7 +29,7 @@ public:
     void SetCursorPosition(IWindow* a_window, const Maths::Vector2& a_pos) override;
 
     Maths::Vector2 GetMouseScroll() override;
-
+    void MouseScrollFinish() override;
 
     void SetMouseScroll(const Maths::Vector2& a_vec) override { };
 
@@ -47,7 +47,8 @@ private:
     static std::array<int, 12> m_mouseButtonPressed;
     static std::array<Action, 12> m_mouseButtonStatus;
 
-    static std::array<int, 2> m_mouseScroll;
+    static std::array<double, 2> m_mouseScroll;
+
 
     GLFWwindow* m_window = nullptr;
 };
