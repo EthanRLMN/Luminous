@@ -2,6 +2,8 @@
 
 #include "Core/GLFW/GLFWInputManager.hpp"
 #include "Core/GLFW/GLFWWindow.hpp"
+#include <vector>
+#include <iostream>
 
 std::array<int, 349> GLFWInputManager::m_keyPressed { };
 std::array<Action, 349> GLFWInputManager::m_keyStatus { };
@@ -13,6 +15,8 @@ std::array<float, 2> GLFWInputManager::m_mouseScroll { };
 
 double test{ 0.f };
 double test2{ 0.f };
+
+std::vector<double> test3{0,0};
 
 
 int GLFWInputManager::IsKeyDown(IWindow* a_window, const Key& a_key)
@@ -102,20 +106,28 @@ void GLFWInputManager::MouseScrollCallback(GLFWwindow* a_window, const double a_
 
     test = a_xOffset;
     test2 = a_yOffset;
-    /*
-    test = static_cast<float>(a_xOffset);
-    test2 = static_cast<float>(a_xOffset);*/
 
-    DEBUG_LOG_ERROR("Mouse Scroll : xOffset: {}, yOffset: {}", a_xOffset, a_yOffset);
-    DEBUG_LOG_VERBOSE("Mouse Scroll : m_mouse x:{}, m_mouse y{} ", m_mouseScroll[0], m_mouseScroll[1]);
-    DEBUG_LOG_VERBOSE("Mouse Scroll TEST : test: {}, test2: {}", test,test2);
+
+    test3 = { a_xOffset, a_yOffset };
+    /*
+    DEBUG_LOG_ERROR("Mouse Scroll1 : xOffset: {}, yOffset: {}", a_xOffset, a_yOffset);
+    DEBUG_LOG_VERBOSE("Mouse Scroll1 : m_mouse x:{}, m_mouse y{} ", m_mouseScroll[0], m_mouseScroll[1]);
+    DEBUG_LOG_VERBOSE("Mouse Scroll1 TEST : test: {}, test2: {}", test,test2);
+
+    DEBUG_LOG_VERBOSE("Mouse Scroll TEST : test3: {}, test3: {}", test3[0], test3[1]);*/
+    
 }
 
 Maths::Vector2 GLFWInputManager::GetMouseScroll() { 
-    
+    /*
     DEBUG_LOG_VERBOSE("Mouse Scroll TEST 2: xOffset: {}, yOffset: {}", m_mouseScroll[0], m_mouseScroll[1]);
     DEBUG_LOG_VERBOSE("Mouse Scroll TEST 2: test: {}, test2: {}", test, test2);
-    return Maths::Vector2{ m_mouseScroll[0], m_mouseScroll[1]}; 
+    DEBUG_LOG_VERBOSE("Mouse Scroll TEST 2: test: {}, test2: {}", static_cast<float>(test), static_cast<float>(test2));
+    DEBUG_LOG_VERBOSE("Mouse Scroll TEST 2: test3: {}, test3: {}", test3[0], test3[1]);*/
+
+
+   // return Maths::Vector2{ m_mouseScroll[0], m_mouseScroll[1]}; 
+    return Maths::Vector2{ static_cast<float>(test3[0]), static_cast<float>(test3[1]) };
 }
 
 Maths::Vector2 GLFWInputManager::GetCursorPosition(IWindow* a_window)
