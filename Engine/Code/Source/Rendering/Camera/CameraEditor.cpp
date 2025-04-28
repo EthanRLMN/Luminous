@@ -28,41 +28,46 @@ void CameraEditor::Update()
 
 void CameraEditor::UpdateInput(IWindow* a_window, IInputManager* a_input)
 {
+    MovementCamera(a_window, a_input, m_movementSpeed);
+    TurnCamera(a_window, a_input, m_cameraSpeed);
+}
 
-
-    /*
-    * LantualGL code
-    	GLfloat velocity = moveSpeed * deltaTime;
-
-
-	if (keys[GLFW_KEY_W]) {
-		position += front * velocity;
-	}
-    
-    */
-
-    float l_velocity = m_movementSpeed * Time::GetDeltaTime();
+void CameraEditor::MovementCamera(IWindow* a_window, IInputManager* a_input, float a_movementSpeed)
+{
+    float l_velocity = a_movementSpeed * Time::GetDeltaTime();
 
     if (a_input->IsKeyDown(a_window, Key::KEY_W))
     {
-        /*
-        m_camEditorPosition.x--;
-        m_camEditorPosition.x += -m_movementSpeed + Time::GetDeltaTime();*/
-
-        m_camEditorPosition.x -=  l_velocity;
-        DEBUG_LOG_VERBOSE("FORWARD : {}", Time::GetDeltaTime());
+        m_camEditorPosition.x -= l_velocity;
+        DEBUG_LOG_VERBOSE("Camera Editor : FORWARD : {}", Time::GetDeltaTime());
     }
     if (a_input->IsKeyDown(a_window, Key::KEY_S))
     {
         m_camEditorPosition.x += l_velocity;
-       // m_camPosition.x = m_camPosition.x * m_movementSpeed * Time::GetDeltaTime();
-        DEBUG_LOG_VERBOSE("BACKWARDS");
+        DEBUG_LOG_VERBOSE("Camera Editor : BACKWARDS");
     }
-    if (a_input->IsKeyDown(a_window, Key::KEY_A)) {
+    if (a_input->IsKeyDown(a_window, Key::KEY_A))
+    {
         m_camEditorPosition.y -= l_velocity;
+        DEBUG_LOG_VERBOSE("Camera Editor : LEFT");
     }
-    if (a_input->IsKeyDown(a_window, Key::KEY_D)) {
+    if (a_input->IsKeyDown(a_window, Key::KEY_D))
+    {
         m_camEditorPosition.y += l_velocity;
+        DEBUG_LOG_VERBOSE("Camera Editor : RIGHT");
     }
+}
 
+void CameraEditor::TurnCamera(IWindow* a_window, IInputManager* a_input, float a_cameraSpeed)
+{
+
+    if (a_input->IsMouseButtonDown(a_window, MouseButton::MOUSE_BUTTON_2)) {
+        DEBUG_LOG_VERBOSE("Camera Editor : Mouse Right CLick");
+
+
+
+
+
+
+    }
 }
