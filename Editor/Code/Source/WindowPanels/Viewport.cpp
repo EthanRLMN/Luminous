@@ -10,40 +10,31 @@ void Viewport::Draw()
     IWindowPanel::Draw();
 
     ImGui::Begin(p_windowIdentifier.c_str(), nullptr, ImGuiWindowFlags_NoCollapse);
+    VkExtent2D l_extent = p_editor->GetEngine()->GetSwapChain()->CastVulkan()->GetSwapChainExtent();
+
+    float l_texWidth = static_cast<float>(l_extent.width);
+    float l_texHeight = static_cast<float>(l_extent.height);
+    float l_aspectRatio = l_texWidth / l_texHeight;
+
+    ImVec2 l_avail = ImGui::GetContentRegionAvail();
+    float l_fitWidth = l_avail.x;
+    float l_fitHeight = l_fitWidth / l_aspectRatio;
     
-    ISwapChain* l_swapchain = p_editor->GetEngine()->GetSwapChain();
-
-    
-
-    
-
-    ImVec2 viewportPanelSize = ImGui::GetContentRegionAvail();
-
-    const ImVec2 l_avail = ImGui::GetContentRegionAvail();
-    const VkExtent2D l_currentSize = {
-        static_cast<uint32_t>(l_avail.x),
-        static_cast<uint32_t>(l_avail.y)
-    };
-
-
-    if (m_lastSize.x != l_currentSize.width || m_lastSize.y != l_currentSize.height)
+    if (l_fitHeight > l_avail.y)
     {
-        //p_editor->GetEngine()->GetRenderingDraw()->CastVulkan()->SetViewportSize(static_cast<float>(l_currentSize.width), static_cast<float>(l_currentSize.height));
-        //p_editor->GetEngine()->GetRenderingDraw()->CastVulkan()->ReCreateViewportImage(p_editor->GetEngine()->GetDevice(), l_swapchain);
-        //m_lastSize = ImGui::GetContentRegionAvail();
+        l_fitHeight = l_avail.y;
+        l_fitWidth = l_fitHeight * l_aspectRatio;
     }
 
-    if (dSets)
-    {
-        //ImVec2 viewportSize = ImGui::GetContentRegionAvail();
-        //ImGui::SetCursorPos((viewportSize - ImVec2(static_cast<float>(l_currentSize.width), static_cast<float>(l_currentSize.height))) * 0.5f);
-        //ImGui::Image(reinterpret_cast<ImTextureID>(dSets), ImVec2(static_cast<float>(l_currentSize.width), static_cast<float>(l_currentSize.height)));
-    }
+    const ImVec2 l_imageSize(l_fitWidth, l_fitHeight);
+
+    const ImVec2 l_screenPos = ImGui::GetCursorScreenPos();
+    const float l_offsetX = (l_avail.x - l_imageSize.x) * 0.5f;
+    const float l_offsetY = (l_avail.y - l_imageSize.y) * 0.5f;
+
+    ImGui::SetCursorScreenPos(ImVec2(l_screenPos.x + l_offsetX, l_screenPos.y + l_offsetY));
 
 
-
-
-
-    ImGui::Image(reinterpret_cast<ImTextureID>(dSets), viewportPanelSize);
+    ImGui::Image(reinterpret_cast<ImTextureID>(dSets), l_imageSize);
     ImGui::End();
 }

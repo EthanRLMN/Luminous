@@ -196,6 +196,8 @@ void VulkanRenderer::RecreateSwapChain(IWindow* a_window, IDevice* a_device, ISu
     a_multisampling->CastVulkan()->CreateColorResources(a_device, a_swapChain);
     a_depthResource->CastVulkan()->Create(a_device, a_swapChain, a_renderPass->GetRenderPassAt(0));
 
+    m_cameraEditor.SetAspectRatio(static_cast<float>(a_swapChain->CastVulkan()->GetSwapChainExtent().width) / static_cast<float>(a_swapChain->CastVulkan()->GetSwapChainExtent().height));
+
     a_frameBuffer->GetFrameBufferAt(0)->CastVulkan()->Create(a_device, a_swapChain, a_renderPass->GetRenderPassAt(0), a_depthResource, a_multisampling, false);
     CreateViewportImage(a_device, a_swapChain);
     a_frameBuffer->GetFrameBufferAt(1)->CastVulkan()->Create(a_device, a_swapChain, a_renderPass->GetRenderPassAt(1), a_depthResource, a_multisampling, true);
@@ -238,6 +240,16 @@ void VulkanRenderer::CreateViewportImage(IDevice* a_device, ISwapChain* a_swapCh
     const VkDevice& l_device = a_device->CastVulkan()->GetDevice();
     const VkExtent2D l_extent = a_swapChain->CastVulkan()->GetSwapChainExtent();
 
+    SetViewportSize(static_cast<float>(l_extent.width), static_cast<float> (l_extent.height));
+
+    if (m_viewportImage != VK_NULL_HANDLE && m_viewportImageview != VK_NULL_HANDLE && m_viewportMemory != VK_NULL_HANDLE) 
+    {
+        /*
+        DEBUG_LOG_ERROR("IS NOT NULL");
+        vkDestroyImageView(l_device, m_viewportImageview, nullptr);
+        vkFreeMemory(l_device, m_viewportMemory, nullptr);
+        vkDestroyImage(l_device, m_viewportImage, nullptr);*/
+    }
 
 
     VkImageCreateInfo imageInfo{ VK_STRUCTURE_TYPE_IMAGE_CREATE_INFO };
