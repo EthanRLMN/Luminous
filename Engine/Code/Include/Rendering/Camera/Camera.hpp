@@ -10,8 +10,8 @@ public:
     ~Camera() {};
 
 protected:
-    Maths::Matrix4 UpdateProjectionMatrix();
-    Maths::Matrix4 UpdateViewMatrix(); 
+    Maths::Matrix4 UpdateProjectionMatrix() const;
+    Maths::Matrix4 UpdateViewMatrix() const; 
 
 
     float aspectRatio = 800.0f / 600.0f;

@@ -16,7 +16,7 @@ public:
 
     [[nodiscard]] float GetMovementSpeed() const { return m_movementSpeed; }
 
-    void SetAspectRatio(float a_ratio) { aspectRatio = a_ratio; };
+    void SetAspectRatio(const float a_ratio) { aspectRatio = a_ratio; };
 
     Maths::Matrix4 m_projectionMatrix { Maths::Matrix4::identity };
     Maths::Matrix4 m_viewMatrix { Maths::Matrix4::identity };

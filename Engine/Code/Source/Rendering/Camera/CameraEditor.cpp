@@ -32,7 +32,7 @@ void CameraEditor::UpdateInput(IWindow* a_window, IInputManager* a_input)
     TurnCamera(a_window, a_input, m_cameraTurnSpeed);
     SpeedCamera(a_window, a_input, m_cameraSpeed,m_movementSpeed);
 
-    DEBUG_LOG_ERROR("Movement Speed :{}", m_movementSpeed);
+    //DEBUG_LOG_VERBOSE("Movement Speed :{}", m_movementSpeed);
 }
 
 void CameraEditor::MovementCamera(IWindow* a_window, IInputManager* a_input, float a_movementSpeed)
