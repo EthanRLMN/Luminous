@@ -11,8 +11,8 @@ std::array<Action, 12> GLFWInputManager::m_mouseButtonStatus { };
 
 std::array<float, 2> GLFWInputManager::m_mouseScroll { };
 
-float test{ 0.f };
-float test2{ 0.f };
+double test{ 0.f };
+double test2{ 0.f };
 
 
 int GLFWInputManager::IsKeyDown(IWindow* a_window, const Key& a_key)
@@ -100,8 +100,11 @@ void GLFWInputManager::MouseScrollCallback(GLFWwindow* a_window, const double a_
     m_mouseScroll[0] = static_cast<float>(a_xOffset);
     m_mouseScroll[1] = static_cast<float>(a_yOffset);
 
+    test = a_xOffset;
+    test2 = a_yOffset;
+    /*
     test = static_cast<float>(a_xOffset);
-    test2 = static_cast<float>(a_xOffset);
+    test2 = static_cast<float>(a_xOffset);*/
 
     DEBUG_LOG_ERROR("Mouse Scroll : xOffset: {}, yOffset: {}", a_xOffset, a_yOffset);
     DEBUG_LOG_VERBOSE("Mouse Scroll : m_mouse x:{}, m_mouse y{} ", m_mouseScroll[0], m_mouseScroll[1]);
@@ -112,7 +115,7 @@ Maths::Vector2 GLFWInputManager::GetMouseScroll() {
     
     DEBUG_LOG_VERBOSE("Mouse Scroll TEST 2: xOffset: {}, yOffset: {}", m_mouseScroll[0], m_mouseScroll[1]);
     DEBUG_LOG_VERBOSE("Mouse Scroll TEST 2: test: {}, test2: {}", test, test2);
-    return Maths::Vector2{ static_cast<float>(m_mouseScroll[0]), static_cast<float>(m_mouseScroll[1]) }; 
+    return Maths::Vector2{ m_mouseScroll[0], m_mouseScroll[1]}; 
 }
 
 Maths::Vector2 GLFWInputManager::GetCursorPosition(IWindow* a_window)
