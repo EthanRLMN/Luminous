@@ -79,7 +79,9 @@ void VulkanRenderer::DrawFrame(IWindow* a_window, IDevice* a_device, ISwapChain*
 
     l_result = vkQueuePresentKHR(a_device->CastVulkan()->GetPresentationQueue(), &l_presentInfo);
     if (l_result == VK_ERROR_OUT_OF_DATE_KHR || l_result == VK_SUBOPTIMAL_KHR)
+    {
         RecreateSwapChain(a_window, a_device, a_surface, a_swapChain, a_depthResource, a_frameBufferManager, a_renderPassManager, a_multisampling);
+    }
     else if (l_result != VK_SUCCESS)
         DEBUG_LOG_ERROR("failed to present swap chain image");
 
@@ -156,14 +158,6 @@ void VulkanRenderer::UpdateUniformBuffer(const uint32_t& a_currentFrame, IBuffer
 
 void VulkanRenderer::RecreateSwapChain(IWindow* a_window, IDevice* a_device, ISurface* a_surface, ISwapChain* a_swapChain, IDepthResource* a_depthResource, const IFrameBufferManager* a_frameBuffer, const IRenderPassManager* a_renderPass, IMultiSampling* a_multisampling)
 {
-    int l_width, l_height{ 0 };
-    a_window->CastGLFW()->GetFrameBufferSize(&l_width, &l_height);
-    while (l_width == 0 || l_height == 0)
-    {
-        a_window->CastGLFW()->GetFrameBufferSize(&l_width, &l_height);
-        a_window->CastGLFW()->ProcessEvents();
-    }
-
     CleanupSwapChain(a_device, a_swapChain, a_depthResource, a_frameBuffer);
     a_swapChain->CastVulkan()->Create(a_window, a_device, a_surface, a_swapChain->CastVulkan()->GetMipLevel());
 
@@ -174,7 +168,6 @@ void VulkanRenderer::RecreateSwapChain(IWindow* a_window, IDevice* a_device, ISu
     m_cameraEditor.SetAspectRatio(static_cast<float>(a_swapChain->CastVulkan()->GetSwapChainExtent().width) / static_cast<float>(a_swapChain->CastVulkan()->GetSwapChainExtent().height));
 
     a_frameBuffer->GetFrameBufferAt(0)->CastVulkan()->Create(a_device, a_swapChain, a_renderPass->GetRenderPassAt(0), a_depthResource, a_multisampling, false);
-    CreateViewportImage(a_device, a_swapChain);
     a_frameBuffer->GetFrameBufferAt(1)->CastVulkan()->Create(a_device, a_swapChain, a_renderPass->GetRenderPassAt(1), a_depthResource, a_multisampling, true);
 }
 
@@ -213,119 +206,58 @@ void VulkanRenderer::CreateViewportImage(IDevice* a_device, ISwapChain* a_swapCh
 {
     const VkDevice& l_device = a_device->CastVulkan()->GetDevice();
     const VkExtent2D l_extent = a_swapChain->CastVulkan()->GetSwapChainExtent();
-
     SetViewportSize(static_cast<float>(l_extent.width), static_cast<float> (l_extent.height));
 
-    if (m_viewportImage != VK_NULL_HANDLE && m_viewportImageview != VK_NULL_HANDLE && m_viewportMemory != VK_NULL_HANDLE) 
-    {
-        /*
-        DEBUG_LOG_ERROR("IS NOT NULL");
-        vkDestroyImageView(l_device, m_viewportImageview, nullptr);
-        vkFreeMemory(l_device, m_viewportMemory, nullptr);
-        vkDestroyImage(l_device, m_viewportImage, nullptr);*/
-    }
+    VkImageCreateInfo l_imageInfo{ VK_STRUCTURE_TYPE_IMAGE_CREATE_INFO };
+    l_imageInfo.imageType = VK_IMAGE_TYPE_2D;
+    l_imageInfo.extent.width = static_cast<uint32_t>(m_viewportWidth); // l_extent.width
+    l_imageInfo.extent.height = static_cast<uint32_t>(m_viewportHeight);
+    l_imageInfo.extent.depth = 1;
+    l_imageInfo.mipLevels = 1;
+    l_imageInfo.arrayLayers = 1;
+    l_imageInfo.format = a_swapChain->CastVulkan()->GetSwapChainImageFormat();
+    l_imageInfo.tiling = VK_IMAGE_TILING_OPTIMAL;
+    l_imageInfo.initialLayout = VK_IMAGE_LAYOUT_UNDEFINED;
+    l_imageInfo.usage = VK_IMAGE_USAGE_TRANSFER_DST_BIT | VK_IMAGE_USAGE_SAMPLED_BIT;
+    l_imageInfo.sharingMode = VK_SHARING_MODE_EXCLUSIVE;
+    l_imageInfo.samples = VK_SAMPLE_COUNT_1_BIT;
+    l_imageInfo.flags = 0;
+    vkCreateImage(l_device, &l_imageInfo, nullptr, &m_viewportImage);
 
+    VkMemoryRequirements l_memRequirements { };
+    vkGetImageMemoryRequirements(l_device, m_viewportImage, &l_memRequirements);
 
-    VkImageCreateInfo imageInfo{ VK_STRUCTURE_TYPE_IMAGE_CREATE_INFO };
-    imageInfo.imageType = VK_IMAGE_TYPE_2D;
-    imageInfo.extent.width = static_cast<uint32_t>(m_viewportWidth); // l_extent.width
-    imageInfo.extent.height = static_cast<uint32_t>(m_viewportHeight);
-    imageInfo.extent.depth = 1;
-    imageInfo.mipLevels = 1;
-    imageInfo.arrayLayers = 1;
-    imageInfo.format = a_swapChain->CastVulkan()->GetSwapChainImageFormat();
-    imageInfo.tiling = VK_IMAGE_TILING_OPTIMAL;
-    imageInfo.initialLayout = VK_IMAGE_LAYOUT_UNDEFINED;
-    imageInfo.usage = VK_IMAGE_USAGE_TRANSFER_DST_BIT | VK_IMAGE_USAGE_SAMPLED_BIT;
-    imageInfo.sharingMode = VK_SHARING_MODE_EXCLUSIVE;
-    imageInfo.samples = VK_SAMPLE_COUNT_1_BIT;
-    imageInfo.flags = 0;
-
-    vkCreateImage(l_device, &imageInfo, nullptr, &m_viewportImage);
-
-    VkMemoryRequirements memRequirements;
-    vkGetImageMemoryRequirements(l_device, m_viewportImage, &memRequirements);
-
-    VkMemoryAllocateInfo allocInfo{ VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO };
-    allocInfo.allocationSize = memRequirements.size;
-    allocInfo.memoryTypeIndex = VulkanSwapChain::FindMemoryType(a_device->CastVulkan()->GetPhysicalDevice(), memRequirements.memoryTypeBits, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT);
-
-    vkAllocateMemory(l_device, &allocInfo, nullptr, &m_viewportMemory);
+    VkMemoryAllocateInfo l_allocInfo{ VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO };
+    l_allocInfo.allocationSize = l_memRequirements.size;
+    l_allocInfo.memoryTypeIndex = VulkanSwapChain::FindMemoryType(a_device->CastVulkan()->GetPhysicalDevice(), l_memRequirements.memoryTypeBits, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT);
+    vkAllocateMemory(l_device, &l_allocInfo, nullptr, &m_viewportMemory);
     vkBindImageMemory(l_device, m_viewportImage, m_viewportMemory, 0);
 
-    VkImageViewCreateInfo viewInfo{ VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO };
-    viewInfo.image = m_viewportImage;
-    viewInfo.viewType = VK_IMAGE_VIEW_TYPE_2D;
-    viewInfo.format = a_swapChain->CastVulkan()->GetSwapChainImageFormat();
-    viewInfo.subresourceRange.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
-    viewInfo.subresourceRange.baseMipLevel = 0;
-    viewInfo.subresourceRange.levelCount = 1;
-    viewInfo.subresourceRange.baseArrayLayer = 0;
-    viewInfo.subresourceRange.layerCount = 1;
+    VkImageViewCreateInfo l_viewInfo{ VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO };
+    l_viewInfo.image = m_viewportImage;
+    l_viewInfo.viewType = VK_IMAGE_VIEW_TYPE_2D;
+    l_viewInfo.format = a_swapChain->CastVulkan()->GetSwapChainImageFormat();
+    l_viewInfo.subresourceRange.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
+    l_viewInfo.subresourceRange.baseMipLevel = 0;
+    l_viewInfo.subresourceRange.levelCount = 1;
+    l_viewInfo.subresourceRange.baseArrayLayer = 0;
+    l_viewInfo.subresourceRange.layerCount = 1;
+    vkCreateImageView(l_device, &l_viewInfo, nullptr, &m_viewportImageview);
 
-    vkCreateImageView(l_device, &viewInfo, nullptr, &m_viewportImageview);
-
-
-    VkSamplerCreateInfo samplerInfo{ VK_STRUCTURE_TYPE_SAMPLER_CREATE_INFO };
-    samplerInfo.magFilter = VK_FILTER_LINEAR;
-    samplerInfo.minFilter = VK_FILTER_LINEAR;
-    samplerInfo.addressModeU = VK_SAMPLER_ADDRESS_MODE_CLAMP_TO_EDGE;
-    samplerInfo.addressModeV = VK_SAMPLER_ADDRESS_MODE_CLAMP_TO_EDGE;
-    samplerInfo.addressModeW = VK_SAMPLER_ADDRESS_MODE_CLAMP_TO_EDGE;
-    samplerInfo.anisotropyEnable = VK_FALSE;
-    samplerInfo.borderColor = VK_BORDER_COLOR_INT_OPAQUE_BLACK;
-    samplerInfo.unnormalizedCoordinates = VK_FALSE;
-    samplerInfo.compareEnable = VK_FALSE;
-    samplerInfo.mipmapMode = VK_SAMPLER_MIPMAP_MODE_LINEAR;
-
-    vkCreateSampler(l_device, &samplerInfo, nullptr, &m_viewportSampler);
+    VkSamplerCreateInfo l_samplerInfo{ VK_STRUCTURE_TYPE_SAMPLER_CREATE_INFO };
+    l_samplerInfo.magFilter = VK_FILTER_LINEAR;
+    l_samplerInfo.minFilter = VK_FILTER_LINEAR;
+    l_samplerInfo.addressModeU = VK_SAMPLER_ADDRESS_MODE_CLAMP_TO_EDGE;
+    l_samplerInfo.addressModeV = VK_SAMPLER_ADDRESS_MODE_CLAMP_TO_EDGE;
+    l_samplerInfo.addressModeW = VK_SAMPLER_ADDRESS_MODE_CLAMP_TO_EDGE;
+    l_samplerInfo.anisotropyEnable = VK_FALSE;
+    l_samplerInfo.borderColor = VK_BORDER_COLOR_INT_OPAQUE_BLACK;
+    l_samplerInfo.unnormalizedCoordinates = VK_FALSE;
+    l_samplerInfo.compareEnable = VK_FALSE;
+    l_samplerInfo.mipmapMode = VK_SAMPLER_MIPMAP_MODE_LINEAR;
+    vkCreateSampler(l_device, &l_samplerInfo, nullptr, &m_viewportSampler);
 }
 
-
-void VulkanRenderer::ReCreateViewportImage(IDevice* a_device, ISwapChain* a_swapChain)
-{
-    const VkDevice& l_device = a_device->CastVulkan()->GetDevice();
-
-    VkImageCreateInfo imageInfo{ VK_STRUCTURE_TYPE_IMAGE_CREATE_INFO };
-    imageInfo.imageType = VK_IMAGE_TYPE_2D;
-    imageInfo.extent.width = static_cast<uint32_t>(m_viewportWidth); // l_extent.width
-    imageInfo.extent.height = static_cast<uint32_t>(m_viewportHeight);
-    imageInfo.extent.depth = 1;
-    imageInfo.mipLevels = 1;
-    imageInfo.arrayLayers = 1;
-    imageInfo.format = a_swapChain->CastVulkan()->GetSwapChainImageFormat();
-    imageInfo.tiling = VK_IMAGE_TILING_OPTIMAL;
-    imageInfo.initialLayout = VK_IMAGE_LAYOUT_UNDEFINED;
-    imageInfo.usage = VK_IMAGE_USAGE_TRANSFER_DST_BIT | VK_IMAGE_USAGE_SAMPLED_BIT;
-    imageInfo.sharingMode = VK_SHARING_MODE_EXCLUSIVE;
-    imageInfo.samples = VK_SAMPLE_COUNT_1_BIT;
-    imageInfo.flags = 0;
-
-    vkCreateImage(l_device, &imageInfo, nullptr, &m_viewportImage);
-
-    VkMemoryRequirements memRequirements;
-    vkGetImageMemoryRequirements(l_device, m_viewportImage, &memRequirements);
-
-    VkMemoryAllocateInfo allocInfo{ VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO };
-    allocInfo.allocationSize = memRequirements.size;
-    allocInfo.memoryTypeIndex = VulkanSwapChain::FindMemoryType(a_device->CastVulkan()->GetPhysicalDevice(), memRequirements.memoryTypeBits, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT);
-
-    vkAllocateMemory(l_device, &allocInfo, nullptr, &m_viewportMemory);
-    vkBindImageMemory(l_device, m_viewportImage, m_viewportMemory, 0);
-
-    VkImageViewCreateInfo viewInfo{ VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO };
-    viewInfo.image = m_viewportImage;
-    viewInfo.viewType = VK_IMAGE_VIEW_TYPE_2D;
-    viewInfo.format = a_swapChain->CastVulkan()->GetSwapChainImageFormat();
-    viewInfo.subresourceRange.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
-    viewInfo.subresourceRange.baseMipLevel = 0;
-    viewInfo.subresourceRange.levelCount = 1;
-    viewInfo.subresourceRange.baseArrayLayer = 0;
-    viewInfo.subresourceRange.layerCount = 1;
-
-    vkCreateImageView(l_device, &viewInfo, nullptr, &m_viewportImageview);
-
-}
 
 void VulkanRenderer::CopyImageToViewport(ISwapChain* a_swapChain, const VkCommandBuffer& a_cmdBuffer) const
 {
