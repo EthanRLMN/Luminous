@@ -61,42 +61,35 @@ void VulkanRenderPass::Destroy(IDevice* a_device)
 
 void VulkanRenderPass::CreateEditorPass(ISwapChain* a_swapChain, IDevice* a_device)
 {
-    VkAttachmentDescription l_colorAttachment = {};
+    VkAttachmentDescription l_colorAttachment{};
     l_colorAttachment.format = a_swapChain->CastVulkan()->GetSwapChainImageFormat();
     l_colorAttachment.samples = VK_SAMPLE_COUNT_1_BIT;
     l_colorAttachment.loadOp = VK_ATTACHMENT_LOAD_OP_CLEAR;
     l_colorAttachment.storeOp = VK_ATTACHMENT_STORE_OP_STORE;
-    l_colorAttachment.stencilLoadOp = VK_ATTACHMENT_LOAD_OP_DONT_CARE;
-    l_colorAttachment.stencilStoreOp = VK_ATTACHMENT_STORE_OP_DONT_CARE;
     l_colorAttachment.initialLayout = VK_IMAGE_LAYOUT_UNDEFINED;
     l_colorAttachment.finalLayout = VK_IMAGE_LAYOUT_PRESENT_SRC_KHR;
 
-    VkAttachmentDescription l_depthAttachment{};
-    FillDepthAttachmentInfo(l_depthAttachment, FindDepthFormat(a_device->CastVulkan()->GetPhysicalDevice()), VK_SAMPLE_COUNT_1_BIT);
-
-    VkAttachmentReference l_colorAttachmentReference = {};
+    VkAttachmentReference l_colorAttachmentReference{};
     l_colorAttachmentReference.attachment = 0;
     l_colorAttachmentReference.layout = VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL;
 
-    VkAttachmentReference l_depthAttachmentReference = {};
-    l_depthAttachmentReference.attachment = 1;
-    l_depthAttachmentReference.layout = VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL;
+    VkSubpassDescription l_subpass{};
+    l_subpass.pipelineBindPoint = VK_PIPELINE_BIND_POINT_GRAPHICS;
+    l_subpass.colorAttachmentCount = 1;
+    l_subpass.pColorAttachments = &l_colorAttachmentReference;
 
-    VkSubpassDescription l_subpass = {};
-    SetupSubpass(l_subpass, l_colorAttachmentReference, l_depthAttachmentReference);
-
-    VkSubpassDependency l_dependency{};
-    SetupSubpassDependency(l_dependency);
-
-    const std::vector<VkAttachmentDescription> l_attachments = { l_colorAttachment, l_depthAttachment };
-    VkRenderPassCreateInfo l_renderPassCreateInfo = {};
-    SetupRenderPassCreateInfo(l_renderPassCreateInfo, l_attachments, l_subpass, l_dependency);
+    const std::vector<VkAttachmentDescription> l_attachments = { l_colorAttachment };
+    VkRenderPassCreateInfo l_renderPassCreateInfo{ VK_STRUCTURE_TYPE_RENDER_PASS_CREATE_INFO };
+    l_renderPassCreateInfo.attachmentCount = 1;
+    l_renderPassCreateInfo.pAttachments = &l_colorAttachment;
+    l_renderPassCreateInfo.subpassCount = 1;
+    l_renderPassCreateInfo.pSubpasses = &l_subpass;
 
     const VkResult l_result = vkCreateRenderPass(a_device->CastVulkan()->GetDevice(), &l_renderPassCreateInfo, nullptr, &m_renderPass);
     if (l_result != VK_SUCCESS)
-        DEBUG_LOG_ERROR("Failed to create a UI render pass\n");
+        DEBUG_LOG_ERROR("Vulkan RenderPass : Editor RenderPass creation failed!\n");
 
-    DEBUG_LOG_INFO("Vulkan RenderPass : UI RenderPass created!\n");
+    DEBUG_LOG_INFO("Vulkan RenderPass : Editor RenderPass created!\n");
 }
 
 
@@ -110,7 +103,7 @@ VkFormat VulkanRenderPass::FindSupportedFormat(const VkPhysicalDevice& a_physica
 {
     for (const VkFormat l_format : a_candidates)
     {
-        VkFormatProperties l_props;
+        VkFormatProperties l_props{};
         vkGetPhysicalDeviceFormatProperties(a_physicalDevice, l_format, &l_props);
 
         if (a_tiling == VK_IMAGE_TILING_LINEAR && (l_props.linearTilingFeatures & a_features) == a_features)

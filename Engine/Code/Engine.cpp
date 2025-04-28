@@ -1,83 +1,10 @@
 #include "Include/Engine.hpp"
 
-
+#include "Game/Systems/Time.inl"
 #include "Rendering/Vulkan/VulkanRenderInterface.hpp"
+#include "Rendering/Vulkan/VulkanRenderPass.hpp"
 
 #define JPH_DEBUG_RENDERER
-
-void Engine::Destroy() const
-{
-    m_resourceManager->DeleteResource<VulkanShader>("v=Engine/Assets/Shaders/vert.spv, f=Engine/Assets/Shaders/frag.spv, t=, g=",m_device);
-
-    m_commandBuffer->Destroy();
-    m_interface->DeleteCommandBuffer(m_commandBuffer);
-
-    m_descriptor->Destroy(m_device);
-    m_interface->DeleteDescriptor(m_descriptor);
-
-    m_buffer->Destroy(m_device);
-    m_interface->DeleteBuffer(m_buffer);
-
-    m_mesh->Destroy(m_device);
-    m_interface->DeleteModel(m_mesh);
-
-    m_texture->Destroy(m_device);
-    m_interface->DeleteTexture(m_texture);
-
-    m_frameBuffer->Destroy(m_device);
-    m_interface->DeleteFrameBuffer(m_frameBuffer);
-
-    m_depthResource->Destroy(m_device);
-    m_interface->DeleteDepthResource(m_depthResource);
-
-    m_multiSampling->Destroy(m_device);
-    m_interface->DeleteMultiSampling(m_multiSampling);
-
-    m_editorCommandPool->Destroy(m_device, m_synchronization, m_renderer);
-    m_interface->DeleteCommandPool(m_editorCommandPool);
-
-    m_commandPool->Destroy(m_device, m_synchronization, m_renderer);
-    m_interface->DeleteCommandPool(m_commandPool);
-
-    m_pipeline->Destroy(m_device);
-    m_interface->DeletePipeline(m_pipeline);
-
-    m_descriptorSetLayout->Destroy(m_device);
-    m_interface->DeleteDescriptorSetLayout(m_descriptorSetLayout);
-
-    m_editorRenderPass->Destroy(m_device);
-    m_interface->DeleteRenderPass(m_editorRenderPass);
-
-    m_renderPass->Destroy(m_device);
-    m_interface->DeleteRenderPass(m_renderPass);
-
-    m_swapChain->Destroy(m_device);
-    m_interface->DeleteSwapChain(m_swapChain);
-
-    m_synchronization->Destroy(m_device);
-    m_interface->DeleteSynchronization(m_synchronization);
-
-    m_device->Destroy();
-    m_interface->DeleteDevice(m_device);
-
-    m_surface->Destroy(m_instance);
-    m_interface->DeleteSurface(m_surface);
-
-    m_instance->Destroy();
-    m_interface->DeleteContext(m_instance);
-
-    m_interface->DeleteResourceManager(m_resourceManager);
-
-    m_renderer->Destroy();
-    m_interface->DeleteRenderer(m_renderer);
-
-    m_inputManager->Destroy(m_window);
-    m_interface->DeleteInputManager(m_inputManager);
-
-    m_window->Destroy();
-    m_interface->DeleteWindow(m_window);
-}
-
 
 void Engine::Init()
 {
@@ -85,14 +12,118 @@ void Engine::Init()
     l_logger.Init("Engine", 1_MiB, 5, true);
 
     m_interface = new VulkanRenderInterface();
+    m_scene = new Scene();
+    m_physicsJolt = new Physics();
+
     m_isRunning = true;
 
+    Window();
+    Input();
+    PreRender();
+    InitPhysics();
+}
+
+void Engine::Update()
+{
+    Time::Update();
+
+    m_window->Update();
+    m_inputManager->Update(m_window);
+
+    m_scene->SceneEntity();
+    m_renderer->DrawFrame(m_window, m_device, m_swapChain, m_pipeline, m_buffer, m_renderPassManager, m_descriptor, m_mesh, m_synchronization, m_commandBuffer, m_frameBufferManager, m_depthResource, m_surface, m_multiSampling,m_inputManager);
+
+    m_physicsJolt->Update_JOLT();
+
+    if (m_window->ShouldClose())
+        m_isRunning = false;
+}
+
+void Engine::Destroy()  
+{  
+   m_resourceManager->DeleteResource<VulkanShader>("v=Engine/Assets/Shaders/vert.spv, f=Engine/Assets/Shaders/frag.spv, t=, g=", m_device);  
+
+   //NEED CLEANUP  
+   m_renderer->CastVulkan()->DestroyViewportImage(m_device);  
+
+    // TODO: Cleanup
+    m_renderer->CastVulkan()->DestroyViewportImage(m_device);
+
+   m_descriptor->Destroy(m_device);  
+   m_interface->DeleteDescriptor(m_descriptor);  
+
+   m_buffer->Destroy(m_device);  
+   m_interface->DeleteBuffer(m_buffer);  
+
+   m_mesh->Destroy(m_device);  
+   m_interface->DeleteModel(m_mesh);  
+
+   m_texture->Destroy(m_device);  
+   m_interface->DeleteTexture(m_texture);  
+
+   m_frameBufferManager->Destroy(m_device);  
+   m_interface->DeleteFrameBufferManager(m_frameBufferManager);  
+
+   m_depthResource->Destroy(m_device);  
+   m_interface->DeleteDepthResource(m_depthResource);  
+
+   m_multiSampling->Destroy(m_device);  
+   m_interface->DeleteMultiSampling(m_multiSampling);  
+
+   m_editorCommandPool->Destroy(m_device, m_synchronization, m_renderer);  
+   m_interface->DeleteCommandPool(m_editorCommandPool);  
+
+   m_commandPool->Destroy(m_device, m_synchronization, m_renderer);  
+   m_interface->DeleteCommandPool(m_commandPool);  
+
+   m_pipeline->Destroy(m_device);  
+   m_interface->DeletePipeline(m_pipeline);  
+
+   m_descriptorSetLayout->Destroy(m_device);  
+   m_interface->DeleteDescriptorSetLayout(m_descriptorSetLayout);  
+
+   m_renderPassManager->Destroy(m_device);  
+   m_interface->DeleteRenderPassManager(m_renderPassManager);  
+
+   m_swapChain->Destroy(m_device);  
+   m_interface->DeleteSwapChain(m_swapChain);  
+
+   m_synchronization->Destroy(m_device);  
+   m_interface->DeleteSynchronization(m_synchronization);  
+
+   m_device->Destroy();  
+   m_interface->DeleteDevice(m_device);  
+
+   m_surface->Destroy(m_instance);  
+   m_interface->DeleteSurface(m_surface);  
+
+   m_instance->Destroy();  
+   m_interface->DeleteContext(m_instance);  
+
+   m_interface->DeleteResourceManager(m_resourceManager);  
+
+   m_renderer->Destroy();  
+   m_interface->DeleteRenderer(m_renderer);  
+
+   DestroyInput();  
+   DestroyWindow();  
+}    
+
+
+void Engine::Window()
+{
     m_window = m_interface->InstantiateWindow();
     m_window->Initialize("Luminous");
+}
 
+void Engine::Input()
+{
     m_inputManager = m_interface->InstantiateInputManager();
     m_inputManager->Initialize(m_window);
+}
 
+void Engine::PreRender()
+{
     m_resourceManager = m_interface->InstantiateResourceManager();
 
     m_instance = m_interface->InstantiateContext();
@@ -105,24 +136,21 @@ void Engine::Init()
     m_device->Create(m_instance, m_window, m_surface);
 
     m_swapChain = m_interface->InstantiateSwapChain();
-    m_swapChain->Create(m_window, m_device, m_surface);
+    m_swapChain->Create(m_window, m_device, m_surface, 0);
 
-    //TODO: Cleanup
     m_multiSampling = m_interface->InstantiateMultiSampling();
+    m_multiSampling->SetSampleCount(m_device, SamplingCount::MSAA_SAMPLECOUNT_4);
     m_multiSampling->Create(m_device, m_swapChain);
-    m_multiSampling->CastVulkan()->SetSampleCount(m_device, VK_SAMPLE_COUNT_8_BIT);
-    m_multiSampling->CastVulkan()->CreateColorResources(m_device, m_swapChain);
 
-    m_renderPass = m_interface->InstantiateRenderPass();
-    m_renderPass->Create(m_swapChain, m_device);
-
-    m_editorRenderPass = m_interface->InstantiateRenderPass();
+    m_renderPassManager = m_interface->InstantiateRenderPassManager();
+    m_renderPassManager->Create(m_swapChain, m_device, false); // Create Main Render Pass
+    m_renderPassManager->Create(m_swapChain, m_device, true); // Create Editor Render Pass
 
     m_descriptorSetLayout = m_interface->InstantiateDescriptorSetLayout();
     m_descriptorSetLayout->Create(m_device);
 
     m_pipeline = m_interface->InstantiatePipeline();
-    m_pipeline->Create(m_device, m_renderPass, m_descriptorSetLayout, m_resourceManager);
+    m_pipeline->Create(m_device, m_renderPassManager->GetRenderPassAt(0), m_descriptorSetLayout, m_resourceManager);
 
     m_commandPool = m_interface->InstantiateCommandPool();
     m_commandPool->Create(m_device, m_surface);
@@ -130,18 +158,19 @@ void Engine::Init()
     m_editorCommandPool = m_interface->InstantiateCommandPool();
 
     m_depthResource = m_interface->InstantiateDepthResource();
-    m_depthResource->Create(m_device, m_swapChain, m_renderPass);
+    m_depthResource->Create(m_device, m_swapChain, m_renderPassManager->GetRenderPasses()[0]);
 
-    m_frameBuffer = m_interface->InstantiateFrameBuffer();
-    m_frameBuffer->Create(m_device, m_swapChain, m_renderPass, m_depthResource, m_multiSampling);
+    m_frameBufferManager = m_interface->InstantiateFrameBufferManager();
+    m_frameBufferManager->Create(m_device, m_swapChain, m_renderPassManager->GetRenderPasses()[0], m_depthResource, m_multiSampling, false); // Create Renderer Frame Buffer
+    m_frameBufferManager->Create(m_device, m_swapChain, m_renderPassManager->GetRenderPasses()[1], m_depthResource, m_multiSampling, true); // Create Editor Frame Buffer
 
-    IResourceParams l_texParams{ m_device, m_swapChain, m_depthResource, m_commandPool};
-    l_texParams.m_texturePath = "Engine/Assets/Textures/Untitled312.png";
+    IResourceParams l_texParams{ m_device, m_swapChain, m_depthResource, m_commandPool };
+    l_texParams.m_texturePath = "Engine/Assets/Textures/viking_room.png";
     m_texture = m_resourceManager->LoadResource<VulkanTexture>(l_texParams);
 
     IResourceParams l_meshParams{};
-    l_meshParams.m_meshPath = "Engine/Assets/Models/metalSonic.obj";
-    m_mesh = m_resourceManager->LoadResource<VulkanMesh>(l_meshParams); 
+    l_meshParams.m_meshPath = "Engine/Assets/Models/viking_room.obj";
+    m_mesh = m_resourceManager->LoadResource<VulkanMesh>(l_meshParams);
 
     m_buffer = m_interface->InstantiateBuffer();
     m_buffer->Create(m_device, m_texture, m_commandPool, m_swapChain, m_mesh);
@@ -155,25 +184,22 @@ void Engine::Init()
     m_synchronization = m_interface->InstantiateSynchronization();
     m_synchronization->Create(m_device);
 
+    // TODO : Fix CastVulkan Call
     m_renderer = m_interface->InstantiateRenderer();
+    m_renderer->Create(m_window, m_swapChain);
+    m_renderer->CastVulkan()->CreateViewportImage(m_device, m_swapChain);
 
-    m_physicsJolt = new Physics();
-    m_physicsJolt->Init_JOLT();
 }
 
-void Engine::Update()
+void Engine::DestroyWindow()
 {
-    m_window->Update();
-    m_inputManager->Update(m_window);
-    m_renderer->DrawFrame(m_window, m_device, m_swapChain, m_pipeline, m_buffer, m_renderPass, m_descriptor, m_mesh, m_synchronization, m_commandBuffer, m_frameBuffer, m_depthResource, m_surface, m_multiSampling);
-
-    //UpdatePhysic();
-
-    if (m_window->ShouldClose())
-        m_isRunning = false;
+    m_window->Destroy();
+    m_interface->DeleteWindow(m_window);
 }
 
-void Engine::UpdatePhysic() const
+void Engine::DestroyInput() const
 {
-    m_physicsJolt->Update_JOLT();
+    m_inputManager->Destroy(m_window);
+    m_interface->DeleteInputManager(m_inputManager);
 }
+

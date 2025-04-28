@@ -1,10 +1,13 @@
 #pragma once
 
 #include "Engine.hpp"
+#include "imgui.h"
 
 class ImguiWindow;
 class VulkanInstance;
 class IWindowPanel;
+
+static const std::string s_defaultConfigFilePath = "DefaultEditorLayout.ini";
 
 class Editor
 {
