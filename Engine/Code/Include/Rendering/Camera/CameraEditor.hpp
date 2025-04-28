@@ -22,10 +22,10 @@ public:
     Maths::Matrix4 m_viewMatrix { Maths::Matrix4::identity };
 
 private:
-    Maths::Vector3 m_camPosition { Maths::Vector3(2.0f, 2.0f, 2.0f) };
-    Maths::Vector3 m_camDirection { Maths::Vector3::One };
-    Maths::Vector3 m_camUp { Maths::Vector3::ZAxis };
+    Maths::Vector3 m_camEditorPosition { Maths::Vector3(2.0f, 2.0f, 2.0f) };
+    Maths::Vector3 m_camEditorDirection { Maths::Vector3::One };
+    Maths::Vector3 m_camEditorUp { Maths::Vector3::ZAxis };
 
-    float m_movementSpeed { 0.0001f };
+    float m_movementSpeed { 1.0f };
 };
 

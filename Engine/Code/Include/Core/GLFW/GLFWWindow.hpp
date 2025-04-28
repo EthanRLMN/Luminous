@@ -11,8 +11,8 @@ class Vector2;
 class GLFWWindow final : public IWindow
 {
 public:
-    [[nodiscard]] static constexpr int DefaultWidth = 1280;
-    [[nodiscard]] static constexpr int DefaultHeight = 720;
+    static constexpr int DefaultWidth = 1280;
+    static constexpr int DefaultHeight = 720;
 
     GLFWwindow* Initialize(const std::string& a_name, const int& a_width, const int& a_height) override;
     void Initialize(const std::string& a_name) override;
