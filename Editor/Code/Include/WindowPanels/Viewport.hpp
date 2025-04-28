@@ -13,7 +13,9 @@ public:
     {
         dSets = ImGui_ImplVulkan_AddTexture(p_editor->GetEngine()->GetRenderingDraw()->CastVulkan()->GetViewportImageSampler(), p_editor->GetEngine()->GetRenderingDraw()->CastVulkan()->GetViewportImageView(), VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL);
     };
+    
 
+    ImVec2 m_lastSize{ 0.0f, 0.0f };
 
     VkSampler sampler{};
     VkDescriptorSet dSets;

@@ -42,9 +42,13 @@ public:
 	[[nodiscard]] VkSampler GetViewportImageSampler() const { return m_viewportSampler; }
 
 	void CreateViewportImage(IDevice* a_device, ISwapChain* a_swapChain);
+    void ReCreateViewportImage(IDevice* a_device, ISwapChain* a_swapChain);
     void CopyImageToViewport(ISwapChain* a_swapChain, const VkCommandBuffer& a_cmdBuffer) const;
     void DestroyViewportImage(IDevice* a_device) const;
+    void SetViewportSize(float a_x, float a_y) { m_viewportWidth = a_x; m_viewportHeight = a_y; };
 
+    float m_viewportWidth = 1920.f;
+    float m_viewportHeight = 1080.f;
 
 private:
     void SetupSubmitInfo(VkSubmitInfo& a_submitInfo, const std::vector<VkSemaphore>& a_waitSemaphores, const std::array<VkPipelineStageFlags, 1>& a_waitStages, const std::vector<VkCommandBuffer>& a_commandBuffer, const std::vector<VkSemaphore>& a_signalSemaphores) const;
