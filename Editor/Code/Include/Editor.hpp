@@ -2,9 +2,11 @@
 
 #include "Engine.hpp"
 
+
 class ImguiWindow;
 class VulkanInstance;
 class IWindowPanel;
+
 
 class Editor
 {
@@ -19,9 +21,9 @@ public:
     void Update();
     void Render() const;
 
-    void CreateWindows();
-    void DrawWindows() const;
-    void DestroyWindows() const;
+    void CreateWindowPanels();
+    void RenderWindowPanels() const;
+    void DestroyWindowPanels() const;
 
     void RegisterWindow(IWindowPanel* a_windowPanel) { m_windows.push_back(a_windowPanel); };
     void UnregisterWindow(IWindowPanel* a_windowPanel) { std::erase(m_windows, a_windowPanel); };
@@ -32,6 +34,6 @@ public:
 
 private:
     Engine* m_engine { nullptr };
-    std::vector<IWindowPanel*> m_windows{};
+    std::vector<IWindowPanel*> m_windows {};
 };
 
