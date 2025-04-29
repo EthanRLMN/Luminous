@@ -1,8 +1,7 @@
 #include "TextEditorPanel.hpp"
 #include "imgui.h"
 
-TextEditorPanel::TextEditorPanel(Editor* a_editor, const std::string& a_windowIdentifier) :
-    IWindowPanel(a_editor, a_windowIdentifier)
+TextEditorPanel::TextEditorPanel(Editor* a_editor, const std::string& a_windowIdentifier)
 {
     m_filePath = "";
     m_textBuffer = "";
