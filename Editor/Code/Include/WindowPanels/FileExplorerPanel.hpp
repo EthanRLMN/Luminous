@@ -17,4 +17,5 @@ public:
 
 private:
     std::filesystem::path m_currentDirectory{};
+    void OpenTextEditor(const std::filesystem::path& path);
 };

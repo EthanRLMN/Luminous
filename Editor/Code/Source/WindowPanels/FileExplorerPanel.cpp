@@ -1,6 +1,7 @@
 #include "imgui.h"
 
 #include "WindowPanels/FileExplorerPanel.hpp"
+#include "TextEditorPanel.hpp"
 
 
 static const std::filesystem::path s_AssetPath = "Engine/Assets";
@@ -41,10 +42,44 @@ void FileExplorerPanel::Render()
                 }
             } else
             {
-                ImGui::Button(filenameString.c_str());
+                if (ImGui::Button(filenameString.c_str()))
+                {
+                    std::string extension = path.extension().string();
+
+                    if (extension == ".txt")
+                    {
+                        OpenTextEditor(path);
+                    } 
+                    /* else if (extension == ".png" || extension == ".jpg")
+                    {
+                        OpenImageViewer(path);
+                    } 
+                    else if (extension == ".fbx" || extension == ".obj")
+                    {
+                        Open3DModelViewer(path);
+                    }*/
+                }
             }
         }
         ImGui::PopStyleColor();
         ImGui::End();
     }
+}
+
+void FileExplorerPanel::OpenTextEditor(const std::filesystem::path& path)
+{
+    std::ifstream file(path);
+    if (!file.is_open())
+    {
+        std::cerr << "Impossible d'ouvrir le fichier : " << path << std::endl;
+        return;
+    }
+
+    std::stringstream buffer;
+    buffer << file.rdbuf();
+    std::string fileContent = buffer.str();
+
+    file.close();
+    
+    //TextEditorPanel;
 }
