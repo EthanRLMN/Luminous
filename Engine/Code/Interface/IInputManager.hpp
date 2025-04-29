@@ -7,6 +7,16 @@
 class GLFWInputManager;
 class IWindow;
 
+
+enum class CursorInputMode
+{
+    NORMAL,
+    HIDDEN,
+    DISABLED,
+    CAPTURED
+};
+
+
 class IInputManager
 {
 public:
@@ -24,13 +34,12 @@ public:
 	virtual int IsMouseButtonPressed(IWindow* a_window, const MouseButton& a_button) = 0;
 
 	virtual Maths::Vector2 GetMouseScroll() = 0;
-	virtual void SetMouseScroll(const Maths::Vector2& a_vec) = 0;
-    virtual void MouseScrollFinish() = 0;
+    virtual Maths::Vector2 GetCursorPosition(IWindow* a_window) = 0;
+    virtual Maths::Vector2 GetMouseDelta(IWindow* a_window) = 0;
 
-	virtual Maths::Vector2 GetCursorPosition(IWindow* a_window) = 0;
-	virtual void SetCursorPosition(IWindow* a_window, const Maths::Vector2& a_pos) = 0;
+    virtual void ConfigureMouseInput(const CursorInputMode& a_cursorInputMode) = 0;
 
-	virtual IInputManager* CastGLFW()
+    virtual IInputManager* CastGLFW()
 	{
 		DEBUG_LOG_ERROR("Input Manager : Cast is Wrong!\n");
 		return nullptr;
