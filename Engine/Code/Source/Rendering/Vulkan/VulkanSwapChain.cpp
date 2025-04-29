@@ -136,6 +136,7 @@ VkSurfaceFormatKHR VulkanSwapChain::ChooseBestSurfaceFormat(const std::vector<Vk
 }
 
 
+// TODO : If using `VK_PRESENT_MODE_FIFO_KHR` images appear broken du to vsync
 VkPresentModeKHR VulkanSwapChain::ChooseBestPresentationMode(const std::vector<VkPresentModeKHR>& a_presentationModes)
 {
     for (const auto& l_presentationMode : a_presentationModes)

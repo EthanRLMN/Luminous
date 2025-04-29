@@ -62,6 +62,12 @@ public:
     inline static float GetDeltaTime() noexcept { return s_deltaTime; }
 
     /**
+     * @brief Getter for the DeltaTime
+     * @return The delta time (in seconds)
+     */
+    inline static float GetAccumulator() noexcept { return s_accumulator; }
+
+    /**
      * @brief Getter for the FixedDeltaTime
      * @return The fixed delta time (in seconds)
      */
@@ -148,6 +154,11 @@ private:
     }
 
     inline static void UpdateFixedDeltaTime()
+    {
+        UpdateAccumulator();
+    }
+
+    inline static void UpdateAccumulator()
     {
         s_accumulator += s_deltaTime;
         if (s_accumulator > s_maxFrameTime)

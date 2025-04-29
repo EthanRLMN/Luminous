@@ -47,8 +47,7 @@ void PhysicsSystem::Update()
         if (!GetBodyInterface().IsActive(l_rigidBody->GetID()))
             return;
 
-    std::cout << Time::GetInterpolationAlpha() << std::endl;
-
+    // TODO : Update collision steps to run properly (accumulator returns floats on a scale from 0.25 to 10, we need integers scaled properly)
     const int l_collisionSteps = 1;
     m_physicsSystem->Update(Time::GetFixedDeltaTime(), l_collisionSteps, m_tempAllocator, m_jobSystem);
 }
