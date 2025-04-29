@@ -11,7 +11,11 @@ public:
 
 protected:
     Maths::Matrix4 UpdateProjectionMatrix() const;
-    Maths::Matrix4 UpdateViewMatrix() const; 
+    Maths::Matrix4 UpdateViewMatrix() const;
+
+    Maths::Matrix4 UpdateProjectionMatrixCustom(float a_fov, float a_aspectRatio, float a_nearPlane, float a_farPlane) const;
+    Maths::Matrix4 UpdateViewMatrixCustom(Maths::Vector3 a_position, Maths::Vector3 a_direction, Maths::Vector3 a_up) const;
+ 
 
 
     float aspectRatio = 800.0f / 600.0f;
