@@ -22,7 +22,7 @@ public:
 	[[nodiscard]] AssimpModelLoader* GetMeshLoader() const { return m_meshLoader; };
 
 private:
-	AssimpModelLoader* m_meshLoader;
+	AssimpModelLoader* m_meshLoader { nullptr };
 	int mecouy = 1;
 
 };

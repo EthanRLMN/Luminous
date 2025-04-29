@@ -5,31 +5,29 @@
 #include "Core/GLFW/GLFWInputManager.hpp"
 #include "Core/GLFW/GLFWWindow.hpp"
 
+#include "VulkanBuffer.hpp"
+#include "VulkanCommandBuffer.hpp"
+#include "VulkanCommandPool.hpp"
+#include "VulkanDepthResource.hpp"
+#include "VulkanDescriptor.hpp"
 #include "VulkanDescriptorSetLayout.hpp"
-#include "Rendering/Vulkan/VulkanBuffer.hpp"
-#include "Rendering/Vulkan/VulkanCommandBuffer.hpp"
-#include "Rendering/Vulkan/VulkanCommandPool.hpp"
-#include "Rendering/Vulkan/VulkanDepthResource.hpp"
-#include "Rendering/Vulkan/VulkanDescriptor.hpp"
-#include "Rendering/Vulkan/VulkanDevice.hpp"
-#include "Rendering/Vulkan/VulkanFrameBuffer.hpp"
-#include "Rendering/Vulkan/VulkanInstance.hpp"
-#include "Rendering/Vulkan/VulkanMesh.hpp"
-#include "Rendering/Vulkan/VulkanPipeline.hpp"
-#include "Rendering/Vulkan/VulkanRenderPass.hpp"
-#include "Rendering/Vulkan/VulkanSurface.hpp"
-#include "Rendering/Vulkan/VulkanSwapChain.hpp"
-#include "Rendering/Vulkan/VulkanSynchronization.hpp"
-#include "Rendering/Vulkan/VulkanTexture.hpp"
-#include "Rendering/Vulkan/VulkanMultiSampling.hpp"
-
-#include "Rendering/Vulkan/VulkanRenderer.hpp"
+#include "VulkanDevice.hpp"
+#include "VulkanFrameBufferManager.hpp"
+#include "VulkanInstance.hpp"
+#include "VulkanMesh.hpp"
+#include "VulkanMultiSampling.hpp"
+#include "VulkanPipeline.hpp"
+#include "VulkanRenderPassManager.hpp"
+#include "VulkanRenderer.hpp"
+#include "VulkanSurface.hpp"
+#include "VulkanSwapChain.hpp"
+#include "VulkanSynchronization.hpp"
+#include "VulkanTexture.hpp"
 
 class VulkanRenderInterface final : public IRender
 {
 public:
-
-	__forceinline IWindow* InstantiateWindow() override { return new GLFWWindow(); }
+	inline IWindow* InstantiateWindow() override { return new GLFWWindow(); }
 	void DeleteWindow(IWindow* a_window) override { delete a_window; }
 
 	inline IInputManager* InstantiateInputManager() override { return new GLFWInputManager(); }
@@ -47,8 +45,8 @@ public:
 	inline ISwapChain* InstantiateSwapChain() override { return new VulkanSwapChain(); }
 	void DeleteSwapChain(ISwapChain* a_swapChain) override { delete a_swapChain; }
 
-	inline IRenderPass* InstantiateRenderPass() override { return new VulkanRenderPass(); }
-	void DeleteRenderPass(IRenderPass* a_renderPass) override { delete a_renderPass; }
+	inline IRenderPassManager* InstantiateRenderPassManager() override { return new VulkanRenderPassManager(); }
+	void DeleteRenderPassManager(IRenderPassManager* a_renderPassManager) override { delete a_renderPassManager; }
 
 	inline IDescriptorSetLayout* InstantiateDescriptorSetLayout() override { return new VulkanDescriptorSetLayout(); }
 	void DeleteDescriptorSetLayout(IDescriptorSetLayout* a_descriptorSetLayout) override { delete a_descriptorSetLayout; }
@@ -60,12 +58,13 @@ public:
 	void DeleteCommandPool(ICommandPool* a_commandPool) override { delete a_commandPool; }
 
 	inline IMultiSampling* InstantiateMultiSampling() override { return new VulkanMultiSampling(); }
+    void DeleteMultiSampling(IMultiSampling* a_multiSampling) override { delete a_multiSampling; };
 
 	inline IDepthResource* InstantiateDepthResource() override { return new VulkanDepthResource(); }
 	void DeleteDepthResource(IDepthResource* a_depthResource) override { delete a_depthResource; }
 
-	inline IFrameBuffer* InstantiateFrameBuffer() override { return new VulkanFrameBuffer(); }
-	void DeleteFrameBuffer(IFrameBuffer* a_frameBuffer) override { delete a_frameBuffer; }
+	inline IFrameBufferManager* InstantiateFrameBufferManager() override { return new VulkanFrameBufferManager(); }
+	void DeleteFrameBufferManager(IFrameBufferManager* a_frameBufferManager) override { delete a_frameBufferManager; }
 
 	inline ITexture* InstantiateTexture() override { return new VulkanTexture(); }
 	void DeleteTexture(ITexture* a_texture) override { delete a_texture; }
@@ -90,5 +89,4 @@ public:
 
 	inline IRenderer* InstantiateRenderer() override { return new VulkanRenderer(); }
 	void DeleteRenderer(IRenderer* a_renderDraw) override { delete a_renderDraw; }
-
 };

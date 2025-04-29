@@ -13,7 +13,7 @@ class ISwapChain
 public:
 	virtual ~ISwapChain() = default;
 
-	virtual void Create(IWindow* a_window, IDevice* a_device, ISurface* a_surface) = 0;
+	virtual void Create(IWindow* a_window, IDevice* a_device, ISurface* a_surface, const uint32_t& a_mipLevels) = 0;
 
 	virtual void Destroy(IDevice* a_device) = 0;
 

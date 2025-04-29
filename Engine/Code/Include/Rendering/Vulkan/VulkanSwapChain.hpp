@@ -15,22 +15,22 @@ class VulkanSwapChain final : public ISwapChain
 {
 public:
 
-	void Create(IWindow* a_window, IDevice* a_device, ISurface* a_surface) override;
+	void Create(IWindow* a_window, IDevice* a_device, ISurface* a_surface, const uint32_t& a_mipLevels) override;
 	void Destroy(IDevice* a_device) override;
 	VulkanSwapChain* CastVulkan() override { return this; }
 
-    static void CreateImage(const VkDevice& a_device, const VkPhysicalDevice& a_physicalDevice, const uint32_t& a_width, const uint32_t& a_height, const VkFormat& a_format, const VkImageTiling& a_tiling, const VkImageUsageFlags& a_usage, const VkMemoryPropertyFlags& a_properties, VkImage& a_image, VkDeviceMemory& a_imageMemory, const VkSampleCountFlagBits& a_numSamples);
-
     static uint32_t FindMemoryType(const VkPhysicalDevice& a_physicalDevice, const uint32_t& a_typeFilter, const VkMemoryPropertyFlags& a_properties);
+
+    static void CreateImage(const VkDevice& a_device, const VkPhysicalDevice& a_physicalDevice, const uint32_t& a_width, const uint32_t& a_height, const VkFormat& a_format, const VkImageTiling& a_tiling, const VkImageUsageFlags& a_usage, const VkMemoryPropertyFlags& a_properties, VkImage& a_image, VkDeviceMemory& a_imageMemory, const VkSampleCountFlagBits& a_numSamples, const uint32_t& a_mipLevels);
+    static VkImageView CreateImageView(const VkImage& a_image, const VkDevice& a_device, const VkFormat& a_format, const VkImageAspectFlags& a_aspectFlags, const uint32_t& a_mipLevels);
 
 	[[nodiscard]] VkSwapchainKHR GetSwapChain() const { return m_swapChain; }
 	[[nodiscard]] VkFormat GetSwapChainImageFormat() const { return m_swapChainImageFormat; }
 	[[nodiscard]] VkExtent2D GetSwapChainExtent() const { return m_swapChainExtent; }
 	[[nodiscard]] std::vector<VkImage> GetSwapChainImages() const { return m_swapChainImages; }
 	[[nodiscard]] std::vector<VkImageView> GetSwapChainImageViews() const { return m_swapChainImageViews; }
+    [[nodiscard]] uint32_t GetMipLevel() const { return m_mipLevels; }
 
-
-    static VkImageView CreateImageView(VkImage a_image, VkDevice a_device, VkFormat a_format, VkImageAspectFlags a_aspectFlags);
 
 private:
     static SwapChainDetails GetSwapChainDetails(const VkPhysicalDevice& a_device, const VkSurfaceKHR& a_surface);
@@ -41,13 +41,14 @@ private:
 
     static void FillSwapChainCreationInfo(VkSwapchainCreateInfoKHR& a_swapChainCreateInfo, const VkSurfaceKHR& a_surface, uint32_t a_imageCount, const VkSurfaceFormatKHR& a_surfaceFormat, const VkExtent2D& a_extent);
     static void FillSwapChainGraphicsFamilyData(VkSwapchainCreateInfoKHR& a_swapChainCreateInfo, const QueueFamilyIndices& a_indices, const std::vector<uint32_t>& a_queueFamilyIndices, const SwapChainDetails& a_swapChainDetails, const VkPresentModeKHR& a_presentMode);
+    static void FillImageInfo(const VkDevice& a_device, const uint32_t& a_width, const uint32_t& a_height, const VkFormat& a_format, const VkImageTiling& a_tiling, const VkImageUsageFlags& a_usage, VkImage& a_image, const VkSampleCountFlagBits& a_numSamples, const uint32_t& a_mipLevels);
     void SendSwapChainData(const VkDevice& a_vkDevice, uint32_t& a_imageCount, const VkSurfaceFormatKHR& a_surfaceFormat, const VkExtent2D& a_extent);
-
-    static void FillImageInfo(VkImageCreateInfo& a_imageInfo, const uint32_t& a_width, const uint32_t& a_height, const VkFormat& a_format, const VkImageTiling& a_tiling, const VkImageUsageFlags& a_usage, const VkSampleCountFlagBits& a_numSamples);
 
 	VkSwapchainKHR m_swapChain{ nullptr };
 	VkFormat m_swapChainImageFormat{ VK_FORMAT_UNDEFINED };
 	VkExtent2D m_swapChainExtent{ 0, 0 };
 	std::vector<VkImage> m_swapChainImages{ nullptr };
 	std::vector<VkImageView> m_swapChainImageViews{ nullptr };
+
+    uint32_t m_mipLevels{ 0 };
 };

@@ -35,7 +35,7 @@ void AssimpModelLoader::LoadModel(IMesh* a_mesh, const char* a_file)
         a_mesh->m_indices = SetupIndices(l_mesh);
         l_info = std::string(a_file) + " has been successfully parsed.";
         DEBUG_LOG_INFO("{}", l_info);
-        a_mesh->isLoaded = true;
+        a_mesh->SetLoaded(true);
     }
 }
 

@@ -1,14 +1,3 @@
-<<<<<<<< HEAD:Editor/Code/Source/WindowPanels/MainWindow.cpp
-#include "../../Include/WindowPanels/MainWindow.hpp"
-#include "Editor.hpp"
-
-#include "imgui.h"
-
-void MainWindow::Draw()
-{
-    ImGui::SetNextWindowSize(ImVec2(800.f, 600.f), ImGuiCond_FirstUseEver);
-
-========
 #include "WindowPanels/MainPanel.hpp"
 
 #include "imgui.h"
@@ -16,11 +5,9 @@ void MainWindow::Draw()
 
 void MainPanel::Render()
 {
->>>>>>>> Dev:Editor/Code/Source/WindowPanels/MainPanel.cpp
     // TODO: Add Draw calls of dependent popup windows here
     if (ImGui::BeginMainMenuBar())
     {
-        ImGui::PushStyleColor(ImGuiCol_WindowBg, 0xff323432);
         if (ImGui::BeginMenu("File"))
         {
             ImGui::MenuItem("New Project", "CTRL + N", false);
@@ -47,7 +34,6 @@ void MainPanel::Render()
 
             ImGui::Separator();
             ImGui::MenuItem("Exit", "", false);
-                
 
             ImGui::EndMenu();
         }
@@ -87,28 +73,15 @@ void MainPanel::Render()
         }
 
 
-<<<<<<<< HEAD:Editor/Code/Source/WindowPanels/MainWindow.cpp
-            ImGui::Separator();
-            ImGui::MenuItem("Luminous Engine Docmentation", "", false);
-
-            ImGui::MenuItem("Credits", "", false);
-
-            ImGui::MenuItem("Report a bug", "", false);
-
-            ImGui::EndMenu();
-        }
-        ImGui::PopStyleColor();
-========
->>>>>>>> Dev:Editor/Code/Source/WindowPanels/MainPanel.cpp
         ImGui::EndMainMenuBar();
     }
 
-    /*static ImTextureID s_moveButton = LoadTexture("Assets/Icons/Move Button.png");
-    static ImTextureID s_rotateButton = LoadTexture("Assets/Icons/Rotate Button.png");
-    static ImTextureID s_resizeButton = LoadTexture("Assets/Icons/Resize Button.png");
-    static ImTextureID s_playButton = LoadTexture("Assets/Icons/Play Button.png");
-    static ImTextureID s_stopButton = LoadTexture("Assets/Icons/Stop Button.png");
-    static ImTextureID s_saveButton = LoadTexture("Assets/Icons/Save Button.png");
+    /*static ImTextureID s_moveButton = LoadTexture("../../Assets/Move Button.png");
+    static ImTextureID s_rotateButton = LoadTexture("../../Assets/Rotate Button.png");
+    static ImTextureID s_resizeButton = LoadTexture("../../Assets/Resize Button.png");
+    static ImTextureID s_playButton = LoadTexture("../../Assets/Play Button.png");
+    static ImTextureID s_stopButton = LoadTexture("../../Assets/Stop Button.png");
+    static ImTextureID s_saveButton = LoadTexture("../../Assets/Save Button.png");
 
     ImGui::Image(s_moveButton, { 25, 25 }, { 0, 0 }, { 1, 1 });
     //if (ImGui::IsItemClicked())
