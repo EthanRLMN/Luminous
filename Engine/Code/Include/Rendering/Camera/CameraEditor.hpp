@@ -37,7 +37,7 @@ private:
    // Maths::Vector3 m_camForward{ m_camDirection.Normalize() };
 
     Maths::Vector3 m_velocity{ Maths::Vector3(0.0f, 0.0f, 0.0f) }; 
-    Maths::Vector3 m_right;
+    Maths::Vector3 m_right{ Maths::Vector3::YAxis };
 
     float m_movementSpeed{ 1.0f };
     float m_rotationSpeed{ 1.0f };

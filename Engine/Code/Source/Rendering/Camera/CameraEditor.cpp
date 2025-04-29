@@ -20,21 +20,23 @@ void CameraEditor::Update(float a_aspectRatio)
 {
     aspectRatio = a_aspectRatio;
 
-    m_camPosition = m_velocity * Time::GetDeltaTime();
-
-
- 
+  
 
     m_position = m_camPosition;
+
     m_direction = m_camDirection; 
     m_up = m_camUp;
 
     
-    m_viewMatrix = UpdateViewMatrixCustom(m_camPosition,m_camPosition + m_camDirection , m_camUp);
-    m_projectionMatrix = UpdateProjectionMatrixCustom(fov,aspectRatio,nearPlane,farPlane);
+    //m_viewMatrix = UpdateViewMatrixCustom(m_camPosition,m_camPosition + m_camDirection , m_camUp);
+    //m_projectionMatrix = UpdateProjectionMatrixCustom(fov,aspectRatio,nearPlane,farPlane);
+
+
+    m_viewMatrix = UpdateViewMatrix();
+    m_projectionMatrix = UpdateProjectionMatrix();
 
     DEBUG_LOG_VERBOSE("Camera Editor : Position X {} , Y {} , Z {}" , m_camPosition.x ,m_camPosition.y , m_camPosition.z);
-    DEBUG_LOG_VERBOSE("Camera Editor : Rotation X {} , Y {} , Z {}", m_camDirection.x, m_camDirection.y, m_camDirection.z);
+   // DEBUG_LOG_VERBOSE("Camera Editor : Rotation X {} , Y {} , Z {}", m_camDirection.x, m_camDirection.y, m_camDirection.z);
 
 }
 
@@ -48,28 +50,35 @@ void CameraEditor::UpdateInput(IWindow* a_window, IInputManager* a_input)
 
 void CameraEditor::MovementHandler(IWindow* a_window, IInputManager* a_input, float a_movementSpeed)
 {
+    float l_velocity = a_movementSpeed * Time::GetDeltaTime();
+    m_right = m_direction.CrossProduct(m_camUp).Normalize();
 
-    //m_right = m_direction.CrossProduct(m_up).Normalize();
+
+
 
     if (a_input->IsKeyDown(a_window, Key::KEY_W))
     {
-        m_velocity += a_movementSpeed * m_camDirection;
+        m_camPosition.x += l_velocity;
+        m_velocity += m_camDirection * a_movementSpeed;
         DEBUG_LOG_VERBOSE("Camera Editor : FORWARD");
     }
     if (a_input->IsKeyDown(a_window, Key::KEY_S))
     {
-        m_velocity += a_movementSpeed * m_camDirection;
+        m_camPosition.x -= l_velocity;
+        m_velocity -= m_camDirection * a_movementSpeed;
         DEBUG_LOG_VERBOSE("Camera Editor : BACKWARDS");
     }
 
     if (a_input->IsKeyDown(a_window, Key::KEY_A))
     {
-        m_velocity += a_movementSpeed * -m_direction.CrossProduct(m_camUp).Normalize();
+        m_camPosition -= m_right * l_velocity;
+        m_velocity += (m_direction.CrossProduct(m_camUp).Normalize() * -1) * a_movementSpeed;
         DEBUG_LOG_VERBOSE("Camera Editor : LEFT");
     }
     if (a_input->IsKeyDown(a_window, Key::KEY_D))
     {
-        m_velocity += a_movementSpeed * m_direction.CrossProduct(m_camUp).Normalize();
+        m_camPosition += m_right * l_velocity;
+        m_velocity -= m_direction.CrossProduct(m_camUp).Normalize() * a_movementSpeed;
         DEBUG_LOG_VERBOSE("Camera Editor : RIGHT");
     }
 }
@@ -87,6 +96,9 @@ void CameraEditor::MouseHandler(IWindow* a_window, IInputManager* a_input)
         float rotationX = mouseDelta.y * sensitivity;
         float rotationY = mouseDelta.x * sensitivity;
 
+
+        //m_camDirection = m_camDirection.RotateAroundAxis(m_right, rotationX);
+       // m_camDirection = m_camDirection.RotateAroundAxis(m_camUp, rotationY);
 
 
         m_right = m_direction.CrossProduct(m_camUp).Normalize();
