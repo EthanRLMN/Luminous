@@ -8,7 +8,7 @@ Maths::Matrix4 Camera::UpdateProjectionMatrix() const
 
 Maths::Matrix4 Camera::UpdateViewMatrix() const
 {
-    return Maths::Matrix4::LookAt(m_position, m_direction, m_up);
+    return Maths::Matrix4::LookAt(m_position,m_position - m_direction, m_up);
 }
 
 

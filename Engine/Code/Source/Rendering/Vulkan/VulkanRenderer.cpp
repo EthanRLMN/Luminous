@@ -28,7 +28,7 @@
 
 void VulkanRenderer::Create(IWindow* a_window, ISwapChain* a_swapChain)
 {
-    m_cameraEditor.Init(a_window, static_cast<float>(a_swapChain->CastVulkan()->GetSwapChainExtent().width) / static_cast<float>(a_swapChain->CastVulkan()->GetSwapChainExtent().height),45.f,0.1f,1000.f);
+    m_cameraEditor.Init(a_window, static_cast<float>(a_swapChain->CastVulkan()->GetSwapChainExtent().width) / static_cast<float>(a_swapChain->CastVulkan()->GetSwapChainExtent().height),45.f,0.01f,1000.f);
 }
 
 void VulkanRenderer::DrawFrame(IWindow* a_window, IDevice* a_device, ISwapChain* a_swapChain, IPipeline* a_pipeline, IBuffer* a_buffer, IRenderPassManager* a_renderPassManager, IDescriptor* a_descriptor, IMesh* a_mesh, ISynchronization* a_synchronization, ICommandBuffer* a_commandBuffer, IFrameBufferManager* a_frameBufferManager, IDepthResource* a_depthResource, ISurface* a_surface, IMultiSampling* a_multisampling,IInputManager* a_inputManager)
@@ -158,7 +158,7 @@ void VulkanRenderer::RecordCommandBuffer(const VkCommandBuffer& a_commandBuffer,
 void VulkanRenderer::UpdateUniformBuffer(const uint32_t& a_currentFrame, IBuffer* a_buffer) const
 {
     UniformBufferObject l_ubo{};
-    l_ubo.model = Maths::Matrix4::Rotate(Maths::Matrix4(1.0f), static_cast<float>(Time::GetTotalTimeElapsed()) * 90.0f, Maths::Vector3(0.0f, 0.0f, 1.0f));
+    l_ubo.model = Maths::Matrix4::Rotate(Maths::Matrix4(1.0f), static_cast<float>(Time::GetTotalTimeElapsed()) * 00.0f, Maths::Vector3(0.0f, 0.0f, 1.0f));
     l_ubo.view = m_cameraEditor.m_viewMatrix;
     l_ubo.proj = m_cameraEditor.m_projectionMatrix;
     l_ubo.proj.mat[1][1] *= -1;

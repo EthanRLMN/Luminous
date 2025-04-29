@@ -24,7 +24,7 @@ void CameraEditor::Update(float a_aspectRatio)
 
     m_position = m_camPosition;
 
-    m_direction = m_camDirection; 
+    m_direction = m_camDirection.Normalize();
     m_up = m_camUp;
 
     
@@ -71,13 +71,13 @@ void CameraEditor::MovementHandler(IWindow* a_window, IInputManager* a_input, fl
 
     if (a_input->IsKeyDown(a_window, Key::KEY_A))
     {
-        m_camPosition -= m_right * l_velocity;
+        m_camPosition.y -= l_velocity;
         m_velocity += (m_direction.CrossProduct(m_camUp).Normalize() * -1) * a_movementSpeed;
         DEBUG_LOG_VERBOSE("Camera Editor : LEFT");
     }
     if (a_input->IsKeyDown(a_window, Key::KEY_D))
     {
-        m_camPosition += m_right * l_velocity;
+        m_camPosition.y +=  l_velocity;
         m_velocity -= m_direction.CrossProduct(m_camUp).Normalize() * a_movementSpeed;
         DEBUG_LOG_VERBOSE("Camera Editor : RIGHT");
     }
@@ -105,7 +105,7 @@ void CameraEditor::MouseHandler(IWindow* a_window, IInputManager* a_input)
 
         m_viewMatrix = UpdateViewMatrixCustom(m_camPosition, m_camPosition + m_camDirection, m_camUp);
 
-        DEBUG_LOG_VERBOSE("Camera Editor : Rotation X {} , Y {} , Z {}", m_camDirection.x, m_camDirection.y, m_camDirection.z);
+       // DEBUG_LOG_VERBOSE("Camera Editor : Rotation X {} , Y {} , Z {}", m_camDirection.x, m_camDirection.y, m_camDirection.z);
     }
 }
 
