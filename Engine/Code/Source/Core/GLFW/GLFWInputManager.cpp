@@ -1,4 +1,5 @@
 #include "IWindow.hpp"
+
 #include "Core/GLFW/GLFWInputManager.hpp"
 #include "Core/GLFW/GLFWWindow.hpp"
 
@@ -8,8 +9,9 @@ std::array<Action, 349> GLFWInputManager::m_keyStatus { };
 std::array<int, 12> GLFWInputManager::m_mouseButtonPressed { };
 std::array<Action, 12> GLFWInputManager::m_mouseButtonStatus { };
 
-std::array<double, 2> GLFWInputManager::m_mouseScroll { };
-bool m_mouseScrollUsed = false;
+Maths::Vector2 GLFWInputManager::m_mouseScroll { };
+Maths::Vector2 GLFWInputManager::m_currentMousePos { };
+Maths::Vector2 GLFWInputManager::m_previousMousePos { };
 
 
 int GLFWInputManager::IsKeyDown(IWindow* a_window, const Key& a_key)
@@ -39,6 +41,12 @@ int GLFWInputManager::IsKeyPressed(IWindow* a_window, const Key& a_key)
         return false;
     }
     return false;
+}
+
+
+void GLFWInputManager::ConfigureMouseInput(const CursorInputMode& a_cursorInputMode)
+{
+    glfwSetInputMode(m_window, GLFW_CURSOR, CastGlfwInput(a_cursorInputMode));
 }
 
 
@@ -94,25 +102,14 @@ void GLFWInputManager::MouseButtonCallback(GLFWwindow* a_window, const int a_but
 
 void GLFWInputManager::MouseScrollCallback(GLFWwindow* a_window, const double a_xOffset, const double a_yOffset)
 {
-   m_mouseScroll = { a_xOffset, a_yOffset };
-   m_mouseScrollUsed = true;
+    SetMouseScroll(a_xOffset, a_yOffset);
+    DEBUG_LOG_WARNING("Mouse Scroll : {}, {}\n", a_xOffset, a_yOffset);
 }
 
-Maths::Vector2 GLFWInputManager::GetMouseScroll() { 
-    return Maths::Vector2{ static_cast<float>(m_mouseScroll[0]), static_cast<float>(m_mouseScroll[1]) };
-}
-
-void GLFWInputManager::MouseScrollFinish(){ m_mouseScrollUsed = false;}
-
-Maths::Vector2 GLFWInputManager::GetCursorPosition(IWindow* a_window)
+void GLFWInputManager::MouseCursorCallback(GLFWwindow* a_window, const double a_xPos, const double a_yPos)
 {
-    double t_x, t_y;
-    glfwGetCursorPos(m_window, &t_x, &t_y);
-    return Maths::Vector2 { static_cast<float>(t_x), static_cast<float>(t_y) };
+    SetCursorPosition(a_xPos, a_yPos);
 }
-
-
-void GLFWInputManager::SetCursorPosition(IWindow* a_window, const Maths::Vector2& a_pos) { glfwSetCursorPos(m_window, a_pos.x, a_pos.y); }
 
 
 void GLFWInputManager::Initialize(IWindow* a_window)
@@ -122,6 +119,7 @@ void GLFWInputManager::Initialize(IWindow* a_window)
     glfwSetKeyCallback(m_window, KeyCallback);
     glfwSetMouseButtonCallback(m_window, MouseButtonCallback);
     glfwSetScrollCallback(m_window, MouseScrollCallback);
+    glfwSetCursorPosCallback(m_window, MouseCursorCallback);
 }
 
 
@@ -129,14 +127,4 @@ void GLFWInputManager::Destroy(IWindow* a_window)
 {
     glfwDestroyWindow(a_window->CastGLFW()->GetGLFWWindow());
     glfwTerminate();
-}
-
-
-void GLFWInputManager::Update(IWindow* a_window)
-{
-    if (!m_mouseScrollUsed)
-    {
-        m_mouseScroll[0] = 0;
-        m_mouseScroll[1] = 0;
-    }
 }
