@@ -144,7 +144,7 @@ void VulkanRenderer::RecordCommandBuffer(const VkCommandBuffer& a_commandBuffer,
         {
             CopyImageToViewport(a_swapChain, a_commandBuffer);
             
-            bUsable = true;
+            //bUsable = true;
         } 
     }
 
@@ -179,8 +179,12 @@ void VulkanRenderer::RecreateSwapChain(IWindow* a_window, IDevice* a_device, ISu
 
     CleanupSwapChain(a_device, a_swapChain, a_depthResource, a_frameBuffer);
     a_swapChain->CastVulkan()->Create(a_window, a_device, a_surface, a_swapChain->CastVulkan()->GetMipLevel());
+    
+    
+    CreateViewportImage(a_device, a_swapChain);
 
-    CreateImageViews(a_device, a_swapChain);
+    bReloadImage = true;
+    //CreateImageViews(a_device, a_swapChain);
     
     a_multisampling->CastVulkan()->CreateColorResources(a_device, a_swapChain);
     a_depthResource->CastVulkan()->Create(a_device, a_swapChain, a_renderPass->GetRenderPassAt(0));
@@ -191,8 +195,7 @@ void VulkanRenderer::RecreateSwapChain(IWindow* a_window, IDevice* a_device, ISu
     a_frameBuffer->GetFrameBufferAt(0)->CastVulkan()->Create(a_device, a_swapChain, a_renderPass->GetRenderPassAt(0), a_depthResource, a_multisampling, false);
     
 
-    CreateViewportImage(a_device, a_swapChain);
-    bReloadImage = true;
+    
     
     a_frameBuffer->GetFrameBufferAt(1)->CastVulkan()->Create(a_device, a_swapChain, a_renderPass->GetRenderPassAt(1), a_depthResource, a_multisampling, true);
     
@@ -238,14 +241,7 @@ void VulkanRenderer::CreateViewportImage(IDevice* a_device, ISwapChain* a_swapCh
 
     if (m_viewportImage != VK_NULL_HANDLE && m_viewportImageview != VK_NULL_HANDLE && m_viewportMemory != VK_NULL_HANDLE) 
     {
-
-
         DestroyViewportImage(a_device);
-        /*
-        DEBUG_LOG_ERROR("IS NOT NULL");
-        vkDestroyImageView(l_device, m_viewportImageview, nullptr);
-        vkFreeMemory(l_device, m_viewportMemory, nullptr);
-        vkDestroyImage(l_device, m_viewportImage, nullptr);*/
     }
 
 
@@ -313,6 +309,7 @@ void VulkanRenderer::CopyImageToViewport(ISwapChain* a_swapChain, const VkComman
     l_barrierSrc.newLayout = VK_IMAGE_LAYOUT_TRANSFER_SRC_OPTIMAL;
     l_barrierSrc.srcAccessMask = VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT;
     l_barrierSrc.dstAccessMask = VK_ACCESS_TRANSFER_READ_BIT;
+    
     l_barrierSrc.image = a_swapChain->CastVulkan()->GetSwapChainImages()[m_currentFrame];
     l_barrierSrc.subresourceRange = { VK_IMAGE_ASPECT_COLOR_BIT, 0, 1, 0, 1 };
 
@@ -352,10 +349,30 @@ void VulkanRenderer::CopyImageToViewport(ISwapChain* a_swapChain, const VkComman
 void VulkanRenderer::DestroyViewportImage(IDevice* a_device) const
 {
     const VkDevice& l_device = a_device->CastVulkan()->GetDevice();
-    vkDestroySampler(l_device, m_viewportSampler, nullptr);
-    vkDestroyImageView(l_device, m_viewportImageview, nullptr);
-    vkFreeMemory(l_device, m_viewportMemory, nullptr);
-    vkDestroyImage(l_device, m_viewportImage, nullptr);
+    if (m_viewportSampler != VK_NULL_HANDLE)
+    {
+        DEBUG_LOG_INFO("Viewport sampler has been destroyed.");
+        vkDestroySampler(l_device, m_viewportSampler, nullptr);
+    }
+
+    if (m_viewportImageview != VK_NULL_HANDLE)
+    {
+        DEBUG_LOG_INFO("Viewport image view has been destroyed.");
+        vkDestroyImageView(l_device, m_viewportImageview, nullptr);
+    }
+    
+    if (m_viewportMemory != VK_NULL_HANDLE)
+    {
+        DEBUG_LOG_INFO("Viewport image memory has been destroyed.");
+        vkFreeMemory(l_device, m_viewportMemory, nullptr);
+    }
+
+    if (m_viewportImage != VK_NULL_HANDLE)
+    {
+        DEBUG_LOG_INFO("Viewport image has been destroyed.");
+        vkDestroyImage(l_device, m_viewportImage, nullptr);
+    }
+
 }
 
 
