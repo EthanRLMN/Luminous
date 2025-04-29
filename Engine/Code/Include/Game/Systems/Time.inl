@@ -42,7 +42,7 @@ public:
     /**
      * @brief Function used to reset the Last Time
      */
-    inline static void ResetLastTime() { s_lastTime = std::chrono::high_resolution_clock::now(); }
+    inline static void ResetLastTime() { s_lastTime = std::chrono::steady_clock::now(); }
 
     /**
      * @brief Function used to reset the Total Time Elapsed

@@ -4,8 +4,8 @@
 class Scene
 {
 public:
-    Scene(){};
-    ~Scene(){};
+    Scene()= default;
+    ~Scene()= default;
 
     void SceneEntity();
 private:

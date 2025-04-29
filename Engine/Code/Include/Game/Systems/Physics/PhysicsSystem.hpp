@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Jolt/Jolt.h"
+#include "Jolt/Physics/PhysicsSystem.h"
 #include "Jolt/Physics/Body/Body.h"
 #include "Jolt/Physics/Body/BodyID.h"
 
@@ -35,13 +36,13 @@ public:
 
     void Init(const Settings& a_settings);
     void Update();
-    void Clean();
+    void Destroy();
+    void TriggerPhysicsOptimization() const;
 
-    JPH::Body* CreateBody();
+
+    inline JPH::BodyInterface& GetBodyInterface() const { return m_physicsSystem->GetBodyInterface(); }
 
 private:
-    [[nodiscard]] JPH::BodyInterface& GetBodyInterface() const;
-
     JPH::PhysicsSystem* m_physicsSystem{ nullptr };
     JPH::uint m_currentStep { 0 };
 
@@ -62,6 +63,8 @@ private:
 
     JPH::BodyCreationSettings* m_floorSettings{ nullptr };
     JPH::BodyCreationSettings* m_sphereSettings{ nullptr };
+
+    std::vector<JPH::Body*> m_rigidBodies{ };
 };
 
 

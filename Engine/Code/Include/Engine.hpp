@@ -3,7 +3,7 @@
 #include "IRender.hpp"
 #include "ISynchronization.hpp"
 #include "Game/Scene.hpp"
-#include "Physics/PhysicsSystem.hpp"
+#include "Game/Systems/Physics/PhysicsSystem.hpp"
 #include "ResourceManager/ResourceManager.hpp"
 
 

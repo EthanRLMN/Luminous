@@ -1,7 +1,11 @@
 #pragma once
 
+#include <memory>
+#include <string>
+#include <typeindex>
+#include <unordered_map>
+
 #include "EntityComponent.hpp"
-#include <string.h>
 
 
 class Entity

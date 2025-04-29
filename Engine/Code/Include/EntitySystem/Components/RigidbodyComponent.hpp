@@ -1,10 +1,15 @@
 #pragma once
-#include "EntityComponent.hpp"
-#include "physics_JOLT.hpp"
+
+#include "EntitySystem/EntityComponent.hpp"
+
 
 class RigidbodyComponent : public EntityComponent
 {
 public:
+    RigidbodyComponent() = default;
+    ~RigidbodyComponent() override = default;
 
-private:
+    void Create() override {};
+    void Destroy() override {};
+    void Update() override {};
 };

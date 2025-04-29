@@ -1,10 +1,14 @@
 #pragma once
-#include "Rendering/Camera/Camera.hpp"
+
 #include "EntitySystem/EntityComponent.hpp"
+#include "Rendering/Camera/Camera.hpp"
 
 class CameraComponent : public Camera, public EntityComponent
 {
 public:
+    CameraComponent() = default;
 
-private:
+    void Create() override {};
+    void Destroy() override {};
+    void Update() override {};
 };
