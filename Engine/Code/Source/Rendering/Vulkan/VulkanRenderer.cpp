@@ -79,7 +79,11 @@ void VulkanRenderer::DrawFrame(IWindow* a_window, IDevice* a_device, ISwapChain*
 
     l_result = vkQueuePresentKHR(a_device->CastVulkan()->GetPresentationQueue(), &l_presentInfo);
     if (l_result == VK_ERROR_OUT_OF_DATE_KHR || l_result == VK_SUBOPTIMAL_KHR)
+    {
+        // DEBUG_LOG_ERROR("failed to present swap chain image");
+        this->SetViewportSize(0, 0);
         RecreateSwapChain(a_window, a_device, a_surface, a_swapChain, a_depthResource, a_frameBufferManager, a_renderPassManager, a_multisampling);
+    }
     else if (l_result != VK_SUCCESS)
         DEBUG_LOG_ERROR("failed to present swap chain image");
 
@@ -123,6 +127,8 @@ void VulkanRenderer::RecordCommandBuffer(const VkCommandBuffer& a_commandBuffer,
             vkCmdBindIndexBuffer(a_commandBuffer, a_buffer->CastVulkan()->GetIndexBuffer(), 0, VK_INDEX_TYPE_UINT32);
             vkCmdBindDescriptorSets(a_commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, a_pipelineLayout, 0, 1, &a_descriptor->CastVulkan()->GetDescriptorSet()[m_currentFrame], 0, nullptr);
             vkCmdDrawIndexed(a_commandBuffer, static_cast<uint32_t>(a_mesh->CastVulkan()->GetIndices().size()), 1, 0, 0, 0);
+
+
         }
 
         // Callback ImGui_ImplVulkan_RenderDrawData
@@ -130,9 +136,16 @@ void VulkanRenderer::RecordCommandBuffer(const VkCommandBuffer& a_commandBuffer,
             if (s_editorGuiCallback)
                 s_editorGuiCallback();
 
+        
+
         vkCmdEndRenderPass(a_commandBuffer);
+        
         if (l_renderPass == a_renderPassManager->GetRenderPassAt(0))
+        {
             CopyImageToViewport(a_swapChain, a_commandBuffer);
+            
+            bUsable = true;
+        } 
     }
 
     const VkResult l_result = vkEndCommandBuffer(a_commandBuffer);
@@ -168,14 +181,21 @@ void VulkanRenderer::RecreateSwapChain(IWindow* a_window, IDevice* a_device, ISu
     a_swapChain->CastVulkan()->Create(a_window, a_device, a_surface, a_swapChain->CastVulkan()->GetMipLevel());
 
     CreateImageViews(a_device, a_swapChain);
+    
     a_multisampling->CastVulkan()->CreateColorResources(a_device, a_swapChain);
     a_depthResource->CastVulkan()->Create(a_device, a_swapChain, a_renderPass->GetRenderPassAt(0));
 
     m_cameraEditor.SetAspectRatio(static_cast<float>(a_swapChain->CastVulkan()->GetSwapChainExtent().width) / static_cast<float>(a_swapChain->CastVulkan()->GetSwapChainExtent().height));
 
+    
     a_frameBuffer->GetFrameBufferAt(0)->CastVulkan()->Create(a_device, a_swapChain, a_renderPass->GetRenderPassAt(0), a_depthResource, a_multisampling, false);
+    
+
     CreateViewportImage(a_device, a_swapChain);
+    bReloadImage = true;
+    
     a_frameBuffer->GetFrameBufferAt(1)->CastVulkan()->Create(a_device, a_swapChain, a_renderPass->GetRenderPassAt(1), a_depthResource, a_multisampling, true);
+    
 }
 
 
@@ -218,6 +238,9 @@ void VulkanRenderer::CreateViewportImage(IDevice* a_device, ISwapChain* a_swapCh
 
     if (m_viewportImage != VK_NULL_HANDLE && m_viewportImageview != VK_NULL_HANDLE && m_viewportMemory != VK_NULL_HANDLE) 
     {
+
+
+        DestroyViewportImage(a_device);
         /*
         DEBUG_LOG_ERROR("IS NOT NULL");
         vkDestroyImageView(l_device, m_viewportImageview, nullptr);

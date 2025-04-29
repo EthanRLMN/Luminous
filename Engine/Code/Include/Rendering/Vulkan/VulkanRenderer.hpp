@@ -46,6 +46,9 @@ public:
     void DestroyViewportImage(IDevice* a_device) const;
     void SetViewportSize(const float a_x, const float a_y) { m_viewportWidth = a_x; m_viewportHeight = a_y; };
 
+    bool bReloadImage = false;
+    mutable bool bUsable = false;
+
 private:
     void SetupSubmitInfo(VkSubmitInfo& a_submitInfo, const std::vector<VkSemaphore>& a_waitSemaphores, const std::array<VkPipelineStageFlags, 1>& a_waitStages, const std::vector<VkCommandBuffer>& a_commandBuffer, const std::vector<VkSemaphore>& a_signalSemaphores) const;
     static void PresentRendererInfo(VkPresentInfoKHR& a_presentInfo, const std::vector<VkSemaphore>& a_signalSemaphores, const std::vector<VkSwapchainKHR>& a_swapchains);
