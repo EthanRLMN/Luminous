@@ -35,6 +35,10 @@ void CameraEditor::Update(float a_aspectRatio)
 
     m_viewMatrix = UpdateViewMatrix();
     m_projectionMatrix = UpdateProjectionMatrix();
+
+    DEBUG_LOG_VERBOSE("Camera Editor : Position X {} , Y {} , Z {}" , m_camPosition.x ,m_camPosition.y , m_camPosition.z);
+    DEBUG_LOG_VERBOSE("Camera Editor : Rotation X {} , Y {} , Z {}", m_camDirection.x, m_camDirection.y, m_camDirection.z);
+
 }
 
 
@@ -49,18 +53,16 @@ void CameraEditor::MovementHandler(IWindow* a_window, IInputManager* a_input, co
 {
     float l_velocity = a_movementSpeed * Time::GetDeltaTime();
 
-  
     if (a_input->IsKeyDown(a_window, Key::KEY_W))
     {
-        m_camPosition += m_direction * l_velocity; 
+        m_camPosition.x += l_velocity;
         DEBUG_LOG_VERBOSE("Camera Editor : FORWARD");
     }
     if (a_input->IsKeyDown(a_window, Key::KEY_S))
     {
-        m_camPosition -= m_direction * l_velocity; 
+        m_camPosition.x -= l_velocity;
         DEBUG_LOG_VERBOSE("Camera Editor : BACKWARDS");
     }
-
 
     if (a_input->IsKeyDown(a_window, Key::KEY_A))
     {
@@ -78,7 +80,8 @@ void CameraEditor::RotationHandler(IWindow* a_window, IInputManager* a_input)
 {
     if (a_input->IsMouseButtonDown(a_window, MouseButton::MOUSE_BUTTON_2))
     {
-        a_input->GetMouseDelta(a_window);
+        Maths::Vector2 mouseDelta = a_input->GetMouseDelta(a_window);
+
     }
 }
 
