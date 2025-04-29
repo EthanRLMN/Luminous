@@ -31,10 +31,10 @@ private:
     void MouseHandler(IWindow* a_window, IInputManager* a_input);
     void SpeedHandler(IWindow* a_window, IInputManager* a_input, const float& a_cameraSpeed, float& a_movementSpeed);
 
-    Maths::Vector3 m_camPosition{ Maths::Vector3(0.0f, 0.0f, 5.0f) };
+    Maths::Vector3 m_camPosition{ Maths::Vector3(0.0f, 0.0f, 3.0f) };
     Maths::Vector3 m_camDirection{ Maths::Vector3(0.0f, 0.0f, -1.0f) };
     Maths::Vector3 m_camUp{ Maths::Vector3(0.0f, 1.0f, 0.0f) };
-   // Maths::Vector3 m_camForward{ m_camDirection.Normalize() };
+
 
     Maths::Vector3 m_velocity{ Maths::Vector3(0.0f, 0.0f, 0.0f) }; 
     Maths::Vector3 m_right{ Maths::Vector3::YAxis };
