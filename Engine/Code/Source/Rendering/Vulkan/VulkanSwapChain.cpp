@@ -48,7 +48,7 @@ void VulkanSwapChain::Destroy(IDevice* a_device)
 void VulkanSwapChain::CreateImage(const VkDevice& a_device, const VkPhysicalDevice& a_physicalDevice, const uint32_t& a_width, const uint32_t& a_height, const VkFormat& a_format, const VkImageTiling& a_tiling, const VkImageUsageFlags& a_usage, const VkMemoryPropertyFlags& a_properties, VkImage& a_image, VkDeviceMemory& a_imageMemory, const VkSampleCountFlagBits& a_numSamples)
 {
     VkImageCreateInfo l_imageInfo{ VK_STRUCTURE_TYPE_IMAGE_CREATE_INFO };
-    FillImageInfo(l_imageInfo, a_device, a_width, a_height, a_format, a_tiling, a_usage, a_image, a_numSamples);
+    FillImageInfo(l_imageInfo, a_width, a_height, a_format, a_tiling, a_usage, a_numSamples);
 
     if (vkCreateImage(a_device, &l_imageInfo, nullptr, &a_image) != VK_SUCCESS)
     {
@@ -225,8 +225,9 @@ void VulkanSwapChain::SendSwapChainData(const VkDevice& a_vkDevice, uint32_t& a_
         m_swapChainImageViews[i] = CreateImageView(m_swapChainImages[i], a_vkDevice, m_swapChainImageFormat, VK_IMAGE_ASPECT_COLOR_BIT);
 }
 
-void VulkanSwapChain::FillImageInfo(VkImageCreateInfo& a_imageInfo, const VkDevice& a_device, const uint32_t& a_width, const uint32_t& a_height, const VkFormat& a_format, const VkImageTiling& a_tiling, const VkImageUsageFlags& a_usage, VkImage& a_image, const VkSampleCountFlagBits& a_numSamples)
+void VulkanSwapChain::FillImageInfo(VkImageCreateInfo& a_imageInfo, const uint32_t& a_width, const uint32_t& a_height, const VkFormat& a_format, const VkImageTiling& a_tiling, const VkImageUsageFlags& a_usage, const VkSampleCountFlagBits& a_numSamples)
 {
+    a_imageInfo.sType = VK_STRUCTURE_TYPE_IMAGE_CREATE_INFO;
     a_imageInfo.imageType = VK_IMAGE_TYPE_2D;
     a_imageInfo.extent.width = a_width;
     a_imageInfo.extent.height = a_height;
@@ -239,9 +240,7 @@ void VulkanSwapChain::FillImageInfo(VkImageCreateInfo& a_imageInfo, const VkDevi
     a_imageInfo.usage = a_usage;
     a_imageInfo.samples = a_numSamples;
     a_imageInfo.sharingMode = VK_SHARING_MODE_EXCLUSIVE;
-
-    if (vkCreateImage(a_device, &a_imageInfo, nullptr, &a_image) != VK_SUCCESS)
-        DEBUG_LOG_ERROR("Vulkan DepthResource : Failed to create Image!\n");
+    a_imageInfo.flags = 0;
 }
 
 

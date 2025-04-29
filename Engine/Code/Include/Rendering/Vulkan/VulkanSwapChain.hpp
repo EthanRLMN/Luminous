@@ -43,7 +43,7 @@ private:
     static void FillSwapChainGraphicsFamilyData(VkSwapchainCreateInfoKHR& a_swapChainCreateInfo, const QueueFamilyIndices& a_indices, const std::vector<uint32_t>& a_queueFamilyIndices, const SwapChainDetails& a_swapChainDetails, const VkPresentModeKHR& a_presentMode);
     void SendSwapChainData(const VkDevice& a_vkDevice, uint32_t& a_imageCount, const VkSurfaceFormatKHR& a_surfaceFormat, const VkExtent2D& a_extent);
 
-    static void FillImageInfo(VkImageCreateInfo& a_imageInfo, const VkDevice& a_device, const uint32_t& a_width, const uint32_t& a_height, const VkFormat& a_format, const VkImageTiling& a_tiling, const VkImageUsageFlags& a_usage, VkImage& a_image, const VkSampleCountFlagBits& a_numSamples);
+    static void FillImageInfo(VkImageCreateInfo& a_imageInfo, const uint32_t& a_width, const uint32_t& a_height, const VkFormat& a_format, const VkImageTiling& a_tiling, const VkImageUsageFlags& a_usage, const VkSampleCountFlagBits& a_numSamples);
 
 	VkSwapchainKHR m_swapChain{ nullptr };
 	VkFormat m_swapChainImageFormat{ VK_FORMAT_UNDEFINED };

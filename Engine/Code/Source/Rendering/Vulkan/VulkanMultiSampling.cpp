@@ -4,7 +4,11 @@
 #include "Rendering/Vulkan/VulkanDevice.hpp"
 #include "Rendering/Vulkan/VulkanSwapChain.hpp"
 
-void VulkanMultiSampling::Create(IDevice* a_device, ISwapChain* a_swapchain) { a_device->CastVulkan()->SetMSAASamples(GetMaxUsableSampleCount(a_device)); }
+void VulkanMultiSampling::Create(IDevice* a_device, ISwapChain* a_swapchain)
+{
+    a_device->CastVulkan()->SetMSAASamples(GetMaxUsableSampleCount(a_device));
+    CreateColorResources(a_device, a_swapchain);
+}
 
 void VulkanMultiSampling::SetSampleCount(IDevice* a_device, const VkSampleCountFlagBits a_sampleCount)
 {
@@ -23,9 +27,21 @@ void VulkanMultiSampling::SetSampleCount(IDevice* a_device, const VkSampleCountF
 
 void VulkanMultiSampling::Destroy(IDevice* a_device)
 {
-    vkDestroyImageView(a_device->CastVulkan()->GetDevice(), m_colorImageView, nullptr);
-    vkDestroyImage(a_device->CastVulkan()->GetDevice(), m_colorImage, nullptr);
-    vkFreeMemory(a_device->CastVulkan()->GetDevice(), m_colorImageMemory, nullptr);
+    if (m_colorImageView != VK_NULL_HANDLE)
+    {
+        vkDestroyImageView(a_device->CastVulkan()->GetDevice(), m_colorImageView, nullptr);
+        m_colorImageView = VK_NULL_HANDLE;
+    }
+    if (m_colorImage != VK_NULL_HANDLE)
+    {
+        vkDestroyImage(a_device->CastVulkan()->GetDevice(), m_colorImage, nullptr);
+        m_colorImage = VK_NULL_HANDLE;
+    }
+    if (m_colorImageMemory != VK_NULL_HANDLE)
+    {
+        vkFreeMemory(a_device->CastVulkan()->GetDevice(), m_colorImageMemory, nullptr);
+        m_colorImageMemory = VK_NULL_HANDLE;
+    }
 }
 
 VkSampleCountFlagBits VulkanMultiSampling::GetMaxUsableSampleCount(IDevice* a_device)
@@ -58,7 +74,4 @@ void VulkanMultiSampling::CreateColorResources(IDevice* a_device, ISwapChain* a_
 
     a_swapchain->CastVulkan()->CreateImage(a_device->CastVulkan()->GetDevice(), a_device->CastVulkan()->GetPhysicalDevice(), a_swapchain->CastVulkan()->GetSwapChainExtent().width, a_swapchain->CastVulkan()->GetSwapChainExtent().height, l_colorFormat, VK_IMAGE_TILING_OPTIMAL, VK_IMAGE_USAGE_TRANSIENT_ATTACHMENT_BIT | VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT, m_colorImage, m_colorImageMemory, a_device->CastVulkan()->GetMSAASamples());
     m_colorImageView = a_swapchain->CastVulkan()->CreateImageView(m_colorImage, a_device->CastVulkan()->GetDevice(), l_colorFormat, VK_IMAGE_ASPECT_COLOR_BIT);
-
 }
-
-
