@@ -48,8 +48,9 @@ void PhysicsSystem::Update()
             return;
 
     // TODO : Update collision steps to run properly (accumulator returns floats on a scale from 0.25 to 10, we need integers scaled properly)
-    const int l_collisionSteps = 1;
-    m_physicsSystem->Update(Time::GetFixedDeltaTime(), l_collisionSteps, m_tempAllocator, m_jobSystem);
+    const int l_step = 1;
+
+    m_physicsSystem->Update(Time::GetFixedDeltaTime(), l_step, m_tempAllocator, m_jobSystem);
 }
 
 

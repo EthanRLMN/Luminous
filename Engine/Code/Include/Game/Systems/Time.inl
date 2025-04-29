@@ -139,6 +139,19 @@ public:
             s_timeScale = s_previousTimeScale;
     }
 
+    /**
+     * @brief Calcultates the number of physic passes
+     * @return The number of physics passes to run (0 if not necessary0
+     */
+    inline static int CalculatePhysicsPasses()
+    {
+        const int l_steps = static_cast<int>(s_accumulator / s_fixedDeltaTime);
+        const int l_clampedSteps = std::min(l_steps, s_maxPhysicsPasses);
+
+        s_accumulator -= l_clampedSteps * s_fixedDeltaTime;
+        return l_clampedSteps;
+    }
+
 
 private:
     inline static void UpdateDeltaTime()
@@ -160,11 +173,12 @@ private:
 
     inline static void UpdateAccumulator()
     {
-        s_accumulator += s_deltaTime;
+        s_accumulator += s_deltaTime * s_timeScale;
         if (s_accumulator > s_maxFrameTime)
             s_accumulator = s_maxFrameTime;
     }
 
+    inline static constexpr int s_maxPhysicsPasses { 4 }; // Max amount of physic passes per frame
     inline static constexpr float s_maxFrameTime { 0.25f }; // Clamp max frametime value, useful to avoid a potential "spiral of death": https://gafferongames.com/post/fix_your_timestep/
     inline static constexpr float s_minFixedDeltaTime { 0.001f }; // Min fixed delta time value
 
