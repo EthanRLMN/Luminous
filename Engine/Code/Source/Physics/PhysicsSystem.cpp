@@ -2,6 +2,7 @@
 
 #include <thread>
 
+#include "Game/Systems/Time.inl"
 #include "Jolt/RegisterTypes.h"
 #include "Jolt/Core/Factory.h"
 #include "Jolt/Core/Memory.h"
@@ -10,79 +11,72 @@
 #include "Physics/Listener.hpp"
 
 
-void Physics::Init_JOLT()
+void PhysicsSystem::Init(const Settings& a_settings)
 {
     JPH::RegisterDefaultAllocator();
     JPH::Factory::sInstance = new JPH::Factory();
     JPH::RegisterTypes();
 
-    temp_allocator = new JPH::TempAllocatorImpl(10 * 1024 * 1024);
-    job_system = new JPH::JobSystemThreadPool(JPH::cMaxPhysicsJobs, JPH::cMaxPhysicsBarriers, static_cast<int>(std::thread::hardware_concurrency()) - 1);
+    m_tempAllocator = new JPH::TempAllocatorImpl(10 * 1024 * 1024);
+    m_jobSystem = new JPH::JobSystemThreadPool(JPH::cMaxPhysicsJobs, JPH::cMaxPhysicsBarriers, static_cast<int>(std::thread::hardware_concurrency()) - 1);
 
-    const JPH::uint cMaxBodies = 1024;
-    const JPH::uint cNumBodyMutexes = 0;
-    const JPH::uint cMaxBodyPairs = 1024;
-    const JPH::uint cMaxContactConstraints = 1024;
+    m_broadPhaseLayerInterface = new JPH::BPLayerInterfaceImpl();
+    m_ObjToBroadPhaseLayerFilter = new JPH::ObjectVsBroadPhaseLayerFilterImpl();
+    m_ObjToObjLayerFilter = new JPH::ObjectLayerPairFilterImpl();
 
-    broad_phase_layer_interface = new JPH::BPLayerInterfaceImpl();
-    object_vs_broadphase_layer_filter = new JPH::ObjectVsBroadPhaseLayerFilterImpl();
-    object_vs_object_layer_filter = new JPH::ObjectLayerPairFilterImpl();
+    m_physicsSystem = new JPH::PhysicsSystem();
+    m_physicsSystem->Init(a_settings.m_maxRigidBodies, a_settings.m_bodyMutexNumber, a_settings.m_maxBodyPairs, a_settings.m_maxContactConstraints, *m_broadPhaseLayerInterface, *m_ObjToBroadPhaseLayerFilter, *m_ObjToObjLayerFilter);
 
-    physics_system = new JPH::PhysicsSystem();
-    physics_system->Init(cMaxBodies, cNumBodyMutexes, cMaxBodyPairs, cMaxContactConstraints, *broad_phase_layer_interface, *object_vs_broadphase_layer_filter, *object_vs_object_layer_filter);
+    m_physicsSystem->SetBodyActivationListener(m_bodyActivationListener);
+    m_physicsSystem->SetContactListener(m_contactListener);
 
-    physics_system->SetBodyActivationListener(body_activation_listener);
-    physics_system->SetContactListener(contact_listener);
-
-    floor_shape_settings = new JPH::BoxShapeSettings(JPH::Vec3(100.0f, 1.0f, 100.0f));
-    floor_shape_settings->SetEmbedded();
+    m_floorShapeSettings = new JPH::BoxShapeSettings(JPH::Vec3(100.0f, 1.0f, 100.0f));
+    m_floorShapeSettings->SetEmbedded();
 
 
-    floor_shape_result = floor_shape_settings->Create();
-    floor_shape = floor_shape_result.Get();
+    m_floorShapeResult = m_floorShapeSettings->Create();
+    m_floorShape = m_floorShapeResult.Get();
 
-    floor_settings = new JPH::BodyCreationSettings(floor_shape, JPH::RVec3(0.0f, -1.0f, 0.0f), JPH::Quat::sIdentity(), JPH::EMotionType::Static, JPH::Layers::NON_MOVING);
+    m_floorSettings = new JPH::BodyCreationSettings(m_floorShape, JPH::RVec3(0.0f, -1.0f, 0.0f), JPH::Quat::sIdentity(), JPH::EMotionType::Static, JPH::Layers::NON_MOVING);
 
-    floor = GetBodyInterface().CreateBody(*floor_settings);
+    m_floor = GetBodyInterface().CreateBody(*m_floorSettings);
 
 
-    GetBodyInterface().AddBody(floor->GetID(), JPH::EActivation::DontActivate);
+    GetBodyInterface().AddBody(m_floor->GetID(), JPH::EActivation::DontActivate);
 
-    sphere_settings = new JPH::BodyCreationSettings(new JPH::SphereShape(0.5f), JPH::RVec3(0.0f, 2.0f, 0.0f), JPH::Quat::sIdentity(), JPH::EMotionType::Dynamic, JPH::Layers::MOVING);
-    sphere_id = GetBodyInterface().CreateAndAddBody(*sphere_settings, JPH::EActivation::Activate);
+    m_sphereSettings = new JPH::BodyCreationSettings(new JPH::SphereShape(0.5f), JPH::RVec3(0.0f, 2.0f, 0.0f), JPH::Quat::sIdentity(), JPH::EMotionType::Dynamic, JPH::Layers::MOVING);
+    m_sphereId = GetBodyInterface().CreateAndAddBody(*m_sphereSettings, JPH::EActivation::Activate);
 
-    GetBodyInterface().SetLinearVelocity(sphere_id, JPH::Vec3(0.0f, -5.0f, 0.0f));
+    GetBodyInterface().SetLinearVelocity(m_sphereId, JPH::Vec3(0.0f, -5.0f, 0.0f));
 
-    cDeltaTime = 1.0f / 60.0f;
-
-    physics_system->OptimizeBroadPhase();
-    step = 0;
+    m_physicsSystem->OptimizeBroadPhase();
+    m_currentStep = 0;
 }
 
-void Physics::Update_JOLT()
+void PhysicsSystem::Update()
 {
-    if (!GetBodyInterface().IsActive(sphere_id))
+    if (!GetBodyInterface().IsActive(m_sphereId))
         return;
 
-    ++step;
+    ++m_currentStep;
 
-    JPH::RVec3 position = GetBodyInterface().GetCenterOfMassPosition(sphere_id);
-    JPH::Vec3 velocity = GetBodyInterface().GetLinearVelocity(sphere_id);
-    std::cout << "Step " << step << ": Position = (" << position.GetX() << ", " << position.GetY() << ", " << position.GetZ() << "), Velocity = (" << velocity.GetX() << ", " << velocity.GetY() << ", " << velocity.GetZ() << ")" << std::endl;
+    JPH::RVec3 position = GetBodyInterface().GetCenterOfMassPosition(m_sphereId);
+    JPH::Vec3 velocity = GetBodyInterface().GetLinearVelocity(m_sphereId);
+    std::cout << "Step " << m_currentStep << ": Position = (" << position.GetX() << ", " << position.GetY() << ", " << position.GetZ() << "), Velocity = (" << velocity.GetX() << ", " << velocity.GetY() << ", " << velocity.GetZ() << ")" << std::endl;
 
     const int cCollisionSteps = 1;
     // Step the world
-    physics_system->Update(cDeltaTime, cCollisionSteps, temp_allocator, job_system);
+    m_physicsSystem->Update(Time::GetFixedDeltaTime(), cCollisionSteps, m_tempAllocator, m_jobSystem);
 }
 
 
-void Physics::Clean_JOLT()
+void PhysicsSystem::Clean()
 {
-    GetBodyInterface().RemoveBody(sphere_id);
-    GetBodyInterface().DestroyBody(sphere_id);
+    GetBodyInterface().RemoveBody(m_sphereId);
+    GetBodyInterface().DestroyBody(m_sphereId);
 
-    GetBodyInterface().RemoveBody(floor->GetID());
-    GetBodyInterface().DestroyBody(floor->GetID());
+    GetBodyInterface().RemoveBody(m_floor->GetID());
+    GetBodyInterface().DestroyBody(m_floor->GetID());
 
     JPH::UnregisterTypes();
 
@@ -90,7 +84,7 @@ void Physics::Clean_JOLT()
     JPH::Factory::sInstance = nullptr;
 }
 
-JPH::Body* Physics::CreateBody() { return nullptr; }
+JPH::Body* PhysicsSystem::CreateBody() { return nullptr; }
 
-JPH::BodyInterface& Physics::GetBodyInterface() const { return physics_system->GetBodyInterface(); }
+JPH::BodyInterface& PhysicsSystem::GetBodyInterface() const { return m_physicsSystem->GetBodyInterface(); }
 

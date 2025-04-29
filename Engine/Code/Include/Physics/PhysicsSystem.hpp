@@ -19,42 +19,49 @@ namespace JPH {
 }
 
 
-class Physics
+class PhysicsSystem
 {
 public:
-    Physics() = default;
-    ~Physics() = default;
+    struct Settings
+    {
+        JPH::uint m_maxRigidBodies { 1024 * 32 }; // Number of rigid bodies that can be added to the Physics System
+        JPH::uint m_bodyMutexNumber { 0 }; // Determines how many mutexes to allocate to protect rigid bodies from concurrent access. 0 for the default settings
+        JPH::uint m_maxBodyPairs { 1024 * 16 }; // Max number of body pairs that can be queued at any time
+        JPH::uint m_maxContactConstraints { 1024 * 6 }; // Max size of the contact constraint buffer.
+    };
 
-    void Init_JOLT();
-    void Update_JOLT();
-    void Clean_JOLT();
+    PhysicsSystem() = default;
+    ~PhysicsSystem() = default;
+
+    void Init(const Settings& a_settings);
+    void Update();
+    void Clean();
 
     JPH::Body* CreateBody();
 
 private:
     [[nodiscard]] JPH::BodyInterface& GetBodyInterface() const;
 
-    float cDeltaTime{ 0.f };
-    JPH::uint step { 0 };
-    JPH::PhysicsSystem* physics_system{ nullptr };
-    JPH::BodyID sphere_id{ };
-    JPH::Body* floor{ nullptr };
+    JPH::PhysicsSystem* m_physicsSystem{ nullptr };
+    JPH::uint m_currentStep { 0 };
 
-    JPH::BPLayerInterfaceImpl* broad_phase_layer_interface{ nullptr };
-    JPH::ObjectVsBroadPhaseLayerFilterImpl* object_vs_broadphase_layer_filter{ nullptr };
-    JPH::ObjectLayerPairFilterImpl* object_vs_object_layer_filter{ nullptr };
+    JPH::BodyID m_sphereId{ };
+    JPH::Body* m_floor{ nullptr };
+    JPH::BPLayerInterfaceImpl* m_broadPhaseLayerInterface{ nullptr };
+    JPH::ObjectVsBroadPhaseLayerFilterImpl* m_ObjToBroadPhaseLayerFilter{ nullptr };
+    JPH::ObjectLayerPairFilterImpl* m_ObjToObjLayerFilter{ nullptr };
 
-    JPH::TempAllocatorImpl* temp_allocator{ nullptr };
-    JPH::JobSystemThreadPool* job_system{ nullptr };
+    JPH::TempAllocatorImpl* m_tempAllocator{ nullptr };
+    JPH::JobSystemThreadPool* m_jobSystem{ nullptr };
 
-    JPH::MyBodyActivationListener* body_activation_listener{ nullptr };
-    JPH::MyContactListener* contact_listener{ nullptr };
-    JPH::BoxShapeSettings* floor_shape_settings { nullptr };
-    JPH::ShapeSettings::ShapeResult floor_shape_result;
-    JPH::ShapeRefC floor_shape;
+    JPH::MyBodyActivationListener* m_bodyActivationListener{ nullptr };
+    JPH::MyContactListener* m_contactListener{ nullptr };
+    JPH::BoxShapeSettings* m_floorShapeSettings { nullptr };
+    JPH::ShapeSettings::ShapeResult m_floorShapeResult;
+    JPH::ShapeRefC m_floorShape;
 
-    JPH::BodyCreationSettings* floor_settings{ nullptr };
-    JPH::BodyCreationSettings* sphere_settings{ nullptr };
+    JPH::BodyCreationSettings* m_floorSettings{ nullptr };
+    JPH::BodyCreationSettings* m_sphereSettings{ nullptr };
 };
 
 

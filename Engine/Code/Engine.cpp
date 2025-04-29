@@ -13,7 +13,7 @@ void Engine::Init()
 
     m_interface = new VulkanRenderInterface();
     m_scene = new Scene();
-    m_physicsJolt = new Physics();
+    m_physicsSystem = new PhysicsSystem();
 
     m_isRunning = true;
 
@@ -33,7 +33,7 @@ void Engine::Update()
     m_scene->SceneEntity();
     m_renderer->DrawFrame(m_window, m_device, m_swapChain, m_pipeline, m_buffer, m_renderPassManager, m_descriptor, m_mesh, m_synchronization, m_commandBuffer, m_frameBufferManager, m_depthResource, m_surface, m_multiSampling,m_inputManager);
 
-    m_physicsJolt->Update_JOLT();
+    m_physicsSystem->Update();
 
     if (m_window->ShouldClose())
         m_isRunning = false;
@@ -188,6 +188,12 @@ void Engine::PreRender()
     m_renderer->CastVulkan()->SetViewportSize(static_cast<float>(m_swapChain->CastVulkan()->GetSwapChainExtent().width), static_cast<float>(m_swapChain->CastVulkan()->GetSwapChainExtent().height));
     m_renderer->CastVulkan()->CreateViewportImage(m_device, m_swapChain);
 
+}
+
+void Engine::InitPhysics()
+{
+    constexpr PhysicsSystem::Settings l_settings {}; // Init physics system with default settings
+    m_physicsSystem->Init(l_settings);
 }
 
 void Engine::DestroyWindow()

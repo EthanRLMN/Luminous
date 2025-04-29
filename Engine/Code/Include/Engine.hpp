@@ -22,7 +22,7 @@ public:
 	void Window();
     void Input();
 	void PreRender();
-    inline void InitPhysics() const { m_physicsJolt->Init_JOLT(); };
+    void InitPhysics();
 
 
 	void DestroyWindow();
@@ -75,7 +75,7 @@ private:
 	ISynchronization* m_synchronization { nullptr };
     IRenderer* m_renderer { nullptr };
 	Scene* m_scene{ nullptr };
-	Physics* m_physicsJolt{ nullptr };
+	PhysicsSystem* m_physicsSystem{ nullptr };
 
     bool m_isRunning { false };
 };
