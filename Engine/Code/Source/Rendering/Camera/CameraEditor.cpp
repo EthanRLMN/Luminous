@@ -13,15 +13,8 @@ void CameraEditor::Init(IWindow* a_window, const float& a_aspectRatio, const flo
     m_position = m_camPosition;
     m_direction = m_camDirection;
     m_up = m_camUp;
-
-
-
-    m_position = m_camPosition;
-    m_direction = m_camDirection.Normalize(); 
-    m_up = m_camUp;
-
-    
-    m_right = m_direction.CrossProduct(m_up).Normalize();
+  
+    //m_right = m_direction.CrossProduct(m_up).Normalize();
 }
 
 void CameraEditor::Update(float a_aspectRatio)
@@ -29,12 +22,12 @@ void CameraEditor::Update(float a_aspectRatio)
     aspectRatio = a_aspectRatio;
 
     m_position = m_camPosition;
-    m_direction = m_camDirection.Normalize(); 
+    m_direction = m_camDirection; 
     m_up = m_camUp;
 
-
-    m_viewMatrix = UpdateViewMatrix();
-    m_projectionMatrix = UpdateProjectionMatrix();
+    
+    m_viewMatrix = UpdateViewMatrixCustom(m_camPosition,m_camPosition + m_camDirection , m_camUp);
+    m_projectionMatrix = UpdateProjectionMatrixCustom(fov,aspectRatio,nearPlane,farPlane);
 
     DEBUG_LOG_VERBOSE("Camera Editor : Position X {} , Y {} , Z {}" , m_camPosition.x ,m_camPosition.y , m_camPosition.z);
     DEBUG_LOG_VERBOSE("Camera Editor : Rotation X {} , Y {} , Z {}", m_camDirection.x, m_camDirection.y, m_camDirection.z);
@@ -52,6 +45,7 @@ void CameraEditor::UpdateInput(IWindow* a_window, IInputManager* a_input)
 void CameraEditor::MovementHandler(IWindow* a_window, IInputManager* a_input, const float a_movementSpeed)
 {
     float l_velocity = a_movementSpeed * Time::GetDeltaTime();
+    m_right = m_direction.CrossProduct(m_up).Normalize();
 
     if (a_input->IsKeyDown(a_window, Key::KEY_W))
     {
