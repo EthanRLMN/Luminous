@@ -12,4 +12,7 @@ public:
     void Create() override {};
     void Destroy() override {};
     void Update() override {};
+
+private:
+
 };
