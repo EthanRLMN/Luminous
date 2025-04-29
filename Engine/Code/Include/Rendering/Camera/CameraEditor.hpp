@@ -12,7 +12,7 @@ public:
     ~CameraEditor() = default;
 
     void Init(IWindow* a_window, const float& a_aspectRatio, const float& a_fov, const float& a_nearPlane, const float& a_farPlane);
-    void Update();
+    void Update(float a_aspectRatio);
 
     void UpdateInput(IWindow* a_window, IInputManager* a_input);
 
@@ -31,7 +31,8 @@ private:
     Maths::Vector3 m_camPosition{ Maths::Vector3(-2.0f, 0.0f, 0.0f) };
     Maths::Vector3 m_camDirection{ Maths::Vector3::One };
     Maths::Vector3 m_camUp{ Maths::Vector3::ZAxis };
-    Maths::Vector3 m_camForward{ m_camDirection.Normalize() };
+   // Maths::Vector3 m_camForward{ m_camDirection.Normalize() };
+    Maths::Vector3 m_right;
 
     float m_movementSpeed{ 1.0f };
     float m_rotationSpeed{ 1.0f };

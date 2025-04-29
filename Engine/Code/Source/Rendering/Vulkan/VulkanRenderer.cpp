@@ -51,7 +51,7 @@ void VulkanRenderer::DrawFrame(IWindow* a_window, IDevice* a_device, ISwapChain*
     //***********************************//
     //OLD Camera Settings Here
     
-    m_cameraEditor.Update();
+    m_cameraEditor.Update(static_cast<float>(a_swapChain->CastVulkan()->GetSwapChainExtent().width) / static_cast<float>(a_swapChain->CastVulkan()->GetSwapChainExtent().height));
     m_cameraEditor.UpdateInput(a_window,a_inputManager);
 
     ///*************************************************//

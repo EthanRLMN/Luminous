@@ -1,5 +1,6 @@
 #include "Rendering/Camera/CameraEditor.hpp"
 #include "Game/Systems/Time.inl"
+#include "MathUtils.hpp"
 
 
 void CameraEditor::Init(IWindow* a_window, const float& a_aspectRatio, const float& a_fov, const float& a_nearPlane, const float& a_farPlane)
@@ -12,13 +13,25 @@ void CameraEditor::Init(IWindow* a_window, const float& a_aspectRatio, const flo
     m_position = m_camPosition;
     m_direction = m_camDirection;
     m_up = m_camUp;
+
+
+
+    m_position = m_camPosition;
+    m_direction = m_camDirection.Normalize(); 
+    m_up = m_camUp;
+
+    
+    m_right = m_direction.CrossProduct(m_up).Normalize();
 }
 
-void CameraEditor::Update()
+void CameraEditor::Update(float a_aspectRatio)
 {
+    aspectRatio = a_aspectRatio;
+
     m_position = m_camPosition;
-    m_direction = m_camDirection;
+    m_direction = m_camDirection.Normalize(); 
     m_up = m_camUp;
+
 
     m_viewMatrix = UpdateViewMatrix();
     m_projectionMatrix = UpdateProjectionMatrix();
@@ -34,22 +47,31 @@ void CameraEditor::UpdateInput(IWindow* a_window, IInputManager* a_input)
 
 void CameraEditor::MovementHandler(IWindow* a_window, IInputManager* a_input, const float a_movementSpeed)
 {
-    const float l_velocity = a_movementSpeed * Time::GetDeltaTime();
+    float l_velocity = a_movementSpeed * Time::GetDeltaTime();
 
-    const Maths::Vector3 l_forward = m_direction.Normalize();
-    const Maths::Vector3 l_right = Maths::Vector3::CrossProduct(l_forward, m_up).Normalize();
-
+  
     if (a_input->IsKeyDown(a_window, Key::KEY_W))
-        m_camPosition += l_forward * l_velocity;
-
+    {
+        m_camPosition += m_direction * l_velocity; 
+        DEBUG_LOG_VERBOSE("Camera Editor : FORWARD");
+    }
     if (a_input->IsKeyDown(a_window, Key::KEY_S))
-        m_camPosition -= l_forward * l_velocity;
+    {
+        m_camPosition -= m_direction * l_velocity; 
+        DEBUG_LOG_VERBOSE("Camera Editor : BACKWARDS");
+    }
+
 
     if (a_input->IsKeyDown(a_window, Key::KEY_A))
-        m_camPosition -= l_right * l_velocity;
-
+    {
+        m_camPosition -= m_right * l_velocity; 
+        DEBUG_LOG_VERBOSE("Camera Editor : LEFT");
+    }
     if (a_input->IsKeyDown(a_window, Key::KEY_D))
-        m_camPosition += l_right * l_velocity;
+    {
+        m_camPosition += m_right * l_velocity; 
+        DEBUG_LOG_VERBOSE("Camera Editor : RIGHT");
+    }
 }
 
 void CameraEditor::RotationHandler(IWindow* a_window, IInputManager* a_input)
