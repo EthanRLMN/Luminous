@@ -89,16 +89,6 @@ void PhysicsSystem::Destroy()
     JPH::UnregisterTypes();
     delete JPH::Factory::sInstance;
     JPH::Factory::sInstance = nullptr;
-
-
-
-
-
-    GetBodyInterface().RemoveBody(m_sphereId);
-    GetBodyInterface().DestroyBody(m_sphereId);
-
-    GetBodyInterface().RemoveBody(m_floor->GetID());
-    GetBodyInterface().DestroyBody(m_floor->GetID());
 }
 
 void PhysicsSystem::TriggerPhysicsOptimization() const
