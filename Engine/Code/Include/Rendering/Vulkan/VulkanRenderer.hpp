@@ -41,7 +41,6 @@ public:
 	[[nodiscard]] VkSampler GetViewportImageSampler() const { return m_viewportSampler; }
 
 	void CreateViewportImage(IDevice* a_device, ISwapChain* a_swapChain);
-    void ReCreateViewportImage(IDevice* a_device, ISwapChain* a_swapChain);
     void CopyImageToViewport(ISwapChain* a_swapChain, const VkCommandBuffer& a_cmdBuffer) const;
     void DestroyViewportImage(IDevice* a_device) const;
     void SetViewportSize(const float a_x, const float a_y) { m_viewportWidth = a_x; m_viewportHeight = a_y; };
