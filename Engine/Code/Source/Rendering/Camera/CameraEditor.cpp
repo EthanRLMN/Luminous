@@ -1,4 +1,5 @@
 #include "Rendering/Camera/CameraEditor.hpp"
+#include "Core/GLFW/GLFWWindow.hpp"
 #include "Game/Systems/Time.inl"
 #include "MathUtils.hpp"
 
@@ -13,13 +14,16 @@ void CameraEditor::Init(IWindow* a_window, const float& a_aspectRatio, const flo
     m_position = m_camPosition;
     m_direction = m_camDirection;
     m_up = m_camUp;
-  
-    //m_right = m_direction.CrossProduct(m_up).Normalize();
 }
 
 void CameraEditor::Update(float a_aspectRatio)
 {
     aspectRatio = a_aspectRatio;
+
+    m_camPosition = m_velocity * Time::GetDeltaTime();
+
+
+ 
 
     m_position = m_camPosition;
     m_direction = m_camDirection; 
@@ -38,44 +42,58 @@ void CameraEditor::Update(float a_aspectRatio)
 void CameraEditor::UpdateInput(IWindow* a_window, IInputManager* a_input)
 {
     MovementHandler(a_window, a_input, m_movementSpeed);
-    RotationHandler(a_window, a_input);
+    MouseHandler(a_window, a_input);
     SpeedHandler(a_window, a_input, m_cameraSpeed, m_movementSpeed);
 }
 
-void CameraEditor::MovementHandler(IWindow* a_window, IInputManager* a_input, const float a_movementSpeed)
+void CameraEditor::MovementHandler(IWindow* a_window, IInputManager* a_input, float a_movementSpeed)
 {
-    float l_velocity = a_movementSpeed * Time::GetDeltaTime();
-    m_right = m_direction.CrossProduct(m_up).Normalize();
+
+    //m_right = m_direction.CrossProduct(m_up).Normalize();
 
     if (a_input->IsKeyDown(a_window, Key::KEY_W))
     {
-        m_camPosition.x += l_velocity;
+        m_velocity += a_movementSpeed * m_camDirection;
         DEBUG_LOG_VERBOSE("Camera Editor : FORWARD");
     }
     if (a_input->IsKeyDown(a_window, Key::KEY_S))
     {
-        m_camPosition.x -= l_velocity;
+        m_velocity += a_movementSpeed * m_camDirection;
         DEBUG_LOG_VERBOSE("Camera Editor : BACKWARDS");
     }
 
     if (a_input->IsKeyDown(a_window, Key::KEY_A))
     {
-        m_camPosition -= m_right * l_velocity; 
+        m_velocity += a_movementSpeed * -m_direction.CrossProduct(m_camUp).Normalize();
         DEBUG_LOG_VERBOSE("Camera Editor : LEFT");
     }
     if (a_input->IsKeyDown(a_window, Key::KEY_D))
     {
-        m_camPosition += m_right * l_velocity; 
+        m_velocity += a_movementSpeed * m_direction.CrossProduct(m_camUp).Normalize();
         DEBUG_LOG_VERBOSE("Camera Editor : RIGHT");
     }
 }
 
-void CameraEditor::RotationHandler(IWindow* a_window, IInputManager* a_input)
+void CameraEditor::MouseHandler(IWindow* a_window, IInputManager* a_input)
 {
     if (a_input->IsMouseButtonDown(a_window, MouseButton::MOUSE_BUTTON_2))
     {
+ 
         Maths::Vector2 mouseDelta = a_input->GetMouseDelta(a_window);
 
+        const float sensitivity = 0.1f;
+
+
+        float rotationX = mouseDelta.y * sensitivity;
+        float rotationY = mouseDelta.x * sensitivity;
+
+
+
+        m_right = m_direction.CrossProduct(m_camUp).Normalize();
+
+        m_viewMatrix = UpdateViewMatrixCustom(m_camPosition, m_camPosition + m_camDirection, m_camUp);
+
+        DEBUG_LOG_VERBOSE("Camera Editor : Rotation X {} , Y {} , Z {}", m_camDirection.x, m_camDirection.y, m_camDirection.z);
     }
 }
 
@@ -94,3 +112,4 @@ void CameraEditor::SpeedHandler(IWindow* a_window, IInputManager* a_input, const
             a_movementSpeed = 0.1f;
     }
 }
+

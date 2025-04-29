@@ -23,15 +23,20 @@ public:
     Maths::Matrix4 m_projectionMatrix{ Maths::Matrix4::identity };
     Maths::Matrix4 m_viewMatrix{ Maths::Matrix4::identity };
 
+
+
+
 private:
     void MovementHandler(IWindow* a_window, IInputManager* a_input, float a_movementSpeed);
-    void RotationHandler(IWindow* a_window, IInputManager* a_input);
+    void MouseHandler(IWindow* a_window, IInputManager* a_input);
     void SpeedHandler(IWindow* a_window, IInputManager* a_input, const float& a_cameraSpeed, float& a_movementSpeed);
 
     Maths::Vector3 m_camPosition{ Maths::Vector3(-2.0f, 0.0f, 0.0f) };
     Maths::Vector3 m_camDirection{ Maths::Vector3::One };
     Maths::Vector3 m_camUp{ Maths::Vector3::ZAxis };
    // Maths::Vector3 m_camForward{ m_camDirection.Normalize() };
+
+    Maths::Vector3 m_velocity{ Maths::Vector3(0.0f, 0.0f, 0.0f) }; 
     Maths::Vector3 m_right;
 
     float m_movementSpeed{ 1.0f };
