@@ -1,7 +1,7 @@
 #include "TextEditorPanel.hpp"
 #include "imgui.h"
 
-TextEditorPanel::TextEditorPanel(Editor* a_editor, const std::string& a_windowIdentifier)
+TextEditorPanel::TextEditorPanel(Editor* a_editor, const std::string& a_windowIdentifier) : IWindowPanel(a_editor, a_windowIdentifier)
 {
     m_filePath = "";
     m_textBuffer = "";
@@ -12,19 +12,13 @@ void TextEditorPanel::OpenFile(const std::string& path, const std::string& conte
     m_filePath = path;
     m_textBuffer = content;
     p_isOpen = true;
+
+    OpenInVisualStudio(path);
 }
 
-void TextEditorPanel::Render()
+void TextEditorPanel::OpenInVisualStudio(const std::string& filePath)
 {
-    if (!p_isOpen)
-        return;
+    std::string command = "start devenv \"" + filePath + "\"";
 
-    ImGui::Begin(p_windowIdentifier.c_str(), &p_isOpen, ImGuiWindowFlags_AlwaysAutoResize);
-
-    ImGui::Text("Fichier : %s", m_filePath.c_str());
-    ImGui::Separator();
-
-    ImGui::InputTextMultiline("##TextEditor", &m_textBuffer, ImVec2(600, 400), ImGuiInputTextFlags_AllowTabInput);
-
-    ImGui::End();
+    system(command.c_str());
 }

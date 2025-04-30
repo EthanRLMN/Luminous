@@ -36,28 +36,22 @@ void FileExplorerPanel::Render()
             std::string filenameString = relativePath.filename().string();
             if (directoryEntry.is_directory())
             {
+                ImGui::SameLine();
                 if (ImGui::Button(filenameString.c_str()))
                 {
                     m_currentDirectory /= directoryEntry.path().filename();
                 }
             } else
             {
+                ImGui::SameLine();
                 if (ImGui::Button(filenameString.c_str()))
                 {
                     std::string extension = path.extension().string();
 
-                    if (extension == ".txt")
+                    if (extension == ".txt" || extension == ".cpp" || extension == "hpp")
                     {
                         OpenTextEditor(path);
-                    } 
-                    /* else if (extension == ".png" || extension == ".jpg")
-                    {
-                        OpenImageViewer(path);
-                    } 
-                    else if (extension == ".fbx" || extension == ".obj")
-                    {
-                        Open3DModelViewer(path);
-                    }*/
+                    }
                 }
             }
         }
@@ -78,8 +72,8 @@ void FileExplorerPanel::OpenTextEditor(const std::filesystem::path& path)
     std::stringstream buffer;
     buffer << file.rdbuf();
     std::string fileContent = buffer.str();
-
     file.close();
-    
-    //TextEditorPanel;
+
+    m_textEditorPanel = std::make_unique<TextEditorPanel>(p_editor, "TextEditor_" + path.filename().string());
+    m_textEditorPanel->OpenFile(path.string(), fileContent);
 }

@@ -14,7 +14,7 @@ void HierarchyPanel::Render()
 
         if (ImGui::BeginPopupContextWindow())
         {
-            if (ImGui::MenuItem("Add Root Node"))
+            if (ImGui::MenuItem("Add New Entity"))
             {
             }
             ImGui::EndPopup();

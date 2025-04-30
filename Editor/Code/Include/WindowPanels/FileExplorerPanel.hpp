@@ -3,6 +3,7 @@
 #include <filesystem>
 
 #include "Interface/IWindowPanel.hpp"
+#include "TextEditorPanel.hpp"
 
 
 class FileExplorerPanel : public IWindowPanel
@@ -18,4 +19,6 @@ public:
 private:
     std::filesystem::path m_currentDirectory{};
     void OpenTextEditor(const std::filesystem::path& path);
+
+    std::unique_ptr<TextEditorPanel> m_textEditorPanel;
 };
