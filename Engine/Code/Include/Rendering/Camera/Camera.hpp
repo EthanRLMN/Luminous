@@ -1,31 +1,14 @@
 #pragma once
 
-#include "Vector3.hpp"
 #include "Matrix4.hpp"
+#include "Vector3.hpp"
 
 class Camera
 {
 public:
-    Camera() {};
-    ~Camera() {};
+    virtual ~Camera() = default;
 
-protected:
-    Maths::Matrix4 UpdateProjectionMatrix() const;
-    Maths::Matrix4 UpdateViewMatrix() const;
-
-    Maths::Matrix4 UpdateProjectionMatrixCustom(float a_fov, float a_aspectRatio, float a_nearPlane, float a_farPlane) const;
-    Maths::Matrix4 UpdateViewMatrixCustom(Maths::Vector3 a_position, Maths::Vector3 a_direction, Maths::Vector3 a_up) const;
- 
-
-
-    float aspectRatio = 800.0f / 600.0f;
-    float fov{ 1.f };
-    float nearPlane{1.f};
-    float farPlane{1.f};
-
-    Maths::Vector3 m_position = Maths::Vector3::One;
-    Maths::Vector3 m_direction = Maths::Vector3::One;
-    Maths::Vector3 m_up = Maths::Vector3::One;
-
+    [[nodiscard]] inline Maths::Matrix4 UpdateProjectionMatrix(const float& a_fov, const float& a_aspectRatio, const float& a_nearPlane, const float& a_farPlane) { return Maths::Matrix4::Perspective(a_fov, a_aspectRatio, a_nearPlane, a_farPlane); }
+    [[nodiscard]] inline Maths::Matrix4 UpdateViewMatrix(const Maths::Vector3& a_position, const Maths::Vector3& a_direction, const Maths::Vector3& a_up) { return Maths::Matrix4::LookAt(a_position, a_direction, a_up); }
 };
 

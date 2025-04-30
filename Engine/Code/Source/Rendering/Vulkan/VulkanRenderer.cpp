@@ -28,7 +28,7 @@
 
 void VulkanRenderer::Create(IWindow* a_window, ISwapChain* a_swapChain)
 {
-    m_cameraEditor.Init(a_window, static_cast<float>(a_swapChain->CastVulkan()->GetSwapChainExtent().width) / static_cast<float>(a_swapChain->CastVulkan()->GetSwapChainExtent().height),45.f,0.01f,1000.f);
+    m_cameraEditor.Init(static_cast<float>(a_swapChain->CastVulkan()->GetSwapChainExtent().width) / static_cast<float>(a_swapChain->CastVulkan()->GetSwapChainExtent().height),45.f, 0.01f, 1000.f);
 }
 
 void VulkanRenderer::DrawFrame(IWindow* a_window, IDevice* a_device, ISwapChain* a_swapChain, IPipeline* a_pipeline, IBuffer* a_buffer, IRenderPassManager* a_renderPassManager, IDescriptor* a_descriptor, IMesh* a_mesh, ISynchronization* a_synchronization, ICommandBuffer* a_commandBuffer, IFrameBufferManager* a_frameBufferManager, IDepthResource* a_depthResource, ISurface* a_surface, IMultiSampling* a_multisampling,IInputManager* a_inputManager)
@@ -158,10 +158,9 @@ void VulkanRenderer::RecordCommandBuffer(const VkCommandBuffer& a_commandBuffer,
 void VulkanRenderer::UpdateUniformBuffer(const uint32_t& a_currentFrame, IBuffer* a_buffer) const
 {
     UniformBufferObject l_ubo{};
-    l_ubo.model = Maths::Matrix4::Rotate(Maths::Matrix4(1.0f), static_cast<float>(Time::GetTotalTimeElapsed()) * 00.0f, Maths::Vector3(0.0f, 0.0f, 1.0f));
-    l_ubo.view = m_cameraEditor.m_viewMatrix;
-    l_ubo.proj = m_cameraEditor.m_projectionMatrix;
-    l_ubo.proj.mat[1][1] *= -1;
+    l_ubo.model = Maths::Matrix4::TRS(Maths::Vector3(0.f, 0.f, 0.f), Maths::Vector3(0.f, 0.f, 0.f), Maths::Vector3(1.f, 1.0f, 1.0f));
+    l_ubo.view = m_cameraEditor.GetViewMatrix();
+    l_ubo.proj = m_cameraEditor.GetProjectionMatrix();
 
     memcpy(a_buffer->CastVulkan()->GetUniformBuffersMapped()[a_currentFrame], &l_ubo, sizeof(l_ubo));
 }
@@ -416,10 +415,13 @@ void VulkanRenderer::PresentRenderPassInfo(VkRenderPassBeginInfo& a_renderPassBe
 
 void VulkanRenderer::FillViewportInfo(VkViewport& a_viewport, const VkExtent2D& a_swapChainExtent)
 {
+    const float l_width = static_cast<float>(a_swapChainExtent.width);
+    const float l_height = static_cast<float>(a_swapChainExtent.height);
+
+    a_viewport.width = l_width;
+    a_viewport.height = -l_height;
     a_viewport.x = 0.0f;
-    a_viewport.y = 0.0f;
-    a_viewport.width = static_cast<float>(a_swapChainExtent.width);
-    a_viewport.height = static_cast<float>(a_swapChainExtent.height);
+    a_viewport.y = l_height;
     a_viewport.minDepth = 0.0f;
     a_viewport.maxDepth = 1.0f;
 }

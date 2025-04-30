@@ -148,7 +148,7 @@ public:
         const int l_steps = static_cast<int>(s_accumulator / s_fixedDeltaTime);
         const int l_clampedSteps = std::min(l_steps, s_maxPhysicsPasses);
 
-        s_accumulator -= l_clampedSteps * s_fixedDeltaTime;
+        s_accumulator -= static_cast<float>(l_clampedSteps) * s_fixedDeltaTime;
         return l_clampedSteps;
     }
 
