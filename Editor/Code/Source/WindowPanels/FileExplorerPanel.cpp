@@ -48,7 +48,7 @@ void FileExplorerPanel::Render()
                 {
                     std::string extension = path.extension().string();
 
-                    if (extension == ".txt" || extension == ".cpp" || extension == "hpp")
+                    if (extension == ".txt" || extension == ".cpp" || extension == ".hpp")
                     {
                         OpenTextEditor(path);
                     }
@@ -73,7 +73,7 @@ void FileExplorerPanel::OpenTextEditor(const std::filesystem::path& path)
     buffer << file.rdbuf();
     std::string fileContent = buffer.str();
     file.close();
-
+    
     m_textEditorPanel = std::make_unique<TextEditorPanel>(p_editor, "TextEditor_" + path.filename().string());
     m_textEditorPanel->OpenFile(path.string(), fileContent);
 }
