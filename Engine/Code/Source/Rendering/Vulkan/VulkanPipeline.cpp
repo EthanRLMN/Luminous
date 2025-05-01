@@ -152,7 +152,7 @@ void VulkanPipeline::SetupRasterizerCreationInfo(VkPipelineRasterizationStateCre
     a_rasterizerCreateInfo.polygonMode = VK_POLYGON_MODE_FILL;
     a_rasterizerCreateInfo.lineWidth = 1.0f;
     a_rasterizerCreateInfo.cullMode = VK_CULL_MODE_BACK_BIT;
-    a_rasterizerCreateInfo.frontFace = VK_FRONT_FACE_COUNTER_CLOCKWISE;
+    a_rasterizerCreateInfo.frontFace = VK_FRONT_FACE_CLOCKWISE;
     a_rasterizerCreateInfo.depthBiasEnable = VK_FALSE;
 }
 
@@ -169,7 +169,7 @@ void VulkanPipeline::SetupDepthStencilState(VkPipelineDepthStencilStateCreateInf
 {
     a_depthStencilCreateInfo.depthTestEnable = VK_TRUE;
     a_depthStencilCreateInfo.depthWriteEnable = VK_TRUE;
-    a_depthStencilCreateInfo.depthCompareOp = VK_COMPARE_OP_LESS;
+    a_depthStencilCreateInfo.depthCompareOp = VK_COMPARE_OP_LESS_OR_EQUAL;
     a_depthStencilCreateInfo.depthBoundsTestEnable = VK_FALSE;
     a_depthStencilCreateInfo.stencilTestEnable = VK_FALSE;
 }

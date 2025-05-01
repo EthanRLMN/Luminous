@@ -161,6 +161,7 @@ void VulkanRenderer::UpdateUniformBuffer(const uint32_t& a_currentFrame, IBuffer
     l_ubo.model = Maths::Matrix4::TRS(Maths::Vector3(0.f, 0.f, 0.f), Maths::Vector3(0.f, 0.f, 0.f), Maths::Vector3(1.f, 1.0f, 1.0f));
     l_ubo.view = m_cameraEditor.GetViewMatrix();
     l_ubo.proj = m_cameraEditor.GetProjectionMatrix();
+    //l_ubo.proj.mat[1][1] *= -1.f;
 
     memcpy(a_buffer->CastVulkan()->GetUniformBuffersMapped()[a_currentFrame], &l_ubo, sizeof(l_ubo));
 }
@@ -418,10 +419,10 @@ void VulkanRenderer::FillViewportInfo(VkViewport& a_viewport, const VkExtent2D& 
     const float l_width = static_cast<float>(a_swapChainExtent.width);
     const float l_height = static_cast<float>(a_swapChainExtent.height);
 
-    a_viewport.width = l_width;
-    a_viewport.height = -l_height;
     a_viewport.x = 0.0f;
     a_viewport.y = l_height;
+    a_viewport.width = l_width;
+    a_viewport.height = -l_height;
     a_viewport.minDepth = 0.0f;
     a_viewport.maxDepth = 1.0f;
 }

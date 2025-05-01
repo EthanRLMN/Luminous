@@ -51,8 +51,6 @@ private:
     Maths::Vector3 m_forward { 0.0f, 0.0f, -1.0f };
     Maths::Vector3 m_right { 1.0f, 0.0f, 0.0f };
 
-    Maths::Vector3 m_velocity { Maths::Vector3::Zero };
-
     float m_movementSpeed { 1.0f };
     float m_rotationSpeed { 1.0f };
     float m_cameraSpeed { 0.1f };
