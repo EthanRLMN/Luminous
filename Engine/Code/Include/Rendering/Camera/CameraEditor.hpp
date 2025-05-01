@@ -3,6 +3,7 @@
 #include "IInputManager.hpp"
 
 #include "Camera.hpp"
+#include "MathUtils.hpp"
 
 
 class CameraEditor : public Camera
@@ -11,7 +12,7 @@ public:
     CameraEditor() = default;
     ~CameraEditor() override = default;
 
-    void Init(const float& a_aspectRatio, const float& a_fov, const float& a_nearPlane, const float& a_farPlane);
+    void Init(float a_aspectRatio, float a_fov, float a_nearPlane, float a_farPlane);
     void Update(float a_aspectRatio);
 
     void UpdateInput(IWindow* a_window, IInputManager* a_input);
@@ -36,26 +37,30 @@ public:
 
 
 private:
-    void MovementHandler(IWindow* a_window, IInputManager* a_input, float a_movementSpeed);
+    void MovementHandler(IWindow* a_window, IInputManager* a_input);
     void MouseHandler(IWindow* a_window, IInputManager* a_input);
-    void SpeedHandler(IWindow* a_window, IInputManager* a_input, const float& a_cameraSpeed, float& a_movementSpeed);
+    void SpeedHandler(IWindow* a_window, IInputManager* a_input);
+    void UpdateVectors();
 
     Maths::Matrix4 m_projectionMatrix { Maths::Matrix4::identity };
     Maths::Matrix4 m_viewMatrix { Maths::Matrix4::identity };
 
-    Maths::Vector3 m_eye { Maths::Vector3(0.0f, 0.0f, 3.0f) };
-    Maths::Vector3 m_center { Maths::Vector3(0.0f, 0.0f, 0.0f) };
-    Maths::Vector3 m_up { Maths::Vector3(0.0f, 1.0f, 0.0f) };
-    Maths::Vector3 m_velocity { Maths::Vector3(0.0f, 0.0f, 0.0f) };
-    Maths::Vector3 m_right { Maths::Vector3::YAxis };
-    Maths::Vector3 m_forward { Maths::Vector3::YAxis };
+    Maths::Vector3 m_eye { 0.0f, 0.0f, 3.0f };
+    Maths::Vector3 m_center { 0.0f, 0.0f, 0.0f };
+    Maths::Vector3 m_up { 0.0f, 1.0f, 0.0f };
+    Maths::Vector3 m_forward { 0.0f, 0.0f, -1.0f };
+    Maths::Vector3 m_right { 1.0f, 0.0f, 0.0f };
+
+    Maths::Vector3 m_velocity { Maths::Vector3::Zero };
 
     float m_movementSpeed { 1.0f };
     float m_rotationSpeed { 1.0f };
     float m_cameraSpeed { 0.1f };
     float m_aspectRatio { 800.0f / 600.0f };
-    float m_fov { 1.f };
-    float m_nearPlane { 1.f };
-    float m_farPlane { 1.f };
+    float m_fov { Maths::DegToRad(60.0f) };
+    float m_nearPlane { 0.1f };
+    float m_farPlane { 100.f };
+    float m_yaw { 0.0f };
+    float m_pitch { 0.0f };
 };
 
