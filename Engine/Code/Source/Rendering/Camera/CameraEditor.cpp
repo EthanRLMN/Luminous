@@ -20,59 +20,61 @@ void CameraEditor::Update(const float a_aspectRatio)
 }
 
 
-void CameraEditor::UpdateInput(IWindow* a_window, IInputManager* a_input)
+void CameraEditor::UpdateInput(IInputManager* a_input)
 {
-    MovementHandler(a_window, a_input);
-    MouseHandler(a_window, a_input);
-    SpeedHandler(a_window, a_input);
+    MovementHandler(a_input);
+    MouseHandler(a_input);
+    SpeedHandler(a_input);
 }
 
-void CameraEditor::MovementHandler(IWindow* a_window, IInputManager* a_input)
+void CameraEditor::MovementHandler(IInputManager* a_input)
 {
     const float l_velocity = m_movementSpeed * Time::GetDeltaTime();
 
-    if (a_input->IsKeyDown(a_window, Key::KEY_W))
+    if (a_input->IsKeyDown(Key::KEY_W))
     {
         m_eye += m_forward * l_velocity;
         m_center += m_forward * l_velocity;
     }
 
-    if (a_input->IsKeyDown(a_window, Key::KEY_S))
+    if (a_input->IsKeyDown(Key::KEY_S))
     {
         m_eye -= m_forward * l_velocity;
         m_center -= m_forward * l_velocity;
     }
 
-    if (a_input->IsKeyDown(a_window, Key::KEY_A))
+    if (a_input->IsKeyDown(Key::KEY_A))
     {
         m_eye -= m_right * l_velocity;
         m_center -= m_right * l_velocity;
     }
 
-    if (a_input->IsKeyDown(a_window, Key::KEY_D))
+    if (a_input->IsKeyDown(Key::KEY_D))
     {
         m_eye += m_right * l_velocity;
         m_center += m_right * l_velocity;
     }
 
-    if (a_input->IsKeyDown(a_window, Key::KEY_Q))
+    if (a_input->IsKeyDown(Key::KEY_Q))
     {
         m_eye -= m_up * l_velocity;
         m_center -= m_up * l_velocity;
     }
 
-    if (a_input->IsKeyDown(a_window, Key::KEY_E))
+    if (a_input->IsKeyDown(Key::KEY_E))
     {
         m_eye += m_up * l_velocity;
         m_center += m_up * l_velocity;
     }
 }
 
-void CameraEditor::MouseHandler(IWindow* a_window, IInputManager* a_input)
+void CameraEditor::MouseHandler(IInputManager* a_input)
 {
-    if (a_input->IsMouseButtonDown(a_window, MouseButton::MOUSE_BUTTON_2))
+    if (a_input->IsMouseButtonDown(MouseButton::MOUSE_BUTTON_RIGHT))
     {
-        const Maths::Vector2 l_mouseDelta = a_input->GetMouseDelta(a_window);
+        a_input->ConfigureMouseInput(CursorInputMode::CAPTURED);
+
+        const Maths::Vector2 l_mouseDelta = a_input->GetMouseDelta();
         const float l_sensitivity = 0.1f;
 
         m_yaw += l_mouseDelta.x * l_sensitivity;
@@ -91,12 +93,14 @@ void CameraEditor::MouseHandler(IWindow* a_window, IInputManager* a_input)
 
         m_viewMatrix = Maths::Matrix4::LookAt(m_eye, m_eye + l_direction, l_worldUp);
     }
+    else if (a_input->IsMouseButtonUp(MouseButton::MOUSE_BUTTON_RIGHT))
+        a_input->ConfigureMouseInput(CursorInputMode::NORMAL);
 }
 
-void CameraEditor::SpeedHandler(IWindow* a_window, IInputManager* a_input)
+void CameraEditor::SpeedHandler(IInputManager* a_input)
 {
     const Maths::Vector2 l_scroll{ a_input->GetMouseScroll() };
-    if (a_input->IsKeyDown(a_window, Key::KEY_LEFT_CONTROL))
+    if (a_input->IsKeyDown(Key::KEY_LEFT_CONTROL))
     {
         if (l_scroll.y > 0.0f)
             m_movementSpeed += m_cameraSpeed;

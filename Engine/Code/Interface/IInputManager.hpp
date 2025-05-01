@@ -25,17 +25,17 @@ public:
 	virtual void Destroy(IWindow* a_window) = 0;
 	virtual void Update(IWindow* a_window) = 0;
 
-	virtual int IsKeyDown(IWindow* a_window, const Key& a_key) = 0;
-	virtual int IsKeyUp(IWindow* a_window, const Key& a_key) = 0;
-	virtual int IsKeyPressed(IWindow* a_window, const Key& a_key) = 0;
+	virtual int IsKeyDown(const Key& a_key) = 0;
+	virtual int IsKeyUp(const Key& a_key) = 0;
+	virtual int IsKeyPressed(const Key& a_key) = 0;
 
-	virtual int IsMouseButtonDown(IWindow* a_window, const MouseButton& a_button) = 0;
-	virtual int IsMouseButtonUp(IWindow* a_window, const MouseButton& a_button) = 0;
-	virtual int IsMouseButtonPressed(IWindow* a_window, const MouseButton& a_button) = 0;
+	virtual int IsMouseButtonDown(const MouseButton& a_button) = 0;
+	virtual int IsMouseButtonUp(const MouseButton& a_button) = 0;
+	virtual int IsMouseButtonPressed(const MouseButton& a_button) = 0;
 
 	virtual Maths::Vector2 GetMouseScroll() = 0;
-    virtual Maths::Vector2 GetCursorPosition(IWindow* a_window) = 0;
-    virtual Maths::Vector2 GetMouseDelta(IWindow* a_window) = 0;
+    virtual Maths::Vector2 GetCursorPosition() = 0;
+    virtual Maths::Vector2 GetMouseDelta() = 0;
 
     virtual void ConfigureMouseInput(const CursorInputMode& a_cursorInputMode) = 0;
     virtual void ResetMouseDelta() = 0;

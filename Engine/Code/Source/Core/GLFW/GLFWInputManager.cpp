@@ -14,21 +14,21 @@ Maths::Vector2 GLFWInputManager::m_currentMousePos { };
 Maths::Vector2 GLFWInputManager::m_previousMousePos { };
 
 
-int GLFWInputManager::IsKeyDown(IWindow* a_window, const Key& a_key)
+int GLFWInputManager::IsKeyDown(const Key& a_key)
 {
     const int l_keyInt = static_cast<int>(a_key);
     return m_keyStatus[l_keyInt] == Action::PRESS || m_keyStatus[l_keyInt] == Action::REPEAT;
 }
 
 
-int GLFWInputManager::IsKeyUp(IWindow* a_window, const Key& a_key)
+int GLFWInputManager::IsKeyUp(const Key& a_key)
 {
     const int l_keyInt = static_cast<int>(a_key);
     return m_keyStatus[l_keyInt] == Action::RELEASE;
 }
 
 
-int GLFWInputManager::IsKeyPressed(IWindow* a_window, const Key& a_key)
+int GLFWInputManager::IsKeyPressed(const Key& a_key)
 {
     const int l_keyInt = static_cast<int>(a_key);
     if (m_keyPressed[l_keyInt] == 0)
@@ -60,21 +60,21 @@ void GLFWInputManager::KeyCallback(GLFWwindow* a_window, const int a_key, int a_
 }
 
 
-int GLFWInputManager::IsMouseButtonUp(IWindow* a_window, const MouseButton& a_button)
+int GLFWInputManager::IsMouseButtonUp(const MouseButton& a_button)
 {
     const int l_buttonInt = static_cast<int>(a_button);
     return m_mouseButtonStatus[l_buttonInt] == Action::RELEASE;
 }
 
 
-int GLFWInputManager::IsMouseButtonDown(IWindow* a_window, const MouseButton& a_button)
+int GLFWInputManager::IsMouseButtonDown(const MouseButton& a_button)
 {
     const int l_buttonInt = static_cast<int>(a_button);
     return m_mouseButtonStatus[l_buttonInt] == Action::PRESS || m_mouseButtonStatus[l_buttonInt] == Action::REPEAT;
 }
 
 
-int GLFWInputManager::IsMouseButtonPressed(IWindow* a_window, const MouseButton& a_button)
+int GLFWInputManager::IsMouseButtonPressed(const MouseButton& a_button)
 {
     const int l_buttonInt = static_cast<int>(a_button);
     if (m_mouseButtonPressed[l_buttonInt] == 0)

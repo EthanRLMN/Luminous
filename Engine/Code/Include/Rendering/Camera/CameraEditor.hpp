@@ -15,7 +15,7 @@ public:
     void Init(float a_aspectRatio, float a_fov, float a_nearPlane, float a_farPlane);
     void Update(float a_aspectRatio);
 
-    void UpdateInput(IWindow* a_window, IInputManager* a_input);
+    void UpdateInput(IInputManager* a_input);
 
     [[nodiscard]] float GetMovementSpeed() const { return m_movementSpeed; }
     [[nodiscard]] float GetRotationSpeed() const { return m_rotationSpeed; }
@@ -37,9 +37,9 @@ public:
 
 
 private:
-    void MovementHandler(IWindow* a_window, IInputManager* a_input);
-    void MouseHandler(IWindow* a_window, IInputManager* a_input);
-    void SpeedHandler(IWindow* a_window, IInputManager* a_input);
+    void MovementHandler(IInputManager* a_input);
+    void MouseHandler(IInputManager* a_input);
+    void SpeedHandler(IInputManager* a_input);
     void UpdateVectors();
 
     Maths::Matrix4 m_projectionMatrix { Maths::Matrix4::identity };

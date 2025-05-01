@@ -28,16 +28,16 @@ public:
     void Destroy(IWindow* a_window) override;
     void Update(IWindow* a_window) override {};
 
-    int IsKeyDown(IWindow* a_window, const Key& a_key) override;
-    int IsKeyUp(IWindow* a_window, const Key& a_key) override;
-    int IsKeyPressed(IWindow* a_window, const Key& a_key) override;
+    int IsKeyDown(const Key& a_key) override;
+    int IsKeyUp( const Key& a_key) override;
+    int IsKeyPressed(const Key& a_key) override;
 
-    int IsMouseButtonDown(IWindow* a_window, const MouseButton& a_button) override;
-    int IsMouseButtonUp(IWindow* a_window, const MouseButton& a_button) override;
-    int IsMouseButtonPressed(IWindow* a_window, const MouseButton& a_button) override;
+    int IsMouseButtonDown(const MouseButton& a_button) override;
+    int IsMouseButtonUp(const MouseButton& a_button) override;
+    int IsMouseButtonPressed(const MouseButton& a_button) override;
 
-    inline Maths::Vector2 GetCursorPosition(IWindow* a_window) override { return m_currentMousePos; }
-    inline Maths::Vector2 GetMouseDelta(IWindow* a_window) override { const Maths::Vector2 l_delta = m_currentMousePos - m_previousMousePos; m_previousMousePos = m_currentMousePos; return l_delta; }
+    inline Maths::Vector2 GetCursorPosition() override { return m_currentMousePos; }
+    inline Maths::Vector2 GetMouseDelta() override { const Maths::Vector2 l_delta = m_currentMousePos - m_previousMousePos; m_previousMousePos = m_currentMousePos; return l_delta; }
     inline Maths::Vector2 GetMouseScroll() override { const Maths::Vector2 l_returnVal = m_mouseScroll; m_mouseScroll = Maths::Vector2::Zero; return l_returnVal; }
     inline void ResetMouseDelta() override { };
     inline void SetCursorPosition(const double& a_xPos, const double& a_yPos) override { m_currentMousePos.x = static_cast<float>(a_xPos); m_currentMousePos.y = static_cast<float>(a_yPos); }
