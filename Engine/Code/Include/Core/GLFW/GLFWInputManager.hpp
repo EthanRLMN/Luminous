@@ -37,15 +37,11 @@ public:
     int IsMouseButtonPressed(IWindow* a_window, const MouseButton& a_button) override;
 
     inline Maths::Vector2 GetCursorPosition(IWindow* a_window) override { return m_currentMousePos; }
-    inline Maths::Vector2 GetMouseDelta(IWindow* a_window) override
-    {
-        const Maths::Vector2 l_delta = m_currentMousePos - m_previousMousePos; SetCursorPosition(0.0, 0.0); m_previousMousePos = m_currentMousePos; return l_delta.Normalize();
-    }
+    inline Maths::Vector2 GetMouseDelta(IWindow* a_window) override { const Maths::Vector2 l_delta = m_currentMousePos - m_previousMousePos; m_previousMousePos = m_currentMousePos; return l_delta; }
     inline Maths::Vector2 GetMouseScroll() override { const Maths::Vector2 l_returnVal = m_mouseScroll; m_mouseScroll = Maths::Vector2::Zero; return l_returnVal; }
-
-    inline static void SetCursorPosition(const double& a_xPos, const double& a_yPos) { m_currentMousePos.x = static_cast<float>(a_xPos); m_currentMousePos.y = static_cast<float>(a_yPos); }
-    inline static void SetMouseScroll(const double& a_xAxis, const double& a_yAxis) { m_mouseScroll.x = static_cast<float>(a_xAxis); m_mouseScroll.y = static_cast<float>(a_yAxis); }
-
+    inline void ResetMouseDelta() override { };
+    inline void SetCursorPosition(const double& a_xPos, const double& a_yPos) override { m_currentMousePos.x = static_cast<float>(a_xPos); m_currentMousePos.y = static_cast<float>(a_yPos); }
+    inline void SetMouseScroll(const double& a_xAxis, const double& a_yAxis) override { m_mouseScroll.x = static_cast<float>(a_xAxis); m_mouseScroll.y = static_cast<float>(a_yAxis); }
     void ConfigureMouseInput(const CursorInputMode& a_cursorInputMode) override;
 
     GLFWInputManager* CastGLFW() override { return this; }
@@ -56,6 +52,8 @@ private:
     static void MouseButtonCallback(GLFWwindow* a_window, int a_button, int a_action, int a_mods);
     static void MouseScrollCallback(GLFWwindow* a_window, double a_xOffset, double a_yOffset);
     static void MouseCursorCallback(GLFWwindow* a_window, double a_xPos, double a_yPos);
+    inline static void SetCursorPositionCallback(const double& a_xPos, const double& a_yPos) { m_currentMousePos.x = static_cast<float>(a_xPos); m_currentMousePos.y = static_cast<float>(a_yPos); }
+    inline static void SetMouseScrollCallback(const double& a_xAxis, const double& a_yAxis) { m_mouseScroll.x = static_cast<float>(a_xAxis); m_mouseScroll.y = static_cast<float>(a_yAxis); }
 
     static std::array<int, 349> m_keyPressed;
     static std::array<Action, 349> m_keyStatus;

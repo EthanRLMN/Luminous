@@ -38,6 +38,10 @@ public:
     virtual Maths::Vector2 GetMouseDelta(IWindow* a_window) = 0;
 
     virtual void ConfigureMouseInput(const CursorInputMode& a_cursorInputMode) = 0;
+    virtual void ResetMouseDelta() = 0;
+
+    virtual void SetCursorPosition(const double& a_xPos, const double& a_yPos) = 0;
+    virtual void SetMouseScroll(const double& a_xAxis, const double& a_yAxis) = 0;
 
     virtual IInputManager* CastGLFW()
 	{

@@ -45,7 +45,7 @@ private:
     Maths::Matrix4 m_projectionMatrix { Maths::Matrix4::identity };
     Maths::Matrix4 m_viewMatrix { Maths::Matrix4::identity };
 
-    Maths::Vector3 m_eye { 0.0f, 0.0f, 3.0f };
+    Maths::Vector3 m_eye { 0.0f, 0.0f, -3.0f };
     Maths::Vector3 m_center { 0.0f, 0.0f, 0.0f };
     Maths::Vector3 m_up { 0.0f, 1.0f, 0.0f };
     Maths::Vector3 m_forward { 0.0f, 0.0f, -1.0f };
@@ -53,9 +53,9 @@ private:
 
     float m_movementSpeed { 1.0f };
     float m_rotationSpeed { 1.0f };
-    float m_cameraSpeed { 0.1f };
+    float m_cameraSpeed { 0.5f };
     float m_aspectRatio { 800.0f / 600.0f };
-    float m_fov { Maths::DegToRad(60.0f) };
+    float m_fov { 60.0f };
     float m_nearPlane { 0.1f };
     float m_farPlane { 100.f };
     float m_yaw { 0.0f };

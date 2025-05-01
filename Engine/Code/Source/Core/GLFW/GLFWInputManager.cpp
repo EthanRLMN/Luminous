@@ -102,13 +102,13 @@ void GLFWInputManager::MouseButtonCallback(GLFWwindow* a_window, const int a_but
 
 void GLFWInputManager::MouseScrollCallback(GLFWwindow* a_window, const double a_xOffset, const double a_yOffset)
 {
-    SetMouseScroll(a_xOffset, a_yOffset);
+    SetMouseScrollCallback(a_xOffset, a_yOffset);
     DEBUG_LOG_WARNING("Mouse Scroll : {}, {}\n", a_xOffset, a_yOffset);
 }
 
 void GLFWInputManager::MouseCursorCallback(GLFWwindow* a_window, const double a_xPos, const double a_yPos)
 {
-    SetCursorPosition(a_xPos, a_yPos);
+    SetCursorPositionCallback(a_xPos, a_yPos);
 }
 
 

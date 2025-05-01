@@ -17,9 +17,6 @@ void CameraEditor::Update(const float a_aspectRatio)
     UpdateVectors();
     m_viewMatrix = UpdateViewMatrix(m_eye, m_center, m_up);
     m_projectionMatrix = UpdateProjectionMatrix(m_fov, m_aspectRatio, m_nearPlane, m_farPlane);
-    //m_forward = Maths::Vector3{ cos(m_center) * cos(yaw), sin(pitch), −cos(pitch) * sin(yaw) };
-
-    //DEBUG_LOG_VERBOSE("Camera Editor : Position X {} , Y {} , Z {}" , m_eye.x ,m_eye.y , m_eye.z);
 }
 
 
@@ -75,7 +72,24 @@ void CameraEditor::MouseHandler(IWindow* a_window, IInputManager* a_input)
 {
     if (a_input->IsMouseButtonDown(a_window, MouseButton::MOUSE_BUTTON_2))
     {
-        m_viewMatrix = UpdateViewMatrix(m_eye, m_eye + m_center, m_up);
+        const Maths::Vector2 l_mouseDelta = a_input->GetMouseDelta(a_window);
+        const float l_sensitivity = 0.1f;
+
+        m_yaw += l_mouseDelta.x * l_sensitivity;
+        m_pitch -= l_mouseDelta.y * l_sensitivity;
+        m_pitch = std::clamp(m_pitch, -89.0f, 89.0f);
+
+        Maths::Vector3 l_direction { Maths::Vector3::Zero };
+        l_direction.x = cos(Maths::DegToRad(m_yaw)) * cos(Maths::DegToRad(m_pitch));
+        l_direction.y = sin(Maths::DegToRad(m_pitch));
+        l_direction.z = sin(Maths::DegToRad(m_yaw)) * cos(Maths::DegToRad(m_pitch));
+        l_direction = l_direction.Normalize();
+
+        const Maths::Vector3 l_worldUp = Maths::Vector3(0.0f, 1.0f, 0.0f);
+        m_right = l_direction.CrossProduct(l_worldUp).Normalize();
+        m_up = m_right.CrossProduct(l_direction).Normalize();
+
+        m_viewMatrix = Maths::Matrix4::LookAt(m_eye, m_eye + l_direction, l_worldUp);
     }
 }
 
