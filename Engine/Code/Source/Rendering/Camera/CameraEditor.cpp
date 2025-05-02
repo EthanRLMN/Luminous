@@ -9,12 +9,15 @@ void CameraEditor::Init(const float a_aspectRatio, const float a_fov, const floa
     m_fov = a_fov;
     m_nearPlane = a_nearPlane;
     m_farPlane = a_farPlane;
+
+    m_forward = (m_center - m_eye).Normalize();
+    m_right = m_forward.CrossProduct(m_up).Normalize();
+    m_up = m_right.CrossProduct(m_forward).Normalize();
 }
 
 void CameraEditor::Update(const float a_aspectRatio)
 {
     m_aspectRatio = a_aspectRatio;
-    UpdateVectors();
     m_viewMatrix = UpdateViewMatrix(m_eye, m_center, m_up);
     m_projectionMatrix = UpdateProjectionMatrix(m_fov, m_aspectRatio, m_nearPlane, m_farPlane);
 }
@@ -123,12 +126,5 @@ void CameraEditor::SpeedHandler(IInputManager* a_input)
         if (m_movementSpeed < 0.1f)
             m_movementSpeed = 0.1f;
     }
-}
-
-void CameraEditor::UpdateVectors()
-{
-    m_forward = (m_center - m_eye).Normalize();
-    m_right = m_forward.CrossProduct(m_up).Normalize();
-    m_up = m_right.CrossProduct(m_forward).Normalize();
 }
 

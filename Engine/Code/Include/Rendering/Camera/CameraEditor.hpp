@@ -40,7 +40,6 @@ private:
     void MovementHandler(IInputManager* a_input);
     void MouseHandler(IInputManager* a_input);
     void SpeedHandler(IInputManager* a_input);
-    void UpdateVectors();
 
     Maths::Matrix4 m_projectionMatrix { Maths::Matrix4::identity };
     Maths::Matrix4 m_viewMatrix { Maths::Matrix4::identity };
