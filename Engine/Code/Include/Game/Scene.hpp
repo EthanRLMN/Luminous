@@ -7,7 +7,7 @@ public:
     Scene()= default;
     ~Scene()= default;
 
-    void SceneEntity();
+    void SceneEntity(EntityManager& a_entityManager);
 private:
 
 

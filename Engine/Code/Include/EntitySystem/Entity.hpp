@@ -1,8 +1,8 @@
 #pragma once
 #include <iostream>
+#include "Logger.hpp"
 #include <vector>
 #include <memory>
-#include <string>
 #include <algorithm>
 #include "EntityComponent.hpp"
 #include <string.h>

@@ -6,7 +6,7 @@
 #include "Game/Scripts/Player.hpp"
 #include "Game/Scripts/Weapon.hpp"
 
-
+/*
 void Scene::SceneEntity()
 {
     EntityManager entityManager;
@@ -20,4 +20,16 @@ void Scene::SceneEntity()
     entityManager.Initialize();
     entityManager.GameplayStarted();
     entityManager.Update();
+}*/
+
+void Scene::SceneEntity(EntityManager& a_entityManager)
+{
+
+    std::shared_ptr<Player> player = std::make_shared<Player>(a_entityManager);
+    player->Register();
+
+    std::shared_ptr<Weapon> weapon = std::make_shared<Weapon>(a_entityManager, player->GetEntity());
+    weapon->Register();
+
+;
 }
