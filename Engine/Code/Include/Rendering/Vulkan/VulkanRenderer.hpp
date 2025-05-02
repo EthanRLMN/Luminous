@@ -9,6 +9,7 @@
 #include "Rendering/Vulkan/VulkanFrameBufferManager.hpp"
 #include "Rendering/Vulkan/VulkanRenderpassManager.hpp"
 
+#include "EntitySystem/Components/LightComponent.hpp"
 
 //TEST CAMERA
 #include "Rendering/Camera/CameraEditor.hpp"
@@ -47,6 +48,8 @@ public:
 
     bool bReloadImage = false;
     mutable bool bUsable = false;
+
+    std::vector<LightComponent> m_lights;
 
 
 private:

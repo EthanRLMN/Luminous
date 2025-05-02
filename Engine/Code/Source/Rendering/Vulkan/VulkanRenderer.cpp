@@ -29,6 +29,10 @@
 void VulkanRenderer::Create(IWindow* a_window, ISwapChain* a_swapChain)
 {
     m_cameraEditor.Init(a_window, static_cast<float>(a_swapChain->CastVulkan()->GetSwapChainExtent().width) / static_cast<float>(a_swapChain->CastVulkan()->GetSwapChainExtent().height),45.f,0.01f,1000.f);
+
+
+    LightComponent l_light = LightComponent();
+    m_lights.push_back(l_light);
 }
 
 void VulkanRenderer::DrawFrame(IWindow* a_window, IDevice* a_device, ISwapChain* a_swapChain, IPipeline* a_pipeline, IBuffer* a_buffer, IRenderPassManager* a_renderPassManager, IDescriptor* a_descriptor, IMesh* a_mesh, ISynchronization* a_synchronization, ICommandBuffer* a_commandBuffer, IFrameBufferManager* a_frameBufferManager, IDepthResource* a_depthResource, ISurface* a_surface, IMultiSampling* a_multisampling,IInputManager* a_inputManager)
@@ -166,6 +170,10 @@ void VulkanRenderer::UpdateUniformBuffer(const uint32_t& a_currentFrame, IBuffer
     l_ubo.proj.mat[1][1] *= -1;
 
     memcpy(a_buffer->CastVulkan()->GetUniformBuffersMapped()[a_currentFrame], &l_ubo, sizeof(l_ubo));
+
+
+    memcpy(a_buffer->CastVulkan()->GetLightUniformBuffersMapped(), m_lights.data(), m_lights.size());
+
 }
 
 

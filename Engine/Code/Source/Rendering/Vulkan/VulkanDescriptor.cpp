@@ -11,6 +11,7 @@
 #include "Rendering/Vulkan/VulkanTexture.hpp"
 
 #include "Struct/VulkanUtilities.hpp"
+#include "EntitySystem/Components/LightComponent.hpp"
 
 
 void VulkanDescriptor::Create(IDevice* a_device, IDescriptorSetLayout* a_descriptorSetLayout, ITexture* a_texture, IBuffer* a_buffer)
@@ -28,6 +29,10 @@ void VulkanDescriptor::SetBuffers(IBuffer* a_buffer)
     m_uniformBuffer = a_buffer->CastVulkan()->GetUniformBuffer();
     m_uniformBuffersMemory = a_buffer->CastVulkan()->GetUniformBuffersMemory();
     m_uniformBuffersMapped = a_buffer->CastVulkan()->GetUniformBuffersMapped();
+
+    m_lightUniformBuffer = a_buffer->CastVulkan()->GetLightUniformBuffer();
+    m_lightUniformBuffersMemory = a_buffer->CastVulkan()->GetLightUniformBuffersMemory();
+    m_lightUniformBuffersMapped = a_buffer->CastVulkan()->GetLightUniformBuffersMapped();
 }
 
 
@@ -123,8 +128,7 @@ void VulkanDescriptor::CreateDescriptorSets(IDevice* a_device, IDescriptorSetLay
     l_lightAllocInfo.descriptorSetCount = 1;
     l_lightAllocInfo.pSetLayouts = l_lightLayout.data();
 
-    VkDescriptorSet l_lightDescriptorSet;
-    vkAllocateDescriptorSets(a_device->CastVulkan()->GetDevice(), &l_lightAllocInfo, &l_lightDescriptorSet);
+    vkAllocateDescriptorSets(a_device->CastVulkan()->GetDevice(), &l_lightAllocInfo, &m_lightDescriptorSets);
 
 
     UpdateDescriptorSets(a_device, a_texture);
@@ -164,4 +168,22 @@ void VulkanDescriptor::UpdateDescriptorSets(IDevice* a_device, ITexture* a_textu
         vkUpdateDescriptorSets(a_device->CastVulkan()->GetDevice(), static_cast<uint32_t>(l_descriptorWrites.size()), l_descriptorWrites.data(), 0, nullptr);
         DEBUG_LOG_INFO("Vulkan Descriptors : DescriptorSet created!\n");
     }
+
+    VkDescriptorBufferInfo bufferInfo{};
+    bufferInfo.buffer = m_lightUniformBuffer;
+    bufferInfo.offset = 0;
+    bufferInfo.range = sizeof(LightComponent) * 32 + sizeof(int);
+
+    VkWriteDescriptorSet descriptorWrite{};
+    descriptorWrite.sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
+    descriptorWrite.dstSet = m_lightDescriptorSets;
+    descriptorWrite.dstBinding = 2;
+    descriptorWrite.dstArrayElement = 0;
+    descriptorWrite.descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
+    descriptorWrite.descriptorCount = 1;
+    descriptorWrite.pBufferInfo = &bufferInfo;
+
+    vkUpdateDescriptorSets(a_device->CastVulkan()->GetDevice(), 1, &descriptorWrite, 0, nullptr);
+
+
 }

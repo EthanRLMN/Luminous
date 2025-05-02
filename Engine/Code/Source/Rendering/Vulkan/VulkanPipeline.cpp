@@ -64,8 +64,10 @@ void VulkanPipeline::Create(IDevice* a_device, IRenderPass* a_renderPass, IDescr
     VkPipelineLayoutCreateInfo l_pipelineLayoutInfo{ VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO };
     l_pipelineLayoutInfo.setLayoutCount = 1;
 
-    VkDescriptorSetLayout l_descriptorSetLayout = a_descriptionSetLayout->CastVulkan()->GetDescriptorSetLayout(); //create descriptorSetLayout has a local variable
-    SetupDescriptorSetLayout(l_descriptorSetLayout, l_pipelineLayoutInfo, a_device->CastVulkan()->GetDevice());
+    VkDescriptorSetLayout l_descriptorSetLayout = a_descriptionSetLayout->CastVulkan()->GetDescriptorSetLayout();
+    VkDescriptorSetLayout l_lightDescriptorSetLayout = a_descriptionSetLayout->CastVulkan()->GetLightDescriptorSetLayout(); // create descriptorSetLayout has a local variable
+    std::vector<VkDescriptorSetLayout> l_descriptorSetLayouts = { l_descriptorSetLayout, l_lightDescriptorSetLayout };
+    SetupDescriptorSetLayout(l_descriptorSetLayouts, l_pipelineLayoutInfo, a_device->CastVulkan()->GetDevice());
 
     //Graphic pipeline creation
     VkGraphicsPipelineCreateInfo l_pipelineCreateInfo{ VK_STRUCTURE_TYPE_GRAPHICS_PIPELINE_CREATE_INFO };
@@ -202,9 +204,10 @@ void VulkanPipeline::SetupDynamicStates(const std::array<VkDynamicState, 2>& a_d
 }
 
 
-void VulkanPipeline::SetupDescriptorSetLayout(const VkDescriptorSetLayout& a_descriptorSetLayout, VkPipelineLayoutCreateInfo& a_pipelineLayoutInfo, const VkDevice a_device)
+void VulkanPipeline::SetupDescriptorSetLayout(const std::vector<VkDescriptorSetLayout> a_descriptorSetLayouts, VkPipelineLayoutCreateInfo& a_pipelineLayoutInfo, const VkDevice a_device)
 {
-    a_pipelineLayoutInfo.pSetLayouts = &a_descriptorSetLayout;
+    a_pipelineLayoutInfo.setLayoutCount = static_cast<uint32_t> (a_descriptorSetLayouts.size());
+    a_pipelineLayoutInfo.pSetLayouts = a_descriptorSetLayouts.data();
 
     //Create pipeline layout
     const VkResult l_result = vkCreatePipelineLayout(a_device, &a_pipelineLayoutInfo, nullptr, &m_pipelineLayout);
