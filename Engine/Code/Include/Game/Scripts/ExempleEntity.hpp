@@ -2,6 +2,7 @@
 #include "EntitySystem/Entity.hpp"
 #include "EntitySystem/EntityComponent.hpp"
 #include "EntitySystem/Components/CTransform.hpp"
+#include <iostream>
 
 
 class Exemple : public EntityComponent, public std::enable_shared_from_this<Exemple>
@@ -12,8 +13,10 @@ public:
     {
 
         ExempleEntity = entityManager.CreateEntity();
-        ExempleEntity->SetName("Exemple");
-        ExempleEntity->AddComponent(transformComponent);
+        
+        ExempleEntity->SetName("Exemple"); 
+        ExempleEntity->AddComponent(transformComponent); 
+    
     }
 
     void Register()
@@ -21,22 +24,24 @@ public:
         entityManager.RegisterLogic(shared_from_this());
     }
 
-    void Initialize() override
+    void Initialize() override 
     {
         std::cout << "[Exemple] Initialize" << std::endl;
         std::cout << "[Exemple]  Has CHild : " << ExempleEntity->HasChildren() << std::endl;
         std::cout << "[Exemple]  Has Parent : " << ExempleEntity->HasParent() << std::endl;
+
+        transformComponent->position = { 0, 0, 0 };
+        transformComponent->rotation = { 0, 0, 0 };
+        transformComponent->scale = { 0, 0, 0 };
     }
 
-    void GameplayStarted() override
+    void GameplayStarted() override 
     {
         std::cout << "[Exemple] Gameplay Started" << std::endl;
-        transformComponent->position[0] = 0;
-        transformComponent->position[1] = 0;
-        transformComponent->position[2] = 200;
+
     }
 
-    void Update() override
+    void Update() override 
     {
         std::cout << "[Exemple] Update Tick" << std::endl;
     }

@@ -9,57 +9,59 @@ class Player : public EntityComponent, public std::enable_shared_from_this<Playe
 {
 public:
     Player(EntityManager& entityManager) :
-        entityManager(entityManager)
+        m_entityManager(entityManager)
     {
 
-        playerEntity = entityManager.CreateEntity();
-        playerEntity->SetName("Player");
+        m_playerEntity = entityManager.CreateEntity();
+        m_playerEntity->SetName("Player");
 
-        playerEntity->AddComponent(transformComponent);
-        playerEntity->AddComponent(rigidbodyComponent);
-        playerEntity->AddComponent(modelComponent);
+        m_playerEntity->AddComponent(transformComponent);
+        m_playerEntity->AddComponent(rigidbodyComponent);
+        m_playerEntity->AddComponent(modelComponent);
     }
 
     void Register()
     {
-        entityManager.RegisterLogic(shared_from_this());
+        m_entityManager.RegisterLogic(shared_from_this());
     }
 
     void Initialize() override
     {
-        std::cout << "[Player] Initialize" << std::endl;
+        DEBUG_LOG_INFO("[Player] Initialize");
         Input();
-        rigidbodyComponent->simulatePhysic = true;
+        rigidbodyComponent->m_simulatePhysic = true;
         modelComponent->SetModelPath("Assets/Player.fbx");
-        std::cout << "Player Has CHild : " << playerEntity->HasChildren() << std::endl;
-        std::cout << "Player  Has Parent : " << playerEntity->HasParent() << std::endl;
+
+        DEBUG_LOG_INFO("Player Has CHild :  {}", modelComponent->GetModelPath());
+        DEBUG_LOG_INFO("Player  Has Parent : {}", modelComponent->GetModelPath());
     }
 
     void GameplayStarted() override
     {
-        std::cout << "[Player] Gameplay Started" << std::endl;
-        std::cout << "Player Model : " << modelComponent->GetModelPath() << std::endl;
+
+        DEBUG_LOG_INFO("[Player] Gameplay Started");
+        DEBUG_LOG_INFO("Player Model : {}", modelComponent->GetModelPath());
     }
 
     void Update() override
     {
-        std::cout << "[Player] Update Tick" << std::endl;
+        DEBUG_LOG_INFO("[Player] Update Tick ");
     }
 
     void Input()
     {
-        std::cout << "Input A = sauter" << std::endl;
+        DEBUG_LOG_INFO("Input A  = sauter");
     }
 
     std::shared_ptr<Entity> GetEntity() const
     {
-        return playerEntity;
+        return m_playerEntity;
     }
 
 
 private:
-    std::shared_ptr<Entity> playerEntity;
-    EntityManager& entityManager;
+    std::shared_ptr<Entity> m_playerEntity;
+    EntityManager& m_entityManager;
 
     std::shared_ptr<TransformComponent> transformComponent = std::make_shared<TransformComponent>();
     std::shared_ptr<RigidbodyComponent> rigidbodyComponent = std::make_shared<RigidbodyComponent>();

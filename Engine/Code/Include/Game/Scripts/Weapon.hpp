@@ -12,20 +12,20 @@ class Weapon : public EntityComponent, public std::enable_shared_from_this<Weapo
 {
 public:
     Weapon(EntityManager& entityManager, std::shared_ptr<Entity> playerEntity) :
-        entityManager(entityManager), playerEntity(playerEntity)
+        entityManager(entityManager), m_playerEntity(playerEntity)
     {
 
-        weaponEntity = entityManager.CreateEntity();
-        weaponEntity->SetName("Weapon");
+        m_weaponEntity = entityManager.CreateEntity();
+        m_weaponEntity->SetName("Weapon");
 
 
 
-        weaponEntity->AddComponent(transformComponent);
-        weaponEntity->AddComponent(modelComponent);
+        m_weaponEntity->AddComponent(transformComponent);
+        m_weaponEntity->AddComponent(modelComponent);
 
         modelComponent->SetModelPath("Assets/Sword.obj");
-        playerEntity->AttachChild(weaponEntity);
-        weaponEntity->SetParent(weaponEntity);
+        playerEntity->AttachChild(m_weaponEntity);
+        m_weaponEntity->SetParent(m_weaponEntity);
     }
 
     void Register()
@@ -35,30 +35,33 @@ public:
 
     void Initialize() override
     {
-        std::cout << "[Weapon] Initialize" << std::endl;
-        std::cout << "Weapon Has CHild : " << weaponEntity->HasChildren() << std::endl;
-        std::cout << "Weapon  Has Parent : " << weaponEntity->HasParent() << std::endl;
+        DEBUG_LOG_INFO("[Weapon] Initialize");
+
+        DEBUG_LOG_INFO("Weapon Has CHild : {}", m_weaponEntity->HasChildren());
+        DEBUG_LOG_INFO("Weapon  Has Parent : ", m_weaponEntity->HasParent());
+
     }
 
     void GameplayStarted() override
     {
-        std::cout << "[Weapon] Gameplay Started" << std::endl;
-        std::cout << "Weapon Model : " << modelComponent->GetModelPath() << std::endl;
+
+        DEBUG_LOG_INFO("[Weapon] Gameplay Started");
+        DEBUG_LOG_INFO("Weapon Model : :{}", modelComponent->GetModelPath());
     }
 
     void Update() override
     {
-        std::cout << "[Weapon] Update Tick" << std::endl;
+        DEBUG_LOG_INFO("[Weapon] Update Tick");
     }
 
     std::shared_ptr<Entity> GetEntity() const
     {
-        return weaponEntity;
+        return m_weaponEntity;
     }
 
 private:
-    std::shared_ptr<Entity> weaponEntity;
-    std::shared_ptr<Entity> playerEntity;
+    std::shared_ptr<Entity> m_weaponEntity;
+    std::shared_ptr<Entity> m_playerEntity;
 
 
     std::shared_ptr<TransformComponent> transformComponent = std::make_shared<TransformComponent>();

@@ -5,5 +5,5 @@
 class RigidbodyComponent 
 {
 public:
-    bool simulatePhysic = true;
+    bool m_simulatePhysic = true;
 };

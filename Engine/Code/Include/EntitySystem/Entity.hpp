@@ -1,34 +1,44 @@
 #pragma once
-#include <iostream>
-#include "Logger.hpp"
-#include <vector>
-#include <memory>
+
 #include <algorithm>
+#include <memory>
+#include <string>
+#include <vector>
+
 #include "EntityComponent.hpp"
-#include <string.h>
+#include "Logger.hpp"
 
 class EntityManager;
 
 class Entity
 {
 public:
-    Entity(EntityManager& manager) :
+    explicit Entity(EntityManager& manager) :
         entityManager(manager) {}
 
-    void SetName(const std::string& newName) { name = newName; }
-    std::string GetName() const { return name; }
+    void SetName(const std::string& a_newName)
+    {
+        name = a_newName;
+    }
+
+    [[nodiscard]] std::string GetName() const
+    {
+        return name;
+    }
 
     void AddComponent(const std::shared_ptr<void>& component)
     {
-        components.push_back(component);
+        m_components.push_back(component);
     }
 
     template<typename T>
-    std::shared_ptr<T> GetComponent() const
+    [[nodiscard]] std::shared_ptr<T> GetComponent() const
     {
-        for (auto& comp : components)
+        typename std::vector<std::shared_ptr<void>>::const_iterator it;
+        for (it = m_components.cbegin(); it != m_components.cend(); ++it)
         {
-            if (auto casted = std::dynamic_pointer_cast<T>(comp))
+            std::shared_ptr<T> casted = std::dynamic_pointer_cast<T>(*it);
+            if (casted != nullptr)
             {
                 return casted;
             }
@@ -38,111 +48,152 @@ public:
 
     void AddLogic(const std::shared_ptr<EntityComponent>& logic)
     {
-        logicComponents.push_back(logic);
+        m_entityComponents.push_back(logic);
     }
 
-    bool HasChildren() const
+    [[nodiscard]] bool HasChildren() const
     {
-        return !children.empty(); 
+        return !m_children.empty();
     }
 
-    void AttachChild(std::shared_ptr<Entity> child)
+    void AttachChild(const std::shared_ptr<Entity>& child)
     {
-        children.push_back(child);
+        m_children.push_back(child);
     }
 
-
-    std::vector<std::shared_ptr<Entity>> GetChildren() const
+    [[nodiscard]] std::vector<std::shared_ptr<Entity>> GetChildren() const
     {
-        return children;
+        return m_children;
     }
 
-    void SetParent(std::shared_ptr<Entity> parentEntity)
+    void SetParent(const std::shared_ptr<Entity>& a_parentEntity)
     {
-        parent = parentEntity;
+        m_parent = a_parentEntity;
     }
 
-    std::shared_ptr<Entity> GetParent() const
+    [[nodiscard]] std::shared_ptr<Entity> GetParent() const
     {
-        return parent;
+        return m_parent;
     }
 
-    bool HasParent() const
+    [[nodiscard]] bool HasParent() const
     {
-        return parent != nullptr;
+        return m_parent != nullptr;
     }
-
 
     void Initialize()
     {
-        for (auto& logic : logicComponents)
-            logic->Initialize();
-        for (auto& child : children)
-            child->Initialize();
+        std::vector<std::shared_ptr<EntityComponent>>::iterator logicIt;
+        for (logicIt = m_entityComponents.begin(); logicIt != m_entityComponents.end(); ++logicIt)
+        {
+            (*logicIt)->Initialize();
+        }
+
+        std::vector<std::shared_ptr<Entity>>::iterator childIt;
+        for (childIt = m_children.begin(); childIt != m_children.end(); ++childIt)
+        {
+            (*childIt)->Initialize();
+        }
     }
 
     void GameplayStarted()
     {
-        for (auto& logic : logicComponents)
-            logic->GameplayStarted();
-        for (auto& child : children)
-            child->GameplayStarted();
+        std::vector<std::shared_ptr<EntityComponent>>::iterator logicIt;
+        for (logicIt = m_entityComponents.begin(); logicIt != m_entityComponents.end(); ++logicIt)
+        {
+            (*logicIt)->GameplayStarted();
+        }
+
+        std::vector<std::shared_ptr<Entity>>::iterator childIt;
+        for (childIt = m_children.begin(); childIt != m_children.end(); ++childIt)
+        {
+            (*childIt)->GameplayStarted();
+        }
     }
 
     void Update()
     {
-        for (auto& logic : logicComponents)
-            logic->Update();
-        for (auto& child : children)
-            child->Update();
+        std::vector<std::shared_ptr<EntityComponent>>::iterator logicIt;
+        for (logicIt = m_entityComponents.begin(); logicIt != m_entityComponents.end(); ++logicIt)
+        {
+            (*logicIt)->Update();
+        }
+
+        std::vector<std::shared_ptr<Entity>>::iterator childIt;
+        for (childIt = m_children.begin(); childIt != m_children.end(); ++childIt)
+        {
+            (*childIt)->Update();
+        }
     }
 
 private:
     EntityManager& entityManager;
-    std::string name;
-    std::vector<std::shared_ptr<void>> components;
-    std::vector<std::shared_ptr<EntityComponent>> logicComponents;
-    std::vector<std::shared_ptr<Entity>> children;
-    std::shared_ptr<Entity> parent;
+    std::string name = "Entity";
+
+    std::vector<std::shared_ptr<void>> m_components;
+    std::vector<std::shared_ptr<EntityComponent>> m_entityComponents;
+    std::vector<std::shared_ptr<Entity>> m_children;
+    std::shared_ptr<Entity> m_parent;
 };
 
 class EntityManager
 {
 public:
-    std::shared_ptr<Entity> CreateEntity()
+    [[nodiscard]] std::shared_ptr<Entity> CreateEntity()
     {
-        auto entity = std::make_shared<Entity>(*this);
+        std::shared_ptr<Entity> entity = std::make_shared<Entity>(*this);
         entities.push_back(entity);
         return entity;
     }
 
-    void RegisterLogic(const std::shared_ptr<EntityComponent>& logic)
+    void RegisterLogic(const std::shared_ptr<EntityComponent>& a_logic)
     {
-        logicComponents.push_back(logic);
+        logicComponents.push_back(a_logic);
     }
 
     void Initialize()
     {
-        for (auto& logic : logicComponents)
-            logic->Initialize();
-        for (auto& entity : entities)
-            entity->Initialize();
+        std::vector<std::shared_ptr<EntityComponent>>::iterator logicIt;
+        for (logicIt = logicComponents.begin(); logicIt != logicComponents.end(); ++logicIt)
+        {
+            (*logicIt)->Initialize();
+        }
+
+        std::vector<std::shared_ptr<Entity>>::iterator entityIt;
+        for (entityIt = entities.begin(); entityIt != entities.end(); ++entityIt)
+        {
+            (*entityIt)->Initialize();
+        }
     }
 
     void GameplayStarted()
     {
-        for (auto& logic : logicComponents)
-            logic->GameplayStarted();
-        for (auto& entity : entities)
-            entity->GameplayStarted();
+        std::vector<std::shared_ptr<EntityComponent>>::iterator logicIt;
+        for (logicIt = logicComponents.begin(); logicIt != logicComponents.end(); ++logicIt)
+        {
+            (*logicIt)->GameplayStarted();
+        }
+
+        std::vector<std::shared_ptr<Entity>>::iterator entityIt;
+        for (entityIt = entities.begin(); entityIt != entities.end(); ++entityIt)
+        {
+            (*entityIt)->GameplayStarted();
+        }
     }
 
     void Update()
     {
-        for (auto& logic : logicComponents)
-            logic->Update();
-        for (auto& entity : entities)
-            entity->Update();
+        std::vector<std::shared_ptr<EntityComponent>>::iterator logicIt;
+        for (logicIt = logicComponents.begin(); logicIt != logicComponents.end(); ++logicIt)
+        {
+            (*logicIt)->Update();
+        }
+
+        std::vector<std::shared_ptr<Entity>>::iterator entityIt;
+        for (entityIt = entities.begin(); entityIt != entities.end(); ++entityIt)
+        {
+            (*entityIt)->Update();
+        }
     }
 
 private:
