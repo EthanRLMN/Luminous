@@ -15,7 +15,7 @@ public:
 	[[nodiscard]] VkDescriptorPool GetDescriptorPool() const { return m_descriptorPool; }
 	[[nodiscard]] VkDescriptorPool GetImGUIDescriptorPool() const { return m_imguiDescriptorPool; }
 	[[nodiscard]] std::vector<VkDescriptorSet> GetDescriptorSet() const { return m_descriptorSets; };
-
+    [[nodiscard]] VkDescriptorSet GetLightDescriptorSet() const { return m_lightDescriptorSets; };
 	VulkanDescriptor* CastVulkan() override { return this; }
 
 

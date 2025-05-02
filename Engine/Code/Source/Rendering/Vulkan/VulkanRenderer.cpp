@@ -43,6 +43,8 @@ void VulkanRenderer::DrawFrame(IWindow* a_window, IDevice* a_device, ISwapChain*
     vkWaitForFences(l_device, 1, &a_synchronization->CastVulkan()->GetFences()[m_currentFrame], VK_TRUE, UINT64_MAX);
     uint32_t l_imageIndex{ 0 };
 
+    m_lights[0].m_color += Maths::Vector3(0, 0.001f, 0);
+
     VkResult l_result = vkAcquireNextImageKHR(l_device, l_swapchain, UINT64_MAX, a_synchronization->CastVulkan()->GetImageAvailableSemaphores()[m_currentFrame], nullptr, &l_imageIndex);
     if (l_result == VK_ERROR_OUT_OF_DATE_KHR)
     {
@@ -61,7 +63,7 @@ void VulkanRenderer::DrawFrame(IWindow* a_window, IDevice* a_device, ISwapChain*
     ///*************************************************//
 
 
-    UpdateUniformBuffer(m_currentFrame, a_buffer);
+    UpdateUniformBuffer(l_device,m_currentFrame, a_buffer);
     vkResetFences(l_device, 1, &a_synchronization->CastVulkan()->GetFences()[m_currentFrame]);
 
     VkSubmitInfo l_submitInfo{ VK_STRUCTURE_TYPE_SUBMIT_INFO };
@@ -129,7 +131,8 @@ void VulkanRenderer::RecordCommandBuffer(const VkCommandBuffer& a_commandBuffer,
             const std::array<VkDeviceSize, 1> l_offsets = { 0 };
             vkCmdBindVertexBuffers(a_commandBuffer, 0, 1, l_vertexBuffers.data(), l_offsets.data());
             vkCmdBindIndexBuffer(a_commandBuffer, a_buffer->CastVulkan()->GetIndexBuffer(), 0, VK_INDEX_TYPE_UINT32);
-            vkCmdBindDescriptorSets(a_commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, a_pipelineLayout, 0, 1, &a_descriptor->CastVulkan()->GetDescriptorSet()[m_currentFrame], 0, nullptr);
+            std::vector<VkDescriptorSet> sets = { a_descriptor->CastVulkan()->GetDescriptorSet()[m_currentFrame], a_descriptor->CastVulkan()->GetLightDescriptorSet() };
+            vkCmdBindDescriptorSets(a_commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, a_pipelineLayout, 0, static_cast<uint32_t>(sets.size()), sets.data(), 0, nullptr);
             vkCmdDrawIndexed(a_commandBuffer, static_cast<uint32_t>(a_mesh->CastVulkan()->GetIndices().size()), 1, 0, 0, 0);
 
             
@@ -161,7 +164,7 @@ void VulkanRenderer::RecordCommandBuffer(const VkCommandBuffer& a_commandBuffer,
 
 
 // TODO: Cleanup
-void VulkanRenderer::UpdateUniformBuffer(const uint32_t& a_currentFrame, IBuffer* a_buffer) const
+void VulkanRenderer::UpdateUniformBuffer(const VkDevice& a_device,const uint32_t& a_currentFrame, IBuffer* a_buffer) const
 {
     UniformBufferObject l_ubo{};
     l_ubo.model = Maths::Matrix4::Rotate(Maths::Matrix4(1.0f), static_cast<float>(Time::GetTotalTimeElapsed()) * 00.0f, Maths::Vector3(0.0f, 0.0f, 1.0f));
@@ -172,7 +175,10 @@ void VulkanRenderer::UpdateUniformBuffer(const uint32_t& a_currentFrame, IBuffer
     memcpy(a_buffer->CastVulkan()->GetUniformBuffersMapped()[a_currentFrame], &l_ubo, sizeof(l_ubo));
 
 
-    memcpy(a_buffer->CastVulkan()->GetLightUniformBuffersMapped(), m_lights.data(), m_lights.size());
+    void* data;
+    vkMapMemory(a_device, a_buffer->CastVulkan()->GetLightUniformBuffersMemory(), 0, m_lights.size(), 0, &data);
+    memcpy(data, m_lights.data(), m_lights.size()* sizeof(LightComponent)); 
+    vkUnmapMemory(a_device, a_buffer->CastVulkan()->GetLightUniformBuffersMemory());
 
 }
 
