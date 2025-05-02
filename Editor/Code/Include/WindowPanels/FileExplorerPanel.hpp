@@ -12,7 +12,7 @@ class FileExplorerPanel : public IWindowPanel
 {
 public:
     explicit FileExplorerPanel(Editor* a_editor, const std::string& a_windowIdentifier);
-    ~FileExplorerPanel() override {};
+    ~FileExplorerPanel() override;
 
     void Init() override {};
     void Update() override {};
@@ -26,8 +26,9 @@ private:
     Engine* m_engine{ nullptr };
 
     std::unique_ptr<TextEditorPanel> m_textEditorPanel;
-    std::shared_ptr<ITexture> m_directoryIconTexture;
-    std::shared_ptr<ITexture> m_fileIconTexture;
-};
+    ITexture* m_directoryIconTexture = nullptr;
+    ITexture* m_fileIconTexture = nullptr;
 
-std::shared_ptr<ITexture> LoadTexture(Engine* engine, const std::string& path);
+
+    ITexture* LoadTexture(Engine* engine, const std::string& path);
+};

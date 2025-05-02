@@ -30,6 +30,7 @@ public:
 
 	[[nodiscard]] IWindow* GetWindow() const { return m_window; }
 	[[nodiscard]] IInputManager* GetInputManager() const { return m_inputManager; }
+    [[nodiscard]] IResourceManager* GetResourceManager() const { return m_resourceManager; }
 	[[nodiscard]] IInstance* GetInstance() const { return m_instance; }
 	[[nodiscard]] ISurface* GetSurface() const { return m_surface; }
 	[[nodiscard]] IDevice* GetDevice() const { return m_device; }
