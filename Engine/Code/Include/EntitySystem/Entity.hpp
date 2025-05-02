@@ -1,68 +1,150 @@
 #pragma once
-
+#include <iostream>
+#include <vector>
 #include <memory>
 #include <string>
-#include <typeindex>
-#include <unordered_map>
-
+#include <algorithm>
 #include "EntityComponent.hpp"
+#include <string.h>
 
 
 class Entity
 {
 public:
-    bool isDestroyed = false;
-    std::unordered_map<std::type_index, std::shared_ptr<EntityComponent>> components;
+    Entity(EntityManager& manager) :
+        entityManager(manager) {}
 
-    template<typename T, typename... Args>
-    void AddComponent(Args&&... args)
+    void SetName(const std::string& newName) { name = newName; }
+    std::string GetName() const { return name; }
+
+    void AddComponent(const std::shared_ptr<void>& component)
     {
-        components[std::type_index(typeid(T))] = std::make_shared<T>(std::forward<Args>(args)...);
+        components.push_back(component);
     }
 
     template<typename T>
-    std::shared_ptr<T> GetComponent()
+    std::shared_ptr<T> GetComponent() const
     {
-        auto it = components.find(std::type_index(typeid(T)));
-        if (it != components.end())
+        for (auto& comp : components)
         {
-            return std::static_pointer_cast<T>(it->second);
+            if (auto casted = std::dynamic_pointer_cast<T>(comp))
+            {
+                return casted;
+            }
         }
         return nullptr;
     }
 
-    /*
-    virtual void Awake() = 0;
-    virtual void BeginPlay() = 0;
-    virtual void Update() = 0;
-    virtual void Destroy(){ isDestroyed = true; }*/
+    void AddLogic(const std::shared_ptr<EntityComponent>& logic)
+    {
+        logicComponents.push_back(logic);
+    }
+
+    bool HasChildren() const
+    {
+        return !children.empty(); // Retourne true si l'entité a des enfants
+    }
+
+    void AttachChild(std::shared_ptr<Entity> child)
+    {
+        children.push_back(child);
+    }
 
 
-    std::string entityName = "default";
+    std::vector<std::shared_ptr<Entity>> GetChildren() const
+    {
+        return children;
+    }
+
+    void SetParent(std::shared_ptr<Entity> parentEntity)
+    {
+        parent = parentEntity;
+    }
+
+    std::shared_ptr<Entity> GetParent() const
+    {
+        return parent;
+    }
+
+    bool HasParent() const
+    {
+        return parent != nullptr;
+    }
+
+
+    void Initialize()
+    {
+        for (auto& logic : logicComponents)
+            logic->Initialize();
+        for (auto& child : children)
+            child->Initialize();
+    }
+
+    void GameplayStarted()
+    {
+        for (auto& logic : logicComponents)
+            logic->GameplayStarted();
+        for (auto& child : children)
+            child->GameplayStarted();
+    }
+
+    void Update()
+    {
+        for (auto& logic : logicComponents)
+            logic->Update();
+        for (auto& child : children)
+            child->Update();
+    }
+
+private:
+    EntityManager& entityManager;
+    std::string name;
+    std::vector<std::shared_ptr<void>> components;
+    std::vector<std::shared_ptr<EntityComponent>> logicComponents;
+    std::vector<std::shared_ptr<Entity>> children;
+    std::shared_ptr<Entity> parent;
 };
 
 class EntityManager
 {
-private:
-    std::unordered_map<size_t, Entity> entities;
-    size_t nextEntityId = 0;
-
 public:
-    size_t CreateEntity()
+    std::shared_ptr<Entity> CreateEntity()
     {
-        Entity l_entity;
-        size_t l_id = nextEntityId++;
-        entities[l_id] = std::move(l_entity);
-        return l_id;
+        auto entity = std::make_shared<Entity>(*this);
+        entities.push_back(entity);
+        return entity;
     }
 
-    void DestroyEntity(size_t _id)
+    void RegisterLogic(const std::shared_ptr<EntityComponent>& logic)
     {
-        entities.erase(_id);
+        logicComponents.push_back(logic);
     }
 
-    Entity& GetEntity(size_t _id)
+    void Initialize()
     {
-        return entities.at(_id);
+        for (auto& logic : logicComponents)
+            logic->Initialize();
+        for (auto& entity : entities)
+            entity->Initialize();
     }
+
+    void GameplayStarted()
+    {
+        for (auto& logic : logicComponents)
+            logic->GameplayStarted();
+        for (auto& entity : entities)
+            entity->GameplayStarted();
+    }
+
+    void Update()
+    {
+        for (auto& logic : logicComponents)
+            logic->Update();
+        for (auto& entity : entities)
+            entity->Update();
+    }
+
+private:
+    std::vector<std::shared_ptr<Entity>> entities;
+    std::vector<std::shared_ptr<EntityComponent>> logicComponents;
 };

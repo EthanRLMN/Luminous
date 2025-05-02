@@ -5,7 +5,7 @@
 #include "Quaternion.hpp"
 #include "Vector3.hpp"
 
-class TransformComponent : public EntityComponent
+class TransformComponent 
 {
 public:
     void Create() override {};
