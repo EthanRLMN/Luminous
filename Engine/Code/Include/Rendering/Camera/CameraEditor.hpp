@@ -61,8 +61,12 @@ public:
 
 private:
     void MovementHandler(IInputManager* a_input);
-    void MouseHandler(IInputManager* a_input);
+    void RotationHandler(IInputManager* a_input);
     void SpeedHandler(IInputManager* a_input);
+    void TriggerMouseRotation(IInputManager* a_input);
+    void UpdateVectors();
+
+    static Maths::Vector3 GetForwardFromYawPitch(float yawDegrees, float pitchDegrees);
 
     Maths::Matrix4 m_projectionMatrix { Maths::Matrix4::identity };
     Maths::Matrix4 m_viewMatrix { Maths::Matrix4::identity };
@@ -86,7 +90,7 @@ private:
     float m_fov { 60.0f };
     float m_nearPlane { 0.1f };
     float m_farPlane { 100.f };
-    float m_yaw { 90.0f };
+    float m_yaw { -90.0f };
     float m_pitch { 0.0f };
     float m_mouseSensitivity { 10.0f };
     bool m_isRotating { false };

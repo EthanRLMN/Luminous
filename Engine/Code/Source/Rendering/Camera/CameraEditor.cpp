@@ -17,6 +17,7 @@ void CameraEditor::Init(const float a_aspectRatio, const float a_fov, const floa
     m_worldUp = m_worldRight.CrossProduct(m_worldForward).Normalize();
 }
 
+
 void CameraEditor::Update(const float a_aspectRatio)
 {
     m_aspectRatio = a_aspectRatio;
@@ -28,9 +29,10 @@ void CameraEditor::Update(const float a_aspectRatio)
 void CameraEditor::UpdateInput(IInputManager* a_input)
 {
     MovementHandler(a_input);
-    MouseHandler(a_input);
+    RotationHandler(a_input);
     SpeedHandler(a_input);
 }
+
 
 void CameraEditor::MovementHandler(IInputManager* a_input)
 {
@@ -73,10 +75,40 @@ void CameraEditor::MovementHandler(IInputManager* a_input)
     }
 }
 
-void CameraEditor::MouseHandler(IInputManager* a_input)
+
+void CameraEditor::RotationHandler(IInputManager* a_input)
+{
+    TriggerMouseRotation(a_input);
+    UpdateVectors();
+}
+
+
+void CameraEditor::SpeedHandler(IInputManager* a_input)
+{
+    const Maths::Vector2 l_scroll{ a_input->GetMouseScroll() };
+
+    if (a_input->IsKeyDown(Key::KEY_LEFT_ALT))
+    {
+        if (l_scroll.y > 0.0f)
+            m_dynamicSpeed += m_speedMultiplier;
+        else if (l_scroll.y < 0.0f)
+            m_dynamicSpeed -= m_speedMultiplier;
+
+        m_dynamicSpeed = std::clamp(m_dynamicSpeed, 0.1f, 100.0f);
+    }
+
+    if (a_input->IsKeyDown(Key::KEY_LEFT_SHIFT))
+        m_movementSpeed = m_dynamicSpeed * 5.0f;
+    else if (a_input->IsKeyDown(Key::KEY_LEFT_CONTROL))
+        m_movementSpeed = m_dynamicSpeed * 0.2f;
+    else
+        m_movementSpeed = m_dynamicSpeed;
+}
+
+
+void CameraEditor::TriggerMouseRotation(IInputManager* a_input)
 {
     const float l_velocity = m_mouseSensitivity * Time::GetDeltaTime();
-
     if (a_input->IsMouseButtonDown(MouseButton::MOUSE_BUTTON_RIGHT))
     {
         if (!m_isRotating)
@@ -87,53 +119,37 @@ void CameraEditor::MouseHandler(IInputManager* a_input)
         }
 
         const Maths::Vector2 l_mouseDelta = a_input->GetMouseDelta();
-
-        m_yaw += l_mouseDelta.x * l_velocity;
+        m_yaw -= l_mouseDelta.x * l_velocity; // Invert yaw so that we match OpenGL's coordinate system
         m_pitch -= l_mouseDelta.y * l_velocity;
         m_pitch = std::clamp(m_pitch, -89.0f, 89.0f);
     }
-    
     else if (a_input->IsMouseButtonReleased(MouseButton::MOUSE_BUTTON_RIGHT))
     {
         a_input->ConfigureMouseInput(CursorInputMode::NORMAL);
         m_isRotating = false;
     }
+}
 
-    const float l_yawRad = Maths::DegToRad(m_yaw);
-    const float l_pitchRad = Maths::DegToRad(m_pitch);
 
-    Maths::Vector3 l_direction = Maths::Vector3::Zero;
-    l_direction.x = cos(l_yawRad) * cos(l_pitchRad);
-    l_direction.y = sin(l_pitchRad);
-    l_direction.z = sin(l_yawRad) * cos(l_pitchRad);
-    l_direction = l_direction.Normalize();
-
-    m_localForward = l_direction;
+void CameraEditor::UpdateVectors()
+{
+    m_localForward = GetForwardFromYawPitch(m_yaw, m_pitch);
     m_localRight = m_localForward.CrossProduct(m_worldUp).Normalize();
     m_localUp = m_localRight.CrossProduct(m_localForward).Normalize();
 
     m_viewMatrix = Maths::Matrix4::LookAt(m_eye, m_eye + m_localForward, m_worldUp);
 }
 
-void CameraEditor::SpeedHandler(IInputManager* a_input)
+
+Maths::Vector3 CameraEditor::GetForwardFromYawPitch(const float yawDegrees, const float pitchDegrees)
 {
-    const Maths::Vector2 l_scroll{ a_input->GetMouseScroll() };
+    const float yawRad = Maths::DegToRad(yawDegrees);
+    const float pitchRad = Maths::DegToRad(pitchDegrees);
 
-    if (a_input->IsKeyDown(Key::KEY_LEFT_SHIFT))
-        m_movementSpeed = m_dynamicSpeed * 5.0f;
-    if (a_input->IsKeyReleased(Key::KEY_LEFT_SHIFT))
-        m_movementSpeed = m_dynamicSpeed;
+    Maths::Vector3 direction;
+    direction.x = cosf(yawRad) * cosf(pitchRad);
+    direction.y = sinf(pitchRad);
+    direction.z = -sinf(yawRad) * cosf(pitchRad); // We invert Z to match OpenGL's coordinate system
 
-    if (a_input->IsKeyDown(Key::KEY_LEFT_CONTROL))
-    {
-        if (l_scroll.y > 0.0f)
-            m_dynamicSpeed += m_speedMultiplier;
-
-        else if (l_scroll.y < 0.0f)
-            m_dynamicSpeed -= m_speedMultiplier;
-
-        m_dynamicSpeed = std::clamp(m_dynamicSpeed, 0.1f, 10.0f);
-        m_speedMultiplier = std::clamp(m_speedMultiplier, 0.1f, 10.0f);
-    }
+    return direction.Normalize();
 }
-
