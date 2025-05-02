@@ -47,9 +47,9 @@ private:
 
     Maths::Vector3 m_eye { 0.0f, 0.0f, -3.0f };
     Maths::Vector3 m_center { 0.0f, 0.0f, 0.0f };
-    Maths::Vector3 m_up { 0.0f, 1.0f, 0.0f };
+    Maths::Vector3 m_right { Maths::Vector3::XAxis };
+    Maths::Vector3 m_up { Maths::Vector3::YAxis };
     Maths::Vector3 m_forward { 0.0f, 0.0f, -1.0f };
-    Maths::Vector3 m_right { 1.0f, 0.0f, 0.0f };
 
     float m_movementSpeed { 1.0f };
     float m_rotationSpeed { 1.0f };

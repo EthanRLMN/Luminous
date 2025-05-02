@@ -70,9 +70,16 @@ void CameraEditor::MovementHandler(IInputManager* a_input)
 
 void CameraEditor::MouseHandler(IInputManager* a_input)
 {
+    static bool s_firstFrame = true;
+
     if (a_input->IsMouseButtonDown(MouseButton::MOUSE_BUTTON_RIGHT))
     {
-        a_input->ConfigureMouseInput(CursorInputMode::CAPTURED);
+        if (s_firstFrame)
+        {
+            a_input->ConfigureMouseInput(CursorInputMode::DISABLED);
+            a_input->ResetMouseDelta();
+            s_firstFrame = false;
+        }
 
         const Maths::Vector2 l_mouseDelta = a_input->GetMouseDelta();
         const float l_sensitivity = 0.1f;
@@ -81,20 +88,25 @@ void CameraEditor::MouseHandler(IInputManager* a_input)
         m_pitch -= l_mouseDelta.y * l_sensitivity;
         m_pitch = std::clamp(m_pitch, -89.0f, 89.0f);
 
-        Maths::Vector3 l_direction { Maths::Vector3::Zero };
-        l_direction.x = cos(Maths::DegToRad(m_yaw)) * cos(Maths::DegToRad(m_pitch));
-        l_direction.y = sin(Maths::DegToRad(m_pitch));
-        l_direction.z = sin(Maths::DegToRad(m_yaw)) * cos(Maths::DegToRad(m_pitch));
+        const float yaw_rad = Maths::DegToRad(m_yaw);
+        const float pitch_rad = Maths::DegToRad(m_pitch);
+        Maths::Vector3 l_direction;
+        l_direction.x = cos(yaw_rad) * cos(pitch_rad);
+        l_direction.y = sin(pitch_rad);
+        l_direction.z = sin(yaw_rad) * cos(pitch_rad);
         l_direction = l_direction.Normalize();
 
-        const Maths::Vector3 l_worldUp = Maths::Vector3(0.0f, 1.0f, 0.0f);
+        const Maths::Vector3 l_worldUp(0.0f, 1.0f, 0.0f);
         m_right = l_direction.CrossProduct(l_worldUp).Normalize();
         m_up = m_right.CrossProduct(l_direction).Normalize();
 
-        m_viewMatrix = Maths::Matrix4::LookAt(m_eye, m_eye + l_direction, l_worldUp);
+        m_viewMatrix = Maths::Matrix4::LookAt(m_eye, m_eye + l_direction, m_up);
     }
-    else if (a_input->IsMouseButtonUp(MouseButton::MOUSE_BUTTON_RIGHT))
+    else if (a_input->IsMouseButtonReleased(MouseButton::MOUSE_BUTTON_RIGHT))
+    {
         a_input->ConfigureMouseInput(CursorInputMode::NORMAL);
+        s_firstFrame = true;
+    }
 }
 
 void CameraEditor::SpeedHandler(IInputManager* a_input)

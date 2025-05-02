@@ -26,11 +26,11 @@ public:
 	virtual void Update(IWindow* a_window) = 0;
 
 	virtual int IsKeyDown(const Key& a_key) = 0;
-	virtual int IsKeyUp(const Key& a_key) = 0;
+	virtual int IsKeyReleased(const Key& a_key) = 0;
 	virtual int IsKeyPressed(const Key& a_key) = 0;
 
 	virtual int IsMouseButtonDown(const MouseButton& a_button) = 0;
-	virtual int IsMouseButtonUp(const MouseButton& a_button) = 0;
+	virtual int IsMouseButtonReleased(const MouseButton& a_button) = 0;
 	virtual int IsMouseButtonPressed(const MouseButton& a_button) = 0;
 
 	virtual Maths::Vector2 GetMouseScroll() = 0;
