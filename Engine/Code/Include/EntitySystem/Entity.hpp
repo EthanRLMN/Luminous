@@ -7,6 +7,7 @@
 #include "EntityComponent.hpp"
 #include <string.h>
 
+class EntityManager;
 
 class Entity
 {

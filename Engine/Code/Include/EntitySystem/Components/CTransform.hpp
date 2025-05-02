@@ -1,16 +1,12 @@
 #pragma once
 
 #include "EntitySystem/EntityComponent.hpp"
-
 #include "Quaternion.hpp"
 #include "Vector3.hpp"
 
 class TransformComponent 
 {
 public:
-    void Create() override {};
-    void Destroy() override {};
-    void Update() override {};
 
     Maths::Vector3 position = Maths::Vector3::Zero;
     Maths::Quaternion rotation = Maths::Quaternion::Identity;
