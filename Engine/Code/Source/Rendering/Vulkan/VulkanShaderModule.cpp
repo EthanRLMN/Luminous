@@ -7,19 +7,16 @@
 
 bool VulkanShaderModule::Create(IDevice* a_device, const std::string& a_path)
 {
-
-    std::vector<char> l_code = ReadFile(a_path);
+    const std::vector<char> l_code = ReadFile(a_path);
 
     VkShaderModuleCreateInfo l_createInfo{};
     l_createInfo.sType = VK_STRUCTURE_TYPE_SHADER_MODULE_CREATE_INFO;
     l_createInfo.codeSize = l_code.size();
     l_createInfo.pCode = reinterpret_cast<const uint32_t*>(l_code.data());
 
-
     if (vkCreateShaderModule(a_device->CastVulkan()->GetDevice(), &l_createInfo, nullptr, &m_shaderModule) != VK_SUCCESS)
     {
         throw std::runtime_error("failed to create shader module!");
-        return false;
     }
 
     return true;
@@ -30,7 +27,7 @@ void VulkanShaderModule::Destroy(IDevice* a_device)
     vkDestroyShaderModule(a_device->CastVulkan()->GetDevice(), m_shaderModule, nullptr);
 }
 
-VkPipelineShaderStageCreateInfo VulkanShaderModule::CreateStage(VkShaderStageFlagBits a_shaderType)
+VkPipelineShaderStageCreateInfo VulkanShaderModule::CreateStage(const VkShaderStageFlagBits a_shaderType) const
 {
     VkPipelineShaderStageCreateInfo l_shaderStageCreateInfo{ VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO };
 
@@ -43,9 +40,6 @@ VkPipelineShaderStageCreateInfo VulkanShaderModule::CreateStage(VkShaderStageFla
 
 void VulkanShaderModule::BindShader(VkVertexInputBindingDescription& a_bindingDescription, std::array<VkVertexInputAttributeDescription, 3> a_attributeDescriptions, VkPipelineVertexInputStateCreateInfo& a_vertexInputCreateInfo)
 {
-
-
-
     a_bindingDescription.binding = 0;
     a_bindingDescription.stride = sizeof(Vertex);
     a_bindingDescription.inputRate = VK_VERTEX_INPUT_RATE_VERTEX;
@@ -73,6 +67,4 @@ void VulkanShaderModule::BindShader(VkVertexInputBindingDescription& a_bindingDe
     a_vertexInputCreateInfo.pVertexBindingDescriptions = &a_bindingDescription;
     a_vertexInputCreateInfo.vertexAttributeDescriptionCount = static_cast<uint32_t>(a_attributeDescriptions.size());
     a_vertexInputCreateInfo.pVertexAttributeDescriptions = a_attributeDescriptions.data();
-
-
 }

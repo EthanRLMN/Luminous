@@ -1,6 +1,5 @@
 #pragma once
 
-#include <vector>
 #include "Logger.hpp"
 
 class IDevice;
@@ -11,7 +10,7 @@ class IShaderModule
 public:
 	
 	IShaderModule() = default;
-    ~IShaderModule() = default;
+    virtual ~IShaderModule() = default;
 
 	virtual bool Create(IDevice* a_device, const std::string &a_path) = 0;
     virtual void Destroy(IDevice* a_device) = 0;
