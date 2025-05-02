@@ -14,8 +14,10 @@ public:
 	void Destroy(IDevice* a_device)  override;
 
 	[[nodiscard]] VkDescriptorSetLayout GetDescriptorSetLayout() const { return m_descriptorSetLayout; }
+    [[nodiscard]] VkDescriptorSetLayout GetLightDescriptorSetLayout() const { return m_lightDescriptorSetLayout; }
 	VulkanDescriptorSetLayout* CastVulkan() override { return this; }
 
 private:
 	VkDescriptorSetLayout m_descriptorSetLayout { nullptr };
+    VkDescriptorSetLayout m_lightDescriptorSetLayout{ nullptr };
 };

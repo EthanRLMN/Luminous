@@ -33,4 +33,8 @@ private:
 	std::vector<VkBuffer> m_uniformBuffer { nullptr };
 	std::vector<VkDeviceMemory> m_uniformBuffersMemory { nullptr };
 	std::vector<void*> m_uniformBuffersMapped { nullptr };
+
+
+	VkDescriptorPool m_lightDescriptorPool{ nullptr };
+    VkDescriptorSet m_lightDescriptorSets{ nullptr };
 };

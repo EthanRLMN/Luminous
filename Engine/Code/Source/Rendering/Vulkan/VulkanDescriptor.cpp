@@ -58,6 +58,19 @@ void VulkanDescriptor::CreateDescriptorPool(IDevice* a_device)
         DEBUG_LOG_ERROR("Failed to create descriptor pool\n");
 
     DEBUG_LOG_INFO("Vulkan Descriptors : DescriptorPool created!\n");
+
+
+    VkDescriptorPoolSize l_lightPoolSize{};
+    l_lightPoolSize.type = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
+    l_lightPoolSize.descriptorCount = 1;
+
+    VkDescriptorPoolCreateInfo l_lightPoolInfo{};
+    l_lightPoolInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_POOL_CREATE_INFO;
+    l_lightPoolInfo.poolSizeCount = 1;
+    l_lightPoolInfo.pPoolSizes = &l_lightPoolSize;
+    l_lightPoolInfo.maxSets = 1;
+
+    vkCreateDescriptorPool(a_device->CastVulkan()->GetDevice(), &l_lightPoolInfo, nullptr, &m_lightDescriptorPool);
 }
 
 void VulkanDescriptor::CreateImGUIDescriptorPool(IDevice* a_device)
@@ -101,6 +114,18 @@ void VulkanDescriptor::CreateDescriptorSets(IDevice* a_device, IDescriptorSetLay
     m_descriptorSets.resize(MAX_FRAMES_IN_FLIGHT);
     if (vkAllocateDescriptorSets(a_device->CastVulkan()->GetDevice(), &l_allocateInfo, m_descriptorSets.data()) != VK_SUCCESS)
         DEBUG_LOG_ERROR("failed to allocate descriptor sets !\n");
+
+
+    std::vector<VkDescriptorSetLayout> l_lightLayout = { a_descriptorSetLayout->CastVulkan()->GetLightDescriptorSetLayout() };
+    VkDescriptorSetAllocateInfo l_lightAllocInfo{};
+    l_lightAllocInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_ALLOCATE_INFO;
+    l_lightAllocInfo.descriptorPool = m_lightDescriptorPool;
+    l_lightAllocInfo.descriptorSetCount = 1;
+    l_lightAllocInfo.pSetLayouts = l_lightLayout.data();
+
+    VkDescriptorSet l_lightDescriptorSet;
+    vkAllocateDescriptorSets(a_device->CastVulkan()->GetDevice(), &l_lightAllocInfo, &l_lightDescriptorSet);
+
 
     UpdateDescriptorSets(a_device, a_texture);
 }

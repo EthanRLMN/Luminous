@@ -40,4 +40,9 @@ private:
     std::vector<VkBuffer> m_uniformBuffer { nullptr };
     std::vector<VkDeviceMemory> m_uniformBuffersMemory { nullptr };
     std::vector<void*> m_uniformBuffersMapped { nullptr };
+
+    VkBuffer m_lightUniformBuffer{ nullptr };
+    VkDeviceMemory m_lightUniformBuffersMemory{ nullptr };
+    void* m_lightUniformBuffersMapped{ nullptr };
+
 };
