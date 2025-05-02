@@ -49,6 +49,8 @@ public:
 	[[nodiscard]] IRenderer* GetRenderingDraw() const { return m_renderer; }
     [[nodiscard]] bool IsRunning() const { return m_isRunning; }
 
+	inline void SetRunning(bool value) { m_isRunning = value; }
+
 
 private:
 	IRender* m_interface { nullptr };
