@@ -86,6 +86,7 @@ void CameraEditor::MouseHandler(IInputManager* a_input)
 
         const Maths::Vector2 l_mouseDelta = a_input->GetMouseDelta();
         const float l_sensitivity = 0.1f;
+        DEBUG_LOG_WARNING("X={}    Y={}", l_mouseDelta.x, l_mouseDelta.y);
 
         m_yaw += l_mouseDelta.x * l_sensitivity;
         m_pitch -= l_mouseDelta.y * l_sensitivity;
