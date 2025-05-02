@@ -8,6 +8,11 @@
 
 #define MAX_LIGHTS 32;
 
+struct Vec4
+{
+    float x, y, z, w;
+};
+
 
 class LightComponent : public EntityComponent
 {
