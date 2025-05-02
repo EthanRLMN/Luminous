@@ -25,8 +25,6 @@ int GLFWInputManager::IsKeyReleased(const Key& a_key)
 {
     const int l_keyInt = static_cast<int>(a_key);
     return s_keyStatus[l_keyInt] == Action::RELEASE;
-
-
 }
 
 

@@ -52,7 +52,7 @@ private:
     static void MouseButtonCallback(GLFWwindow* a_window, int a_button, int a_action, int a_mods);
     static void MouseScrollCallback(GLFWwindow* a_window, double a_xOffset, double a_yOffset);
     static void MouseCursorCallback(GLFWwindow* a_window, double a_xPos, double a_yPos);
-    inline static void SetCursorPositionCallback(const double& a_xPos, const double& a_yPos) { s_currentMousePos.x = static_cast<float>(a_xPos); s_currentMousePos.y = static_cast<float>(a_yPos); }
+    inline static void SetCursorPositionCallback(const double& a_xPos, const double& a_yPos) { s_currentMousePos.x = static_cast<float>(a_xPos); s_currentMousePos.y = static_cast<float>(a_yPos); s_previousMousePos = s_currentMousePos; }
     inline static void SetMouseScrollCallback(const double& a_xAxis, const double& a_yAxis) { s_mouseScroll.x = static_cast<float>(a_xAxis); s_mouseScroll.y = static_cast<float>(a_yAxis); }
 
     static std::array<int, 349> s_keyPressed;
