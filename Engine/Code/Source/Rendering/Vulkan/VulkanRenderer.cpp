@@ -42,8 +42,24 @@ void VulkanRenderer::DrawFrame(IWindow* a_window, IDevice* a_device, ISwapChain*
 
     vkWaitForFences(l_device, 1, &a_synchronization->CastVulkan()->GetFences()[m_currentFrame], VK_TRUE, UINT64_MAX);
     uint32_t l_imageIndex{ 0 };
+    
 
-    m_lights[0].m_color += Maths::Vector3(0, 0.001f, 0);
+    if (a_inputManager->CastGLFW()->IsKeyDown(a_window, Key::KEY_RIGHT))
+    {
+        m_lights[0].m_position += Maths::Vector3(0.01f, 0, 0);
+    }
+    if (a_inputManager->CastGLFW()->IsKeyDown(a_window, Key::KEY_LEFT))
+    {
+        m_lights[0].m_position -= Maths::Vector3(0.01f, 0, 0);
+    }
+    if (a_inputManager->CastGLFW()->IsKeyDown(a_window, Key::KEY_UP))
+    {
+        m_lights[0].m_position += Maths::Vector3(0, 0.01f, 0);
+    }
+    if (a_inputManager->CastGLFW()->IsKeyDown(a_window, Key::KEY_DOWN))
+    {
+        m_lights[0].m_position -= Maths::Vector3(0, 0.01f, 0);
+    }
 
     VkResult l_result = vkAcquireNextImageKHR(l_device, l_swapchain, UINT64_MAX, a_synchronization->CastVulkan()->GetImageAvailableSemaphores()[m_currentFrame], nullptr, &l_imageIndex);
     if (l_result == VK_ERROR_OUT_OF_DATE_KHR)
