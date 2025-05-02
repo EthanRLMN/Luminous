@@ -1,8 +1,10 @@
 #pragma once
 
 #include <filesystem>
+#include "GLFW/glfw3.h"
 
 #include "Interface/IWindowPanel.hpp"
+#include "stb_image.h"
 #include "TextEditorPanel.hpp"
 
 
@@ -21,5 +23,11 @@ private:
     std::filesystem::path m_currentDirectory{};
     void OpenTextEditor(const std::filesystem::path& path);
 
+    Engine* m_engine{ nullptr };
+
     std::unique_ptr<TextEditorPanel> m_textEditorPanel;
+    std::shared_ptr<ITexture> m_directoryIconTexture;
+    std::shared_ptr<ITexture> m_fileIconTexture;
 };
+
+std::shared_ptr<ITexture> LoadTexture(Engine* engine, const std::string& path);
