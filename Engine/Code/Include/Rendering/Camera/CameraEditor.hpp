@@ -86,7 +86,7 @@ private:
     float m_fov { 60.0f };
     float m_nearPlane { 0.1f };
     float m_farPlane { 100.f };
-    float m_yaw { 0.0f };
+    float m_yaw { 90.0f };
     float m_pitch { 0.0f };
     float m_mouseSensitivity { 10.0f };
     bool m_isRotating { false };
