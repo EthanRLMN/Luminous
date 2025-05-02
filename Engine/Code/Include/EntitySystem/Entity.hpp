@@ -42,7 +42,7 @@ public:
 
     bool HasChildren() const
     {
-        return !children.empty(); // Retourne true si l'entité a des enfants
+        return !children.empty(); 
     }
 
     void AttachChild(std::shared_ptr<Entity> child)

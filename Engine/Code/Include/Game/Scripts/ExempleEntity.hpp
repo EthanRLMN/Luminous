@@ -1,6 +1,7 @@
 #pragma once
-#include "Entity.hpp"
-#include "EntityComponent.hpp"
+#include "EntitySystem/Entity.hpp"
+#include "EntitySystem/EntityComponent.hpp"
+#include "EntitySystem/Components/CTransform.hpp"
 
 
 class Exemple : public EntityComponent, public std::enable_shared_from_this<Exemple>

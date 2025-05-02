@@ -9,7 +9,7 @@ public:
 
     void SceneEntity();
 private:
-    EntityManager entityManager;
+
 
 };
 

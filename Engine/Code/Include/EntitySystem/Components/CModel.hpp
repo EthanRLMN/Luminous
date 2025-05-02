@@ -1,5 +1,5 @@
 #pragma once
-#include "EntityComponent.hpp"
+#include "EntitySystem/EntityComponent.hpp"
 #include <string.h>
 
 class ModelComponent 

@@ -1,9 +1,9 @@
 #pragma once
-#include "Entity.hpp"
-#include "EntityComponent.hpp"
-#include "Components/CModel.hpp"
-#include "Components/CRigidbody.hpp"
-#include "Components/CTransform.hpp"
+#include "EntitySystem/Entity.hpp"
+#include "EntitySystem/EntityComponent.hpp"
+#include "EntitySystem/Components/CModel.hpp"
+#include "EntitySystem/Components/CRigidbody.hpp"
+#include "EntitySystem/Components/CTransform.hpp"
 
 class Player : public EntityComponent, public std::enable_shared_from_this<Player>
 {
