@@ -86,31 +86,40 @@ void CameraEditor::MouseHandler(IInputManager* a_input)
 
         const Maths::Vector2 l_mouseDelta = a_input->GetMouseDelta();
         const float l_sensitivity = 0.1f;
+
+
         DEBUG_LOG_WARNING("X={}    Y={}", l_mouseDelta.x, l_mouseDelta.y);
 
         m_yaw += l_mouseDelta.x * l_sensitivity;
         m_pitch -= l_mouseDelta.y * l_sensitivity;
         m_pitch = std::clamp(m_pitch, -89.0f, 89.0f);
-
-        const float yaw_rad = Maths::DegToRad(m_yaw);
-        const float pitch_rad = Maths::DegToRad(m_pitch);
-        Maths::Vector3 l_direction;
-        l_direction.x = cos(yaw_rad) * cos(pitch_rad);
-        l_direction.y = sin(pitch_rad);
-        l_direction.z = sin(yaw_rad) * cos(pitch_rad);
-        l_direction = l_direction.Normalize();
-
-        const Maths::Vector3 l_worldUp(0.0f, 1.0f, 0.0f);
-        m_right = l_direction.CrossProduct(l_worldUp).Normalize();
-        m_up = m_right.CrossProduct(l_direction).Normalize();
-
-        m_viewMatrix = Maths::Matrix4::LookAt(m_eye, m_eye + l_direction, m_up);
     }
+    
+    
     else if (a_input->IsMouseButtonReleased(MouseButton::MOUSE_BUTTON_RIGHT))
     {
         a_input->ConfigureMouseInput(CursorInputMode::NORMAL);
         s_firstFrame = true;
     }
+
+    const float yaw_rad = Maths::DegToRad(m_yaw);
+    const float pitch_rad = Maths::DegToRad(m_pitch);
+
+    Maths::Vector3 l_direction;
+    l_direction.x = cos(yaw_rad) * cos(pitch_rad);
+    l_direction.y = sin(pitch_rad);
+    l_direction.z = sin(yaw_rad) * cos(pitch_rad);
+    l_direction = l_direction.Normalize();
+
+    const Maths::Vector3 l_worldUp(0.0f, 1.0f, 0.0f);
+
+    m_forward = l_direction;
+
+
+    m_right = m_forward.CrossProduct(l_worldUp).Normalize();
+    m_up = m_right.CrossProduct(m_forward).Normalize();
+
+    m_viewMatrix = Maths::Matrix4::LookAt(m_eye, m_eye + m_forward, m_up);
 }
 
 void CameraEditor::SpeedHandler(IInputManager* a_input)
