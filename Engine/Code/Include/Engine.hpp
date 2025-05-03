@@ -6,6 +6,7 @@
 #include "Game/Systems/Physics/PhysicsSystem.hpp"
 #include "ResourceManager/ResourceManager.hpp"
 #include "EntitySystem/Entity.hpp"
+#include "EntitySystem/EntityManager.hpp"
 
 
 class VulkanRenderInterface;
