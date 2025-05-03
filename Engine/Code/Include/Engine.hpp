@@ -5,6 +5,7 @@
 #include "Game/Scene.hpp"
 #include "Game/Systems/Physics/PhysicsSystem.hpp"
 #include "ResourceManager/ResourceManager.hpp"
+#include "EntitySystem/Entity.hpp"
 
 
 class VulkanRenderInterface;
@@ -78,4 +79,7 @@ private:
 	PhysicsSystem* m_physicsSystem{ nullptr };
 
     bool m_isRunning { false };
+
+
+	EntityManager m_entityManager;
 };
