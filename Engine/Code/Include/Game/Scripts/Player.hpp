@@ -1,23 +1,25 @@
 #pragma once
+
 #include "EntitySystem/Entity.hpp"
 #include "EntitySystem/EntityComponent.hpp"
-#include "EntitySystem/Components/CModel.hpp"
-#include "EntitySystem/Components/CRigidbody.hpp"
-#include "EntitySystem/Components/CTransform.hpp"
+#include "EntitySystem/EntityManager.hpp"
+#include "EntitySystem/Components/ModelComponent.hpp"
+#include "EntitySystem/Components/RigidbodyComponent.hpp"
+#include "EntitySystem/Components/TransformComponent.hpp"
+
 
 class Player : public EntityComponent, public std::enable_shared_from_this<Player>
 {
 public:
-    Player(EntityManager& entityManager) :
-        m_entityManager(entityManager)
+    explicit Player(EntityManager& a_entityManager) : m_entityManager(a_entityManager)
     {
 
-        m_playerEntity = entityManager.CreateEntity();
+        m_playerEntity = a_entityManager.CreateEntity();
         m_playerEntity->SetName("Player");
 
-        m_playerEntity->AddComponent(transformComponent);
-        m_playerEntity->AddComponent(rigidbodyComponent);
-        m_playerEntity->AddComponent(modelComponent);
+        m_playerEntity->AddComponent(m_transformComponent);
+        m_playerEntity->AddComponent(m_rigidbodyComponent);
+        m_playerEntity->AddComponent(m_modelComponent);
     }
 
     void Register()
@@ -29,18 +31,18 @@ public:
     {
         DEBUG_LOG_INFO("[Player] Initialize");
         Input();
-        rigidbodyComponent->m_simulatePhysic = true;
-        modelComponent->SetModelPath("Assets/Player.fbx");
+        m_rigidbodyComponent->m_simulatePhysic = true;
+        m_modelComponent->SetModelPath("Assets/Player.fbx");
 
-        DEBUG_LOG_INFO("Player Has CHild :  {}", modelComponent->GetModelPath());
-        DEBUG_LOG_INFO("Player  Has Parent : {}", modelComponent->GetModelPath());
+        DEBUG_LOG_INFO("Player Has CHild :  {}", m_modelComponent->GetModelPath());
+        DEBUG_LOG_INFO("Player  Has Parent : {}", m_modelComponent->GetModelPath());
     }
 
     void GameplayStarted() override
     {
 
         DEBUG_LOG_INFO("[Player] Gameplay Started");
-        DEBUG_LOG_INFO("Player Model : {}", modelComponent->GetModelPath());
+        DEBUG_LOG_INFO("Player Model : {}", m_modelComponent->GetModelPath());
     }
 
     void Update() override
@@ -60,10 +62,10 @@ public:
 
 
 private:
-    std::shared_ptr<Entity> m_playerEntity;
-    EntityManager& m_entityManager;
+    std::shared_ptr<Entity> m_playerEntity { nullptr };
+    std::shared_ptr<TransformComponent> m_transformComponent = std::make_shared<TransformComponent>();
+    std::shared_ptr<RigidbodyComponent> m_rigidbodyComponent = std::make_shared<RigidbodyComponent>();
+    std::shared_ptr<ModelComponent> m_modelComponent = std::make_shared<ModelComponent>();
 
-    std::shared_ptr<TransformComponent> transformComponent = std::make_shared<TransformComponent>();
-    std::shared_ptr<RigidbodyComponent> rigidbodyComponent = std::make_shared<RigidbodyComponent>();
-    std::shared_ptr<ModelComponent> modelComponent = std::make_shared<ModelComponent>();
+    EntityManager& m_entityManager;
 };

@@ -25,11 +25,11 @@ void Scene::SceneEntity()
 void Scene::SceneEntity(EntityManager& a_entityManager)
 {
 
-    std::shared_ptr<Player> player = std::make_shared<Player>(a_entityManager);
-    player->Register();
+    const std::shared_ptr<Player> l_player = std::make_shared<Player>(a_entityManager);
+    l_player->Register();
 
-    std::shared_ptr<Weapon> weapon = std::make_shared<Weapon>(a_entityManager, player->GetEntity());
-    weapon->Register();
+    const std::shared_ptr<Weapon> l_weapon = std::make_shared<Weapon>(a_entityManager, l_player->GetEntity());
+    l_weapon->Register();
 
 ;
 }
