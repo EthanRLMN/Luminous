@@ -35,7 +35,7 @@ namespace Layers
 class ObjectLayerPairFilterImpl : public ObjectLayerPairFilter
 {
 public:
-    virtual bool ShouldCollide(ObjectLayer inObject1, ObjectLayer inObject2) const override;
+    virtual bool ShouldCollide(ObjectLayer a_inObject1, ObjectLayer a_inObject2) const override;
 };
 
 namespace BroadPhaseLayers
@@ -56,7 +56,7 @@ public:
 
     virtual uint GetNumBroadPhaseLayers() const override;
 
-    virtual BroadPhaseLayer GetBroadPhaseLayer(ObjectLayer inLayer) const override;
+    virtual BroadPhaseLayer GetBroadPhaseLayer(ObjectLayer a_inLayer) const override;
 
 
 private:
@@ -67,7 +67,7 @@ private:
 class ObjectVsBroadPhaseLayerFilterImpl : public ObjectVsBroadPhaseLayerFilter
 {
 public:
-    virtual bool ShouldCollide(ObjectLayer inLayer1, BroadPhaseLayer inLayer2) const override;
+    virtual bool ShouldCollide(ObjectLayer a_inLayer1, BroadPhaseLayer a_inLayer2) const override;
 };
 
 

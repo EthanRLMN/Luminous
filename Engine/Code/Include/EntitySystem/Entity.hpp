@@ -9,7 +9,7 @@
 class EntityManager;
 
 
-class Entity
+class Entity : public std::enable_shared_from_this<Entity>
 {
 public:
     inline explicit Entity(EntityManager& a_manager) : m_entityManager(a_manager) { }
@@ -17,7 +17,7 @@ public:
     inline void SetName(const std::string& a_newName) { m_name = a_newName; }
     inline void AddComponent(const std::shared_ptr<void>& a_component) { m_components.push_back(a_component); }
     inline void AddLogic(const std::shared_ptr<EntityComponent>& a_logic) { m_entityComponents.push_back(a_logic); }
-    inline void AttachChild(const std::shared_ptr<Entity>& a_child) { m_children.push_back(a_child); /* a_child->SetParent(shared_from_this()); */}
+    inline void AttachChild(const std::shared_ptr<Entity>& a_child) { m_children.push_back(a_child); a_child->SetParent(shared_from_this()); }
     inline void SetParent(const std::shared_ptr<Entity>& a_parentEntity) { m_parent = a_parentEntity; }
 
     [[nodiscard]] inline std::string GetName() const { return m_name; }
