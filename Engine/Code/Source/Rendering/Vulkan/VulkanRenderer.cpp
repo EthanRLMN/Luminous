@@ -191,10 +191,8 @@ void VulkanRenderer::UpdateUniformBuffer(const VkDevice& a_device,const uint32_t
     memcpy(a_buffer->CastVulkan()->GetUniformBuffersMapped()[a_currentFrame], &l_ubo, sizeof(l_ubo));
 
 
-    void* data;
-    vkMapMemory(a_device, a_buffer->CastVulkan()->GetLightUniformBuffersMemory(), 0, m_lights.size(), 0, &data);
-    memcpy(data, m_lights.data(), m_lights.size()* sizeof(LightComponent)); 
-    vkUnmapMemory(a_device, a_buffer->CastVulkan()->GetLightUniformBuffersMemory());
+    VkDeviceSize size = m_lights.size() * sizeof(LightComponent); 
+    memcpy(a_buffer->CastVulkan()->GetLightUniformBuffersMapped(), m_lights.data(), size);
 
 }
 
@@ -336,8 +334,10 @@ void VulkanRenderer::CreateViewportImage(IDevice* a_device, ISwapChain* a_swapCh
 
 void VulkanRenderer::CopyImageToViewport(ISwapChain* a_swapChain, const VkCommandBuffer& a_cmdBuffer) const
 {
-    VkImageMemoryBarrier l_barrierSrc{ VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER };
-    l_barrierSrc.oldLayout = VK_IMAGE_LAYOUT_UNDEFINED;
+    
+    VkImageMemoryBarrier l_barrierSrc = {};
+    l_barrierSrc.sType = VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER;
+    l_barrierSrc.oldLayout = VK_IMAGE_LAYOUT_PRESENT_SRC_KHR;
     l_barrierSrc.newLayout = VK_IMAGE_LAYOUT_TRANSFER_SRC_OPTIMAL;
     l_barrierSrc.srcAccessMask = VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT;
     l_barrierSrc.dstAccessMask = VK_ACCESS_TRANSFER_READ_BIT;

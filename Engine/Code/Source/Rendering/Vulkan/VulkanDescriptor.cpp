@@ -177,7 +177,7 @@ void VulkanDescriptor::UpdateDescriptorSets(IDevice* a_device, ITexture* a_textu
     VkWriteDescriptorSet descriptorWrite{};
     descriptorWrite.sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
     descriptorWrite.dstSet = m_lightDescriptorSets;
-    descriptorWrite.dstBinding = 2;
+    descriptorWrite.dstBinding = 0;
     descriptorWrite.dstArrayElement = 0;
     descriptorWrite.descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
     descriptorWrite.descriptorCount = 1;

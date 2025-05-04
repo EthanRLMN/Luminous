@@ -1,5 +1,6 @@
 #version 450
 
+
 layout (binding = 1) uniform sampler2D texSampler;
 
 
@@ -12,9 +13,8 @@ struct Light {
     float intensity;
 };
 
-layout (set = 1,binding = 2) uniform LightBuffer {
+layout (set = 1,binding = 0) uniform LightBuffer {
     Light lights[32];
-    int lightCount;
 } lightsList;
 
 layout (location = 0) in vec3 fragNormal;
