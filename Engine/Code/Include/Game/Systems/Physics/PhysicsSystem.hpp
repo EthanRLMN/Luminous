@@ -39,16 +39,16 @@ public:
     void Destroy();
     void TriggerPhysicsOptimization() const;
 
-    inline JPH::BodyInterface& GetBodyInterface() const { return m_physicsSystem->GetBodyInterface(); }
-    inline JPH::PhysicsSystem* GetPhysicsSystem() const { return m_physicsSystem; }
-    inline JPH::JobSystemThreadPool* GetJobSystem() const { return m_jobSystem; }
-    inline JPH::TempAllocatorImpl* GetTempAllocator() const { return m_tempAllocator; }
-    inline JPH::BPLayerInterfaceImpl* GetBroadPhaseLayerInterface() const { return m_broadPhaseLayerInterface; }
-    inline JPH::ObjectVsBroadPhaseLayerFilterImpl* GetObjectToBroadPhaseLayerFilter() const { return m_ObjToBroadPhaseLayerFilter; }
-    inline JPH::ObjectLayerPairFilterImpl* GetObjectToObjLayerFilter() const { return m_ObjToObjLayerFilter; }
-    inline JPH::MyBodyActivationListener* GetBodyActivationListener() const { return m_bodyActivationListener; }
-    inline JPH::MyContactListener* GetContactListener() const { return m_contactListener; }
-    inline std::vector<JPH::Body*>& GetRigidBodies() { return m_rigidBodies; }
+    [[nodiscard]] inline JPH::BodyInterface& GetBodyInterface() const { return m_physicsSystem->GetBodyInterface(); }
+    [[nodiscard]] inline JPH::PhysicsSystem* GetPhysicsSystem() const { return m_physicsSystem; }
+    [[nodiscard]] inline JPH::JobSystemThreadPool* GetJobSystem() const { return m_jobSystem; }
+    [[nodiscard]] inline JPH::TempAllocatorImpl* GetTempAllocator() const { return m_tempAllocator; }
+    [[nodiscard]] inline JPH::BPLayerInterfaceImpl* GetBroadPhaseLayerInterface() const { return m_broadPhaseLayerInterface; }
+    [[nodiscard]] inline JPH::ObjectVsBroadPhaseLayerFilterImpl* GetObjectToBroadPhaseLayerFilter() const { return m_ObjToBroadPhaseLayerFilter; }
+    [[nodiscard]] inline JPH::ObjectLayerPairFilterImpl* GetObjectToObjLayerFilter() const { return m_ObjToObjLayerFilter; }
+    [[nodiscard]] inline JPH::MyBodyActivationListener* GetBodyActivationListener() const { return m_bodyActivationListener; }
+    [[nodiscard]] inline JPH::MyContactListener* GetContactListener() const { return m_contactListener; }
+    [[nodiscard]] inline std::vector<JPH::Body*> GetRigidBodies() const { return m_rigidBodies; }
 
     
 private:
