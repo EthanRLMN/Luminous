@@ -7,22 +7,6 @@
 #include "Jolt/Physics/Body/BodyID.h"
 #include "Jolt/Physics/SoftBody/SoftBodyCreationSettings.h"
 
-namespace JPH
-{
-    class JobSystemThreadPool;
-    class ObjectLayerPairFilterImpl;
-    class ObjectVsBroadPhaseLayerFilterImpl;
-    class BPLayerInterfaceImpl;
-    class PhysicsSystem;
-    class BodyInterface;
-    class Body;
-    class TempAllocatorImpl;
-    class MyBodyActivationListener;
-    class MyContactListener;
-    class BoxShapeSettings;
-}
-
-
 class RigidBody
 {
 public:
@@ -34,11 +18,10 @@ public:
         m_rigidBody = nullptr;
     };
 
-    inline JPH::Body* GetRigidBody() const { return m_rigidBody; }
-    inline JPH::BodyID GetRigidBodyID() const { return m_rigidBody->GetID(); }
-    inline JPH::EBodyType GetRigidBodyType() const { return m_rigidBody->GetBodyType(); }
-    inline const JPH::MotionProperties* GetMotionProperties() const { return m_rigidBody->GetMotionProperties(); }
-    inline JPH::EMotionType GetMotionType() const { return m_rigidBody->GetMotionType(); }
+
+    inline void GetSubmergedVolume(const JPH::RVec3Arg a_inSurfacePosition, const JPH::Vec3Arg a_inSurfaceNormal, float& a_outTotalVolume, float& a_outSubmergedVolume, JPH::Vec3& a_outRelativeCenterOfBuoyancy) const { return m_rigidBody->GetSubmergedVolume(a_inSurfacePosition, a_inSurfaceNormal, a_outTotalVolume, a_outSubmergedVolume, a_outRelativeCenterOfBuoyancy); }
+    inline float GetFriction() const { return m_rigidBody->GetFriction(); }
+    inline float GetRestitution() const { return m_rigidBody->GetRestitution(); }
     inline bool IsRigidBody() const { return m_rigidBody->IsRigidBody(); }
     inline bool IsSoftBody() const { return m_rigidBody->IsSoftBody(); }
     inline bool IsActive() const { return m_rigidBody->IsActive(); }
@@ -47,45 +30,47 @@ public:
     inline bool IsKinematic() const { return m_rigidBody->IsKinematic(); }
     inline bool IsDynamic() const { return m_rigidBody->IsDynamic(); }
     inline bool CanBeKinematicOrDynamic() const { return m_rigidBody->CanBeKinematicOrDynamic(); }
-    inline JPH::BroadPhaseLayer GetBroadPhaseLayer() const { return m_rigidBody->GetBroadPhaseLayer(); }
-    inline JPH::ObjectLayer GetObjectLayer() const { return m_rigidBody->GetObjectLayer(); }
-    inline JPH::CollisionGroup& GetCollisionGroup() const { return m_rigidBody->GetCollisionGroup(); }
-    inline JPH::CollisionGroup GetCollisionGroup() { return m_rigidBody->GetCollisionGroup(); }
     inline bool GetAllowSleeping() const { return m_rigidBody->GetAllowSleeping(); }
-    inline float GetFriction() const { return m_rigidBody->GetFriction(); }
-    inline float GetRestitution() const { return m_rigidBody->GetRestitution(); }
-    inline JPH::Vec3 GetLinearVelocity() const { return m_rigidBody->GetLinearVelocity(); }
-    inline JPH::Vec3 GetAngularVelocity() const { return m_rigidBody->GetAngularVelocity(); }
-    inline JPH::Vec3 GetPointVelocityCOM(JPH::Vec3Arg a_inPointRelativeToCOM) const { return m_rigidBody->GetPointVelocityCOM(a_inPointRelativeToCOM); }
-    inline JPH::Vec3 GetPointVelocity(JPH::RVec3Arg a_inPoint) const { return m_rigidBody->GetPointVelocity(a_inPoint); }
     inline bool GetCollideKinematicVsNonDynamic() const { return m_rigidBody->GetCollideKinematicVsNonDynamic(); }
     inline bool GetUseManifoldReduction() const { return m_rigidBody->GetUseManifoldReduction(); }
     inline bool GetUseManifoldReductionWithBody(const JPH::Body& a_inBody2) const { return m_rigidBody->GetUseManifoldReductionWithBody(a_inBody2); }
     inline bool GetApplyGyroscopicForce() const { return m_rigidBody->GetApplyGyroscopicForce(); }
     inline bool GetEnhancedInternalEdgeRemoval() const { return m_rigidBody->GetEnhancedInternalEdgeRemoval(); }
     inline bool GetEnhancedInternalEdgeRemovalWithBody(const JPH::Body& a_inBody2) const { return m_rigidBody->GetEnhancedInternalEdgeRemovalWithBody(a_inBody2); }
-    inline JPH::Vec3 GetAccumulatedForce() const { return m_rigidBody->GetAccumulatedForce(); }
-    inline JPH::Vec3 GetAccumulatedTorque() const { return m_rigidBody->GetAccumulatedTorque(); }
-    inline JPH::Mat44 GetInverseInertia() const { return m_rigidBody->GetInverseInertia(); };
-    inline void GetSubmergedVolume(const JPH::RVec3Arg a_inSurfacePosition, const JPH::Vec3Arg a_inSurfaceNormal, float& a_outTotalVolume, float& a_outSubmergedVolume, JPH::Vec3& a_outRelativeCenterOfBuoyancy) const { return m_rigidBody->GetSubmergedVolume(a_inSurfacePosition, a_inSurfaceNormal, a_outTotalVolume, a_outSubmergedVolume, a_outRelativeCenterOfBuoyancy); }
     inline bool IsInBroadPhase() const { return m_rigidBody->IsInBroadPhase(); }
     inline bool IsCollisionCacheInvalid() const { return m_rigidBody->IsCollisionCacheInvalid(); }
-    inline const JPH::Shape* GetShape() const { return m_rigidBody->GetShape(); }
+    inline JPH::Body* GetRigidBody() const { return m_rigidBody; }
+    inline JPH::BodyID GetRigidBodyID() const { return m_rigidBody->GetID(); }
+    inline JPH::EBodyType GetRigidBodyType() const { return m_rigidBody->GetBodyType(); }
+    inline JPH::EMotionType GetMotionType() const { return m_rigidBody->GetMotionType(); }
     inline JPH::RVec3 GetPosition() const { return m_rigidBody->GetPosition(); }
     inline JPH::Quat GetRotation() const { return m_rigidBody->GetRotation(); }
     inline JPH::RMat44 GetWorldTransform() const { return m_rigidBody->GetWorldTransform(); }
     inline JPH::RVec3 GetCenterOfMassPosition() const { return m_rigidBody->GetCenterOfMassPosition(); }
     inline JPH::RMat44 GetCenterOfMassTransform() const { return m_rigidBody->GetCenterOfMassTransform(); }
     inline JPH::RMat44 GetInverseCenterOfMassTransform() const { return m_rigidBody->GetInverseCenterOfMassTransform(); }
-    inline const JPH::AABox& GetWorldSpaceBounds() const { return m_rigidBody->GetWorldSpaceBounds(); }
     inline JPH::MotionProperties* GetMotionProperties() { return m_rigidBody->GetMotionProperties(); }
-    inline const JPH::MotionProperties* GetMotionPropertiesUnchecked() const { return m_rigidBody->GetMotionPropertiesUnchecked(); }
     inline JPH::MotionProperties* GetMotionPropertiesUnchecked() { return m_rigidBody->GetMotionPropertiesUnchecked(); }
     inline JPH::uint64 GetUserData() const { return m_rigidBody->GetUserData(); }
     inline JPH::Vec3 GetWorldSpaceSurfaceNormal(const JPH::SubShapeID& a_inSubShapeID, const JPH::RVec3Arg a_inPosition) const { return m_rigidBody->GetWorldSpaceSurfaceNormal(a_inSubShapeID, a_inPosition); }
     inline JPH::TransformedShape GetTransformedShape() const { return m_rigidBody->GetTransformedShape(); }
     inline JPH::BodyCreationSettings GetBodyCreationSettings() const { return m_rigidBody->GetBodyCreationSettings(); }
     inline JPH::SoftBodyCreationSettings GetSoftBodyCreationSettings() const { return m_rigidBody->GetSoftBodyCreationSettings(); }
+    inline JPH::BroadPhaseLayer GetBroadPhaseLayer() const { return m_rigidBody->GetBroadPhaseLayer(); }
+    inline JPH::ObjectLayer GetObjectLayer() const { return m_rigidBody->GetObjectLayer(); }
+    inline JPH::CollisionGroup& GetCollisionGroup() const { return m_rigidBody->GetCollisionGroup(); }
+    inline JPH::CollisionGroup GetCollisionGroup() { return m_rigidBody->GetCollisionGroup(); }
+    inline JPH::Vec3 GetAccumulatedForce() const { return m_rigidBody->GetAccumulatedForce(); }
+    inline JPH::Vec3 GetAccumulatedTorque() const { return m_rigidBody->GetAccumulatedTorque(); }
+    inline JPH::Mat44 GetInverseInertia() const { return m_rigidBody->GetInverseInertia(); };
+    inline JPH::Vec3 GetLinearVelocity() const { return m_rigidBody->GetLinearVelocity(); }
+    inline JPH::Vec3 GetAngularVelocity() const { return m_rigidBody->GetAngularVelocity(); }
+    inline JPH::Vec3 GetPointVelocityCOM(JPH::Vec3Arg a_inPointRelativeToCOM) const { return m_rigidBody->GetPointVelocityCOM(a_inPointRelativeToCOM); }
+    inline JPH::Vec3 GetPointVelocity(JPH::RVec3Arg a_inPoint) const { return m_rigidBody->GetPointVelocity(a_inPoint); }
+    inline const JPH::Shape* GetShape() const { return m_rigidBody->GetShape(); }
+    inline const JPH::AABox& GetWorldSpaceBounds() const { return m_rigidBody->GetWorldSpaceBounds(); }
+    inline const JPH::MotionProperties* GetMotionPropertiesUnchecked() const { return m_rigidBody->GetMotionPropertiesUnchecked(); }
+    inline const JPH::MotionProperties* GetMotionProperties() const { return m_rigidBody->GetMotionProperties(); }
     inline static JPH::Body& GetFixedToWorld() { return s_fixedToWorld; }
 
     inline void SetEnhancedInternalEdgeRemoval(const bool a_inApply) const { return m_rigidBody->SetEnhancedInternalEdgeRemoval(a_inApply); }
@@ -121,8 +106,7 @@ public:
     inline void SetUserData(const JPH::uint64 a_inUserData) const { m_rigidBody->SetUserData(a_inUserData); }
 
 
-
 private:
-    JPH::Body* m_rigidBody{ nullptr };
+    JPH::Body* m_rigidBody { nullptr };
     static JPH::Body s_fixedToWorld;
 };

@@ -1,27 +1,12 @@
+#pragma once
 
-#include "Logger.hpp"
 #include <iostream>
-#include <cstdarg>
 #include <thread>
-
-
-#include "Struct/Vertex.hpp"
+#include "Logger.hpp"
 
 #include "jolt/Jolt/Jolt.h"
-
-
-#include "jolt/Jolt/RegisterTypes.h"
-#include "jolt/Jolt/Core/Factory.h"
-#include "jolt/Jolt/Core/TempAllocator.h"
-#include "jolt/Jolt/Core/JobSystemThreadPool.h"
-#include "jolt/Jolt/Physics/PhysicsSettings.h"
 #include "jolt/Jolt/Physics/PhysicsSystem.h"
-#include "jolt/Jolt/Physics/Collision/Shape/BoxShape.h"
-#include "jolt/Jolt/Physics/Collision/Shape/SphereShape.h"
 #include "jolt/Jolt/Physics/Body/BodyCreationSettings.h"
-#include "jolt/Jolt/Physics/Body/BodyActivationListener.h"
-#include "jolt/Physics/PhysicsScene.h"
-#include <Jolt/Core/Core.h>
 
 JPH_NAMESPACE_BEGIN
 
@@ -35,7 +20,7 @@ namespace Layers
 class ObjectLayerPairFilterImpl : public ObjectLayerPairFilter
 {
 public:
-    virtual bool ShouldCollide(ObjectLayer a_inObject1, ObjectLayer a_inObject2) const override;
+    bool ShouldCollide(ObjectLayer a_inObject1, ObjectLayer a_inObject2) const override;
 };
 
 namespace BroadPhaseLayers
@@ -54,9 +39,8 @@ public:
         mObjectToBroadPhase[Layers::MOVING] = BroadPhaseLayers::MOVING;
     }
 
-    virtual uint GetNumBroadPhaseLayers() const override;
-
-    virtual BroadPhaseLayer GetBroadPhaseLayer(ObjectLayer a_inLayer) const override;
+    uint GetNumBroadPhaseLayers() const override;
+    BroadPhaseLayer GetBroadPhaseLayer(ObjectLayer a_inLayer) const override;
 
 
 private:
@@ -67,7 +51,7 @@ private:
 class ObjectVsBroadPhaseLayerFilterImpl : public ObjectVsBroadPhaseLayerFilter
 {
 public:
-    virtual bool ShouldCollide(ObjectLayer a_inLayer1, BroadPhaseLayer a_inLayer2) const override;
+    bool ShouldCollide(ObjectLayer a_inLayer1, BroadPhaseLayer a_inLayer2) const override;
 };
 
 

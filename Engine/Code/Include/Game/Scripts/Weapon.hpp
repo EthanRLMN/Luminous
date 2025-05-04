@@ -48,7 +48,7 @@ public:
 
     void Update() override
     {
-        DEBUG_LOG_INFO("[Weapon] Update Tick");
+        //DEBUG_LOG_INFO("[Weapon] Update Tick");
     }
 
     std::shared_ptr<Entity> GetEntity() const

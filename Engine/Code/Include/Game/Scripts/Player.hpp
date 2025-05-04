@@ -47,7 +47,7 @@ public:
 
     void Update() override
     {
-        DEBUG_LOG_INFO("[Player] Update Tick ");
+        //DEBUG_LOG_INFO("[Player] Update Tick ");
     }
 
     void Input()

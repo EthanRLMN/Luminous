@@ -26,9 +26,9 @@ void PhysicsSystem::Init(const Settings& a_settings)
     m_tempAllocator = new JPH::TempAllocatorImpl(TempAllocatorSize); // Set up the temporary allocator size
     m_jobSystem = new JPH::JobSystemThreadPool(JPH::cMaxPhysicsJobs, JPH::cMaxPhysicsBarriers, static_cast<int>(std::thread::hardware_concurrency()) - 1); // Init the job system to execute physics on multiple threads
 
-    m_broadPhaseLayerInterface = new JPH::BPLayerInterfaceImpl(); // Create a mapping table from object layer to broadphase layer
-    m_ObjToBroadPhaseLayerFilter = new JPH::ObjectVsBroadPhaseLayerFilterImpl(); // Create a class that filters object vs broadphase layers
-    m_ObjToObjLayerFilter = new JPH::ObjectLayerPairFilterImpl(); // Create class that filters object vs object layers
+    m_broadPhaseLayerInterface = new JPH::BPLayerInterfaceImpl(); // Create a mapping table from object layer to broad phase layer
+    m_ObjToBroadPhaseLayerFilter = new JPH::ObjectVsBroadPhaseLayerFilterImpl(); // Create a class that filters object vs. broad phase layers
+    m_ObjToObjLayerFilter = new JPH::ObjectLayerPairFilterImpl(); // Create a class that filters object vs. object layers
 
     m_physicsSystem = new JPH::PhysicsSystem(); // Create the physics system and initialize it with all the previous data
     m_physicsSystem->Init(a_settings.m_maxRigidBodies, a_settings.m_bodyMutexNumber, a_settings.m_maxBodyPairs, a_settings.m_maxContactConstraints, *m_broadPhaseLayerInterface, *m_ObjToBroadPhaseLayerFilter, *m_ObjToObjLayerFilter);
@@ -48,7 +48,7 @@ void PhysicsSystem::Update()
             return;
 
     // TODO : Update collision steps to run properly (accumulator returns floats on a scale from 0.25 to 10, we need integers scaled properly)
-    const int l_step = 1;
+    constexpr int l_step { 1 };
 
     m_physicsSystem->Update(Time::GetFixedDeltaTime(), l_step, m_tempAllocator, m_jobSystem);
 }
