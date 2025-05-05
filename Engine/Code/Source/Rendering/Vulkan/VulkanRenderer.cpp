@@ -22,6 +22,8 @@
 #include "Rendering/Vulkan/VulkanSwapChain.hpp"
 #include "Rendering/Vulkan/VulkanSynchronization.hpp"
 
+#include "EntitySystem/Components/ModelComponent.hpp"
+
 #include "Matrix4.hpp"
 #include "Game/Systems/Time.inl"
 
@@ -153,27 +155,37 @@ void VulkanRenderer::RecordCommandBuffer(const VkCommandBuffer& a_commandBuffer,
 }
 
 
-// TODO: Cleanup
-void VulkanRenderer::UpdateUniformBuffer(const uint32_t& a_currentFrame, IBuffer* a_buffer,EntityManager a_entityManager) const
+void VulkanRenderer::UpdateUniformBuffer(const uint32_t& a_currentFrame, IBuffer* a_buffer, EntityManager a_entityManager) const
 {
+
     a_entityManager.Update();
+    std::vector<std::shared_ptr<Entity>> entitiesWithModels = a_entityManager.GetEntitiesByComponent<ModelComponent>();
 
     UniformBufferObject l_ubo{};
 
-    /*
-    for each (object var in collection_to_loop)
+
+    for (const auto& entity : entitiesWithModels)
     {
-    l_ubo.model = object.model
-    
+
+        auto modelComponent = entity->GetComponent<ModelComponent>();
+        if (modelComponent)
+        {
+
+            Maths::Matrix4 modelMatrix = entity->GetTPS();
+
+            l_ubo.model = modelMatrix;
+        }
     }
-    */
+
 
     l_ubo.view = m_cameraEditor.GetViewMatrix();
     l_ubo.proj = m_cameraEditor.GetProjectionMatrix();
+
+
     l_ubo.proj.mat[1][1] *= -1.f;
 
-    memcpy(a_buffer->CastVulkan()->GetUniformBuffersMapped()[a_currentFrame], &l_ubo, sizeof(l_ubo));
 
+    memcpy(a_buffer->CastVulkan()->GetUniformBuffersMapped()[a_currentFrame], &l_ubo, sizeof(l_ubo));
 }
 
 

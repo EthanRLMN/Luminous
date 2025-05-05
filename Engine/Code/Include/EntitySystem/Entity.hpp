@@ -9,6 +9,8 @@
 #include "Vector3.hpp"
 #include "Matrix4.hpp"
 
+#include "EntitySystem/Components/ModelComponent.hpp"
+
 class EntityManager;
 
 
@@ -56,6 +58,22 @@ public:
         return nullptr;
     }
 
+    std::vector<std::shared_ptr<Entity>> GetEntitiesWithModelComponent()
+    {
+        std::vector<std::shared_ptr<Entity>> entitiesWithModel;
+
+        
+        for (auto& entity : m_entities)
+        { 
+            auto modelComponent = entity->GetComponent<ModelComponent>();
+            if (modelComponent != nullptr)
+            {
+                entitiesWithModel.push_back(entity);
+            }
+        }
+
+        return entitiesWithModel;
+    }
 
     inline void Initialize()
     {
@@ -91,12 +109,14 @@ private:
     EntityManager& m_entityManager;
     std::string m_name { };
 
+
     // TODO : Use a generic virtual component so that we can replace `void` with the actual component type, making the system faster and safer
     std::vector<std::shared_ptr<void>> m_components { };
     std::vector<std::shared_ptr<EntityComponent>> m_entityComponents { };
     std::vector<std::shared_ptr<Entity>> m_children { };
     std::shared_ptr<Entity> m_parent { nullptr };
 
+    std::vector<std::shared_ptr<Entity>> m_entities;
 
     Maths::Vector3 position = Maths::Vector3::Zero;
     Maths::Quaternion rotation = Maths::Quaternion::Identity;
