@@ -130,7 +130,7 @@ void VulkanTexture::CreateTextureSampler(IDevice* a_device)
     l_samplerInfo.compareEnable = VK_FALSE;
     l_samplerInfo.compareOp = VK_COMPARE_OP_ALWAYS;
     l_samplerInfo.mipmapMode = VK_SAMPLER_MIPMAP_MODE_LINEAR;
-    l_samplerInfo.minLod = static_cast<float>(m_mipLevels) / 32;
+    l_samplerInfo.minLod = 0.0f;
     l_samplerInfo.maxLod = static_cast<float>(m_mipLevels);
     l_samplerInfo.mipLodBias = 0.0f;
 
