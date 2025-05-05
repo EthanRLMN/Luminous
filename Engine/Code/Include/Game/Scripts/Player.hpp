@@ -5,6 +5,7 @@
 #include "EntitySystem/EntityManager.hpp"
 #include "EntitySystem/Components/ModelComponent.hpp"
 #include "EntitySystem/Components/RigidbodyComponent.hpp"
+#include <Logger.hpp>
 
 
 
@@ -46,7 +47,7 @@ public:
 
     void Update() override
     {
-        //DEBUG_LOG_INFO("[Player] Update Tick ");
+        DEBUG_LOG_INFO("[Player] Update Tick ");
     }
 
     void Input()
