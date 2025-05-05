@@ -2,7 +2,6 @@
 
 #include "EntitySystem/Components/ModelComponent.hpp"
 #include "EntitySystem/Components/RigidbodyComponent.hpp"
-#include "EntitySystem/Components/TransformComponent.hpp"
 #include "EntitySystem/Entity.hpp"
 #include "EntitySystem/EntityComponent.hpp"
 #include "EntitySystem/EntityManager.hpp"
@@ -18,7 +17,7 @@ public:
         m_playerModelEntity = a_entityManager.CreateEntity();
         m_playerModelEntity->SetName("PlayerModel");
 
-        m_playerModelEntity->AddComponent(m_transformComponent);
+
         m_playerModelEntity->AddComponent(m_modelComponent);
     }
 
@@ -30,7 +29,7 @@ public:
     void Initialize() override
     {
         m_modelComponent->SetModelPath("Assets/Models/metalSonic.obj");
-        m_transformComponent->TRS = Maths::Matrix4::TRS(Maths::Vector3(0.f, 0.f, 0.f), Maths::Vector3(0.f, 90.f, 90.f), Maths::Vector3(1.f, 1.0f, 1.0f));
+        m_playerModelEntity->SetTRS( Maths::Matrix4::TRS(Maths::Vector3(0.f, 0.f, 0.f), Maths::Vector3(0.f, 90.f, 90.f), Maths::Vector3(1.f, 1.0f, 1.0f));
     }
 
     void GameplayStarted() override
@@ -50,7 +49,6 @@ public:
 
 private:
     std::shared_ptr<Entity> m_playerModelEntity{ nullptr };
-    std::shared_ptr<TransformComponent> m_transformComponent = std::make_shared<TransformComponent>();
     std::shared_ptr<RigidbodyComponent> m_rigidbodyComponent = std::make_shared<RigidbodyComponent>();
     std::shared_ptr<ModelComponent> m_modelComponent = std::make_shared<ModelComponent>();
 
