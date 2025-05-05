@@ -13,7 +13,7 @@ struct Light {
     float intensity;
 };
 
-layout (set = 1,binding = 0) uniform LightBuffer {
+layout (binding = 2) uniform LightBuffer {
     Light lights[32];
 } lightsList;
 

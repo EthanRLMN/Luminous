@@ -66,7 +66,7 @@ void VulkanPipeline::Create(IDevice* a_device, IRenderPass* a_renderPass, IDescr
 
     VkDescriptorSetLayout l_descriptorSetLayout = a_descriptionSetLayout->CastVulkan()->GetDescriptorSetLayout();
     VkDescriptorSetLayout l_lightDescriptorSetLayout = a_descriptionSetLayout->CastVulkan()->GetLightDescriptorSetLayout(); // create descriptorSetLayout has a local variable
-    std::vector<VkDescriptorSetLayout> l_descriptorSetLayouts = { l_descriptorSetLayout, l_lightDescriptorSetLayout };
+    std::vector<VkDescriptorSetLayout> l_descriptorSetLayouts = { l_descriptorSetLayout };
     SetupDescriptorSetLayout(l_descriptorSetLayouts, l_pipelineLayoutInfo, a_device->CastVulkan()->GetDevice());
 
     //Graphic pipeline creation

@@ -104,9 +104,22 @@ void VulkanBuffer::CreateUniformBuffers(IDevice* a_device, ITexture* a_texture, 
 	}
 
 
+    m_lightUniformBuffer.resize(MAX_FRAMES_IN_FLIGHT);
+    m_lightUniformBuffersMemory.resize(MAX_FRAMES_IN_FLIGHT);
+    m_lightUniformBuffersMapped.resize(MAX_FRAMES_IN_FLIGHT);
+
+	for (size_t i = 0; i < MAX_FRAMES_IN_FLIGHT; ++i)
+    {
+
+        const VkDeviceSize l_bufferSize = sizeof(LightComponent) * 32 + sizeof(int);
+        a_texture->CastVulkan()->CreateBuffer(a_device->CastVulkan()->GetDevice(), a_device->CastVulkan()->GetPhysicalDevice(), l_bufferSize, VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT, m_lightUniformBuffer[i], m_lightUniformBuffersMemory[i], a_swapChain);
+        vkMapMemory(a_device->CastVulkan()->GetDevice(), m_lightUniformBuffersMemory[i], 0, l_bufferSize, 0, &m_lightUniformBuffersMapped[i]);
+    }
+
+	/*
 	const VkDeviceSize l_lightBufferSize = sizeof(LightComponent) * 32 + sizeof(int);
     a_texture->CastVulkan()->CreateBuffer(a_device->CastVulkan()->GetDevice(), a_device->CastVulkan()->GetPhysicalDevice(), l_lightBufferSize, VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT, m_lightUniformBuffer, m_lightUniformBuffersMemory, a_swapChain);
-    vkMapMemory(a_device->CastVulkan()->GetDevice(), m_lightUniformBuffersMemory, 0, l_lightBufferSize, 0, &m_lightUniformBuffersMapped);
+    vkMapMemory(a_device->CastVulkan()->GetDevice(), m_lightUniformBuffersMemory, 0, l_lightBufferSize, 0, &m_lightUniformBuffersMapped);*/
 
 }
 

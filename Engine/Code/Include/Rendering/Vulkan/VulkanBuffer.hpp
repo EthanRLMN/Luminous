@@ -28,9 +28,9 @@ public:
     [[nodiscard]] std::vector<VkDeviceMemory> GetUniformBuffersMemory() const { return m_uniformBuffersMemory; }
     [[nodiscard]] std::vector<void*> GetUniformBuffersMapped() const { return m_uniformBuffersMapped; }
 
-    [[nodiscard]] VkBuffer GetLightUniformBuffer() const { return m_lightUniformBuffer; }
-    [[nodiscard]] VkDeviceMemory GetLightUniformBuffersMemory() const { return m_lightUniformBuffersMemory; }
-    [[nodiscard]] void* GetLightUniformBuffersMapped() const { return m_lightUniformBuffersMapped; }
+    [[nodiscard]] std::vector<VkBuffer> GetLightUniformBuffer() const { return m_lightUniformBuffer; }
+    [[nodiscard]] std::vector<VkDeviceMemory> GetLightUniformBuffersMemory() const { return m_lightUniformBuffersMemory; }
+    [[nodiscard]] std::vector<void*> GetLightUniformBuffersMapped() const { return m_lightUniformBuffersMapped; }
 
 
 private:
@@ -45,8 +45,8 @@ private:
     std::vector<VkDeviceMemory> m_uniformBuffersMemory { nullptr };
     std::vector<void*> m_uniformBuffersMapped { nullptr };
 
-    VkBuffer m_lightUniformBuffer{ nullptr };
-    VkDeviceMemory m_lightUniformBuffersMemory{ nullptr };
-    void* m_lightUniformBuffersMapped{ nullptr };
+    std::vector<VkBuffer> m_lightUniformBuffer{ nullptr };
+    std::vector<VkDeviceMemory> m_lightUniformBuffersMemory{ nullptr };
+    std::vector<void*> m_lightUniformBuffersMapped{ nullptr };
 
 };
