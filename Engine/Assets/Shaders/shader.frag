@@ -42,5 +42,5 @@ void main(){
     vec3 result = (ambient + diffuse);
     //outColor = texture(texSampler,fragTexCoord) * vec4(result, 1.0);
 
-    outColor = vec4(lightsList.lights[0].position, 1.0);
+    //outColor = vec4(lightsList.lights[0].position, 1.0);
 }
