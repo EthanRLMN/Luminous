@@ -7,20 +7,16 @@
 
 
 static const std::filesystem::path s_AssetPath = "Engine/Assets";
+static const std::filesystem::path s_IconPath = "Editor/Assets/Icons";
 
 
-FileExplorerPanel::FileExplorerPanel(Editor* a_editor, const std::string& a_windowIdentifier) : IWindowPanel(a_editor, a_windowIdentifier)
+FileExplorerPanel::FileExplorerPanel(Editor* a_editor, const std::string& a_windowIdentifier) :
+    IWindowPanel(a_editor, a_windowIdentifier)
 {
     m_currentDirectory = s_AssetPath;
     m_engine = a_editor->GetEngine();
     m_directoryIconTexture = LoadTexture(m_engine, "Editor/Assets/Icons/DirectoryIcon.png");
     m_fileIconTexture = LoadTexture(m_engine, "Editor/Assets/Icons/FileIcon.png");
-}
-
-FileExplorerPanel::~FileExplorerPanel()
-{
-    delete m_directoryIconTexture;
-    delete m_fileIconTexture;
 }
 
 void FileExplorerPanel::Render()
@@ -95,20 +91,15 @@ void FileExplorerPanel::OpenTextEditor(const std::filesystem::path& path)
     m_textEditorPanel->OpenFile(path.string(), fileContent);
 }
 
-ITexture* FileExplorerPanel::LoadTexture(Engine* engine, const std::string& path)
+std::shared_ptr<ITexture> LoadTexture(Engine* engine, const std::string& path)
 {
-    IResourceManager* resourceManager = engine->GetResourceManager();
+    IResourceParams params{};
+    params.m_device = engine->GetDevice();
+    params.m_swapChain = engine->GetSwapChain();
+    params.m_commandPool = engine->GetCommandPool();
+    params.m_texturePath = path;
 
-    IResourceParams texParams{
-        engine->GetDevice(),
-        engine->GetSwapChain(),
-        engine->GetDepthResource(),
-        engine->GetCommandPool()
-    };
-
-    texParams.m_texturePath = path;
-
-    VulkanTexture* texture = resourceManager->LoadResource<VulkanTexture>(texParams);
-
-    return static_cast<ITexture*>(texture);
+    auto texture = std::make_shared<VulkanTexture>();
+    texture->CreateTextureImage(params.m_device, params.m_swapChain, params.m_commandPool, path);
+    return texture;
 }
