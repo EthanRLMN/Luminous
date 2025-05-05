@@ -158,12 +158,18 @@ void VulkanRenderer::RecordCommandBuffer(const VkCommandBuffer& a_commandBuffer,
 void VulkanRenderer::UpdateUniformBuffer(const uint32_t& a_currentFrame, IBuffer* a_buffer) const
 {
     UniformBufferObject l_ubo{};
-    l_ubo.model = Maths::Matrix4::TRS(Maths::Vector3(0.f, 0.f, 0.f), Maths::Vector3(0.f, 0.f, 0.f), Maths::Vector3(1.f, 1.0f, 1.0f));
+    for each (object var in collection_to_loop)
+    {
+    l_ubo.model = object.model
+    }
+
+
     l_ubo.view = m_cameraEditor.GetViewMatrix();
     l_ubo.proj = m_cameraEditor.GetProjectionMatrix();
     l_ubo.proj.mat[1][1] *= -1.f;
 
     memcpy(a_buffer->CastVulkan()->GetUniformBuffersMapped()[a_currentFrame], &l_ubo, sizeof(l_ubo));
+
 }
 
 
