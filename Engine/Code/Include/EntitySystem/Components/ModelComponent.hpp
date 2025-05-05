@@ -1,21 +1,12 @@
 #pragma once
 
-#include <string>
-
-#include "EntitySystem/EntityComponent.hpp"
-
-
-class ModelComponent : public EntityComponent
+class ModelComponent 
 {
 public:
-    ModelComponent() = default;
-    ~ModelComponent() override = default;
+    inline void SetModelPath(const std::string& a_path) { m_modelPath = a_path; }
+    [[nodiscard]] inline const std::string& GetModelPath() const { return m_modelPath; }
 
-    void Create() override {};
-    void Destroy() override {};
-    void Update() override {};
 
-    std::string m_modelPath;
-    std::string m_texturePath;
-
+private:
+    std::string m_modelPath { };
 };

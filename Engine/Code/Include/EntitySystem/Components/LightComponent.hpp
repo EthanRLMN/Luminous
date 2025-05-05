@@ -6,15 +6,15 @@
 #include "Vector3.hpp"
 
 
-#define MAX_LIGHTS 32;
+constexpr unsigned int MAX_LIGHTS = 32;
 
 
 
 class LightComponent : public EntityComponent
 {
 public:
-    void Create() override{};
-    void Destroy() override{};
+    void Initialize() override{};
+    void GameplayStarted() override{};
     void Update() override{};
 
     alignas(16) Maths::Vector3 m_position = Maths::Vector3(1.0f, 1.0f, 0.0f);

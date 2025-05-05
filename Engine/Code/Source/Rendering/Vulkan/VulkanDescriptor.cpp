@@ -10,8 +10,8 @@
 #include "Rendering/Vulkan/VulkanDevice.hpp"
 #include "Rendering/Vulkan/VulkanTexture.hpp"
 
-#include "Struct/VulkanUtilities.hpp"
 #include "EntitySystem/Components/LightComponent.hpp"
+#include "Struct/VulkanUtilities.hpp"
 
 
 void VulkanDescriptor::Create(IDevice* a_device, IDescriptorSetLayout* a_descriptorSetLayout, ITexture* a_texture, IBuffer* a_buffer)

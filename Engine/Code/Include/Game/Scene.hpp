@@ -1,5 +1,7 @@
 #pragma once
+
 #include "EntitySystem/Entity.hpp"
+
 
 class Scene
 {
@@ -7,9 +9,6 @@ public:
     Scene()= default;
     ~Scene()= default;
 
-    void SceneEntity();
-private:
-    EntityManager entityManager;
-
+    void SceneEntity(EntityManager& a_entityManager);
 };
 

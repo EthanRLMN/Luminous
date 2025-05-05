@@ -2,67 +2,80 @@
 
 #include <memory>
 #include <string>
-#include <typeindex>
-#include <unordered_map>
+#include <vector>
 
 #include "EntityComponent.hpp"
 
+class EntityManager;
 
-class Entity
+
+class Entity : public std::enable_shared_from_this<Entity>
 {
 public:
-    bool isDestroyed = false;
-    std::unordered_map<std::type_index, std::shared_ptr<EntityComponent>> components;
+    inline explicit Entity(EntityManager& a_manager) : m_entityManager(a_manager) { }
 
-    template<typename T, typename... Args>
-    void AddComponent(Args&&... args)
-    {
-        components[std::type_index(typeid(T))] = std::make_shared<T>(std::forward<Args>(args)...);
-    }
+    inline void SetName(const std::string& a_newName) { m_name = a_newName; }
+    inline void AddComponent(const std::shared_ptr<void>& a_component) { m_components.push_back(a_component); }
+    inline void AddLogic(const std::shared_ptr<EntityComponent>& a_logic) { m_entityComponents.push_back(a_logic); }
+    inline void AttachChild(const std::shared_ptr<Entity>& a_child) { m_children.push_back(a_child); a_child->SetParent(shared_from_this()); }
+    inline void SetParent(const std::shared_ptr<Entity>& a_parentEntity) { m_parent = a_parentEntity; }
+
+    [[nodiscard]] inline std::string GetName() const { return m_name; }
+    [[nodiscard]] inline std::vector<std::shared_ptr<Entity>> GetChildren() const { return m_children; }
+    [[nodiscard]] inline std::shared_ptr<Entity> GetParent() const { return m_parent; }
+    [[nodiscard]] inline bool HasChildren() const { return !m_children.empty(); }
+    [[nodiscard]] inline bool HasParent() const { return m_parent != nullptr; }
 
     template<typename T>
-    std::shared_ptr<T> GetComponent()
+    [[nodiscard]] inline std::shared_ptr<T> GetComponent() const
     {
-        auto it = components.find(std::type_index(typeid(T)));
-        if (it != components.end())
+        for (const std::shared_ptr<void>& l_component : m_components)
         {
-            return std::static_pointer_cast<T>(it->second);
+            std::shared_ptr<T> l_casted = std::static_pointer_cast<T>(l_component);
+            if (l_casted != nullptr)
+                return l_casted;
         }
         return nullptr;
     }
 
-    /*
-    virtual void Awake() = 0;
-    virtual void BeginPlay() = 0;
-    virtual void Update() = 0;
-    virtual void Destroy(){ isDestroyed = true; }*/
+
+    inline void Initialize()
+    {
+        for (const std::shared_ptr<EntityComponent>& l_logic : m_entityComponents)
+            l_logic->Initialize();
+
+        for (const std::shared_ptr<Entity>& l_child : m_children)
+            l_child->Initialize();
+    }
 
 
-    std::string entityName = "default";
-};
+    inline void GameplayStarted()
+    {
+        for (const std::shared_ptr<EntityComponent>& l_logic : m_entityComponents)
+            l_logic->GameplayStarted();
 
-class EntityManager
-{
+        for (const std::shared_ptr<Entity>& l_child : m_children)
+            l_child->GameplayStarted();
+    }
+
+
+    inline void Update()
+    {
+        for (const std::shared_ptr<EntityComponent>& l_logic : m_entityComponents)
+            l_logic->Update();
+
+        for (const std::shared_ptr<Entity>& l_child : m_children)
+            l_child->Update();
+    }
+
+
 private:
-    std::unordered_map<size_t, Entity> entities;
-    size_t nextEntityId = 0;
+    EntityManager& m_entityManager;
+    std::string m_name { };
 
-public:
-    size_t CreateEntity()
-    {
-        Entity l_entity;
-        size_t l_id = nextEntityId++;
-        entities[l_id] = std::move(l_entity);
-        return l_id;
-    }
-
-    void DestroyEntity(size_t _id)
-    {
-        entities.erase(_id);
-    }
-
-    Entity& GetEntity(size_t _id)
-    {
-        return entities.at(_id);
-    }
+    // TODO : Use a generic virtual component so that we can replace `void` with the actual component type, making the system faster and safer
+    std::vector<std::shared_ptr<void>> m_components { };
+    std::vector<std::shared_ptr<EntityComponent>> m_entityComponents { };
+    std::vector<std::shared_ptr<Entity>> m_children { };
+    std::shared_ptr<Entity> m_parent { nullptr };
 };

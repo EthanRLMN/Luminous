@@ -159,7 +159,7 @@ void VulkanPipeline::SetupRasterizerCreationInfo(VkPipelineRasterizationStateCre
 }
 
 
-void VulkanPipeline::SetupSamplingState(VkPipelineMultisampleStateCreateInfo& a_multisamplingCreateInfo, const VkSampleCountFlagBits& a_sampleCount)
+void VulkanPipeline::SetupSamplingState(VkPipelineMultisampleStateCreateInfo& a_multisamplingCreateInfo, const VkSampleCountFlagBits a_sampleCount)
 {
     a_multisamplingCreateInfo.sampleShadingEnable = VK_TRUE;
     a_multisamplingCreateInfo.rasterizationSamples = a_sampleCount;
@@ -171,7 +171,7 @@ void VulkanPipeline::SetupDepthStencilState(VkPipelineDepthStencilStateCreateInf
 {
     a_depthStencilCreateInfo.depthTestEnable = VK_TRUE;
     a_depthStencilCreateInfo.depthWriteEnable = VK_TRUE;
-    a_depthStencilCreateInfo.depthCompareOp = VK_COMPARE_OP_LESS;
+    a_depthStencilCreateInfo.depthCompareOp = VK_COMPARE_OP_LESS_OR_EQUAL;
     a_depthStencilCreateInfo.depthBoundsTestEnable = VK_FALSE;
     a_depthStencilCreateInfo.stencilTestEnable = VK_FALSE;
 }

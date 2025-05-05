@@ -4,6 +4,7 @@
 #include "Rendering/Vulkan/VulkanRenderInterface.hpp"
 #include "Rendering/Vulkan/VulkanRenderPass.hpp"
 
+
 #define JPH_DEBUG_RENDERER
 
 void Engine::Init()
@@ -17,10 +18,18 @@ void Engine::Init()
 
     m_isRunning = true;
 
+    
+
     Window();
     Input();
     PreRender();
     InitPhysics();
+
+
+    m_scene->SceneEntity(m_entityManager);
+    
+    m_entityManager.Initialize();
+    m_entityManager.GameplayStarted();
 }
 
 void Engine::Update()
@@ -30,7 +39,8 @@ void Engine::Update()
     m_window->Update();
     m_inputManager->Update(m_window);
 
-    m_scene->SceneEntity();
+    
+    m_entityManager.Update();
     m_renderer->DrawFrame(m_window, m_device, m_swapChain, m_pipeline, m_buffer, m_renderPassManager, m_descriptor, m_mesh, m_synchronization, m_commandBuffer, m_frameBufferManager, m_depthResource, m_surface, m_multiSampling,m_inputManager);
 
     m_physicsSystem->Update();
@@ -111,8 +121,9 @@ void Engine::Destroy()
 void Engine::Window()
 {
     m_window = m_interface->InstantiateWindow();
-    m_window->Initialize("Luminous");
+    m_window->Initialize("Luminous", true);
 }
+
 
 void Engine::Input()
 {

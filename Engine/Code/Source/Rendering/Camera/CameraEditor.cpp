@@ -1,124 +1,155 @@
 #include "Rendering/Camera/CameraEditor.hpp"
+
+#include "MathUtils.hpp"
 #include "Core/GLFW/GLFWWindow.hpp"
 #include "Game/Systems/Time.inl"
-#include "MathUtils.hpp"
 
 
-void CameraEditor::Init(IWindow* a_window, const float& a_aspectRatio, const float& a_fov, const float& a_nearPlane, const float& a_farPlane)
+void CameraEditor::Init(const float a_aspectRatio, const float a_fov, const float a_nearPlane, const float a_farPlane)
 {
-    aspectRatio = a_aspectRatio;
-    fov = a_fov;
-    nearPlane = a_nearPlane;
-    farPlane = a_farPlane;
+    m_aspectRatio = a_aspectRatio;
+    m_fov = a_fov;
+    m_nearPlane = a_nearPlane;
+    m_farPlane = a_farPlane;
 
-    m_position = m_camPosition;
-    m_direction = m_camDirection;
-    m_up = m_camUp;
-}
-
-void CameraEditor::Update(float a_aspectRatio)
-{
-    aspectRatio = a_aspectRatio;
-
-  
-
-    m_position = m_camPosition;
-
-    m_direction = m_camDirection.Normalize();
-    m_up = m_camUp;
-
-    
-    m_viewMatrix = m_viewMatrix = UpdateViewMatrixCustom(m_camPosition, m_camPosition + m_camDirection, m_camUp);
-    m_projectionMatrix = UpdateProjectionMatrixCustom(fov,aspectRatio,nearPlane,farPlane);
-
-
-    DEBUG_LOG_VERBOSE("Camera Editor : Position X {} , Y {} , Z {}" , m_camPosition.x ,m_camPosition.y , m_camPosition.z);
-   // DEBUG_LOG_VERBOSE("Camera Editor : Rotation X {} , Y {} , Z {}", m_camDirection.x, m_camDirection.y, m_camDirection.z);
-
+    m_worldForward = (m_center - m_eye).Normalize();
+    m_worldRight = m_worldForward.CrossProduct(m_worldUp).Normalize();
+    m_worldUp = m_worldRight.CrossProduct(m_worldForward).Normalize();
 }
 
 
-void CameraEditor::UpdateInput(IWindow* a_window, IInputManager* a_input)
+void CameraEditor::Update(const float a_aspectRatio)
 {
-    MovementHandler(a_window, a_input, m_movementSpeed);
-    MouseHandler(a_window, a_input);
-    SpeedHandler(a_window, a_input, m_cameraSpeed, m_movementSpeed);
+    m_aspectRatio = a_aspectRatio;
+    m_viewMatrix = UpdateViewMatrix(m_eye, m_center, m_worldUp);
+    m_projectionMatrix = UpdateProjectionMatrix(m_fov, m_aspectRatio, m_nearPlane, m_farPlane);
 }
 
-void CameraEditor::MovementHandler(IWindow* a_window, IInputManager* a_input, float a_movementSpeed)
+
+void CameraEditor::UpdateInput(IInputManager* a_input)
 {
-    float l_velocity = a_movementSpeed * Time::GetDeltaTime();
-    m_right = m_direction.CrossProduct(m_camUp).Normalize();
-
-
-
-
-    if (a_input->IsKeyDown(a_window, Key::KEY_W))
-    {
-        m_camPosition.x += l_velocity;
-        m_velocity += m_camDirection * a_movementSpeed;
-        DEBUG_LOG_VERBOSE("Camera Editor : FORWARD");
-    }
-    if (a_input->IsKeyDown(a_window, Key::KEY_S))
-    {
-        m_camPosition.x -= l_velocity;
-        m_velocity -= m_camDirection * a_movementSpeed;
-        DEBUG_LOG_VERBOSE("Camera Editor : BACKWARDS");
-    }
-
-    if (a_input->IsKeyDown(a_window, Key::KEY_A))
-    {
-        m_camPosition.y -= l_velocity;
-        m_velocity += (m_direction.CrossProduct(m_camUp).Normalize() * -1) * a_movementSpeed;
-        DEBUG_LOG_VERBOSE("Camera Editor : LEFT");
-    }
-    if (a_input->IsKeyDown(a_window, Key::KEY_D))
-    {
-        m_camPosition.y +=  l_velocity;
-        m_velocity -= m_direction.CrossProduct(m_camUp).Normalize() * a_movementSpeed;
-        DEBUG_LOG_VERBOSE("Camera Editor : RIGHT");
-    }
+    MovementHandler(a_input);
+    RotationHandler(a_input);
+    SpeedHandler(a_input);
 }
 
-void CameraEditor::MouseHandler(IWindow* a_window, IInputManager* a_input)
+
+void CameraEditor::MovementHandler(IInputManager* a_input)
 {
-    if (a_input->IsMouseButtonDown(a_window, MouseButton::MOUSE_BUTTON_2))
+    const float l_velocity = m_movementSpeed * Time::GetDeltaTime();
+
+    if (a_input->IsKeyDown(Key::KEY_W))
     {
- 
-        Maths::Vector2 mouseDelta = a_input->GetMouseDelta(a_window);
+        m_eye += m_localForward * l_velocity;
+        m_center += m_localForward * l_velocity;
+    }
 
-        const float sensitivity = 0.1f;
+    if (a_input->IsKeyDown(Key::KEY_S))
+    {
+        m_eye -= m_localForward * l_velocity;
+        m_center -= m_localForward * l_velocity;
+    }
 
+    if (a_input->IsKeyDown(Key::KEY_A))
+    {
+        m_eye -= m_localRight * l_velocity;
+        m_center -= m_localRight * l_velocity;
+    }
 
-        float rotationX = mouseDelta.y * sensitivity;
-        float rotationY = mouseDelta.x * sensitivity;
+    if (a_input->IsKeyDown(Key::KEY_D))
+    {
+        m_eye += m_localRight * l_velocity;
+        m_center += m_localRight * l_velocity;
+    }
 
+    if (a_input->IsKeyDown(Key::KEY_Q))
+    {
+        m_eye -= m_worldUp * l_velocity;
+        m_center -= m_worldUp * l_velocity;
+    }
 
-        //m_camDirection = m_camDirection.RotateAroundAxis(m_right, rotationX);
-       // m_camDirection = m_camDirection.RotateAroundAxis(m_camUp, rotationY);
-
-
-        m_right = m_direction.CrossProduct(m_camUp).Normalize();
-
-        m_viewMatrix = UpdateViewMatrixCustom(m_camPosition, m_camPosition + m_camDirection, m_camUp);
-
-       // DEBUG_LOG_VERBOSE("Camera Editor : Rotation X {} , Y {} , Z {}", m_camDirection.x, m_camDirection.y, m_camDirection.z);
+    if (a_input->IsKeyDown(Key::KEY_E))
+    {
+        m_eye += m_worldUp * l_velocity;
+        m_center += m_worldUp * l_velocity;
     }
 }
 
-void CameraEditor::SpeedHandler(IWindow* a_window, IInputManager* a_input, const float& a_cameraSpeed, float& a_movementSpeed)
+
+void CameraEditor::RotationHandler(IInputManager* a_input)
+{
+    TriggerMouseRotation(a_input);
+    UpdateVectors();
+}
+
+
+void CameraEditor::SpeedHandler(IInputManager* a_input)
 {
     const Maths::Vector2 l_scroll{ a_input->GetMouseScroll() };
-    if (a_input->IsKeyDown(a_window, Key::KEY_LEFT_CONTROL))
+
+    if (a_input->IsKeyDown(Key::KEY_LEFT_ALT))
     {
         if (l_scroll.y > 0.0f)
-            a_movementSpeed += a_cameraSpeed;
-
+            m_dynamicSpeed += m_speedMultiplier;
         else if (l_scroll.y < 0.0f)
-            a_movementSpeed -= a_cameraSpeed;
+            m_dynamicSpeed -= m_speedMultiplier;
 
-        if (a_movementSpeed < 0.1f)
-            a_movementSpeed = 0.1f;
+        m_dynamicSpeed = std::clamp(m_dynamicSpeed, 0.1f, 100.0f);
+    }
+
+    if (a_input->IsKeyDown(Key::KEY_LEFT_SHIFT))
+        m_movementSpeed = m_dynamicSpeed * 5.0f;
+    else if (a_input->IsKeyDown(Key::KEY_LEFT_CONTROL))
+        m_movementSpeed = m_dynamicSpeed * 0.2f;
+    else
+        m_movementSpeed = m_dynamicSpeed;
+}
+
+
+void CameraEditor::TriggerMouseRotation(IInputManager* a_input)
+{
+    const float l_velocity = m_mouseSensitivity * Time::GetDeltaTime();
+    if (a_input->IsMouseButtonDown(MouseButton::MOUSE_BUTTON_RIGHT))
+    {
+        if (!m_isRotating)
+        {
+            a_input->ConfigureMouseInput(CursorInputMode::DISABLED);
+            a_input->ResetMouseDelta();
+            m_isRotating = true;
+        }
+
+        const Maths::Vector2 l_mouseDelta = a_input->GetMouseDelta();
+        m_yaw -= l_mouseDelta.x * l_velocity; // Invert yaw so that we match OpenGL's coordinate system
+        m_pitch -= l_mouseDelta.y * l_velocity;
+        m_pitch = std::clamp(m_pitch, -89.0f, 89.0f);
+    }
+    else if (a_input->IsMouseButtonReleased(MouseButton::MOUSE_BUTTON_RIGHT))
+    {
+        a_input->ConfigureMouseInput(CursorInputMode::NORMAL);
+        m_isRotating = false;
     }
 }
 
+
+void CameraEditor::UpdateVectors()
+{
+    m_localForward = GetForwardFromYawPitch(m_yaw, m_pitch);
+    m_localRight = m_localForward.CrossProduct(m_worldUp).Normalize();
+    m_localUp = m_localRight.CrossProduct(m_localForward).Normalize();
+
+    m_viewMatrix = Maths::Matrix4::LookAt(m_eye, m_eye + m_localForward, m_worldUp);
+}
+
+
+Maths::Vector3 CameraEditor::GetForwardFromYawPitch(const float yawDegrees, const float pitchDegrees)
+{
+    const float yawRad = Maths::DegToRad(yawDegrees);
+    const float pitchRad = Maths::DegToRad(pitchDegrees);
+
+    Maths::Vector3 direction;
+    direction.x = cosf(yawRad) * cosf(pitchRad);
+    direction.y = sinf(pitchRad);
+    direction.z = -sinf(yawRad) * cosf(pitchRad); // We invert Z to match OpenGL's coordinate system
+
+    return direction.Normalize();
+}

@@ -79,11 +79,23 @@ void Editor::SetupImGui() const
 
 void Editor::Update()
 {
+    constexpr float frameDuration = 1.0f / 120.0f;
+
     while (m_engine->IsRunning())
     {
-        m_engine->Update();
+        auto frameStart = std::chrono::high_resolution_clock::now();
 
+        m_engine->Update();
         Render();
+
+        auto frameEnd = std::chrono::high_resolution_clock::now();
+        std::chrono::duration<float> elapsed = frameEnd - frameStart;
+
+        if (elapsed.count() < frameDuration)
+        {
+            std::chrono::duration<float> sleepTime(frameDuration - elapsed.count());
+            std::this_thread::sleep_for(sleepTime);
+        }
     }
 }
 

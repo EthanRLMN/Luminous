@@ -14,8 +14,8 @@ public:
     static constexpr int DefaultWidth = 1280;
     static constexpr int DefaultHeight = 720;
 
-    GLFWwindow* Initialize(const std::string& a_name, const int& a_width, const int& a_height) override;
-    void Initialize(const std::string& a_name) override;
+    GLFWwindow* Initialize(const std::string& a_name, int a_width, int a_height, bool a_useScreenSize) override;
+    void Initialize(const std::string& a_name, bool a_useScreenSize) override;
     void Update() const override;
     void Destroy() const override;
 

@@ -1,4 +1,7 @@
 #include "Rendering/Vulkan/VulkanRenderer.hpp"
+
+#include "IFrameBufferManager.hpp"
+#include "IRenderPassManager.hpp"
 #include "Rendering/Vulkan/VulkanBuffer.hpp"
 #include "Rendering/Vulkan/VulkanCommandBuffer.hpp"
 #include "Rendering/Vulkan/VulkanDepthResource.hpp"
@@ -17,7 +20,7 @@
 
 void VulkanRenderer::Create(IWindow* a_window, ISwapChain* a_swapChain)
 {
-    m_cameraEditor.Init(a_window, static_cast<float>(a_swapChain->CastVulkan()->GetSwapChainExtent().width) / static_cast<float>(a_swapChain->CastVulkan()->GetSwapChainExtent().height),45.0f,0.01f,1000.0f);
+    m_cameraEditor.Init(static_cast<float>(a_swapChain->CastVulkan()->GetSwapChainExtent().width) / static_cast<float>(a_swapChain->CastVulkan()->GetSwapChainExtent().height), 60.f, 0.1f, 100.f);
 
 
     LightComponent l_light = LightComponent();
@@ -35,19 +38,19 @@ void VulkanRenderer::DrawFrame(IWindow* a_window, IDevice* a_device, ISwapChain*
     uint32_t l_imageIndex{ 0 };
     
 
-    if (a_inputManager->CastGLFW()->IsKeyDown(a_window, Key::KEY_RIGHT))
+    if (a_inputManager->IsKeyDown(Key::KEY_RIGHT))
     {
         m_lights[0].m_position += Maths::Vector3(0.01f, 0, 0);
     }
-    if (a_inputManager->CastGLFW()->IsKeyDown(a_window, Key::KEY_LEFT))
+    if (a_inputManager->IsKeyDown(Key::KEY_LEFT))
     {
         m_lights[0].m_position -= Maths::Vector3(0.01f, 0, 0);
     }
-    if (a_inputManager->CastGLFW()->IsKeyDown(a_window, Key::KEY_UP))
+    if (a_inputManager->IsKeyDown(Key::KEY_UP))
     {
         m_lights[0].m_position += Maths::Vector3(0, 0.01f, 0);
     }
-    if (a_inputManager->CastGLFW()->IsKeyDown(a_window, Key::KEY_DOWN))
+    if (a_inputManager->IsKeyDown(Key::KEY_DOWN))
     {
         m_lights[0].m_position -= Maths::Vector3(0, 0.01f, 0);
     }
@@ -65,7 +68,7 @@ void VulkanRenderer::DrawFrame(IWindow* a_window, IDevice* a_device, ISwapChain*
     //OLD Camera Settings Here
     
     m_cameraEditor.Update(static_cast<float>(a_swapChain->CastVulkan()->GetSwapChainExtent().width) / static_cast<float>(a_swapChain->CastVulkan()->GetSwapChainExtent().height));
-    m_cameraEditor.UpdateInput(a_window,a_inputManager);
+    m_cameraEditor.UpdateInput(a_inputManager);
 
     ///*************************************************//
 
@@ -174,10 +177,10 @@ void VulkanRenderer::RecordCommandBuffer(const VkCommandBuffer& a_commandBuffer,
 void VulkanRenderer::UpdateUniformBuffer(const VkDevice& a_device,const uint32_t& a_currentFrame, IBuffer* a_buffer) const
 {
     UniformBufferObject l_ubo{};
-    l_ubo.model = Maths::Matrix4::Rotate(Maths::Matrix4(1.0f), static_cast<float>(Time::GetTotalTimeElapsed()) * 00.0f, Maths::Vector3(0.0f, 0.0f, 1.0f));
-    l_ubo.view = m_cameraEditor.m_viewMatrix;
-    l_ubo.proj = m_cameraEditor.m_projectionMatrix;
-    l_ubo.proj.mat[1][1] *= -1;
+    l_ubo.model = Maths::Matrix4::TRS(Maths::Vector3(0.f, 0.f, 0.f), Maths::Vector3(0.f, 0.f, 0.f), Maths::Vector3(1.f, 1.0f, 1.0f));
+    l_ubo.view = m_cameraEditor.GetViewMatrix();
+    l_ubo.proj = m_cameraEditor.GetProjectionMatrix();
+    l_ubo.proj.mat[1][1] *= -1.f;
 
     memcpy(a_buffer->CastVulkan()->GetUniformBuffersMapped()[a_currentFrame], &l_ubo, sizeof(l_ubo));
 
@@ -439,10 +442,13 @@ void VulkanRenderer::PresentRenderPassInfo(VkRenderPassBeginInfo& a_renderPassBe
 
 void VulkanRenderer::FillViewportInfo(VkViewport& a_viewport, const VkExtent2D& a_swapChainExtent)
 {
+    const float l_width = static_cast<float>(a_swapChainExtent.width);
+    const float l_height = static_cast<float>(a_swapChainExtent.height);
+
     a_viewport.x = 0.0f;
-    a_viewport.y = 0.0f;
-    a_viewport.width = static_cast<float>(a_swapChainExtent.width);
-    a_viewport.height = static_cast<float>(a_swapChainExtent.height);
+    a_viewport.y = l_height;
+    a_viewport.width = l_width;
+    a_viewport.height = -l_height;
     a_viewport.minDepth = 0.0f;
     a_viewport.maxDepth = 1.0f;
 }

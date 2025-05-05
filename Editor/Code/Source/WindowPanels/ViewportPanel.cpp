@@ -11,8 +11,9 @@ void Viewport::Render()
     ImGui::Begin(p_windowIdentifier.c_str(), nullptr, ImGuiWindowFlags_NoCollapse);
 
     VulkanRenderer* l_renderer = p_editor->GetEngine()->GetRenderingDraw()->CastVulkan();
-    if (l_renderer->bReloadImage) 
+    if (dSets && l_renderer->bReloadImage)
     {
+        ImGui_ImplVulkan_RemoveTexture(dSets);
 
         dSets = ImGui_ImplVulkan_AddTexture(l_renderer->GetViewportImageSampler(), l_renderer->GetViewportImageView(), VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL);
         l_renderer->bReloadImage = false;

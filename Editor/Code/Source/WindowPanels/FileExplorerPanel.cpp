@@ -17,24 +17,34 @@ void FileExplorerPanel::Render()
 
     if (p_isOpen)
     {
-        ImGui::Begin(p_windowIdentifier.c_str(), nullptr, ImGuiWindowFlags_NoCollapse);
+        ImGui::Begin(p_windowIdentifier.c_str(), &p_isOpen, ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_AlwaysAutoResize);
+        ImGui::PushStyleColor(ImGuiCol_WindowBg, 0xff323432);
 
         if (m_currentDirectory != std::filesystem::path(s_AssetPath))
-            if (ImGui::Button("<-"))
-                m_currentDirectory = m_currentDirectory.parent_path();
-
-        for (const std::filesystem::directory_entry& l_directoryEntry : std::filesystem::directory_iterator(s_AssetPath))
         {
-            const std::filesystem::path& path = l_directoryEntry.path();
-            const std::filesystem::path& l_relativePath = std::filesystem::relative(path, s_AssetPath);
-            std::string l_filenameString = l_relativePath.filename().string();
-
-            if (l_directoryEntry.is_directory())
-                if (!ImGui::Button(l_filenameString.c_str()))
-                    if (!ImGui::Button(l_filenameString.c_str()))
-                        m_currentDirectory /= l_directoryEntry.path().filename();
+            if (ImGui::Button("<"))
+            {
+                m_currentDirectory = m_currentDirectory.parent_path();
+            }
         }
 
+        for (auto& directoryEntry : std::filesystem::directory_iterator(m_currentDirectory))
+        {
+            const auto& path = directoryEntry.path();
+            auto relativePath = std::filesystem::relative(path, s_AssetPath);
+            std::string filenameString = relativePath.filename().string();
+            if (directoryEntry.is_directory())
+            {
+                if (ImGui::Button(filenameString.c_str()))
+                {
+                    m_currentDirectory /= directoryEntry.path().filename();
+                }
+            } else
+            {
+                ImGui::Button(filenameString.c_str());
+            }
+        }
+        ImGui::PopStyleColor();
         ImGui::End();
     }
 }

@@ -5,14 +5,11 @@
 #include "IRenderer.hpp"
 
 #include "Core/GLFW/GLFWWindow.hpp"
+#include "Rendering/Camera/CameraEditor.hpp"
 #include "Rendering/Vulkan/VulkanDevice.hpp"
-#include "Rendering/Vulkan/VulkanFrameBufferManager.hpp"
-#include "Rendering/Vulkan/VulkanRenderpassManager.hpp"
 
 #include "EntitySystem/Components/LightComponent.hpp"
 
-//TEST CAMERA
-#include "Rendering/Camera/CameraEditor.hpp"
 
 class IFrameBuffer;
 
@@ -63,14 +60,14 @@ private:
 	bool m_framebufferResized { false };
 	uint32_t m_currentFrame { 0 };
 
-    CameraEditor m_cameraEditor {};
-    VkImage m_viewportImage{ nullptr };
-    VkImageView m_viewportImageview{ nullptr };
-    VkDeviceMemory m_viewportMemory{ nullptr };
-    VkSampler m_viewportSampler{ nullptr };
+    CameraEditor m_cameraEditor{};
+    VkImage m_viewportImage { nullptr };
+    VkImageView m_viewportImageview { nullptr };
+    VkDeviceMemory m_viewportMemory { nullptr };
+    VkSampler m_viewportSampler { nullptr };
 
-    float m_viewportWidth = 2560.f;
-    float m_viewportHeight = 1440.f;
+    float m_viewportWidth { 2560.f };
+    float m_viewportHeight { 1440.f };
 
     inline static EditorRenderCallback s_editorGuiCallback { };
 };

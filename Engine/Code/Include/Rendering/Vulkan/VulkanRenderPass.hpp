@@ -16,16 +16,17 @@ public :
     void CreateEditorPass(ISwapChain* a_swapChain, IDevice* a_device);
     static VkFormat FindDepthFormat(const VkPhysicalDevice& a_physicalDevice);
     static VkFormat FindSupportedFormat(const VkPhysicalDevice& a_physicalDevice, const std::vector<VkFormat>& a_candidates, const VkImageTiling& a_tiling, const VkFormatFeatureFlags& a_features);
+    inline static bool HasStencilComponent(const VkFormat& a_format) { return a_format == VK_FORMAT_D32_SFLOAT_S8_UINT || a_format == VK_FORMAT_D24_UNORM_S8_UINT; }
     VulkanRenderPass* CastVulkan() override { return this; }
     [[nodiscard]] VkRenderPass GetRenderPass() const { return m_renderPass; }
 
 private:
-    static void FillColorAttachmentInfo(VkAttachmentDescription& a_colorAttachment, const VkFormat& a_swapChainImageFormat, const VkSampleCountFlagBits& a_samples);
-    static void FillDepthAttachmentInfo(VkAttachmentDescription& a_depthAttachment, const VkFormat& a_depthFormat, const VkSampleCountFlagBits& a_samples);
+    static void FillColorAttachmentInfo(VkAttachmentDescription& a_colorAttachment, const VkFormat& a_swapChainImageFormat, VkSampleCountFlagBits a_samples);
+    static void FillDepthAttachmentInfo(VkAttachmentDescription& a_depthAttachment, const VkFormat& a_depthFormat, VkSampleCountFlagBits a_samples);
     static void FillColorAttachmentResolveInfo(VkAttachmentDescription& a_colorAttachmentResolve, const VkFormat& a_swapchainImageFormat);
     static void SetupSubpass(VkSubpassDescription& a_subpass, const VkAttachmentReference& a_colorAttachmentReference, const VkAttachmentReference& a_depthAttachmentReference);
     static void SetupSubpassDependency(VkSubpassDependency& a_dependency);
     static void SetupRenderPassCreateInfo(VkRenderPassCreateInfo& a_renderPassCreateInfo, const std::vector<VkAttachmentDescription>& a_attachments, const VkSubpassDescription& a_subpass, const VkSubpassDependency& a_dependency);
 
-    VkRenderPass m_renderPass = nullptr;
+    VkRenderPass m_renderPass { nullptr };
 };

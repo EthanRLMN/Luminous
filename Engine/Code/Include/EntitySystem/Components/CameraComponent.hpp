@@ -3,12 +3,9 @@
 #include "EntitySystem/EntityComponent.hpp"
 #include "Rendering/Camera/Camera.hpp"
 
-class CameraComponent : public Camera, public EntityComponent
+class CameraComponent : public Camera
 {
 public:
     CameraComponent() = default;
 
-    void Create() override {};
-    void Destroy() override {};
-    void Update() override {};
 };

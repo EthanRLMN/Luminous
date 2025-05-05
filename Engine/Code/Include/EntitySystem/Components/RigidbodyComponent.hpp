@@ -1,18 +1,9 @@
 #pragma once
-
 #include "EntitySystem/EntityComponent.hpp"
 
 
-class RigidbodyComponent : public EntityComponent
+class RigidbodyComponent 
 {
 public:
-    RigidbodyComponent() = default;
-    ~RigidbodyComponent() override = default;
-
-    void Create() override {};
-    void Destroy() override {};
-    void Update() override {};
-
-private:
-
+    bool m_simulatePhysic = true;
 };
