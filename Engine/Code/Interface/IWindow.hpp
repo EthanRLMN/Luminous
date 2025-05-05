@@ -13,8 +13,8 @@ class IWindow
 public:
     virtual ~IWindow() = default;
 
-    virtual GLFWwindow* Initialize(const std::string& a_name, const int& a_width, const int& a_height) = 0;
-    virtual void Initialize(const std::string& a_name) = 0;
+    virtual GLFWwindow* Initialize(const std::string& a_name, int a_width, int a_height, bool a_useScreenSize) = 0;
+    virtual void Initialize(const std::string& a_name, bool a_useScreenSize) = 0;
     virtual void Update() const = 0;
     virtual void PollEvents() const = 0;
     virtual void Destroy() const = 0;

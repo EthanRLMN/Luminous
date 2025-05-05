@@ -121,8 +121,9 @@ void Engine::Destroy()
 void Engine::Window()
 {
     m_window = m_interface->InstantiateWindow();
-    m_window->Initialize("Luminous");
+    m_window->Initialize("Luminous", true);
 }
+
 
 void Engine::Input()
 {
