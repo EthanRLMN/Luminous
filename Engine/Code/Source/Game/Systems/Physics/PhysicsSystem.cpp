@@ -10,6 +10,7 @@
 #include "Game/Systems/Time.inl"
 #include "Game/Systems/Physics/Layers.hpp"
 #include "Game/Systems/Physics/Listener.hpp"
+#include "Jolt/Core/JobSystemThreadPool.h"
 
 
 // Default value for the TempAllocator (10MB by default)
@@ -33,10 +34,10 @@ void PhysicsSystem::Init(const Settings& a_settings)
     m_physicsSystem = new JPH::PhysicsSystem(); // Create the physics system and initialize it with all the previous data
     m_physicsSystem->Init(a_settings.m_maxRigidBodies, a_settings.m_bodyMutexNumber, a_settings.m_maxBodyPairs, a_settings.m_maxContactConstraints, *m_broadPhaseLayerInterface, *m_ObjToBroadPhaseLayerFilter, *m_ObjToObjLayerFilter);
 
-    m_bodyActivationListener = new JPH::MyBodyActivationListener(); // Create a body activation listener that gets notified when bodies activate and go to sleep | MUST BE THREAD SAFE
+    m_bodyActivationListener = new JPH::PhysicsBodyActivationListener(); // Create a body activation listener that gets notified when bodies activate and go to sleep | MUST BE THREAD SAFE
     m_physicsSystem->SetBodyActivationListener(m_bodyActivationListener);
 
-    m_contactListener = new JPH::MyContactListener(); // Create a contact listener that gets notified when bodies (are about to) collide, and when they separate again | MUST BE THREAD SAFE
+    m_contactListener = new JPH::PhysicsContactListener(); // Create a contact listener that gets notified when bodies (are about to) collide, and when they separate again | MUST BE THREAD SAFE
     m_physicsSystem->SetContactListener(m_contactListener);
 }
 

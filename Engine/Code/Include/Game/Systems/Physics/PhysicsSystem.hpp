@@ -14,8 +14,8 @@ namespace JPH {
     class BodyInterface;
     class Body;
     class TempAllocatorImpl;
-    class MyBodyActivationListener;
-    class MyContactListener;
+    class PhysicsBodyActivationListener;
+    class PhysicsContactListener;
     class BoxShapeSettings;
 }
 
@@ -46,8 +46,8 @@ public:
     [[nodiscard]] inline JPH::BPLayerInterfaceImpl* GetBroadPhaseLayerInterface() const { return m_broadPhaseLayerInterface; }
     [[nodiscard]] inline JPH::ObjectVsBroadPhaseLayerFilterImpl* GetObjectToBroadPhaseLayerFilter() const { return m_ObjToBroadPhaseLayerFilter; }
     [[nodiscard]] inline JPH::ObjectLayerPairFilterImpl* GetObjectToObjLayerFilter() const { return m_ObjToObjLayerFilter; }
-    [[nodiscard]] inline JPH::MyBodyActivationListener* GetBodyActivationListener() const { return m_bodyActivationListener; }
-    [[nodiscard]] inline JPH::MyContactListener* GetContactListener() const { return m_contactListener; }
+    [[nodiscard]] inline JPH::PhysicsBodyActivationListener* GetBodyActivationListener() const { return m_bodyActivationListener; }
+    [[nodiscard]] inline JPH::PhysicsContactListener* GetContactListener() const { return m_contactListener; }
     [[nodiscard]] inline std::vector<JPH::Body*> GetRigidBodies() const { return m_rigidBodies; }
 
     
@@ -63,8 +63,8 @@ private:
     JPH::TempAllocatorImpl* m_tempAllocator{ nullptr };
     JPH::JobSystemThreadPool* m_jobSystem{ nullptr };
 
-    JPH::MyBodyActivationListener* m_bodyActivationListener{ nullptr };
-    JPH::MyContactListener* m_contactListener{ nullptr };
+    JPH::PhysicsBodyActivationListener* m_bodyActivationListener{ nullptr };
+    JPH::PhysicsContactListener* m_contactListener{ nullptr };
     JPH::BoxShapeSettings* m_floorShapeSettings { nullptr };
     JPH::ShapeSettings::ShapeResult m_floorShapeResult;
     JPH::ShapeRefC m_floorShape;
