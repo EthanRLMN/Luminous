@@ -21,11 +21,11 @@ void VulkanDescriptorSetLayout::Create(IDevice* a_device)
 	l_samplerLayoutBinding.stageFlags = VK_SHADER_STAGE_FRAGMENT_BIT;
 
 	VkDescriptorSetLayoutBinding l_lightLayoutBinding = {};
-    l_samplerLayoutBinding.binding = 2;
-    l_samplerLayoutBinding.descriptorCount = 1;
-    l_samplerLayoutBinding.descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
-    l_samplerLayoutBinding.pImmutableSamplers = nullptr;
-    l_samplerLayoutBinding.stageFlags = VK_SHADER_STAGE_FRAGMENT_BIT;
+    l_lightLayoutBinding.binding = 2;
+    l_lightLayoutBinding.descriptorCount = 1;
+    l_lightLayoutBinding.descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
+    l_lightLayoutBinding.pImmutableSamplers = nullptr;
+    l_lightLayoutBinding.stageFlags = VK_SHADER_STAGE_FRAGMENT_BIT;
 
 
 	const std::array<VkDescriptorSetLayoutBinding, 3> l_bindings = { l_uboLayoutBinding, l_samplerLayoutBinding, l_lightLayoutBinding };

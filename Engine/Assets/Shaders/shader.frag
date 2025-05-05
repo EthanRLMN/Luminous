@@ -25,7 +25,7 @@ layout (location = 0) out vec4 outColor;
 
 void main(){
     vec3 lightcolor = lightsList.lights[0].color;
-	//outColor = texture(texSampler,fragTexCoord) * vec4(lightcolor,1.0f);
+	outColor = texture(texSampler,fragTexCoord);
 
 
     //Light Calculations
