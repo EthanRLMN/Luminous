@@ -1,7 +1,7 @@
 #include "imgui.h"
 
-#include "WindowPanels/FileExplorerPanel.hpp"
 #include "TextEditorPanel.hpp"
+#include "WindowPanels/FileExplorerPanel.hpp"
 
 #include "Rendering/Vulkan/VulkanTexture.hpp"
 
@@ -86,7 +86,7 @@ void FileExplorerPanel::OpenTextEditor(const std::filesystem::path& path)
     buffer << file.rdbuf();
     std::string fileContent = buffer.str();
     file.close();
-    
+
     m_textEditorPanel = std::make_unique<TextEditorPanel>(p_editor, "TextEditor_" + path.filename().string());
     m_textEditorPanel->OpenFile(path.string(), fileContent);
 }
