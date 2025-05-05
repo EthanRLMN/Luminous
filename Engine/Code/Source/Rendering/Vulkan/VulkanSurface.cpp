@@ -18,6 +18,8 @@ void VulkanSurface::Create(IInstance* a_instance, IWindow* a_window)
     if (l_result != VK_SUCCESS)
         DEBUG_LOG_ERROR("Vulkan Surface : Failed to create Surface!\n");
 
+    
+
     DEBUG_LOG_INFO("Vulkan Surface : Surface Created!\n");
 }
 

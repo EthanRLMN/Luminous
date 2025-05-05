@@ -24,15 +24,15 @@ layout (location = 2) in vec3 fragPos;
 layout (location = 0) out vec4 outColor;
 
 void main(){
-    vec3 lightcolor = lightsList.lights[0].color;
-	outColor = texture(texSampler,fragTexCoord);
+    //vec3 lightcolor = lightsList.lights[0].color;
+	//outColor = texture(texSampler,fragTexCoord);
 
-
+    /*
     //Light Calculations
     //Ambient
     float ambientStrength = 0.1;
     vec3 ambient = ambientStrength * lightcolor;
-
+    
     vec3 norm = normalize(fragNormal);
     vec3 lightDir = normalize(lightsList.lights[0].position - fragPos); 
     
@@ -40,7 +40,9 @@ void main(){
     vec3 diffuse = diff * lightcolor;
 
     vec3 result = (ambient + diffuse);
-    //outColor = texture(texSampler,fragTexCoord) * vec4(result, 1.0);
+    //outColor = texture(texSampler,fragTexCoord) * vec4(result, 1.0);*/
 
-    //outColor = vec4(lightsList.lights[0].position, 1.0);
+   vec3 coltest = vec3(1.0,1.0,1.0) * 0.0;
+   //outColor = lightsList.lights[0].position;
+   outColor = vec4(lightsList.lights[0].position,1.0);
 }
