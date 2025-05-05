@@ -31,7 +31,7 @@ public:
     {
         DEBUG_LOG_INFO("[Player] Initialize");
         Input();
-        m_rigidbodyComponent->m_simulatePhysic = true;
+        m_rigidbodyComponent->SetSimulatingPhysics(true);
         m_modelComponent->SetModelPath("Assets/Player.fbx");
 
         DEBUG_LOG_INFO("Player Has CHild :  {}", m_modelComponent->GetModelPath());

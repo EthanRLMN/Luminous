@@ -1,4 +1,7 @@
-#include "Game/Systems/Physics/Listener.hpp"
+#include "Game/Systems/Physics/CollisionSystem.hpp"
+
+#include <iostream>
+
 
 JPH::ValidateResult PhysicsContactListener::OnContactValidate(const JPH::Body& inBody1, const JPH::Body& inBody2, JPH::RVec3Arg inBaseOffset, const JPH::CollideShapeResult& inCollisionResult)
 {

@@ -6,7 +6,7 @@
 #include "Jolt/Physics/Body/BodyID.h"
 
 #include "Game/Systems/Physics/Layers.hpp"
-#include "Game/Systems/Physics/Listener.hpp"
+#include "Game/Systems/Physics/CollisionSystem.hpp"
 
 namespace JPH {
     class JobSystemThreadPool;
