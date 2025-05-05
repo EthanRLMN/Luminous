@@ -33,6 +33,8 @@ void VulkanRenderer::Create(IWindow* a_window, ISwapChain* a_swapChain)
 
     LightComponent l_light = LightComponent();
     m_lights.push_back(l_light);
+
+    m_light = LightComponent();
 }
 
 void VulkanRenderer::DrawFrame(IWindow* a_window, IDevice* a_device, ISwapChain* a_swapChain, IPipeline* a_pipeline, IBuffer* a_buffer, IRenderPassManager* a_renderPassManager, IDescriptor* a_descriptor, IMesh* a_mesh, ISynchronization* a_synchronization, ICommandBuffer* a_commandBuffer, IFrameBufferManager* a_frameBufferManager, IDepthResource* a_depthResource, ISurface* a_surface, IMultiSampling* a_multisampling,IInputManager* a_inputManager)
@@ -192,7 +194,7 @@ void VulkanRenderer::UpdateUniformBuffer(const VkDevice& a_device,const uint32_t
 
     
     VkDeviceSize size = sizeof(LightComponent) * 32; 
-    memcpy(a_buffer->CastVulkan()->GetLightUniformBuffersMapped()[a_currentFrame], m_lights.data(), size);
+    memcpy(a_buffer->CastVulkan()->GetLightUniformBuffersMapped()[a_currentFrame], &m_light, size);
     
 
 }

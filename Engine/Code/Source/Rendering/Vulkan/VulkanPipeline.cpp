@@ -204,7 +204,7 @@ void VulkanPipeline::SetupDynamicStates(const std::array<VkDynamicState, 2>& a_d
 }
 
 
-void VulkanPipeline::SetupDescriptorSetLayout(const std::vector<VkDescriptorSetLayout> a_descriptorSetLayouts, VkPipelineLayoutCreateInfo& a_pipelineLayoutInfo, const VkDevice a_device)
+void VulkanPipeline::SetupDescriptorSetLayout(const std::vector<VkDescriptorSetLayout>& a_descriptorSetLayouts, VkPipelineLayoutCreateInfo& a_pipelineLayoutInfo, const VkDevice a_device)
 {
     a_pipelineLayoutInfo.setLayoutCount = static_cast<uint32_t> (a_descriptorSetLayouts.size());
     a_pipelineLayoutInfo.pSetLayouts = a_descriptorSetLayouts.data();

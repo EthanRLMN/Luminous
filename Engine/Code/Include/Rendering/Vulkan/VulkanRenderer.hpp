@@ -50,6 +50,7 @@ public:
     mutable bool bUsable = false;
 
     std::vector<LightComponent> m_lights;
+    LightComponent m_light;
 
 
 private:

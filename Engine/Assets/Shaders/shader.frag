@@ -4,18 +4,25 @@
 layout (binding = 1) uniform sampler2D texSampler;
 
 
-struct Light {
+
+
+
+
+/*
+layout (binding = 2) uniform LightBuffer {
+    Light lights[32];
+} lightsList;*/
+
+layout (binding = 2) uniform Light {
     vec3 position;
     vec3 direction;
     vec3 color;
     
     int type;
     float intensity;
-};
+} lighttt;
 
-layout (binding = 2) uniform LightBuffer {
-    Light lights[32];
-} lightsList;
+
 
 layout (location = 0) in vec3 fragNormal;
 layout (location = 1) in vec2 fragTexCoord;
@@ -44,5 +51,5 @@ void main(){
 
    vec3 coltest = vec3(1.0,1.0,1.0) * 0.0;
    //outColor = lightsList.lights[0].position;
-   outColor = vec4(lightsList.lights[0].position,1.0);
+   outColor = vec4(lighttt.direction,1.0);
 }

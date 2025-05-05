@@ -41,7 +41,7 @@ VkPipelineShaderStageCreateInfo VulkanShaderModule::CreateStage(VkShaderStageFla
     return l_shaderStageCreateInfo;
 }
 
-void VulkanShaderModule::BindShader(VkVertexInputBindingDescription& a_bindingDescription, std::array<VkVertexInputAttributeDescription, 3> a_attributeDescriptions, VkPipelineVertexInputStateCreateInfo& a_vertexInputCreateInfo)
+void VulkanShaderModule::BindShader(VkVertexInputBindingDescription& a_bindingDescription, std::array<VkVertexInputAttributeDescription, 3>& a_attributeDescriptions, VkPipelineVertexInputStateCreateInfo& a_vertexInputCreateInfo)
 {
 
 
