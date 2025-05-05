@@ -57,7 +57,7 @@ void FileExplorerPanel::Render()
             ImTextureID icon = (ImTextureID) (uintptr_t) (directoryEntry.is_directory() ? m_directoryIconTexture->CastVulkan()->GetTextureImageView()
                                                                                         : m_fileIconTexture->CastVulkan()->GetTextureImageView());
 
-            if (ImGui::ImageButton(filenameString.c_str(), icon, ImVec2(thumbnailSize, thumbnailSize)))
+            if (ImGui::Button(filenameString.c_str(), ImVec2(thumbnailSize, thumbnailSize)))
             {
                 if (directoryEntry.is_directory())
                 {
