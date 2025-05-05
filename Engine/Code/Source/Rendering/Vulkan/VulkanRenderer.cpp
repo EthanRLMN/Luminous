@@ -28,7 +28,7 @@
 
 void VulkanRenderer::Create(IWindow* a_window, ISwapChain* a_swapChain)
 {
-    m_cameraEditor.Init(a_window, static_cast<float>(a_swapChain->CastVulkan()->GetSwapChainExtent().width) / static_cast<float>(a_swapChain->CastVulkan()->GetSwapChainExtent().height),45.f,0.01f,1000.f);
+    m_cameraEditor.Init(a_window, static_cast<float>(a_swapChain->CastVulkan()->GetSwapChainExtent().width) / static_cast<float>(a_swapChain->CastVulkan()->GetSwapChainExtent().height),45.0f,0.01f,1000.0f);
 
 
     LightComponent l_light = LightComponent();

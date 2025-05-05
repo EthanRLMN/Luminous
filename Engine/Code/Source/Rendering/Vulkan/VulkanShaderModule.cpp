@@ -43,9 +43,6 @@ VkPipelineShaderStageCreateInfo VulkanShaderModule::CreateStage(VkShaderStageFla
 
 void VulkanShaderModule::BindShader(VkVertexInputBindingDescription& a_bindingDescription, std::array<VkVertexInputAttributeDescription, 3>& a_attributeDescriptions, VkPipelineVertexInputStateCreateInfo& a_vertexInputCreateInfo)
 {
-
-
-
     a_bindingDescription.binding = 0;
     a_bindingDescription.stride = sizeof(Vertex);
     a_bindingDescription.inputRate = VK_VERTEX_INPUT_RATE_VERTEX;
@@ -73,6 +70,4 @@ void VulkanShaderModule::BindShader(VkVertexInputBindingDescription& a_bindingDe
     a_vertexInputCreateInfo.pVertexBindingDescriptions = &a_bindingDescription;
     a_vertexInputCreateInfo.vertexAttributeDescriptionCount = static_cast<uint32_t>(a_attributeDescriptions.size());
     a_vertexInputCreateInfo.pVertexAttributeDescriptions = a_attributeDescriptions.data();
-
-
 }

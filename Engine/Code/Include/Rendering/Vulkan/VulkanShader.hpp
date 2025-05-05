@@ -18,7 +18,7 @@ public:
     VulkanShaderModule* GetGeometryShaderModule() { return &m_geometryShaderModule; }
 
 private:
-    VulkanShaderModule m_vertexShaderModule{};
+    VulkanShaderModule m_vertexShaderModule {};
     VulkanShaderModule m_fragmentShaderModule{};
     VulkanShaderModule m_tesselationShaderModule{};
     VulkanShaderModule m_geometryShaderModule{};
