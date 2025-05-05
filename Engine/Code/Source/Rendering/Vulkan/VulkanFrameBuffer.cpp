@@ -36,8 +36,8 @@ void VulkanFrameBuffer::Create(IDevice* a_device, ISwapChain* a_swapChain, IRend
 
 void VulkanFrameBuffer::Destroy(IDevice* a_device)
 {
-    for (size_t i = 0; i < m_frameBuffers.size(); ++i)
-        vkDestroyFramebuffer(a_device->CastVulkan()->GetDevice(), m_frameBuffers[i], nullptr);
+    for (const VkFramebuffer& l_frameBuffer : m_frameBuffers)
+        vkDestroyFramebuffer(a_device->CastVulkan()->GetDevice(), l_frameBuffer, nullptr);
 
     DEBUG_LOG_INFO("Vulkan FrameBuffer : Create FrameBuffer!\n");
 }

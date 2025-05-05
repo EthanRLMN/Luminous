@@ -157,7 +157,7 @@ void VulkanPipeline::SetupRasterizerCreationInfo(VkPipelineRasterizationStateCre
 }
 
 
-void VulkanPipeline::SetupSamplingState(VkPipelineMultisampleStateCreateInfo& a_multisamplingCreateInfo, const VkSampleCountFlagBits& a_sampleCount)
+void VulkanPipeline::SetupSamplingState(VkPipelineMultisampleStateCreateInfo& a_multisamplingCreateInfo, const VkSampleCountFlagBits a_sampleCount)
 {
     a_multisamplingCreateInfo.sampleShadingEnable = VK_TRUE;
     a_multisamplingCreateInfo.rasterizationSamples = a_sampleCount;

@@ -11,23 +11,23 @@
 
 void VulkanRenderPass::Create(ISwapChain* a_swapChain, IDevice* a_device)
 {
-    const VkSampleCountFlagBits& l_sampleCounts = { a_device->CastVulkan()->GetMSAASamples() };
+    const VkSampleCountFlagBits l_sampleCounts { a_device->CastVulkan()->GetMSAASamples() };
 
-    VkAttachmentDescription l_colorAttachment = {};
+    VkAttachmentDescription l_colorAttachment{};
     FillColorAttachmentInfo(l_colorAttachment, a_swapChain->CastVulkan()->GetSwapChainImageFormat(), l_sampleCounts);
 
     VkAttachmentDescription l_depthAttachment{};
     FillDepthAttachmentInfo(l_depthAttachment, FindDepthFormat(a_device->CastVulkan()->GetPhysicalDevice()), l_sampleCounts);
 
-    VkAttachmentReference l_colorAttachmentReference = {};
+    VkAttachmentReference l_colorAttachmentReference{};
     l_colorAttachmentReference.attachment = 0;
     l_colorAttachmentReference.layout = VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL;
 
-    VkAttachmentReference l_depthAttachmentReference = {};
+    VkAttachmentReference l_depthAttachmentReference{};
     l_depthAttachmentReference.attachment = 1;
     l_depthAttachmentReference.layout = VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL;
 
-    VkSubpassDescription l_subpass = {};
+    VkSubpassDescription l_subpass{};
     SetupSubpass(l_subpass, l_colorAttachmentReference, l_depthAttachmentReference);
 
     VkSubpassDependency l_dependency{};
@@ -41,8 +41,8 @@ void VulkanRenderPass::Create(ISwapChain* a_swapChain, IDevice* a_device)
     l_colorAttachmentResolveRef.layout = VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL;
     l_subpass.pResolveAttachments = &l_colorAttachmentResolveRef;
 
-    const std::vector<VkAttachmentDescription> l_attachments = { l_colorAttachment, l_depthAttachment, l_colorAttachmentResolve };
-    VkRenderPassCreateInfo l_renderPassCreateInfo = {};
+    const std::vector<VkAttachmentDescription> l_attachments { l_colorAttachment, l_depthAttachment, l_colorAttachmentResolve };
+    VkRenderPassCreateInfo l_renderPassCreateInfo{};
     SetupRenderPassCreateInfo(l_renderPassCreateInfo, l_attachments, l_subpass, l_dependency);
 
     const VkResult l_result = vkCreateRenderPass(a_device->CastVulkan()->GetDevice(), &l_renderPassCreateInfo, nullptr, &m_renderPass);
@@ -78,7 +78,7 @@ void VulkanRenderPass::CreateEditorPass(ISwapChain* a_swapChain, IDevice* a_devi
     l_subpass.colorAttachmentCount = 1;
     l_subpass.pColorAttachments = &l_colorAttachmentReference;
 
-    const std::vector<VkAttachmentDescription> l_attachments = { l_colorAttachment };
+    const std::vector<VkAttachmentDescription> l_attachments { l_colorAttachment };
     VkRenderPassCreateInfo l_renderPassCreateInfo{ VK_STRUCTURE_TYPE_RENDER_PASS_CREATE_INFO };
     l_renderPassCreateInfo.attachmentCount = 1;
     l_renderPassCreateInfo.pAttachments = &l_colorAttachment;
@@ -118,7 +118,7 @@ VkFormat VulkanRenderPass::FindSupportedFormat(const VkPhysicalDevice& a_physica
 }
 
 
-void VulkanRenderPass::FillColorAttachmentInfo(VkAttachmentDescription& a_colorAttachment, const VkFormat& a_swapChainImageFormat, const VkSampleCountFlagBits& a_samples)
+void VulkanRenderPass::FillColorAttachmentInfo(VkAttachmentDescription& a_colorAttachment, const VkFormat& a_swapChainImageFormat, const VkSampleCountFlagBits a_samples)
 {
     a_colorAttachment.format = a_swapChainImageFormat;
     a_colorAttachment.samples = a_samples;
@@ -131,7 +131,7 @@ void VulkanRenderPass::FillColorAttachmentInfo(VkAttachmentDescription& a_colorA
 }
 
 
-void VulkanRenderPass::FillDepthAttachmentInfo(VkAttachmentDescription& a_depthAttachment, const VkFormat& a_depthFormat, const VkSampleCountFlagBits& a_samples)
+void VulkanRenderPass::FillDepthAttachmentInfo(VkAttachmentDescription& a_depthAttachment, const VkFormat& a_depthFormat, const VkSampleCountFlagBits a_samples)
 {
     a_depthAttachment.format = a_depthFormat;
     a_depthAttachment.samples = a_samples;

@@ -27,7 +27,7 @@ private:
     static void SetupInputAssemblyState(VkPipelineInputAssemblyStateCreateInfo& a_inputAssembly);
     static void SetupViewportState(VkPipelineViewportStateCreateInfo& a_viewportCreateInfo);
     static void SetupRasterizerCreationInfo(VkPipelineRasterizationStateCreateInfo& a_rasterizerCreateInfo);
-    static void SetupSamplingState(VkPipelineMultisampleStateCreateInfo& a_multisamplingCreateInfo, const VkSampleCountFlagBits& a_sampleCount);
+    static void SetupSamplingState(VkPipelineMultisampleStateCreateInfo& a_multisamplingCreateInfo, VkSampleCountFlagBits a_sampleCount);
     static void SetupDepthStencilState(VkPipelineDepthStencilStateCreateInfo& a_depthStencilCreateInfo);
     static void SetupColorBlendAttachmentState(VkPipelineColorBlendAttachmentState& a_colorBlendAttachment);
     static void SetupColorBlendingState(VkPipelineColorBlendStateCreateInfo& a_colorBlendingCreateInfo, const VkPipelineColorBlendAttachmentState& a_colorBlendAttachment);
