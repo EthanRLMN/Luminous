@@ -33,14 +33,11 @@ layout (location = 0) out vec4 outColor;
 void main(){
 
 
-
-    vec3 lightcolor = lightsList.lights[0].color;
-    //outColor = texture(texSampler,fragTexCoord);
-
-
     //Light Calculations
     //Ambient
     
+    vec3 lightcolor = lightsList.lights[0].color;
+
     float ambientStrength = lightsList.lights[0].ambientStrength;
     vec3 ambient = ambientStrength * lightcolor;
     
@@ -61,8 +58,5 @@ void main(){
 
     vec3 result = (ambient + diffuse + specular) * lightsList.lights[0].intensity;
     outColor = texture(texSampler,fragTexCoord) * vec4(result, 1.0);
-    //outColor = vec4(viewPos,1.0);
-   //vec3 coltest = vec3(1.0,1.0,1.0) * 0.0;
-   //outColor = vec4(lightsList.lights[0].position,1.0);
-   //outColor = vec4(lighttt.direction,1.0);
+
 }

@@ -11,12 +11,12 @@
 struct alignas(16) LightData
 {
     alignas(16) Maths::Vector3 m_position{ 1.0f, 1.0f, 0.0f };
-    alignas(16) Maths::Vector3 m_direction { 1.0f, 0.0f, -1.0f };
+    alignas(16) Maths::Vector3 m_direction { -1.0f, 0.0f, -1.0f };
     alignas(16) Maths::Vector3 m_color { 1.0f, 1.0f, 1.0f };
-    int m_type = 1;
-    float m_intensity = 1.0f;
-    float m_ambientStrength = 0.1f;
-    float m_specularStrength = 0.5f;
+    int m_type{ 1 };
+    float m_intensity = { 1.0f };
+    float m_ambientStrength = { 0.1f };
+    float m_specularStrength = { 0.5f };
 };
 
 class LightComponent : public EntityComponent
@@ -25,8 +25,6 @@ public:
     void Initialize() override{};
     void GameplayStarted() override{};
     void Update() override{};
-
-    
 
     LightData& GetLight() { return light; };
 private:
