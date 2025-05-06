@@ -174,24 +174,6 @@ void MainPanel::Render()
 
         ImGui::EndMainMenuBar();
     }
-
-    ImGui::SetNextWindowDockID(ImGui::GetID("Scene Options"), ImGuiCond_FirstUseEver);
-    ImGui::Begin("Scene Options", nullptr,
-                 ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize |
-                         ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoScrollWithMouse);
-
-    if (ImGui::Button("Move")) {}
-    ImGui::SameLine();
-    if (ImGui::Button("Rotate")) {}
-    ImGui::SameLine();
-    if (ImGui::Button("Resize")) {}
-
-    ImGui::SameLine(0, 100 * ImGui::GetStyle().ItemSpacing.x);
-    if (ImGui::Button("Play")) {}
-    ImGui::SameLine();
-    if (ImGui::Button("Stop")) {}
-
-    ImGui::End();
 }
 
 void MainPanel::HelpContextMenu()
