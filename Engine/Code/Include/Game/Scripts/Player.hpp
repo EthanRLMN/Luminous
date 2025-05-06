@@ -18,7 +18,7 @@ public:
         m_playerEntity->SetName("Player");
 
         m_playerEntity->AddComponent(m_transformComponent);
-        m_playerEntity->AddComponent(m_rigidbodyComponent);
+        //m_playerEntity->AddComponent(m_rigidbodyComponent);
         m_playerEntity->AddComponent(m_modelComponent);
     }
 
@@ -31,7 +31,7 @@ public:
     {
         DEBUG_LOG_INFO("[Player] Initialize");
         Input();
-        m_rigidbodyComponent->SetSimulatingPhysics(true);
+        //m_rigidbodyComponent->SetSimulatingPhysics(true);
         m_modelComponent->SetModelPath("Assets/Player.fbx");
 
         DEBUG_LOG_INFO("Player Has CHild :  {}", m_modelComponent->GetModelPath());
@@ -64,7 +64,7 @@ public:
 private:
     std::shared_ptr<Entity> m_playerEntity { nullptr };
     std::shared_ptr<TransformComponent> m_transformComponent = std::make_shared<TransformComponent>();
-    std::shared_ptr<RigidbodyComponent> m_rigidbodyComponent = std::make_shared<RigidbodyComponent>();
+    //std::shared_ptr<RigidbodyComponent> m_rigidbodyComponent = std::make_shared<RigidbodyComponent>();
     std::shared_ptr<ModelComponent> m_modelComponent = std::make_shared<ModelComponent>();
 
     EntityManager& m_entityManager;

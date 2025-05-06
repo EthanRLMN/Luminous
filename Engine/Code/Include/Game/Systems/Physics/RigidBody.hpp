@@ -7,17 +7,12 @@
 #include "Jolt/Physics/Body/BodyID.h"
 #include "Jolt/Physics/SoftBody/SoftBodyCreationSettings.h"
 
+
 class RigidBody
 {
 public:
     RigidBody() = default;
-
-    ~RigidBody()
-    {
-        delete m_rigidBody;
-        m_rigidBody = nullptr;
-    };
-
+    ~RigidBody() = default;
 
     inline void GetSubmergedVolume(const JPH::RVec3Arg a_inSurfacePosition, const JPH::Vec3Arg a_inSurfaceNormal, float& a_outTotalVolume, float& a_outSubmergedVolume, JPH::Vec3& a_outRelativeCenterOfBuoyancy) const { return m_rigidBody->GetSubmergedVolume(a_inSurfacePosition, a_inSurfaceNormal, a_outTotalVolume, a_outSubmergedVolume, a_outRelativeCenterOfBuoyancy); }
     inline float GetFriction() const { return m_rigidBody->GetFriction(); }

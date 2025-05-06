@@ -4,13 +4,17 @@
 
 #include "Jolt/RegisterTypes.h"
 #include "Jolt/Core/Factory.h"
+#include "Jolt/Core/JobSystemThreadPool.h"
 #include "Jolt/Core/Memory.h"
 #include "Jolt/Physics/PhysicsSettings.h"
 
+
 #include "Game/Systems/Time.inl"
-#include "Game/Systems/Physics/Layers.hpp"
-#include "Game/Systems/Physics/CollisionSystem.hpp"
-#include "Jolt/Core/JobSystemThreadPool.h"
+#include "Game/Systems/Physics/BodyActivationListener.hpp"
+#include "Game/Systems/Physics/PhysicsBroadPhaseLayerInterface.hpp"
+#include "Game/Systems/Physics/PhysicsCollisionListener.hpp"
+#include "Game/Systems/Physics/PhysicsObjectLayerPairFilter.hpp"
+#include "Game/Systems/Physics/PhysicsObjectVsBroadPhaseLayerFilter.hpp"
 
 
 // Default value for the TempAllocator (10MB by default)
@@ -27,9 +31,9 @@ void PhysicsSystem::Init(const Settings& a_settings)
     m_tempAllocator = new JPH::TempAllocatorImpl(TempAllocatorSize); // Set up the temporary allocator size
     m_jobSystem = new JPH::JobSystemThreadPool(JPH::cMaxPhysicsJobs, JPH::cMaxPhysicsBarriers, static_cast<int>(std::thread::hardware_concurrency()) - 1); // Init the job system to execute physics on multiple threads
 
-    m_broadPhaseLayerInterface = new JPH::BPLayerInterfaceImpl(); // Create a mapping table from object layer to broad phase layer
-    m_ObjToBroadPhaseLayerFilter = new JPH::ObjectVsBroadPhaseLayerFilterImpl(); // Create a class that filters object vs. broad phase layers
-    m_ObjToObjLayerFilter = new JPH::ObjectLayerPairFilterImpl(); // Create a class that filters object vs. object layers
+    m_broadPhaseLayerInterface = new PhysicsBroadPhaseLayerInterface(); // Create a mapping table from object layer to broad phase layer
+    m_ObjToBroadPhaseLayerFilter = new PhysicsObjectVsBroadPhaseLayerFilter(); // Create a class that filters object vs. broad phase layers
+    m_ObjToObjLayerFilter = new PhysicsObjectLayerPairFilter(); // Create a class that filters object vs. object layers
 
     m_physicsSystem = new JPH::PhysicsSystem(); // Create the physics system and initialize it with all the previous data
     m_physicsSystem->Init(a_settings.m_maxRigidBodies, a_settings.m_bodyMutexNumber, a_settings.m_maxBodyPairs, a_settings.m_maxContactConstraints, *m_broadPhaseLayerInterface, *m_ObjToBroadPhaseLayerFilter, *m_ObjToObjLayerFilter);
@@ -37,8 +41,8 @@ void PhysicsSystem::Init(const Settings& a_settings)
     m_bodyActivationListener = new PhysicsBodyActivationListener(); // Create a body activation listener that gets notified when bodies activate and go to sleep | MUST BE THREAD SAFE
     m_physicsSystem->SetBodyActivationListener(m_bodyActivationListener);
 
-    m_contactListener = new PhysicsContactListener(); // Create a contact listener that gets notified when bodies (are about to) collide, and when they separate again | MUST BE THREAD SAFE
-    m_physicsSystem->SetContactListener(m_contactListener);
+    m_collisionListener = new PhysicsCollisionListener(); // Create a contact listener that gets notified when bodies (are about to) collide, and when they separate again | MUST BE THREAD SAFE
+    m_physicsSystem->SetContactListener(m_collisionListener);
 }
 
 
@@ -63,8 +67,8 @@ void PhysicsSystem::Destroy()
         GetBodyInterface().DestroyBody(l_rigidBody->GetID());
     }
 
-    delete m_contactListener;
-    m_contactListener = nullptr;
+    delete m_collisionListener;
+    m_collisionListener = nullptr;
 
     delete m_bodyActivationListener;
     m_bodyActivationListener = nullptr;

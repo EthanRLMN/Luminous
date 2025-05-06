@@ -3,9 +3,8 @@
 #include <memory>
 #include <vector>
 
-#include "Game/Systems/Physics/ICollisionListener.hpp"
 
-
+/*
 class RigidbodyComponent : public std::enable_shared_from_this<RigidbodyComponent>
 {
 public:
@@ -37,4 +36,4 @@ public:
 private:
     std::vector<std::shared_ptr<ICollisionListener>> m_listeners { };
     bool m_simulatePhysics { true };
-};
+};*/
