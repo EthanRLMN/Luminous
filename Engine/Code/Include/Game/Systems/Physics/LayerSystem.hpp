@@ -15,6 +15,7 @@ namespace Layers
     static constexpr JPH::ObjectLayer NUM_LAYERS = 5;
 };
 
+
 namespace BroadPhaseLayers
 {
     static constexpr JPH::BroadPhaseLayer DISABLED(0);

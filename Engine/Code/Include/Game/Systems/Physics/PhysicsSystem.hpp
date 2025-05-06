@@ -56,7 +56,7 @@ public:
 
 
     /*          Body Creation Functions          */
-    JPH::Body* CreateRigidBody(const JPH::Shape* a_shape, const JPH::uint8 a_layer = Layers::DYNAMIC) const
+    RigidBody* CreateRigidBody(const JPH::Shape* a_shape, const JPH::uint8 a_layer = Layers::DYNAMIC)
     {
         JPH::EMotionType l_motionType = JPH::EMotionType::Static;
         if (a_layer == Layers::DYNAMIC)
@@ -80,21 +80,21 @@ public:
         // Set up the gravity factor
         l_bodySettings.mGravityFactor = Settings().m_gravityFactor;
 
-        JPH::Body* l_body = GetBodyInterface().CreateBody(l_bodySettings);
+        const JPH::Body* l_body = GetBodyInterface().CreateBody(l_bodySettings);
         GetBodyInterface().AddBody(l_body->GetID(), JPH::EActivation::Activate);
 
-        return l_body;
+        m_rigidBodies.emplace_back(l_body);
     }
 
 
-    inline JPH::Body* CreateBox(const Maths::Vector3 a_scale = Maths::Vector3::One) const
+    inline RigidBody* CreateBox(const Maths::Vector3 a_scale = Maths::Vector3::One) const
     {
         const JPH::Vec3 l_halfSize = JPH::Vec3(a_scale.x * 0.5f, a_scale.y * 0.5f,a_scale.z * 0.5f);
         return CreateRigidBody(new JPH::BoxShape(l_halfSize));
     };
 
 
-    inline JPH::Body* CreateSphere(const float a_radius = 1.0f) const
+    inline RigidBody* CreateSphere(const float a_radius = 1.0f) const
     {
         return CreateRigidBody(new JPH::SphereShape(a_radius));
     };
@@ -103,14 +103,14 @@ public:
     inline void RemoveBody(const JPH::BodyID& a_bodyId)
     {
         GetBodyInterface().RemoveBody(a_bodyId);
-        //m_rigidBodies.erase(std::remove(m_rigidBodies.begin(), m_rigidBodies.end(), GetBodyInterface()R), m_rigidBodies.end());
+        m_rigidBodies.erase(std::remove(m_rigidBodies.begin(), m_rigidBodies.end(), a_bodyId), m_rigidBodies.end());
     }
 
 
     inline void RemoveAllBodies()
     {
-        for (const JPH::Body* l_body : m_rigidBodies)
-            RemoveBody(l_body->GetID());
+        for (const RigidBody* l_body : m_rigidBodies)
+            RemoveBody(l_body->GetRigidBodyID());
 
         m_rigidBodies.clear();
     }
@@ -139,7 +139,7 @@ private:
     JPH::BodyCreationSettings* m_floorSettings { nullptr };
     JPH::BodyCreationSettings* m_sphereSettings { nullptr };
 
-    std::vector<JPH::Body*> m_rigidBodies{};
+    std::vector<RigidBody*> m_rigidBodies{};
 };
 
 

@@ -48,8 +48,8 @@ void PhysicsSystem::Init(const Settings& a_settings)
 
 void PhysicsSystem::Update()
 {
-    for (const JPH::Body* l_rigidBody : m_rigidBodies)
-        if (!GetBodyInterface().IsActive(l_rigidBody->GetID()))
+    for (const RigidBody* l_rigidBody : m_rigidBodies)
+        if (!GetBodyInterface().IsActive(l_rigidBody->GetRigidBodyID()))
             return;
 
     // TODO : Update collision steps to run properly (accumulator returns floats on a scale from 0.25 to 10, we need integers scaled properly)
@@ -61,10 +61,10 @@ void PhysicsSystem::Update()
 
 void PhysicsSystem::Destroy()
 {
-    for (const JPH::Body* l_rigidBody : m_rigidBodies)
+    for (const RigidBody* l_rigidBody : m_rigidBodies)
     {
-        GetBodyInterface().RemoveBody(l_rigidBody->GetID());
-        GetBodyInterface().DestroyBody(l_rigidBody->GetID());
+        GetBodyInterface().RemoveBody(l_rigidBody->GetRigidBodyID());
+        GetBodyInterface().DestroyBody(l_rigidBody->GetRigidBodyID());
     }
 
     delete m_collisionListener;
