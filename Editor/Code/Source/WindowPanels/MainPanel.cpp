@@ -121,70 +121,72 @@ void MainPanel::Render()
     {
         if (ImGui::BeginMenu("File"))
         {
-            ImGui::MenuItem("New Project", "CTRL + N");
+            if(ImGui::MenuItem("New Project", "CTRL + N"))
             {
                 g_newFile = true;
             }
-            ImGui::MenuItem("Open Project...", "CTRL + O");
+            if(ImGui::MenuItem("Open Project...", "CTRL + O"))
             {
                 g_openFile = true;
             }
 
             ImGui::Separator();
-            ImGui::MenuItem("Save All", "CTRL + S");
+            if(ImGui::MenuItem("Save All", "CTRL + S"))
             {
                 g_saveFile = true;
             }
-            ImGui::MenuItem("Save All As...", "CTRL + ALT + S");
+            if(ImGui::MenuItem("Save All As...", "CTRL + ALT + S"))
             {
                 g_saveAs = true;
             }
 
             ImGui::Separator();
-            ImGui::MenuItem("Build Project", "CTRL + B");
+            if(ImGui::MenuItem("Build Project", "CTRL + B"))
             {
                 g_build = true;
             }
-            ImGui::MenuItem("Build Project and Run", "CTRL + ALT + B");
+            if(ImGui::MenuItem("Build Project and Run", "CTRL + ALT + B"))
             {
                 g_buildRun = true;
             }
 
             ImGui::Separator();
-            ImGui::MenuItem("Exit");
-
+            if(ImGui::MenuItem("Exit"))
+            {
+                p_editor->RequestExit();
+            }
             ImGui::EndMenu();
         }
 
         if (ImGui::BeginMenu("Edit"))
         {
-            ImGui::MenuItem("Undo", "CTRL + Z");
+            if(ImGui::MenuItem("Undo", "CTRL + Z"))
             {
                 g_undo = true;
             } 
-            ImGui::MenuItem("Redo", "CTRL + Y");
+            if (ImGui::MenuItem("Redo", "CTRL + Y"))
             {
                 g_redo = true;
             }
 
             ImGui::Separator();
-            ImGui::MenuItem("Cut", "CTRL + X");
+            if(ImGui::MenuItem("Cut", "CTRL + X"))
             {
                 g_cut = true;
             }
-            ImGui::MenuItem("Copy", "CTRL + C");
+            if(ImGui::MenuItem("Copy", "CTRL + C"))
             {
                 g_copy = true;
             }
-            ImGui::MenuItem("Paste", "CTRL + V");
+            if(ImGui::MenuItem("Paste", "CTRL + V"))
             {
                 g_paste = true;
             }
-            ImGui::MenuItem("Duplicate", "CTRL + D");
+            if(ImGui::MenuItem("Duplicate", "CTRL + D"))
             {
                 g_duplicate = true;
             }
-            ImGui::MenuItem("Delete", "DEL");
+            if(ImGui::MenuItem("Delete", "DEL"))
             {
                 g_delete = true;
             }
@@ -197,15 +199,11 @@ void MainPanel::Render()
 
         if (ImGui::BeginMenu("Window"))
         {
-            ImGui::MenuItem("Console");
+            if(ImGui::MenuItem("Scene"))
             {
 
             }
-            ImGui::MenuItem("Scene");
-            {
-
-            }
-            ImGui::MenuItem("Game");
+            if(ImGui::MenuItem("Game"))
             {
 
             }
