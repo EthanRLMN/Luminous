@@ -22,11 +22,12 @@ void VulkanRenderer::Create(IWindow* a_window, ISwapChain* a_swapChain)
 {
     m_cameraEditor.Init(static_cast<float>(a_swapChain->CastVulkan()->GetSwapChainExtent().width) / static_cast<float>(a_swapChain->CastVulkan()->GetSwapChainExtent().height), 60.f, 0.1f, 100.f);
 
-
     LightComponent l_light = LightComponent();
-    m_lights.push_back(l_light);
+    LightComponent l_light2 = LightComponent();
 
-    m_light = LightComponent();
+    //m_lights[1] = l_light2;
+    //m_lights.push_back(l_light);
+    //m_lights.push_back(l_light2);
 }
 
 void VulkanRenderer::DrawFrame(IWindow* a_window, IDevice* a_device, ISwapChain* a_swapChain, IPipeline* a_pipeline, IBuffer* a_buffer, IRenderPassManager* a_renderPassManager, IDescriptor* a_descriptor, IMesh* a_mesh, ISynchronization* a_synchronization, ICommandBuffer* a_commandBuffer, IFrameBufferManager* a_frameBufferManager, IDepthResource* a_depthResource, ISurface* a_surface, IMultiSampling* a_multisampling,IInputManager* a_inputManager)
@@ -37,7 +38,7 @@ void VulkanRenderer::DrawFrame(IWindow* a_window, IDevice* a_device, ISwapChain*
     vkWaitForFences(l_device, 1, &a_synchronization->CastVulkan()->GetFences()[m_currentFrame], VK_TRUE, UINT64_MAX);
     uint32_t l_imageIndex{ 0 };
     
-
+    /*
     if (a_inputManager->IsKeyDown(Key::KEY_RIGHT))
     {
         m_lights[0].m_position += Maths::Vector3(0.01f, 0, 0);
@@ -53,7 +54,7 @@ void VulkanRenderer::DrawFrame(IWindow* a_window, IDevice* a_device, ISwapChain*
     if (a_inputManager->IsKeyDown(Key::KEY_DOWN))
     {
         m_lights[0].m_position -= Maths::Vector3(0, 0.01f, 0);
-    }
+    }*/
 
     VkResult l_result = vkAcquireNextImageKHR(l_device, l_swapchain, UINT64_MAX, a_synchronization->CastVulkan()->GetImageAvailableSemaphores()[m_currentFrame], nullptr, &l_imageIndex);
     if (l_result == VK_ERROR_OUT_OF_DATE_KHR)
@@ -185,8 +186,8 @@ void VulkanRenderer::UpdateUniformBuffer(const VkDevice& a_device,const uint32_t
     memcpy(a_buffer->CastVulkan()->GetUniformBuffersMapped()[a_currentFrame], &l_ubo, sizeof(l_ubo));
 
     
-    VkDeviceSize size = sizeof(LightComponent) * 32; 
-    memcpy(a_buffer->CastVulkan()->GetLightUniformBuffersMapped()[a_currentFrame], &m_light, size);
+    VkDeviceSize size = sizeof(LightData) * 32; 
+    memcpy(a_buffer->CastVulkan()->GetLightUniformBuffersMapped()[a_currentFrame], &m_lights, size);
     
 
 }

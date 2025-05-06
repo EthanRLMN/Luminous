@@ -6,9 +6,16 @@
 #include "Vector3.hpp"
 
 
-constexpr unsigned int MAX_LIGHTS = 32;
+//constexpr unsigned int MAX_LIGHTS = 32;
 
-
+struct alignas(16) LightData
+{
+    alignas(16) Maths::Vector3 m_position{ 1.0f, 1.0f, 0.0f };
+    alignas(16) Maths::Vector3 m_direction { 1.0f, 0.0f, 1.0f };
+    alignas(16) Maths::Vector3 m_color { 1.0f, 1.0f, 1.0f };
+    int m_type = 1;
+    float m_intensity = 1.0;
+};
 
 class LightComponent : public EntityComponent
 {
@@ -17,10 +24,10 @@ public:
     void GameplayStarted() override{};
     void Update() override{};
 
-    alignas(16) Maths::Vector3 m_position = Maths::Vector3(1.0f, 1.0f, 0.0f);
-    alignas(16) Maths::Vector3 m_direction = Maths::Vector3(1.0f, 0.0f, 1.0f);
-    alignas(16) Maths::Vector3 m_color = Maths::Vector3(1.0f, 1.0f, 1.0f);
-    alignas(4) uint32_t m_type = 0;
-    alignas(4) float m_intensity = 1.0f;
-    alignas(8) float _pad[2] = { 0.0f, 0.0f };
+    
+
+    LightData& GetLight() { return light; };
+private:
+
+    LightData light{};
 };

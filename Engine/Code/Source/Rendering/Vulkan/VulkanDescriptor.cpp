@@ -156,7 +156,7 @@ void VulkanDescriptor::UpdateDescriptorSets(IDevice* a_device, ITexture* a_textu
         VkDescriptorBufferInfo l_lightBufferInfo{};
         l_lightBufferInfo.buffer = m_lightUniformBuffer[i];
         l_lightBufferInfo.offset = 0;
-        l_lightBufferInfo.range = sizeof(LightComponent) * 32;
+        l_lightBufferInfo.range = VK_WHOLE_SIZE;
 
         std::array<VkWriteDescriptorSet, 3> l_descriptorWrites{ VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET };
         l_descriptorWrites[0].dstSet = m_descriptorSets[i];
