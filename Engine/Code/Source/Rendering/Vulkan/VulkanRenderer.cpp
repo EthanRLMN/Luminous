@@ -38,9 +38,12 @@ void VulkanRenderer::DrawFrame(IWindow* a_window, IDevice* a_device, ISwapChain*
     vkWaitForFences(l_device, 1, &a_synchronization->CastVulkan()->GetFences()[m_currentFrame], VK_TRUE, UINT64_MAX);
     uint32_t l_imageIndex{ 0 };
     
+
+    
     
     if (a_inputManager->IsKeyDown(Key::KEY_RIGHT))
     {
+        m_cameraEditor.GetViewMatrix().Print();
         m_lights[0].GetLight().m_position += Maths::Vector3(0.05f, 0, 0);
     }
     if (a_inputManager->IsKeyDown(Key::KEY_LEFT))

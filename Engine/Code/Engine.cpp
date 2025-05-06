@@ -43,6 +43,9 @@ void Engine::Update()
     m_entityManager.Update();
     m_renderer->DrawFrame(m_window, m_device, m_swapChain, m_pipeline, m_buffer, m_renderPassManager, m_descriptor, m_mesh, m_synchronization, m_commandBuffer, m_frameBufferManager, m_depthResource, m_surface, m_multiSampling,m_inputManager);
 
+
+    
+
     m_physicsSystem->Update();
 
     if (m_window->ShouldClose())
