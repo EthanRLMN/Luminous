@@ -52,7 +52,7 @@ public:
     [[nodiscard]] inline JPH::ObjectLayerPairFilter* GetObjectToObjLayerFilter() const { return m_ObjToObjLayerFilter; }
     [[nodiscard]] inline JPH::BodyActivationListener* GetBodyActivationListener() const { return m_bodyActivationListener; }
     [[nodiscard]] inline JPH::ContactListener* GetContactListener() const { return m_collisionListener; }
-    [[nodiscard]] inline std::vector<JPH::Body*> GetRigidBodies() const { return m_rigidBodies; }
+    [[nodiscard]] inline std::vector<RigidBody*> GetRigidBodies() const { return m_rigidBodies; }
 
 
     /*          Body Creation Functions          */
