@@ -1,5 +1,6 @@
 #include "WindowPanels/MainPanel.hpp"
 #include "Editor.hpp"
+#include "windows.h"
 #include "glfw/glfw3.h"
 #include "imgui.h"
 #include "stb_image.h"
@@ -121,22 +122,33 @@ void MainPanel::Render()
         if (ImGui::BeginMenu("File"))
         {
             ImGui::MenuItem("New Project", "CTRL + N");
-            ImGui::MenuItem("Open Project...", "CTRL + O");
-
-            if (ImGui::BeginMenu("Open Recent Project"))
             {
-                ImGui::MenuItem("Project1");
-                ImGui::MenuItem("Project2");
-                ImGui::EndMenu();
+                g_newFile = true;
+            }
+            ImGui::MenuItem("Open Project...", "CTRL + O");
+            {
+                g_openFile = true;
             }
 
             ImGui::Separator();
             ImGui::MenuItem("Save All", "CTRL + S");
+            {
+                g_saveFile = true;
+            }
             ImGui::MenuItem("Save All As...", "CTRL + ALT + S");
+            {
+                g_saveAs = true;
+            }
 
             ImGui::Separator();
             ImGui::MenuItem("Build Project", "CTRL + B");
+            {
+                g_build = true;
+            }
             ImGui::MenuItem("Build Project and Run", "CTRL + ALT + B");
+            {
+                g_buildRun = true;
+            }
 
             ImGui::Separator();
             ImGui::MenuItem("Exit");
@@ -147,14 +159,35 @@ void MainPanel::Render()
         if (ImGui::BeginMenu("Edit"))
         {
             ImGui::MenuItem("Undo", "CTRL + Z");
+            {
+                g_undo = true;
+            } 
             ImGui::MenuItem("Redo", "CTRL + Y");
+            {
+                g_redo = true;
+            }
 
             ImGui::Separator();
             ImGui::MenuItem("Cut", "CTRL + X");
+            {
+                g_cut = true;
+            }
             ImGui::MenuItem("Copy", "CTRL + C");
+            {
+                g_copy = true;
+            }
             ImGui::MenuItem("Paste", "CTRL + V");
+            {
+                g_paste = true;
+            }
             ImGui::MenuItem("Duplicate", "CTRL + D");
+            {
+                g_duplicate = true;
+            }
             ImGui::MenuItem("Delete", "DEL");
+            {
+                g_delete = true;
+            }
 
             ImGui::Separator();
             ImGui::MenuItem("Settings");
@@ -165,8 +198,17 @@ void MainPanel::Render()
         if (ImGui::BeginMenu("Window"))
         {
             ImGui::MenuItem("Console");
+            {
+
+            }
             ImGui::MenuItem("Scene");
+            {
+
+            }
             ImGui::MenuItem("Game");
+            {
+
+            }
             ImGui::EndMenu();
         }
 
@@ -182,8 +224,16 @@ void MainPanel::HelpContextMenu()
     {
         ImGui::MenuItem("About");
         ImGui::Separator();
-        ImGui::MenuItem("Luminous Engine Documentation");
-        ImGui::MenuItem("Credits");
+        if(ImGui::MenuItem("Luminous Engine Documentation"))
+        {
+            std::string l_url = "https://docs.google.com/document/d/19qMj7aVNyUmKaU75l3vGquVxbhHGDizC_6ZDZihrUx8/edit?pli=1&tab=t.0#heading=h.gb8ifdy1ueeo";
+            ShellExecuteA(NULL, "open", l_url.c_str(), NULL, NULL, SW_SHOWNORMAL);
+        }
+        if (ImGui::MenuItem("Credits"))
+        {
+            std::string l_url = "https://docs.google.com/document/d/19qMj7aVNyUmKaU75l3vGquVxbhHGDizC_6ZDZihrUx8/edit?pli=1&tab=t.0#heading=h.gb8ifdy1ueeo";
+            ShellExecuteA(NULL, "open", l_url.c_str(), NULL, NULL, SW_SHOWNORMAL);
+        }
         ImGui::MenuItem("Report a Bug");
         ImGui::EndMenu();
     }
