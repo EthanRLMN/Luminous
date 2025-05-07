@@ -127,12 +127,6 @@ void Engine::Destroy()
     m_renderer->Destroy();
     m_interface->DeleteRenderer(m_renderer);
 
-    if (m_imguiSampler != VK_NULL_HANDLE)
-    {
-        vkDestroySampler(GetDevice()->CastVulkan()->GetDevice(), m_imguiSampler, nullptr);
-        m_imguiSampler = VK_NULL_HANDLE;
-    }
-
     DestroyInput();
     DestroyWindow();
 }

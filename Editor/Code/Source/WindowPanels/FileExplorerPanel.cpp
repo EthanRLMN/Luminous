@@ -38,6 +38,12 @@ FileExplorerPanel::FileExplorerPanel(Editor* a_editor, const std::string& a_wind
     );
 }
 
+FileExplorerPanel::~FileExplorerPanel()
+{
+    m_directoryIconTexture->CastVulkan()->Destroy(m_engine->GetDevice());
+    m_fileIconTexture->CastVulkan()->Destroy(m_engine->GetDevice());
+}
+
 void FileExplorerPanel::Render()
 {
     IWindowPanel::Render();
