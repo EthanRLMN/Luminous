@@ -17,14 +17,14 @@ public:
 	[[nodiscard]] std::vector<VkDescriptorSet> GetDescriptorSet() const { return m_descriptorSets; };
     [[nodiscard]] VkDescriptorSet GetLightDescriptorSet() const { return m_lightDescriptorSets; };
 	VulkanDescriptor* CastVulkan() override { return this; }
-
+    void UpdateDescriptorSets(IDevice* a_device, ITexture* a_texture) const;
 
 private:
 	void CreateDescriptorPool(IDevice* a_device);
     void CreateImGUIDescriptorPool(IDevice* a_device);
 	void CreateDescriptorSets(IDevice* a_device, IDescriptorSetLayout* a_descriptorSetLayout, ITexture* a_texture);
 	void SetBuffers(IBuffer* a_buffer);
-	void UpdateDescriptorSets(IDevice* a_device, ITexture* a_texture) const;
+	
 
 	VkDescriptorPool m_descriptorPool { nullptr };
 	VkDescriptorPool m_imguiDescriptorPool { nullptr };

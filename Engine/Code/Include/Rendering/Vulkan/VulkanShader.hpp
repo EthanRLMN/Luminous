@@ -7,7 +7,7 @@
 class VulkanShader final : public IShader
 {
 public:
-    bool Create(IResourceManager* a_manager, const IResourceParams& a_params) override;
+    bool Create(const IResourceParams& a_params) override;
     void Destroy(IDevice* a_device) override;
 
     VulkanShader* CastVulkan() override { return this; }

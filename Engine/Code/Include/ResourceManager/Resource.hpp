@@ -2,7 +2,7 @@
 
 #include <string>
 
-class IResourceManager;
+class ResourceManager;
 class IDevice;
 class ISwapChain;
 class IDepthResource;
@@ -33,7 +33,7 @@ public:
 	IResource() = default;
     virtual ~IResource() = default;
 
-	virtual bool Create(IResourceManager* a_manager, const IResourceParams& a_params) = 0;
+	virtual bool Create(const IResourceParams& a_params) = 0;
     virtual void Destroy(IDevice* a_device) = 0;
     [[nodiscard]] virtual bool IsLoaded() const { return m_isLoaded; }
     virtual void SetLoaded(const bool a_loaded) { m_isLoaded = a_loaded; }

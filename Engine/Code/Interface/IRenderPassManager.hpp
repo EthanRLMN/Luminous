@@ -21,8 +21,8 @@ public:
         return nullptr;
     }
 
-    virtual std::vector<IRenderPass*> GetRenderPasses() const { return p_renderPasses; }
-    virtual IRenderPass* GetRenderPassAt(const int& a_index) const { return p_renderPasses[a_index]; }
+    [[nodiscard]] virtual std::vector<IRenderPass*> GetRenderPasses() const { return p_renderPasses; }
+    [[nodiscard]] virtual IRenderPass* GetRenderPassAt(const int& a_index) const { return p_renderPasses[a_index]; }
 
 protected:
     std::vector<IRenderPass*> p_renderPasses;

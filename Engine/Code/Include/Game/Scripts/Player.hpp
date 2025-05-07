@@ -5,7 +5,8 @@
 #include "EntitySystem/EntityManager.hpp"
 #include "EntitySystem/Components/ModelComponent.hpp"
 #include "EntitySystem/Components/RigidbodyComponent.hpp"
-#include "EntitySystem/Components/TransformComponent.hpp"
+#include <Logger.hpp>
+
 
 
 class Player : public EntityComponent, public std::enable_shared_from_this<Player>
@@ -34,20 +35,17 @@ public:
         //m_rigidbodyComponent->SetSimulatingPhysics(true);
         m_modelComponent->SetModelPath("Assets/Player.fbx");
 
-        DEBUG_LOG_INFO("Player Has CHild :  {}", m_modelComponent->GetModelPath());
-        DEBUG_LOG_INFO("Player  Has Parent : {}", m_modelComponent->GetModelPath());
     }
 
     void GameplayStarted() override
     {
 
         DEBUG_LOG_INFO("[Player] Gameplay Started");
-        DEBUG_LOG_INFO("Player Model : {}", m_modelComponent->GetModelPath());
     }
 
     void Update() override
     {
-        //DEBUG_LOG_INFO("[Player] Update Tick ");
+        DEBUG_LOG_INFO("[Player] Update Tick ");
     }
 
     void Input()

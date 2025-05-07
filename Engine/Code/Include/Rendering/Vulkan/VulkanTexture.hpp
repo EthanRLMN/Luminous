@@ -9,7 +9,7 @@
 class VulkanTexture final : public ITexture
 {
 public:
-    bool Create(IResourceManager* a_manager, const IResourceParams& a_params) override;
+    bool Create(const IResourceParams& a_params) override;
     void Destroy(IDevice* a_device) override;
     VulkanTexture* CastVulkan() override { return this; };
 

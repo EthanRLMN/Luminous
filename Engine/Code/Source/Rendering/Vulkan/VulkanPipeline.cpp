@@ -14,12 +14,12 @@
 #include "ResourceManager/ResourceManager.hpp"
 
 
-void VulkanPipeline::Create(IDevice* a_device, IRenderPass* a_renderPass, IDescriptorSetLayout* a_descriptionSetLayout, IResourceManager* a_resourceManager)
+void VulkanPipeline::Create(IDevice* a_device, IRenderPass* a_renderPass, IDescriptorSetLayout* a_descriptionSetLayout)
 {
     IResourceParams l_shaderParams{ a_device };
     l_shaderParams.m_vertexShaderPath = "Engine/Assets/Shaders/vert.spv";
     l_shaderParams.m_fragmentShaderPath = "Engine/Assets/Shaders/frag.spv";
-    VulkanShader* l_shader = a_resourceManager->LoadResource<VulkanShader>(l_shaderParams);
+    VulkanShader* l_shader = ResourceManager::GetInstance().LoadResource<VulkanShader>(l_shaderParams);
 
     //graphics pipeline creation info requires an array of shader
     std::array<VkPipelineShaderStageCreateInfo, 2> l_shaderStages = {
@@ -64,12 +64,17 @@ void VulkanPipeline::Create(IDevice* a_device, IRenderPass* a_renderPass, IDescr
     VkPipelineLayoutCreateInfo l_pipelineLayoutInfo{ VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO };
     l_pipelineLayoutInfo.setLayoutCount = 1;
 
-    VkDescriptorSetLayout l_descriptorSetLayout = a_descriptionSetLayout->CastVulkan()->GetDescriptorSetLayout();
-    VkDescriptorSetLayout l_lightDescriptorSetLayout = a_descriptionSetLayout->CastVulkan()->GetLightDescriptorSetLayout(); // create descriptorSetLayout has a local variable
-    std::vector<VkDescriptorSetLayout> l_descriptorSetLayouts = { l_descriptorSetLayout };
-    SetupDescriptorSetLayout(l_descriptorSetLayouts, l_pipelineLayoutInfo, a_device->CastVulkan()->GetDevice());
+    VkPushConstantRange l_pushConstant;
+    SetupPushConstants(l_pipelineLayoutInfo, l_pushConstant);
+   
+
+    VkDescriptorSetLayout l_descriptorSetLayout = a_descriptionSetLayout->CastVulkan()->GetDescriptorSetLayout(); //create descriptorSetLayout has a local variable
+    SetupDescriptorSetLayout(l_descriptorSetLayout, l_pipelineLayoutInfo, a_device->CastVulkan()->GetDevice());
 
     //Graphic pipeline creation
+
+    
+
     VkGraphicsPipelineCreateInfo l_pipelineCreateInfo{ VK_STRUCTURE_TYPE_GRAPHICS_PIPELINE_CREATE_INFO };
     PushPipelineInfo(l_pipelineCreateInfo, l_shaderStages, l_vertexInputCreateInfo, l_inputAssembly, l_viewportStateCreateInfo, l_rasterizerCreateInfo, l_multisamplingCreateInfo, l_depthStencil, l_colorBlending, l_dynamicStateCreationInfo, a_renderPass->CastVulkan()->GetRenderPass(), a_device->CastVulkan()->GetDevice());
 
@@ -201,6 +206,16 @@ void VulkanPipeline::SetupDynamicStates(const std::array<VkDynamicState, 2>& a_d
 {
     a_dynamicStateCreationInfo.dynamicStateCount = static_cast<uint32_t>(a_dynamicStates.size());
     a_dynamicStateCreationInfo.pDynamicStates = a_dynamicStates.data();
+}
+
+void VulkanPipeline::SetupPushConstants(VkPipelineLayoutCreateInfo& a_layout, VkPushConstantRange& a_pushConstant)
+{
+    a_pushConstant.offset = 0;
+    a_pushConstant.size = sizeof(UniformBufferObject);
+    a_pushConstant.stageFlags = VK_SHADER_STAGE_VERTEX_BIT;
+
+    a_layout.pPushConstantRanges = &a_pushConstant;
+    a_layout.pushConstantRangeCount = 1;
 }
 
 

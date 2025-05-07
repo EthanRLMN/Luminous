@@ -1,12 +1,22 @@
 #pragma once
 
-class ModelComponent 
+
+#include "ITexture.hpp"
+#include "IMesh.hpp"
+#include "EntitySystem/EntityComponent.hpp"
+
+
+
+class ModelComponent : public EntityComponent
 {
 public:
-    inline void SetModelPath(const std::string& a_path) { m_modelPath = a_path; }
-    [[nodiscard]] inline const std::string& GetModelPath() const { return m_modelPath; }
+    ~ModelComponent() = default;
+    void Initialize() override {};
+    void GameplayStarted() override {};
+    void Update() override {};
 
 
 private:
-    std::string m_modelPath { };
+    IMesh* m_mesh;
+    ITexture* m_texture;
 };

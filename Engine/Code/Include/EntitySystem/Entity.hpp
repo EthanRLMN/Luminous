@@ -5,6 +5,11 @@
 #include <vector>
 
 #include "EntityComponent.hpp"
+#include "Quaternion.hpp"
+#include "Vector3.hpp"
+#include "Matrix4.hpp"
+
+#include "EntitySystem/Components/ModelComponent.hpp"
 
 class EntityManager;
 
@@ -19,6 +24,21 @@ public:
     inline void AddLogic(const std::shared_ptr<EntityComponent>& a_logic) { m_entityComponents.push_back(a_logic); }
     inline void AttachChild(const std::shared_ptr<Entity>& a_child) { m_children.push_back(a_child); a_child->SetParent(shared_from_this()); }
     inline void SetParent(const std::shared_ptr<Entity>& a_parentEntity) { m_parent = a_parentEntity; }
+
+
+    Maths::Vector3 GetPosition() { return position; };
+    Maths::Quaternion GetRotation() { return rotation; };
+    Maths::Vector3 GetScale() { return scale; };
+
+    Maths::Matrix4 GetTPS() { return TRS; };
+
+
+    void SetPosition(Maths::Vector3 a_position) { position = a_position; };
+    void SetRotation(Maths::Quaternion a_rotation) {};
+    void SetScale(Maths::Vector3 a_scale) {};
+
+    void SetTRS(Maths::Matrix4 a_TRS){TRS = a_TRS; };
+    
 
     [[nodiscard]] inline std::string GetName() const { return m_name; }
     [[nodiscard]] inline std::vector<std::shared_ptr<Entity>> GetChildren() const { return m_children; }
@@ -38,6 +58,22 @@ public:
         return nullptr;
     }
 
+    std::vector<std::shared_ptr<Entity>> GetEntitiesWithModelComponent()
+    {
+        std::vector<std::shared_ptr<Entity>> entitiesWithModel;
+
+        
+        for (auto& entity : m_entities)
+        { 
+            auto modelComponent = entity->GetComponent<ModelComponent>();
+            if (modelComponent != nullptr)
+            {
+                entitiesWithModel.push_back(entity);
+            }
+        }
+
+        return entitiesWithModel;
+    }
 
     inline void Initialize()
     {
@@ -73,9 +109,18 @@ private:
     EntityManager& m_entityManager;
     std::string m_name { };
 
+
     // TODO : Use a generic virtual component so that we can replace `void` with the actual component type, making the system faster and safer
     std::vector<std::shared_ptr<void>> m_components { };
     std::vector<std::shared_ptr<EntityComponent>> m_entityComponents { };
     std::vector<std::shared_ptr<Entity>> m_children { };
     std::shared_ptr<Entity> m_parent { nullptr };
+
+    std::vector<std::shared_ptr<Entity>> m_entities;
+
+    Maths::Vector3 position = Maths::Vector3::Zero;
+    Maths::Quaternion rotation = Maths::Quaternion::Identity;
+    Maths::Vector3 scale = Maths::Vector3::One;
+
+    Maths::Matrix4 TRS = Maths::Matrix4::TRS(position, rotation.ToEulerAngles(true), scale);
 };

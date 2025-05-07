@@ -1,13 +1,7 @@
 #include "ResourceManager/ResourceManager.hpp"
 
-
-IResourceManager::IResourceManager()
+ResourceManager& ResourceManager::GetInstance()
 {
-	m_meshLoader = new AssimpModelLoader;
+    static ResourceManager l_instance{};
+    return l_instance;
 }
-
-IResourceManager::~IResourceManager()
-{
-	delete(m_meshLoader);
-}
-
