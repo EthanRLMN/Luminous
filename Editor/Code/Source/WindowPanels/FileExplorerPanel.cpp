@@ -18,6 +18,12 @@ FileExplorerPanel::FileExplorerPanel(Editor* a_editor, const std::string& a_wind
     m_engine = a_editor->GetEngine();
     m_directoryIconTexture = LoadTexture(m_engine, (s_IconPath / "DirectoryIcon.png").string());
     m_fileIconTexture = LoadTexture(m_engine, (s_IconPath / "FileIcon.png").string());
+    
+    m_directoryIconTexture->CastVulkan()->CreateTextureImageView(m_engine->GetDevice());
+    m_fileIconTexture->CastVulkan()->CreateTextureImageView(m_engine->GetDevice());
+
+    m_directoryIconTexture->CastVulkan()->CreateTextureSampler(m_engine->GetDevice());
+    m_fileIconTexture->CastVulkan()->CreateTextureSampler(m_engine->GetDevice());
 
     m_directoryDescriptor = (ImTextureID) ImGui_ImplVulkan_AddTexture(
             m_engine->GetDefaultSampler(),
@@ -124,6 +130,6 @@ std::shared_ptr<ITexture> LoadTexture(Engine* engine, const std::string& path)
     params.m_texturePath = path;
 
     auto texture = std::make_shared<VulkanTexture>();
-    texture->CreateTextureImage(params.m_device, params.m_swapChain, params.m_commandPool, path);
+    texture->CreateTextureImage(params.m_device, params.m_swapChain, params.m_commandPool, params.m_texturePath);
     return texture;
 }
