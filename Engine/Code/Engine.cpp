@@ -40,7 +40,7 @@ void Engine::Update()
     m_inputManager->Update(m_window);
 
    
-    m_renderer->DrawFrame(m_window, m_device, m_swapChain, m_pipeline, m_buffer, m_renderPassManager, m_descriptor, l_meshes, m_synchronization, m_commandBuffer, m_frameBufferManager, m_depthResource, m_surface, m_multiSampling,m_inputManager,m_entityManager);
+    m_renderer->DrawFrame(m_window, m_device, m_swapChain, m_pipeline, m_buffer, m_renderPassManager, m_descriptor, l_meshes, m_synchronization, m_commandBuffer, m_frameBufferManager, m_depthResource, m_surface, m_multiSampling,m_inputManager,m_entityManager,m_texture);
 
     m_physicsSystem->Update();
 
@@ -204,6 +204,11 @@ void Engine::PreRender()
     m_renderer->Create(m_window, m_swapChain);
     m_renderer->CastVulkan()->SetViewportSize(static_cast<float>(m_swapChain->CastVulkan()->GetSwapChainExtent().width), static_cast<float>(m_swapChain->CastVulkan()->GetSwapChainExtent().height));
     m_renderer->CastVulkan()->CreateViewportImage(m_device, m_swapChain);
+
+
+    IResourceParams l_texParams2{ m_device, m_swapChain, m_depthResource, m_commandPool };
+    l_texParams2.m_texturePath = "Engine/Assets/Textures/Untitled312.png";
+    m_texture = m_resourceManager->LoadResource<VulkanTexture>(l_texParams2);
 
 }
 
