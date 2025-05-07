@@ -28,9 +28,6 @@ void VulkanRenderer::Create(IWindow* a_window, ISwapChain* a_swapChain)
     l_light2.GetLight().m_type = 1;
     l_light2.GetLight().m_intensity = 2.5f;
     m_lights[1] = l_light2;
-    //m_lights[1] = l_light2;
-    //m_lights.push_back(l_light);
-    //m_lights.push_back(l_light2);
 }
 
 void VulkanRenderer::DrawFrame(IWindow* a_window, IDevice* a_device, ISwapChain* a_swapChain, IPipeline* a_pipeline, IBuffer* a_buffer, IRenderPassManager* a_renderPassManager, IDescriptor* a_descriptor, IMesh* a_mesh, ISynchronization* a_synchronization, ICommandBuffer* a_commandBuffer, IFrameBufferManager* a_frameBufferManager, IDepthResource* a_depthResource, ISurface* a_surface, IMultiSampling* a_multisampling,IInputManager* a_inputManager)

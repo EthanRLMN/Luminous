@@ -58,6 +58,14 @@ vec3 CalculateDirectional(Light a_light)
 
 vec3 CalculatePointLight (Light a_light)
 {
+
+    float constant = 1.0f;
+    float linear = 0.09f;
+    float quadratic = 0.032f;  
+
+    float dist = length(a_light.position - fragPos);
+    float attenuation = 1.0 / (constant + linear * dist + quadratic * (dist * dist));    
+
     vec3 lightcolor = a_light.color;
 
     float ambientStrength = a_light.ambientStrength;
@@ -75,6 +83,11 @@ vec3 CalculatePointLight (Light a_light)
 
     float spec = pow(max(dot(viewDir, reflectDir), 0.0), 32);
     vec3 specular = specularStrength * spec * lightcolor;  
+
+    
+    ambient  *= attenuation; 
+    diffuse  *= attenuation;
+    specular *= attenuation; 
 
     vec3 result = (ambient + diffuse + specular) * a_light.intensity;
     return result;
