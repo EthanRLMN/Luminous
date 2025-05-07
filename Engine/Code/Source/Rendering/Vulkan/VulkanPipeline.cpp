@@ -219,14 +219,14 @@ void VulkanPipeline::SetupPushConstants(VkPipelineLayoutCreateInfo& a_layout, Vk
 }
 
 
-void VulkanPipeline::SetupDescriptorSetLayout(const std::vector<VkDescriptorSetLayout>& a_descriptorSetLayouts, VkPipelineLayoutCreateInfo& a_pipelineLayoutInfo, const VkDevice a_device)
+void VulkanPipeline::SetupDescriptorSetLayout(const VkDescriptorSetLayout& a_descriptorSetLayout, VkPipelineLayoutCreateInfo& a_pipelineLayoutInfo, const VkDevice a_device)
 {
-    a_pipelineLayoutInfo.setLayoutCount = static_cast<uint32_t> (a_descriptorSetLayouts.size());
-    a_pipelineLayoutInfo.pSetLayouts = a_descriptorSetLayouts.data();
+    a_pipelineLayoutInfo.pSetLayouts = &a_descriptorSetLayout;
 
     //Create pipeline layout
     const VkResult l_result = vkCreatePipelineLayout(a_device, &a_pipelineLayoutInfo, nullptr, &m_pipelineLayout);
     LOG_ASSERT_ERROR(l_result == VK_SUCCESS, "Vulkan Pipeline: Failed to create Pipeline layout!\n");
+
 }
 
 

@@ -30,14 +30,14 @@ public:
     Maths::Quaternion GetRotation() { return rotation; };
     Maths::Vector3 GetScale() { return scale; };
 
-    Maths::Matrix4 GetTPS() { return TRS; };
+    Maths::Matrix4 GetTRS() { return TRS; };
 
 
     void SetPosition(Maths::Vector3 a_position) { position = a_position; };
-    void SetRotation(Maths::Quaternion a_rotation) {};
-    void SetScale(Maths::Vector3 a_scale) {};
+    void SetRotation(Maths::Quaternion a_rotation) { rotation = a_rotation; };
+    void SetScale(Maths::Vector3 a_scale) { scale = a_scale; };
 
-    void SetTRS(Maths::Matrix4 a_TRS){TRS = a_TRS; };
+    void SetTRS(Maths::Matrix4 a_TRS) { TRS = a_TRS; };
     
 
     [[nodiscard]] inline std::string GetName() const { return m_name; }
@@ -119,7 +119,7 @@ private:
     std::vector<std::shared_ptr<Entity>> m_entities;
 
     Maths::Vector3 position = Maths::Vector3::Zero;
-    Maths::Quaternion rotation = Maths::Quaternion::Identity;
+    Maths::Quaternion rotation = Maths::Quaternion::Zero;
     Maths::Vector3 scale = Maths::Vector3::One;
 
     Maths::Matrix4 TRS = Maths::Matrix4::TRS(position, rotation.ToEulerAngles(true), scale);

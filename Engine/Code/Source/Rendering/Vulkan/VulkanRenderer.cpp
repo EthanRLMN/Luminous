@@ -147,20 +147,18 @@ void VulkanRenderer::RecordCommandBuffer(IDevice* a_device,const VkCommandBuffer
             for (const auto& entity : entitiesWithModels)
             {
                 UniformBufferObject l_ubo{};
-                Maths::Matrix4 modelMatrix = entity->GetTPS();
+                Maths::Matrix4 modelMatrix = entity->GetTRS();
 
                 if (l_i == 1) 
                 {
-                    l_ubo.model = Maths::Matrix4::TRS(Maths::Vector3(0.0f, 0.f, 0.f), Maths::Vector3(0.f, 0.f, 0.f), Maths::Vector3(1.f, 1.0f, 1.0f));
-                    l_ubo.view = m_cameraEditor.GetViewMatrix();
+                    l_ubo.model = Maths::Matrix4::TRS(Maths::Vector3(0.0f, 0.f, 0.f), Maths::Vector3(0.f, 0.f, 0.f), Maths::Vector3(1.f, 1.0f, 1.0f)).Transpose();
+                    l_ubo.view = m_cameraEditor.GetViewMatrix().Transpose();
                     l_ubo.proj = m_cameraEditor.GetProjectionMatrix();
-                    l_ubo.proj.mat[1][1] *= -1.f;
                 } else
                 {
                     l_ubo.model = modelMatrix;
-                    l_ubo.view = m_cameraEditor.GetViewMatrix();
+                    l_ubo.view = m_cameraEditor.GetViewMatrix().Transpose();
                     l_ubo.proj = m_cameraEditor.GetProjectionMatrix();
-                    l_ubo.proj.mat[1][1] *= -1.f;
                 }
                 
 
@@ -174,7 +172,7 @@ void VulkanRenderer::RecordCommandBuffer(IDevice* a_device,const VkCommandBuffer
 
                 vkCmdDrawIndexed(a_commandBuffer, static_cast<uint32_t>(a_meshes[l_i]->CastVulkan()->GetIndices().size()), 1, 0, 0, 0);
 
-                l_i++;
+                ++l_i;
             }
 
             /*
@@ -214,7 +212,7 @@ void VulkanRenderer::RecordCommandBuffer(IDevice* a_device,const VkCommandBuffer
 }
 
 
-void VulkanRenderer::UpdateUniformBuffer(const uint32_t& a_currentFrame, IBuffer* a_buffer, EntityManager a_entityManager) const
+void VulkanRenderer::UpdateUniformBuffer(const uint32_t& a_currentFrame, IBuffer* a_buffer, const EntityManager& a_entityManager) const
 {
 
     a_entityManager.Update();
@@ -230,18 +228,13 @@ void VulkanRenderer::UpdateUniformBuffer(const uint32_t& a_currentFrame, IBuffer
         if (modelComponent)
         {
 
-            Maths::Matrix4 modelMatrix = entity->GetTPS();
-
-            l_ubo.model = modelMatrix;
+            l_ubo.model = entity->GetTRS();
         }
     }
 
 
     l_ubo.view = m_cameraEditor.GetViewMatrix();
     l_ubo.proj = m_cameraEditor.GetProjectionMatrix();
-
-
-    l_ubo.proj.mat[1][1] *= -1.f;
 
 
     memcpy(a_buffer->CastVulkan()->GetUniformBuffersMapped()[a_currentFrame], &l_ubo, sizeof(l_ubo));
