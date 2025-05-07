@@ -40,7 +40,7 @@ void Engine::Update()
     m_inputManager->Update(m_window);
 
    
-    m_renderer->DrawFrame(m_window, m_device, m_swapChain, m_pipeline, m_buffer, m_renderPassManager, m_descriptor, m_mesh, m_synchronization, m_commandBuffer, m_frameBufferManager, m_depthResource, m_surface, m_multiSampling,m_inputManager,m_entityManager);
+    m_renderer->DrawFrame(m_window, m_device, m_swapChain, m_pipeline, m_buffer, m_renderPassManager, m_descriptor, l_meshes, m_synchronization, m_commandBuffer, m_frameBufferManager, m_depthResource, m_surface, m_multiSampling,m_inputManager,m_entityManager);
 
     m_physicsSystem->Update();
 
@@ -179,8 +179,11 @@ void Engine::PreRender()
     l_meshParams.m_meshPath = "Engine/Assets/Models/viking_room.obj";
     m_mesh = m_resourceManager->LoadResource<VulkanMesh>(l_meshParams);
 
+    
+    l_meshes.push_back(m_mesh);
+
     m_buffer = m_interface->InstantiateBuffer();
-    m_buffer->Create(m_device, m_texture, m_commandPool, m_swapChain, m_mesh);
+    m_buffer->Create(m_device, m_texture, m_commandPool, m_swapChain, l_meshes);
 
     m_descriptor = m_interface->InstantiateDescriptor();
     m_descriptor->Create(m_device, m_descriptorSetLayout, m_texture, m_buffer);

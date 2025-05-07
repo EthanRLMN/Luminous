@@ -80,7 +80,7 @@ private:
 	PhysicsSystem* m_physicsSystem{ nullptr };
 
     bool m_isRunning { false };
-
+    std::vector<IMesh*> l_meshes;
 
 	EntityManager m_entityManager;
 };
