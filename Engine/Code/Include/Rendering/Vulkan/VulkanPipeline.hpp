@@ -11,7 +11,7 @@ class IRenderPass;
 class VulkanPipeline final : public IPipeline
 {
 public:
-    void Create(IDevice* a_device, IRenderPass* a_renderPass, IDescriptorSetLayout* a_descriptionSetLayout, IResourceManager* a_resourceManager) override;
+    void Create(IDevice* a_device, IRenderPass* a_renderPass, IDescriptorSetLayout* a_descriptionSetLayout) override;
 	void Destroy(IDevice* a_device) override;
 
 	[[nodiscard]] VkPipeline GetGraphicsPipeline() const { return m_graphicsPipeline; }

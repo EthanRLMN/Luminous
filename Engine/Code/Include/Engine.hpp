@@ -4,7 +4,6 @@
 #include "ISynchronization.hpp"
 #include "Game/Scene.hpp"
 #include "Game/Systems/Physics/PhysicsSystem.hpp"
-#include "ResourceManager/ResourceManager.hpp"
 #include "EntitySystem/Entity.hpp"
 #include "EntitySystem/EntityManager.hpp"
 
@@ -56,7 +55,6 @@ private:
 	IRender* m_interface { nullptr };
 	IWindow* m_window { nullptr };
 	IInputManager* m_inputManager { nullptr };
-	IResourceManager* m_resourceManager{ nullptr };
 	IInstance* m_instance { nullptr };
 	ISurface* m_surface { nullptr };
 	IDevice* m_device { nullptr };

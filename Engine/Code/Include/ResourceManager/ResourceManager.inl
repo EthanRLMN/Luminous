@@ -12,7 +12,7 @@ class VulkanMesh;
 class VulkanShader;
 
 template<typename T>
-T* IResourceManager::LoadResource(const IResourceParams a_params)
+T* ResourceManager::LoadResource(const IResourceParams a_params)
 {
     std::string l_file = "";
 
@@ -38,7 +38,7 @@ T* IResourceManager::LoadResource(const IResourceParams a_params)
 		DEBUG_LOG_INFO("{}", l_info);
 
 		T* l_resource = new T();
-		if (l_resource && l_resource->Create(this, a_params))
+		if (l_resource && l_resource->Create(a_params))
 		{
             l_info = "Initialized " + l_file + " file.";
 			DEBUG_LOG_INFO("{}", l_info);
@@ -59,7 +59,7 @@ T* IResourceManager::LoadResource(const IResourceParams a_params)
 
 
 template<typename T>
-T* IResourceManager::GetResource(const std::string& a_file)
+T* ResourceManager::GetResource(const std::string& a_file)
 {
 	if (m_resources[a_file] == nullptr)
 	{
@@ -82,7 +82,7 @@ T* IResourceManager::GetResource(const std::string& a_file)
 
 
 template<typename T>
-void IResourceManager::DeleteResource(const std::string& a_file , IDevice* a_device)
+void ResourceManager::DeleteResource(const std::string& a_file , IDevice* a_device)
 {
 	if (m_resources[a_file] == nullptr)
 	{

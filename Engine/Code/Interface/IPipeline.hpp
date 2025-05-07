@@ -8,13 +8,13 @@ class IRenderPass;
 class IDescriptorSetLayout;
 class IMultiSampling;
 
-class IResourceManager;
+class ResourceManager;
 class IPipeline
 {
 public:
 	virtual ~IPipeline() = default;
 
-	virtual void Create(IDevice* a_device, IRenderPass* a_renderPass, IDescriptorSetLayout* a_descriptionSetLayout, IResourceManager* a_resourceManager) = 0;
+	virtual void Create(IDevice* a_device, IRenderPass* a_renderPass, IDescriptorSetLayout* a_descriptionSetLayout) = 0;
 	virtual void Destroy(IDevice* a_device) = 0;
 
 	virtual VulkanPipeline* CastVulkan()

@@ -3,6 +3,7 @@
 #include "Game/Systems/Time.inl"
 #include "Rendering/Vulkan/VulkanRenderInterface.hpp"
 #include "Rendering/Vulkan/VulkanRenderPass.hpp"
+#include "ResourceManager/ResourceManager.hpp"
 
 
 #define JPH_DEBUG_RENDERER
@@ -26,7 +27,7 @@ void Engine::Init()
     InitPhysics();
 
 
-    m_scene->SceneEntity(m_entityManager,m_resourceManager);
+    m_scene->SceneEntity(m_entityManager);
     
     m_entityManager.Initialize();
     m_entityManager.GameplayStarted();
@@ -50,7 +51,7 @@ void Engine::Update()
 
 void Engine::Destroy()  
 {  
-   m_resourceManager->DeleteResource<VulkanShader>("v=Engine/Assets/Shaders/vert.spv, f=Engine/Assets/Shaders/frag.spv, t=, g=", m_device);  
+   ResourceManager::GetInstance().DeleteResource<VulkanShader>("v=Engine/Assets/Shaders/vert.spv, f=Engine/Assets/Shaders/frag.spv, t=, g=", m_device);
 
 
     // TODO: Cleanup
@@ -105,9 +106,7 @@ void Engine::Destroy()
    m_interface->DeleteSurface(m_surface);  
 
    m_instance->Destroy();  
-   m_interface->DeleteContext(m_instance);  
-
-   m_interface->DeleteResourceManager(m_resourceManager);  
+   m_interface->DeleteContext(m_instance);
 
    m_renderer->Destroy();  
    m_interface->DeleteRenderer(m_renderer);  
@@ -131,8 +130,6 @@ void Engine::Input()
 
 void Engine::PreRender()
 {
-    m_resourceManager = m_interface->InstantiateResourceManager();
-
     m_instance = m_interface->InstantiateContext();
     m_instance->Create(m_window);
 
@@ -157,7 +154,7 @@ void Engine::PreRender()
     m_descriptorSetLayout->Create(m_device);
 
     m_pipeline = m_interface->InstantiatePipeline();
-    m_pipeline->Create(m_device, m_renderPassManager->GetRenderPassAt(0), m_descriptorSetLayout, m_resourceManager);
+    m_pipeline->Create(m_device, m_renderPassManager->GetRenderPassAt(0), m_descriptorSetLayout);
 
     m_commandPool = m_interface->InstantiateCommandPool();
     m_commandPool->Create(m_device, m_surface);
@@ -173,15 +170,15 @@ void Engine::PreRender()
 
     IResourceParams l_texParams{ m_device, m_swapChain, m_depthResource, m_commandPool };
     l_texParams.m_texturePath = "Engine/Assets/Textures/viking_room.png";
-    m_texture = m_resourceManager->LoadResource<VulkanTexture>(l_texParams);
+    m_texture = ResourceManager::GetInstance().LoadResource<VulkanTexture>(l_texParams);
 
     IResourceParams l_meshParams{};
     l_meshParams.m_meshPath = "Engine/Assets/Models/viking_room.obj";
-    m_mesh = m_resourceManager->LoadResource<VulkanMesh>(l_meshParams);
+    m_mesh = ResourceManager::GetInstance().LoadResource<VulkanMesh>(l_meshParams);
 
     IResourceParams l_meshParams2{};
     l_meshParams2.m_meshPath = "Engine/Assets/Models/metalSonic.obj";
-    VulkanMesh* m_mesh2 = m_resourceManager->LoadResource<VulkanMesh>(l_meshParams2);
+    VulkanMesh* m_mesh2 = ResourceManager::GetInstance().LoadResource<VulkanMesh>(l_meshParams2);
 
     
     l_meshes.push_back(m_mesh);
@@ -208,7 +205,7 @@ void Engine::PreRender()
 
     IResourceParams l_texParams2{ m_device, m_swapChain, m_depthResource, m_commandPool };
     l_texParams2.m_texturePath = "Engine/Assets/Textures/Untitled312.png";
-    m_texture = m_resourceManager->LoadResource<VulkanTexture>(l_texParams2);
+    m_texture = ResourceManager::GetInstance().LoadResource<VulkanTexture>(l_texParams2);
 
 }
 

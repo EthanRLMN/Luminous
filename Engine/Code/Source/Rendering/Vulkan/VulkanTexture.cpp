@@ -12,7 +12,7 @@
 #include "Rendering/Vulkan/VulkanSwapChain.hpp"
 
 
-bool VulkanTexture::Create(IResourceManager* a_manager, const IResourceParams& a_params)
+bool VulkanTexture::Create(const IResourceParams& a_params)
 {
     IDevice* l_device = a_params.m_device;
     ISwapChain* l_swapChain = a_params.m_swapChain;
