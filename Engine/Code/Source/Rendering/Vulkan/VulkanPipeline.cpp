@@ -65,12 +65,8 @@ void VulkanPipeline::Create(IDevice* a_device, IRenderPass* a_renderPass, IDescr
     l_pipelineLayoutInfo.setLayoutCount = 1;
 
     VkPushConstantRange l_pushConstant;
-    l_pushConstant.offset = 0;
-    l_pushConstant.size = sizeof(UniformBufferObject);
-    l_pushConstant.stageFlags = VK_SHADER_STAGE_VERTEX_BIT;
-
-    l_pipelineLayoutInfo.pPushConstantRanges = &l_pushConstant;
-    l_pipelineLayoutInfo.pushConstantRangeCount = 1;
+    SetupPushConstants(l_pipelineLayoutInfo, l_pushConstant);
+   
 
     VkDescriptorSetLayout l_descriptorSetLayout = a_descriptionSetLayout->CastVulkan()->GetDescriptorSetLayout(); //create descriptorSetLayout has a local variable
     SetupDescriptorSetLayout(l_descriptorSetLayout, l_pipelineLayoutInfo, a_device->CastVulkan()->GetDevice());
@@ -210,6 +206,16 @@ void VulkanPipeline::SetupDynamicStates(const std::array<VkDynamicState, 2>& a_d
 {
     a_dynamicStateCreationInfo.dynamicStateCount = static_cast<uint32_t>(a_dynamicStates.size());
     a_dynamicStateCreationInfo.pDynamicStates = a_dynamicStates.data();
+}
+
+void VulkanPipeline::SetupPushConstants(VkPipelineLayoutCreateInfo& a_layout, VkPushConstantRange& a_pushConstant)
+{
+    a_pushConstant.offset = 0;
+    a_pushConstant.size = sizeof(UniformBufferObject);
+    a_pushConstant.stageFlags = VK_SHADER_STAGE_VERTEX_BIT;
+
+    a_layout.pPushConstantRanges = &a_pushConstant;
+    a_layout.pushConstantRangeCount = 1;
 }
 
 
