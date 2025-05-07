@@ -26,7 +26,6 @@ class GLFWInputManager final : public IInputManager
 public:
     void Initialize(IWindow* a_window) override;
     void Destroy(IWindow* a_window) override;
-    void Update(IWindow* a_window) override {};
 
     int IsKeyDown(const Key& a_key) override;
     int IsKeyReleased( const Key& a_key) override;

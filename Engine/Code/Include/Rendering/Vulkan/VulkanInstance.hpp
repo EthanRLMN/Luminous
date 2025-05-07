@@ -12,7 +12,7 @@ class VulkanInstance final : public IInstance
 public :
 	~VulkanInstance() override = default;
 
-	void Create(IWindow* a_window) override;
+	void Create() override;
 	void Destroy() override;
 
 	[[nodiscard]] VkInstance GetInstance() const { return m_instance; }

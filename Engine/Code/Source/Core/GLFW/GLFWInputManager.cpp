@@ -52,6 +52,8 @@ void GLFWInputManager::ConfigureMouseInput(const CursorInputMode& a_cursorInputM
 
 void GLFWInputManager::KeyCallback(GLFWwindow* a_window, const int a_key, int a_scancode, int a_action, int a_mods)
 {
+    static_cast<void>(a_window); static_cast<void>(a_scancode); static_cast<void>(a_mods);
+
     const auto l_keyAction = static_cast<Action>(a_action);
     if (l_keyAction == Action::RELEASE)
         s_keyPressed[a_key] = 0;
@@ -92,6 +94,8 @@ int GLFWInputManager::IsMouseButtonPressed(const MouseButton& a_button)
 
 void GLFWInputManager::MouseButtonCallback(GLFWwindow* a_window, const int a_button, int a_action, int a_mods)
 {
+    static_cast<void>(a_window); static_cast<void>(a_mods);
+
     const auto l_buttonAction = static_cast<Action>(a_action);
     if (l_buttonAction == Action::RELEASE)
         s_mouseButtonPressed[a_button] = 0;
@@ -102,11 +106,13 @@ void GLFWInputManager::MouseButtonCallback(GLFWwindow* a_window, const int a_but
 
 void GLFWInputManager::MouseScrollCallback(GLFWwindow* a_window, const double a_xOffset, const double a_yOffset)
 {
+    static_cast<void>(a_window);
     SetMouseScrollCallback(a_xOffset, a_yOffset);
 }
 
 void GLFWInputManager::MouseCursorCallback(GLFWwindow* a_window, const double a_xPos, const double a_yPos)
 {
+    static_cast<void>(a_window);
     SetCursorPositionCallback(a_xPos, a_yPos);
 }
 

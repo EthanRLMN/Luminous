@@ -29,11 +29,12 @@ void VulkanShaderModule::Destroy(IDevice* a_device)
 
 VkPipelineShaderStageCreateInfo VulkanShaderModule::CreateStage(const VkShaderStageFlagBits a_shaderType) const
 {
-    VkPipelineShaderStageCreateInfo l_shaderStageCreateInfo{ VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO };
-
+    VkPipelineShaderStageCreateInfo l_shaderStageCreateInfo{ };
+    l_shaderStageCreateInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO;
     l_shaderStageCreateInfo.stage = a_shaderType;
     l_shaderStageCreateInfo.module = m_shaderModule;
     l_shaderStageCreateInfo.pName = "main";
+    l_shaderStageCreateInfo.pNext = nullptr;
 
     return l_shaderStageCreateInfo;
 }
