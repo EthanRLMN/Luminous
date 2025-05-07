@@ -66,16 +66,16 @@ private:
     void TriggerMouseRotation(IInputManager* a_input);
     void UpdateVectors();
 
-    static Maths::Vector3 GetForwardFromYawPitch(float yawDegrees, float pitchDegrees);
+    static Maths::Vector3 GetForwardFromYawPitch(float a_yawDegrees, float a_pitchDegrees);
 
     Maths::Matrix4 m_projectionMatrix { Maths::Matrix4::identity };
     Maths::Matrix4 m_viewMatrix { Maths::Matrix4::identity };
-    Maths::Vector3 m_eye { 0.0f, 0.0f, -3.0f };
-    Maths::Vector3 m_center { 0.0f, 0.0f, 0.0f };
+    Maths::Vector3 m_eye { 0.0f, 0.0f, 5.0f };
+    Maths::Vector3 m_center { 0.0f, 0.0f, 4.0f };
 
     Maths::Vector3 m_worldRight { Maths::Vector3::XAxis };
     Maths::Vector3 m_worldUp { Maths::Vector3::YAxis };
-    Maths::Vector3 m_worldForward { 0.0f, 0.0f, -1.0f };
+    Maths::Vector3 m_worldForward { Maths::Vector3::ZAxis };
 
     Maths::Vector3 m_localRight { m_worldRight };
     Maths::Vector3 m_localUp { m_worldUp };

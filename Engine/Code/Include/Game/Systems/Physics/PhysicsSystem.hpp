@@ -80,30 +80,31 @@ public:
         // Set up the gravity factor
         l_bodySettings.mGravityFactor = Settings().m_gravityFactor;
 
-        const JPH::Body* l_body = GetBodyInterface().CreateBody(l_bodySettings);
+        JPH::Body* l_body = GetBodyInterface().CreateBody(l_bodySettings);
         GetBodyInterface().AddBody(l_body->GetID(), JPH::EActivation::Activate);
 
-        m_rigidBodies.emplace_back(l_body);
+        m_rigidBodies.emplace_back(reinterpret_cast<RigidBody*>(l_body));
+        return m_rigidBodies.back();
     }
 
 
-    inline RigidBody* CreateBox(const Maths::Vector3 a_scale = Maths::Vector3::One) const
+    inline RigidBody* CreateBox(const Maths::Vector3 a_scale = Maths::Vector3::One)
     {
         const JPH::Vec3 l_halfSize = JPH::Vec3(a_scale.x * 0.5f, a_scale.y * 0.5f,a_scale.z * 0.5f);
         return CreateRigidBody(new JPH::BoxShape(l_halfSize));
     };
 
 
-    inline RigidBody* CreateSphere(const float a_radius = 1.0f) const
+    inline RigidBody* CreateSphere(const float a_radius = 1.0f)
     {
         return CreateRigidBody(new JPH::SphereShape(a_radius));
     };
 
 
-    inline void RemoveBody(const JPH::BodyID& a_bodyId)
+    /*inline void RemoveBody(const JPH::BodyID& a_bodyId)
     {
         GetBodyInterface().RemoveBody(a_bodyId);
-        m_rigidBodies.erase(std::remove(m_rigidBodies.begin(), m_rigidBodies.end(), a_bodyId), m_rigidBodies.end());
+        std::erase(m_rigidBodies, a_bodyId);
     }
 
 
@@ -113,8 +114,7 @@ public:
             RemoveBody(l_body->GetRigidBodyID());
 
         m_rigidBodies.clear();
-    }
-
+    }*/
 
 
     

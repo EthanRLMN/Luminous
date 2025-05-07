@@ -15,15 +15,15 @@ void CameraEditor::Init(const float a_aspectRatio, const float a_fov, const floa
     m_worldForward = (m_center - m_eye).Normalize();
     m_worldRight = m_worldForward.CrossProduct(m_worldUp).Normalize();
     m_worldUp = m_worldRight.CrossProduct(m_worldForward).Normalize();
+
+    m_projectionMatrix = UpdateProjectionMatrix(m_fov, m_aspectRatio, m_nearPlane, m_farPlane);
 }
 
 
 void CameraEditor::Update(const float a_aspectRatio)
 {
     m_aspectRatio = a_aspectRatio;
-    m_viewMatrix = UpdateViewMatrix(m_eye, m_center, m_worldUp);
-    m_projectionMatrix = UpdateProjectionMatrix(m_fov, m_aspectRatio, m_nearPlane, m_farPlane);
-}
+    m_viewMatrix = UpdateViewMatrix(m_eye, m_center, m_worldUp);}
 
 
 void CameraEditor::UpdateInput(IInputManager* a_input)
@@ -85,7 +85,7 @@ void CameraEditor::RotationHandler(IInputManager* a_input)
 
 void CameraEditor::SpeedHandler(IInputManager* a_input)
 {
-    const Maths::Vector2 l_scroll{ a_input->GetMouseScroll() };
+    const Maths::Vector2 l_scroll { a_input->GetMouseScroll() };
 
     if (a_input->IsKeyDown(Key::KEY_LEFT_ALT))
     {
@@ -108,7 +108,7 @@ void CameraEditor::SpeedHandler(IInputManager* a_input)
 
 void CameraEditor::TriggerMouseRotation(IInputManager* a_input)
 {
-    const float l_velocity = m_mouseSensitivity * Time::GetDeltaTime();
+    const float l_velocity { m_mouseSensitivity * Time::GetDeltaTime() };
     if (a_input->IsMouseButtonDown(MouseButton::MOUSE_BUTTON_RIGHT))
     {
         if (!m_isRotating)
@@ -118,8 +118,8 @@ void CameraEditor::TriggerMouseRotation(IInputManager* a_input)
             m_isRotating = true;
         }
 
-        const Maths::Vector2 l_mouseDelta = a_input->GetMouseDelta();
-        m_yaw -= l_mouseDelta.x * l_velocity; // Invert yaw so that we match OpenGL's coordinate system
+        const Maths::Vector2 l_mouseDelta { a_input->GetMouseDelta() };
+        m_yaw += l_mouseDelta.x * l_velocity;
         m_pitch -= l_mouseDelta.y * l_velocity;
         m_pitch = std::clamp(m_pitch, -89.0f, 89.0f);
     }
@@ -141,15 +141,15 @@ void CameraEditor::UpdateVectors()
 }
 
 
-Maths::Vector3 CameraEditor::GetForwardFromYawPitch(const float yawDegrees, const float pitchDegrees)
+Maths::Vector3 CameraEditor::GetForwardFromYawPitch(const float a_yawDegrees, const float a_pitchDegrees)
 {
-    const float yawRad = Maths::DegToRad(yawDegrees);
-    const float pitchRad = Maths::DegToRad(pitchDegrees);
+    const float yawRad = Maths::DegToRad(a_yawDegrees);
+    const float pitchRad = Maths::DegToRad(a_pitchDegrees);
 
-    Maths::Vector3 direction;
+    Maths::Vector3 direction { Maths::Vector3::Zero };
     direction.x = cosf(yawRad) * cosf(pitchRad);
     direction.y = sinf(pitchRad);
-    direction.z = -sinf(yawRad) * cosf(pitchRad); // We invert Z to match OpenGL's coordinate system
+    direction.z = sinf(yawRad) * cosf(pitchRad);
 
     return direction.Normalize();
 }
