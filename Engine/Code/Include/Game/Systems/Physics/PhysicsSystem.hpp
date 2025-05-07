@@ -1,5 +1,7 @@
 #pragma once
 
+#include <vector>
+
 #include "RigidBody.hpp"
 #include "Vector3.hpp"
 #include "Jolt/Jolt.h"
@@ -101,10 +103,11 @@ public:
     };
 
 
-    /*inline void RemoveBody(const JPH::BodyID& a_bodyId)
+    inline void RemoveBody(const JPH::BodyID& a_bodyId)
     {
         GetBodyInterface().RemoveBody(a_bodyId);
-        std::erase(m_rigidBodies, a_bodyId);
+
+        std::erase_if(m_rigidBodies, [&a_bodyId](const RigidBody* a_rigidBody) { return a_bodyId == a_rigidBody->GetRigidBodyID(); });
     }
 
 
@@ -114,7 +117,7 @@ public:
             RemoveBody(l_body->GetRigidBodyID());
 
         m_rigidBodies.clear();
-    }*/
+    }
 
 
     
