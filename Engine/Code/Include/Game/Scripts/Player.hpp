@@ -32,17 +32,13 @@ public:
         DEBUG_LOG_INFO("[Player] Initialize");
         Input();
         m_rigidbodyComponent->m_simulatePhysic = true;
-        m_modelComponent->SetModelPath("Assets/Player.fbx");
 
-        DEBUG_LOG_INFO("Player Has CHild :  {}", m_modelComponent->GetModelPath());
-        DEBUG_LOG_INFO("Player  Has Parent : {}", m_modelComponent->GetModelPath());
     }
 
     void GameplayStarted() override
     {
 
         DEBUG_LOG_INFO("[Player] Gameplay Started");
-        DEBUG_LOG_INFO("Player Model : {}", m_modelComponent->GetModelPath());
     }
 
     void Update() override

@@ -26,7 +26,7 @@ void Engine::Init()
     InitPhysics();
 
 
-    m_scene->SceneEntity(m_entityManager);
+    m_scene->SceneEntity(m_entityManager,m_resourceManager);
     
     m_entityManager.Initialize();
     m_entityManager.GameplayStarted();

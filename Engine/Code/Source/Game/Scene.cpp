@@ -23,7 +23,7 @@ void Scene::SceneEntity()
     entityManager.Update();
 }*/
 
-void Scene::SceneEntity(EntityManager& a_entityManager)
+void Scene::SceneEntity(EntityManager& a_entityManager, IResourceManager* a_resourceManager)
 {
     /*
     const std::shared_ptr<Player> l_player = std::make_shared<Player>(a_entityManager);
@@ -32,7 +32,7 @@ void Scene::SceneEntity(EntityManager& a_entityManager)
     const std::shared_ptr<Weapon> l_weapon = std::make_shared<Weapon>(a_entityManager, l_player->GetEntity());
     l_weapon->Register();*/
 
-    ;
+    m_manager = a_resourceManager;
 
     const std::shared_ptr<PlayerModel> l_player = std::make_shared<PlayerModel>(a_entityManager);
     l_player->Register();

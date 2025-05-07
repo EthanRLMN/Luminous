@@ -20,7 +20,6 @@ public:
 
         m_weaponEntity->AddComponent(m_modelComponent);
 
-        m_modelComponent->SetModelPath("Assets/Sword.obj");
         a_playerEntity->AttachChild(m_weaponEntity);
         m_weaponEntity->SetParent(m_weaponEntity);
     }
@@ -43,7 +42,6 @@ public:
     {
 
         DEBUG_LOG_INFO("[Weapon] Gameplay Started");
-        DEBUG_LOG_INFO("Weapon Model : :{}", m_modelComponent->GetModelPath());
     }
 
     void Update() override
