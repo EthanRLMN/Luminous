@@ -14,6 +14,7 @@ struct Light {
     float intensity;
     float ambientStrength;
     float specularStrength;
+    int count;
 } light;
 
 layout (binding = 2) uniform LightBuffer {
@@ -30,33 +31,72 @@ layout (location = 3) in vec3 viewPos;
 
 layout (location = 0) out vec4 outColor;
 
-void main(){
 
+vec3 CalculateDirectional(Light a_light)
+{
+    vec3 lightcolor = a_light.color;
 
-    //Light Calculations
-    //Ambient
-    
-    vec3 lightcolor = lightsList.lights[0].color;
-
-    float ambientStrength = lightsList.lights[0].ambientStrength;
+    float ambientStrength = a_light.ambientStrength;
     vec3 ambient = ambientStrength * lightcolor;
     
     vec3 norm = normalize(fragNormal);
-    vec3 lightDir = normalize(-lightsList.lights[0].direction); 
+    vec3 lightDir = normalize(-a_light.direction);
     
     float diff = max(dot(norm, lightDir), 0.0);
     vec3 diffuse = diff * lightcolor;
 
-
-    //Specular
-    float specularStrength = lightsList.lights[0].specularStrength;
+    float specularStrength = a_light.specularStrength;
     vec3 viewDir = normalize(viewPos - fragPos);
     vec3 reflectDir = reflect(-lightDir, norm);  
 
     float spec = pow(max(dot(viewDir, reflectDir), 0.0), 32);
     vec3 specular = specularStrength * spec * lightcolor;  
 
-    vec3 result = (ambient + diffuse + specular) * lightsList.lights[0].intensity;
+    vec3 result = (ambient + diffuse + specular) * a_light.intensity;
+    return result;
+}
+
+vec3 CalculatePointLight (Light a_light)
+{
+    vec3 lightcolor = a_light.color;
+
+    float ambientStrength = a_light.ambientStrength;
+    vec3 ambient = ambientStrength * lightcolor;
+    
+    vec3 norm = normalize(fragNormal);
+    vec3 lightDir =  normalize(a_light.position - fragPos); 
+    
+    float diff = max(dot(norm, lightDir), 0.0);
+    vec3 diffuse = diff * lightcolor;
+
+    float specularStrength = a_light.specularStrength;
+    vec3 viewDir = normalize(viewPos - fragPos);
+    vec3 reflectDir = reflect(-lightDir, norm);  
+
+    float spec = pow(max(dot(viewDir, reflectDir), 0.0), 32);
+    vec3 specular = specularStrength * spec * lightcolor;  
+
+    vec3 result = (ambient + diffuse + specular) * a_light.intensity;
+    return result;
+}
+
+
+void main(){
+
+
+    vec3 final = vec3(0.0);
+    for(int i = 0; i < lightsList.lights[0].count; i++)
+    {
+        if (lightsList.lights[i].type == 0)
+        {
+            final += CalculateDirectional(lightsList.lights[i]);
+        }
+        else if (lightsList.lights[i].type == 1)
+        {
+            final += CalculatePointLight(lightsList.lights[i]);
+        }
+    }
+    vec3 result = final;
     outColor = texture(texSampler,fragTexCoord) * vec4(result, 1.0);
 
 }

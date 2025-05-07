@@ -24,7 +24,10 @@ void VulkanRenderer::Create(IWindow* a_window, ISwapChain* a_swapChain)
 
     LightComponent l_light = LightComponent();
     LightComponent l_light2 = LightComponent();
-
+    l_light2.GetLight().m_color = Maths::Vector3(0.0f, 0.0f, 1.0f);
+    l_light2.GetLight().m_type = 1;
+    l_light2.GetLight().m_intensity = 2.5f;
+    m_lights[1] = l_light2;
     //m_lights[1] = l_light2;
     //m_lights.push_back(l_light);
     //m_lights.push_back(l_light2);
@@ -44,19 +47,19 @@ void VulkanRenderer::DrawFrame(IWindow* a_window, IDevice* a_device, ISwapChain*
     if (a_inputManager->IsKeyDown(Key::KEY_RIGHT))
     {
         m_cameraEditor.GetViewMatrix().Print();
-        m_lights[0].GetLight().m_position += Maths::Vector3(0.05f, 0, 0);
+        m_lights[1].GetLight().m_position += Maths::Vector3(0.1f, 0, 0);
     }
     if (a_inputManager->IsKeyDown(Key::KEY_LEFT))
     {
-        m_lights[0].GetLight().m_position -= Maths::Vector3(0.05f, 0, 0);
+        m_lights[1].GetLight().m_position -= Maths::Vector3(0.1f, 0, 0);
     }
     if (a_inputManager->IsKeyDown(Key::KEY_UP))
     {
-        m_lights[0].GetLight().m_position += Maths::Vector3(0, 0.05f, 0);
+        m_lights[1].GetLight().m_position += Maths::Vector3(0, 0.1f, 0);
     }
     if (a_inputManager->IsKeyDown(Key::KEY_DOWN))
     {
-        m_lights[0].GetLight().m_position -= Maths::Vector3(0, 0.05f, 0);
+        m_lights[1].GetLight().m_position -= Maths::Vector3(0, 0.1f, 0);
     }
 
     VkResult l_result = vkAcquireNextImageKHR(l_device, l_swapchain, UINT64_MAX, a_synchronization->CastVulkan()->GetImageAvailableSemaphores()[m_currentFrame], nullptr, &l_imageIndex);
@@ -335,7 +338,7 @@ void VulkanRenderer::CopyImageToViewport(ISwapChain* a_swapChain, const VkComman
 {
     
    VkImageMemoryBarrier l_barrierSrc{ VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER };
-    l_barrierSrc.oldLayout = VK_IMAGE_LAYOUT_UNDEFINED;
+    l_barrierSrc.oldLayout = VK_IMAGE_LAYOUT_PRESENT_SRC_KHR;
     l_barrierSrc.newLayout = VK_IMAGE_LAYOUT_TRANSFER_SRC_OPTIMAL;
     l_barrierSrc.srcAccessMask = VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT;
     l_barrierSrc.dstAccessMask = VK_ACCESS_TRANSFER_READ_BIT;
