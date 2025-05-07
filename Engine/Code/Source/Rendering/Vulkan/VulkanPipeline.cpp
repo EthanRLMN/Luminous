@@ -64,10 +64,21 @@ void VulkanPipeline::Create(IDevice* a_device, IRenderPass* a_renderPass, IDescr
     VkPipelineLayoutCreateInfo l_pipelineLayoutInfo{ VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO };
     l_pipelineLayoutInfo.setLayoutCount = 1;
 
+    VkPushConstantRange l_pushConstant;
+    l_pushConstant.offset = 0;
+    l_pushConstant.size = sizeof(UniformBufferObject);
+    l_pushConstant.stageFlags = VK_SHADER_STAGE_VERTEX_BIT;
+
+    l_pipelineLayoutInfo.pPushConstantRanges = &l_pushConstant;
+    l_pipelineLayoutInfo.pushConstantRangeCount = 1;
+
     VkDescriptorSetLayout l_descriptorSetLayout = a_descriptionSetLayout->CastVulkan()->GetDescriptorSetLayout(); //create descriptorSetLayout has a local variable
     SetupDescriptorSetLayout(l_descriptorSetLayout, l_pipelineLayoutInfo, a_device->CastVulkan()->GetDevice());
 
     //Graphic pipeline creation
+
+    
+
     VkGraphicsPipelineCreateInfo l_pipelineCreateInfo{ VK_STRUCTURE_TYPE_GRAPHICS_PIPELINE_CREATE_INFO };
     PushPipelineInfo(l_pipelineCreateInfo, l_shaderStages, l_vertexInputCreateInfo, l_inputAssembly, l_viewportStateCreateInfo, l_rasterizerCreateInfo, l_multisamplingCreateInfo, l_depthStencil, l_colorBlending, l_dynamicStateCreationInfo, a_renderPass->CastVulkan()->GetRenderPass(), a_device->CastVulkan()->GetDevice());
 
