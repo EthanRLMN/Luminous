@@ -47,6 +47,7 @@ public:
     [[nodiscard]] ICommandBuffer* GetCommandBuffer() const { return m_commandBuffer; }
     [[nodiscard]] ISynchronization* GetSynchronization() const { return m_synchronization; }
     [[nodiscard]] IRenderer* GetRenderingDraw() const { return m_renderer; }
+    [[nodiscard]] VkSampler GetDefaultSampler() const { return m_imguiSampler; }
     [[nodiscard]] bool IsRunning() const { return m_isRunning; }
 
     inline void SetRunning(bool value) { m_isRunning = value; }
@@ -78,6 +79,7 @@ private:
     IRenderer* m_renderer{ nullptr };
     Scene* m_scene{ nullptr };
     Physics* m_physicsJolt{ nullptr };
+    VkSampler m_imguiSampler{ nullptr };
 
     bool m_isRunning{ false };
 };

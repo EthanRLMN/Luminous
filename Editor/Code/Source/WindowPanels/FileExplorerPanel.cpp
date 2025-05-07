@@ -1,4 +1,5 @@
 #include "imgui.h"
+#include "imgui/backends/imgui_impl_vulkan.h"
 
 #include "TextEditorPanel.hpp"
 #include "WindowPanels/FileExplorerPanel.hpp"
@@ -17,6 +18,18 @@ FileExplorerPanel::FileExplorerPanel(Editor* a_editor, const std::string& a_wind
     m_engine = a_editor->GetEngine();
     m_directoryIconTexture = LoadTexture(m_engine, (s_IconPath / "DirectoryIcon.png").string());
     m_fileIconTexture = LoadTexture(m_engine, (s_IconPath / "FileIcon.png").string());
+
+    m_directoryDescriptor = (ImTextureID) ImGui_ImplVulkan_AddTexture(
+            m_engine->GetDefaultSampler(),
+            m_directoryIconTexture->CastVulkan()->GetTextureImageView(),
+            VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL
+    );
+
+    m_fileDescriptor = (ImTextureID) ImGui_ImplVulkan_AddTexture(
+            m_engine->GetDefaultSampler(),
+            m_fileIconTexture->CastVulkan()->GetTextureImageView(),
+            VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL
+    );
 }
 
 void FileExplorerPanel::Render()
@@ -54,10 +67,9 @@ void FileExplorerPanel::Render()
 
             ImGui::PushID(filenameString.c_str());
 
-            ImTextureID icon = (ImTextureID) (uintptr_t) (directoryEntry.is_directory() ? m_directoryIconTexture->CastVulkan()->GetTextureImageView()
-                                                                                        : m_fileIconTexture->CastVulkan()->GetTextureImageView());
+            ImTextureID icon = directoryEntry.is_directory() ? m_directoryDescriptor : m_fileDescriptor;
 
-            if (ImGui::Button(filenameString.c_str(), ImVec2(thumbnailSize, thumbnailSize)))
+            if (ImGui::ImageButton(filenameString.c_str(), icon, ImVec2(thumbnailSize, thumbnailSize)))
             {
                 if (directoryEntry.is_directory())
                 {

@@ -28,6 +28,9 @@ private:
     std::unique_ptr<TextEditorPanel> m_textEditorPanel;
     std::shared_ptr<ITexture> m_directoryIconTexture;
     std::shared_ptr<ITexture> m_fileIconTexture;
+
+    ImTextureID m_directoryDescriptor = NULL;
+    ImTextureID m_fileDescriptor = NULL;
 };
 
 std::shared_ptr<ITexture> LoadTexture(Engine* engine, const std::string& path);
