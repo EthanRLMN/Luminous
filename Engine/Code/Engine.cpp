@@ -168,6 +168,7 @@ void Engine::PreRender()
     m_frameBufferManager->Create(m_device, m_swapChain, m_renderPassManager->GetRenderPasses()[0], m_depthResource, m_multiSampling, false); // Create Renderer Frame Buffer
     m_frameBufferManager->Create(m_device, m_swapChain, m_renderPassManager->GetRenderPasses()[1], m_depthResource, m_multiSampling, true); // Create Editor Frame Buffer
 
+
     IResourceParams l_texParams{ m_device, m_swapChain, m_depthResource, m_commandPool };
     l_texParams.m_texturePath = "Engine/Assets/Textures/viking_room.png";
     m_texture = ResourceManager::GetInstance().LoadResource<VulkanTexture>(l_texParams);

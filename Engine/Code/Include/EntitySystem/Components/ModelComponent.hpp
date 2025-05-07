@@ -11,9 +11,12 @@ class ModelComponent : public EntityComponent
 {
 public:
     ~ModelComponent() = default;
-    void Initialize() override {};
+    void Initialize() override ;
     void GameplayStarted() override {};
     void Update() override {};
+
+    void SetMesh(std::string a_path);
+    void SetTexture(std::string a_path);
 
 
 private:
