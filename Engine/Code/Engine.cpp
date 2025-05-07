@@ -179,8 +179,13 @@ void Engine::PreRender()
     l_meshParams.m_meshPath = "Engine/Assets/Models/viking_room.obj";
     m_mesh = m_resourceManager->LoadResource<VulkanMesh>(l_meshParams);
 
+    IResourceParams l_meshParams2{};
+    l_meshParams2.m_meshPath = "Engine/Assets/Models/metalSonic.obj";
+    VulkanMesh* m_mesh2 = m_resourceManager->LoadResource<VulkanMesh>(l_meshParams2);
+
     
     l_meshes.push_back(m_mesh);
+    //l_meshes.push_back(m_mesh);
 
     m_buffer = m_interface->InstantiateBuffer();
     m_buffer->Create(m_device, m_texture, m_commandPool, m_swapChain, l_meshes);

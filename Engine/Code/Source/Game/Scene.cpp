@@ -36,4 +36,8 @@ void Scene::SceneEntity(EntityManager& a_entityManager)
 
     const std::shared_ptr<PlayerModel> l_player = std::make_shared<PlayerModel>(a_entityManager);
     l_player->Register();
+    
+
+     //const std::shared_ptr<PlayerModel> l_model2 = std::make_shared<PlayerModel>(a_entityManager);
+    //l_model2->Register();
 }
