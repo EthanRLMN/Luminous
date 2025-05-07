@@ -4,8 +4,8 @@
 #include "GLFW/glfw3.h"
 
 #include "Interface/IWindowPanel.hpp"
-#include "stb_image.h"
 #include "TextEditorPanel.hpp"
+#include "stb_image.h"
 
 
 class FileExplorerPanel : public IWindowPanel
@@ -26,9 +26,11 @@ private:
     Engine* m_engine{ nullptr };
 
     std::unique_ptr<TextEditorPanel> m_textEditorPanel;
-    ITexture* m_directoryIconTexture = nullptr;
-    ITexture* m_fileIconTexture = nullptr;
+    std::shared_ptr<ITexture> m_directoryIconTexture;
+    std::shared_ptr<ITexture> m_fileIconTexture;
 
-
-    ITexture* LoadTexture(Engine* engine, const std::string& path);
+    ImTextureID m_directoryDescriptor = NULL;
+    ImTextureID m_fileDescriptor = NULL;
 };
+
+std::shared_ptr<ITexture> LoadTexture(Engine* engine, const std::string& path);

@@ -9,6 +9,40 @@ void Viewport::Render()
     IWindowPanel::Render();
 
     ImGui::Begin(p_windowIdentifier.c_str(), nullptr, ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoBackground);
+    
+    ImVec2 avail = ImGui::GetContentRegionAvail();
+    float buttonWidth = 0.10f * avail.x;
+    float buttonHeight = 40.f;
+    ImVec2 buttonSize(buttonWidth, buttonHeight);
+
+    if (ImGui::Button("Move", buttonSize)) 
+    {
+    
+    }
+    ImGui::SameLine();
+    if (ImGui::Button("Rotate", buttonSize)) 
+    {
+    
+    }
+    ImGui::SameLine();
+    if (ImGui::Button("Resize", buttonSize)) 
+    {
+    
+    }
+
+    ImGui::SameLine(0, 0.1f * avail.x);
+
+    if (ImGui::Button("Play", buttonSize)) 
+    {
+    
+    }
+    ImGui::SameLine();
+    if (ImGui::Button("Stop", buttonSize)) 
+    {
+    
+    }
+
+
     VkExtent2D l_extent = p_editor->GetEngine()->GetSwapChain()->CastVulkan()->GetSwapChainExtent();
 
     float l_texWidth = static_cast<float>(l_extent.width);

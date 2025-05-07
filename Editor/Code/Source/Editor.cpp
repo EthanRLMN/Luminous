@@ -97,10 +97,16 @@ void Editor::Update()
     while (m_engine->IsRunning())
     {
         m_engine->Update();
-
         Render();
+
+        if (ShouldExit())
+        {
+            Destroy();
+            break;
+        }
     }
 }
+
 
 void Editor::Render() const
 {

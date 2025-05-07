@@ -20,6 +20,30 @@ void Engine::Init()
     Window();
     Input();
     PreRender();
+
+    VkSamplerCreateInfo samplerInfo{};
+    samplerInfo.sType = VK_STRUCTURE_TYPE_SAMPLER_CREATE_INFO;
+    samplerInfo.magFilter = VK_FILTER_LINEAR;
+    samplerInfo.minFilter = VK_FILTER_LINEAR;
+    samplerInfo.mipmapMode = VK_SAMPLER_MIPMAP_MODE_LINEAR;
+    samplerInfo.addressModeU = VK_SAMPLER_ADDRESS_MODE_REPEAT;
+    samplerInfo.addressModeV = VK_SAMPLER_ADDRESS_MODE_REPEAT;
+    samplerInfo.addressModeW = VK_SAMPLER_ADDRESS_MODE_REPEAT;
+    samplerInfo.anisotropyEnable = VK_FALSE;
+    samplerInfo.maxAnisotropy = 1.0f;
+    samplerInfo.borderColor = VK_BORDER_COLOR_INT_OPAQUE_BLACK;
+    samplerInfo.unnormalizedCoordinates = VK_FALSE;
+    samplerInfo.compareEnable = VK_FALSE;
+    samplerInfo.compareOp = VK_COMPARE_OP_ALWAYS;
+    samplerInfo.mipLodBias = 0.0f;
+    samplerInfo.minLod = 0.0f;
+    samplerInfo.maxLod = VK_LOD_CLAMP_NONE;
+
+    if (vkCreateSampler(GetDevice()->CastVulkan()->GetDevice(), &samplerInfo, nullptr, &m_imguiSampler) != VK_SUCCESS)
+    {
+        throw std::runtime_error("Echec de la creation du VkSampler pour ImGui.");
+    }
+
     InitPhysics();
 }
 
@@ -31,7 +55,7 @@ void Engine::Update()
     m_inputManager->Update(m_window);
 
     m_scene->SceneEntity();
-    m_renderer->DrawFrame(m_window, m_device, m_swapChain, m_pipeline, m_buffer, m_renderPassManager, m_descriptor, m_mesh, m_synchronization, m_commandBuffer, m_frameBufferManager, m_depthResource, m_surface, m_multiSampling,m_inputManager);
+    m_renderer->DrawFrame(m_window, m_device, m_swapChain, m_pipeline, m_buffer, m_renderPassManager, m_descriptor, m_mesh, m_synchronization, m_commandBuffer, m_frameBufferManager, m_depthResource, m_surface, m_multiSampling, m_inputManager);
 
     m_physicsJolt->Update_JOLT();
 
@@ -39,73 +63,73 @@ void Engine::Update()
         m_isRunning = false;
 }
 
-void Engine::Destroy()  
-{  
-   m_resourceManager->DeleteResource<VulkanShader>("v=Engine/Assets/Shaders/vert.spv, f=Engine/Assets/Shaders/frag.spv, t=, g=", m_device);  
+void Engine::Destroy()
+{
+    m_resourceManager->DeleteResource<VulkanShader>("v=Engine/Assets/Shaders/vert.spv, f=Engine/Assets/Shaders/frag.spv, t=, g=", m_device);
 
 
     // TODO: Cleanup
     m_renderer->CastVulkan()->DestroyViewportImage(m_device);
 
-   m_descriptor->Destroy(m_device);  
-   m_interface->DeleteDescriptor(m_descriptor);  
+    m_descriptor->Destroy(m_device);
+    m_interface->DeleteDescriptor(m_descriptor);
 
-   m_buffer->Destroy(m_device);  
-   m_interface->DeleteBuffer(m_buffer);  
+    m_buffer->Destroy(m_device);
+    m_interface->DeleteBuffer(m_buffer);
 
-   m_mesh->Destroy(m_device);  
-   m_interface->DeleteModel(m_mesh);  
+    m_mesh->Destroy(m_device);
+    m_interface->DeleteModel(m_mesh);
 
-   m_texture->Destroy(m_device);  
-   m_interface->DeleteTexture(m_texture);  
+    m_texture->Destroy(m_device);
+    m_interface->DeleteTexture(m_texture);
 
-   m_frameBufferManager->Destroy(m_device);  
-   m_interface->DeleteFrameBufferManager(m_frameBufferManager);  
+    m_frameBufferManager->Destroy(m_device);
+    m_interface->DeleteFrameBufferManager(m_frameBufferManager);
 
-   m_depthResource->Destroy(m_device);  
-   m_interface->DeleteDepthResource(m_depthResource);  
+    m_depthResource->Destroy(m_device);
+    m_interface->DeleteDepthResource(m_depthResource);
 
-   m_multiSampling->Destroy(m_device);  
-   m_interface->DeleteMultiSampling(m_multiSampling);  
+    m_multiSampling->Destroy(m_device);
+    m_interface->DeleteMultiSampling(m_multiSampling);
 
-   m_editorCommandPool->Destroy(m_device, m_synchronization, m_renderer);  
-   m_interface->DeleteCommandPool(m_editorCommandPool);  
+    m_editorCommandPool->Destroy(m_device, m_synchronization, m_renderer);
+    m_interface->DeleteCommandPool(m_editorCommandPool);
 
-   m_commandPool->Destroy(m_device, m_synchronization, m_renderer);  
-   m_interface->DeleteCommandPool(m_commandPool);  
+    m_commandPool->Destroy(m_device, m_synchronization, m_renderer);
+    m_interface->DeleteCommandPool(m_commandPool);
 
-   m_pipeline->Destroy(m_device);  
-   m_interface->DeletePipeline(m_pipeline);  
+    m_pipeline->Destroy(m_device);
+    m_interface->DeletePipeline(m_pipeline);
 
-   m_descriptorSetLayout->Destroy(m_device);  
-   m_interface->DeleteDescriptorSetLayout(m_descriptorSetLayout);  
+    m_descriptorSetLayout->Destroy(m_device);
+    m_interface->DeleteDescriptorSetLayout(m_descriptorSetLayout);
 
-   m_renderPassManager->Destroy(m_device);  
-   m_interface->DeleteRenderPassManager(m_renderPassManager);  
+    m_renderPassManager->Destroy(m_device);
+    m_interface->DeleteRenderPassManager(m_renderPassManager);
 
-   m_swapChain->Destroy(m_device);  
-   m_interface->DeleteSwapChain(m_swapChain);  
+    m_swapChain->Destroy(m_device);
+    m_interface->DeleteSwapChain(m_swapChain);
 
-   m_synchronization->Destroy(m_device);  
-   m_interface->DeleteSynchronization(m_synchronization);  
+    m_synchronization->Destroy(m_device);
+    m_interface->DeleteSynchronization(m_synchronization);
 
-   m_device->Destroy();  
-   m_interface->DeleteDevice(m_device);  
+    m_device->Destroy();
+    m_interface->DeleteDevice(m_device);
 
-   m_surface->Destroy(m_instance);  
-   m_interface->DeleteSurface(m_surface);  
+    m_surface->Destroy(m_instance);
+    m_interface->DeleteSurface(m_surface);
 
-   m_instance->Destroy();  
-   m_interface->DeleteContext(m_instance);  
+    m_instance->Destroy();
+    m_interface->DeleteContext(m_instance);
 
-   m_interface->DeleteResourceManager(m_resourceManager);  
+    m_interface->DeleteResourceManager(m_resourceManager);
 
-   m_renderer->Destroy();  
-   m_interface->DeleteRenderer(m_renderer);  
+    m_renderer->Destroy();
+    m_interface->DeleteRenderer(m_renderer);
 
-   DestroyInput();  
-   DestroyWindow();  
-}    
+    DestroyInput();
+    DestroyWindow();
+}
 
 
 void Engine::Window()
@@ -187,7 +211,6 @@ void Engine::PreRender()
     m_renderer->Create(m_window, m_swapChain);
     m_renderer->CastVulkan()->SetViewportSize(float(m_swapChain->CastVulkan()->GetSwapChainExtent().width), float(m_swapChain->CastVulkan()->GetSwapChainExtent().height));
     m_renderer->CastVulkan()->CreateViewportImage(m_device, m_swapChain);
-
 }
 
 void Engine::DestroyWindow()
@@ -201,4 +224,3 @@ void Engine::DestroyInput() const
     m_inputManager->Destroy(m_window);
     m_interface->DeleteInputManager(m_inputManager);
 }
-
