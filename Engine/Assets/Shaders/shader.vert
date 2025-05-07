@@ -22,7 +22,7 @@ layout (location = 0) out vec3 fragColor;
 layout (location = 1) out vec2 fragTexCoord;
 
 void main(){
-	gl_Position = uboConstant.proj * uboConstant.view * uboConstant.model * vec4(inPosition , 1.0);
+	gl_Position = uboConstant.proj * uboConstant.view * transpose(uboConstant.model) * vec4(inPosition , 1.0);
 	fragColor = inColor;
 	fragTexCoord = inTexCoord;
 }

@@ -185,7 +185,7 @@ void Engine::PreRender()
 
     
     l_meshes.push_back(m_mesh);
-    //l_meshes.push_back(m_mesh);
+    l_meshes.push_back(m_mesh2);
 
     m_buffer = m_interface->InstantiateBuffer();
     m_buffer->Create(m_device, m_texture, m_commandPool, m_swapChain, l_meshes);
