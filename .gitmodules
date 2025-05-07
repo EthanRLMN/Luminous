@@ -8,9 +8,6 @@
 [submodule "Engine/Libs/logger"]
 	path = Engine/Libs/logger
 	url = https://github.com/ZeBaananaa/LuminousLogger.git
-[submodule "Engine/Libs/vulkanmemoryallocator"]
-	path = Engine/Libs/vulkanmemoryallocator
-	url = https://github.com/GPUOpen-LibrariesAndSDKs/VulkanMemoryAllocator.git
 [submodule "Engine/Libs/luminousmaths"]
 	path = Engine/Libs/luminousmaths
 	url = https://github.com/ZeBaananaa/LuminousMaths.git
