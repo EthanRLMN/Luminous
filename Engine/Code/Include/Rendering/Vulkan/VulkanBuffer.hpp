@@ -9,13 +9,13 @@ class VulkanBuffer final : public IBuffer
 public:
     VulkanBuffer() = default;
 
-    void Create(IDevice* a_device, ITexture* a_texture) override;
+    void Create(IDevice* a_device) override;
     void Destroy(IDevice* a_device) override;
 
 
     static void SetMeshBuffers(IDevice* a_device, ICommandPool* a_commandPool, IMesh* a_mesh);
 
-    void CreateUniformBuffers(IDevice* a_device, ITexture* a_texture);
+    void CreateUniformBuffers(IDevice* a_device);
 
     VulkanBuffer* CastVulkan() override { return this; }
 

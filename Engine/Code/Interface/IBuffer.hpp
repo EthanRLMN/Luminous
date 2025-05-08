@@ -15,7 +15,7 @@ class IBuffer
 public:
 	virtual ~IBuffer() = default;
 
-	virtual void Create(IDevice* a_device, ITexture* a_texture) = 0;
+	virtual void Create(IDevice* a_device) = 0;
 	virtual void Destroy(IDevice* a_device) = 0;
 
 	virtual VulkanBuffer* CastVulkan()

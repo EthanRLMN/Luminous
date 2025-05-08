@@ -181,7 +181,7 @@ void Engine::PreRender()
     l_meshes.push_back(m_mesh2);
 
     m_buffer = m_interface->InstantiateBuffer();
-    m_buffer->Create(m_device, m_texture);
+    m_buffer->Create(m_device);
 
     m_descriptor = m_interface->InstantiateDescriptor();
     m_descriptor->Create(m_device, m_descriptorSetLayout, m_texture, m_buffer);

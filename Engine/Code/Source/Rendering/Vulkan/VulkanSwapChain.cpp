@@ -4,6 +4,7 @@
 
 #include "Rendering/Vulkan/VulkanSwapChain.hpp"
 #include "Rendering/Vulkan/VulkanDevice.hpp"
+#include "Rendering/Vulkan/VulkanSurface.hpp"
 
 
 void VulkanSwapChain::Create(IWindow* a_window, IDevice* a_device, ISurface* a_surface)
@@ -40,7 +41,7 @@ void VulkanSwapChain::Create(IWindow* a_window, IDevice* a_device, ISurface* a_s
 
 void VulkanSwapChain::Destroy(IDevice* a_device)
 {
-    for (size_t i{ 0 }; i < m_swapChainImageViews.size(); ++i)
+    for (size_t i = 0; i < m_swapChainImageViews.size(); ++i)
         vkDestroyImageView(a_device->CastVulkan()->GetDevice(), m_swapChainImageViews[i], nullptr);
 
     vkDestroySwapchainKHR(a_device->CastVulkan()->GetDevice(), m_swapChain, nullptr);

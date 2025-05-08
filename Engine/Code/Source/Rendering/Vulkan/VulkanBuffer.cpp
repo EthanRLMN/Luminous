@@ -14,9 +14,9 @@
 #include "Rendering/Vulkan/VulkanTexture.hpp"
 
 
-void VulkanBuffer::Create(IDevice* a_device, ITexture* a_texture)
+void VulkanBuffer::Create(IDevice* a_device)
 {
-    CreateUniformBuffers(a_device, a_texture);
+    CreateUniformBuffers(a_device);
 	DEBUG_LOG_INFO("Vulkan Buffer : Buffer created!\n");
 }
 
@@ -87,7 +87,7 @@ void VulkanBuffer::SetMeshBuffers(IDevice* a_device, ICommandPool* a_commandPool
     }
 }
 
-void VulkanBuffer::CreateUniformBuffers(IDevice* a_device, ITexture* a_texture)
+void VulkanBuffer::CreateUniformBuffers(IDevice* a_device)
 {
 	m_uniformBuffer.resize(MAX_FRAMES_IN_FLIGHT);
 	m_uniformBuffersMemory.resize(MAX_FRAMES_IN_FLIGHT);
@@ -96,7 +96,7 @@ void VulkanBuffer::CreateUniformBuffers(IDevice* a_device, ITexture* a_texture)
 	for (size_t i = 0; i < MAX_FRAMES_IN_FLIGHT; ++i)
 	{
 		const VkDeviceSize l_bufferSize = sizeof(UniformBufferObject);
-        a_texture->CastVulkan()->CreateBuffer(a_device->CastVulkan()->GetDevice(), a_device->CastVulkan()->GetPhysicalDevice(), l_bufferSize, VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT, m_uniformBuffer[i], m_uniformBuffersMemory[i]);
+        VulkanTexture::CreateBuffer(a_device->CastVulkan()->GetDevice(), a_device->CastVulkan()->GetPhysicalDevice(), l_bufferSize, VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT, m_uniformBuffer[i], m_uniformBuffersMemory[i]);
 		vkMapMemory(a_device->CastVulkan()->GetDevice(), m_uniformBuffersMemory[i], 0, l_bufferSize, 0, &m_uniformBuffersMapped[i]);
 	}
 }

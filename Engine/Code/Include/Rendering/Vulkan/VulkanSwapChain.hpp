@@ -3,20 +3,17 @@
 #include <GLFW/glfw3.h>
 
 #include "ISwapChain.hpp"
-#include "Utils/QueueFamilyIndiceUtils.hpp"
 #include "Struct/VulkanUtilities.hpp"
-#include "VulkanSurface.hpp"
+#include "Utils/QueueFamilyIndiceUtils.hpp"
 
 class VulkanSwapChain final : public ISwapChain
 {
 public:
-
 	void Create(IWindow* a_window, IDevice* a_device, ISurface* a_surface) override;
 	void Destroy(IDevice* a_device) override;
 	VulkanSwapChain* CastVulkan() override { return this; }
 
     static uint32_t FindMemoryType(const VkPhysicalDevice& a_physicalDevice, const uint32_t& a_typeFilter, const VkMemoryPropertyFlags& a_properties);
-
     static void CreateImage(const VkDevice& a_device, const VkPhysicalDevice& a_physicalDevice, const uint32_t& a_width, const uint32_t& a_height, const VkFormat& a_format, const VkImageTiling& a_tiling, const VkImageUsageFlags& a_usage, const VkMemoryPropertyFlags& a_properties, VkImage& a_image, VkDeviceMemory& a_imageMemory, VkSampleCountFlagBits a_numSamples, uint32_t a_mipLevels);
     static VkImageView CreateImageView(const VkImage& a_image, const VkDevice& a_device, const VkFormat& a_format, const VkImageAspectFlags& a_aspectFlags, uint32_t a_mipLevels);
 

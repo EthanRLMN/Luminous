@@ -63,17 +63,11 @@ void VulkanDescriptorSetLayout::CreateTextureDescriptorLayout(IDevice* a_device)
 
 void VulkanDescriptorSetLayout::Destroy(IDevice* a_device)
 {
-    if (m_descriptorSetLayout != VK_NULL_HANDLE)
-    {
-        vkDestroyDescriptorSetLayout(a_device->CastVulkan()->GetDevice(), m_descriptorSetLayout, nullptr);
-        m_descriptorSetLayout = VK_NULL_HANDLE; 
-    }
+    vkDestroyDescriptorSetLayout(a_device->CastVulkan()->GetDevice(), m_descriptorSetLayout, nullptr);
+    m_descriptorSetLayout = nullptr;
 
-    if (m_textureDescriptorSetLayout != VK_NULL_HANDLE)
-    {
-        vkDestroyDescriptorSetLayout(a_device->CastVulkan()->GetDevice(), m_textureDescriptorSetLayout, nullptr);
-        m_textureDescriptorSetLayout = VK_NULL_HANDLE;
-    }
+    vkDestroyDescriptorSetLayout(a_device->CastVulkan()->GetDevice(), m_textureDescriptorSetLayout, nullptr);
+    m_textureDescriptorSetLayout = nullptr;
 
     DEBUG_LOG_INFO("Vulkan DescriptorSetLayout : DescriptorSetLayout Destroyed!\n");
 }
