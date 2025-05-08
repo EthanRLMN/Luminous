@@ -14,8 +14,5 @@ class MainPanel : public IWindowPanel
     void Destroy() override {};
 
 private:
-    void FileContextMenu();
-    void EditContextMenu();
-    void WindowContextMenu();
     void HelpContextMenu();
 };

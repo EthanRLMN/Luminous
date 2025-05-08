@@ -3,8 +3,6 @@
 #include <array>
 #include <vulkan/vulkan.h>
 
-#include "Logger.hpp"
-
 class ValidationLayer
 {
 public:

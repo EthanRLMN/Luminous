@@ -14,17 +14,10 @@ public:
     static constexpr int s_defaultPanelWidth = 600;
     static constexpr int s_defaultPanelHeight = 400;
 
-    inline virtual ~IWindowPanel() { delete p_editor; p_editor = nullptr; delete this; };
+    inline virtual ~IWindowPanel() = default;
 
-    inline explicit IWindowPanel(Editor* a_editor, const std::string& a_windowIdentifier)
-    {
-        if (a_editor)
-        {
-            p_editor = { a_editor };
-            p_editor->RegisterWindow(this);
-        }
-        p_windowIdentifier = { a_windowIdentifier };
-    }
+    IWindowPanel(Editor* a_editor, const std::string& a_windowIdentifier) :
+        p_editor(a_editor), p_windowIdentifier(a_windowIdentifier) {}
 
     virtual void Init() = 0;
     virtual void Update() = 0;

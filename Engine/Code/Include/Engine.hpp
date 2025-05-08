@@ -47,7 +47,7 @@ public:
 	[[nodiscard]] IDescriptor* GetDescriptor() const { return m_descriptor; }
 	[[nodiscard]] ICommandBuffer* GetCommandBuffer() const { return m_commandBuffer; }
 	[[nodiscard]] ISynchronization* GetSynchronization() const { return m_synchronization; }
-	[[nodiscard]] IRenderer* GetRenderingDraw() const { return m_renderer; }
+	[[nodiscard]] IRenderer* GetRenderer() const { return m_renderer; }
     [[nodiscard]] bool IsRunning() const { return m_isRunning; }
 
 

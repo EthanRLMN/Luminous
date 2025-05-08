@@ -1,5 +1,7 @@
 #include "Rendering/Vulkan/VulkanValidationLayer.hpp"
 
+#include "Logger.hpp"
+
 VkBool32 ValidationLayer::DebugCallback(VkDebugUtilsMessageSeverityFlagBitsEXT a_messageSeverity, VkDebugUtilsMessageTypeFlagsEXT a_messageTypes, const VkDebugUtilsMessengerCallbackDataEXT* a_pCallbackData, void* a_pUserData)
 {
     static_cast<void>(a_pUserData);
