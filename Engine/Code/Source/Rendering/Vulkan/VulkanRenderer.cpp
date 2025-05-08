@@ -277,32 +277,11 @@ void VulkanRenderer::CreateViewportImage(IDevice* a_device, ISwapChain* a_swapCh
     vkBindImageMemory(l_device, m_viewportImage, m_viewportMemory, 0);
 
     VkImageViewCreateInfo l_viewInfo{ };
-    l_viewInfo.sType = VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO;
-    l_viewInfo.image = m_viewportImage;
-    l_viewInfo.viewType = VK_IMAGE_VIEW_TYPE_2D;
-    l_viewInfo.format = a_swapChain->CastVulkan()->GetSwapChainImageFormat();
-    l_viewInfo.subresourceRange.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
-    l_viewInfo.subresourceRange.baseMipLevel = 0;
-    l_viewInfo.subresourceRange.levelCount = 1;
-    l_viewInfo.subresourceRange.baseArrayLayer = 0;
-    l_viewInfo.subresourceRange.layerCount = 1;
-    l_viewInfo.pNext = nullptr;
+    ImageViewCreateInfo(l_viewInfo, m_viewportImage, a_swapChain);
     vkCreateImageView(l_device, &l_viewInfo, nullptr, &m_viewportImageview);
 
     VkSamplerCreateInfo l_samplerInfo{ };
-    l_samplerInfo.sType = VK_STRUCTURE_TYPE_SAMPLER_CREATE_INFO;
-    l_samplerInfo.magFilter = VK_FILTER_LINEAR;
-    l_samplerInfo.minFilter = VK_FILTER_LINEAR;
-    l_samplerInfo.addressModeU = VK_SAMPLER_ADDRESS_MODE_CLAMP_TO_EDGE;
-    l_samplerInfo.addressModeV = VK_SAMPLER_ADDRESS_MODE_CLAMP_TO_EDGE;
-    l_samplerInfo.addressModeW = VK_SAMPLER_ADDRESS_MODE_CLAMP_TO_EDGE;
-    l_samplerInfo.anisotropyEnable = VK_FALSE;
-    l_samplerInfo.borderColor = VK_BORDER_COLOR_INT_OPAQUE_BLACK;
-    l_samplerInfo.unnormalizedCoordinates = VK_FALSE;
-    l_samplerInfo.compareEnable = VK_FALSE;
-    l_samplerInfo.mipmapMode = VK_SAMPLER_MIPMAP_MODE_LINEAR;
-    l_samplerInfo.pNext = nullptr;
-
+    SamplerCreateInfo(l_samplerInfo);
     vkCreateSampler(l_device, &l_samplerInfo, nullptr, &m_viewportSampler);
 }
 
@@ -311,45 +290,19 @@ void VulkanRenderer::CreateViewportImage(IDevice* a_device, ISwapChain* a_swapCh
 void VulkanRenderer::CopyImageToViewport(ISwapChain* a_swapChain, const VkCommandBuffer& a_cmdBuffer) const
 {
     VkImageMemoryBarrier l_barrierSrc{ };
-    l_barrierSrc.sType = VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER;
-    l_barrierSrc.oldLayout = VK_IMAGE_LAYOUT_PRESENT_SRC_KHR;
-    l_barrierSrc.newLayout = VK_IMAGE_LAYOUT_TRANSFER_SRC_OPTIMAL;
-    l_barrierSrc.srcAccessMask = VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT;
-    l_barrierSrc.dstAccessMask = VK_ACCESS_TRANSFER_READ_BIT;
-    l_barrierSrc.image = a_swapChain->CastVulkan()->GetSwapChainImages()[m_currentFrame];
-    l_barrierSrc.subresourceRange = { VK_IMAGE_ASPECT_COLOR_BIT, 0, 1, 0, 1 };
-    l_barrierSrc.pNext = nullptr;
-
+    ImageMemoryBarrierSrc(l_barrierSrc,a_swapChain,m_currentFrame);
     vkCmdPipelineBarrier(a_cmdBuffer, VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT, VK_PIPELINE_STAGE_TRANSFER_BIT, 0, 0, nullptr, 0, nullptr, 1, &l_barrierSrc);
 
     VkImageMemoryBarrier l_barrierDst{ };
-    l_barrierDst.sType = VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER;
-    l_barrierDst.oldLayout = VK_IMAGE_LAYOUT_UNDEFINED;
-    l_barrierDst.newLayout = VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL;
-    l_barrierDst.srcAccessMask = 0;
-    l_barrierDst.dstAccessMask = VK_ACCESS_TRANSFER_WRITE_BIT;
-    l_barrierDst.image = m_viewportImage;
-    l_barrierDst.subresourceRange = { VK_IMAGE_ASPECT_COLOR_BIT, 0, 1, 0, 1 };
-    l_barrierDst.pNext = nullptr;
+    ImageMemoryBarrierDst(l_barrierDst, m_viewportImage);
     vkCmdPipelineBarrier(a_cmdBuffer, VK_PIPELINE_STAGE_TOP_OF_PIPE_BIT, VK_PIPELINE_STAGE_TRANSFER_BIT, 0, 0, nullptr, 0, nullptr, 1, &l_barrierDst);
 
     VkImageCopy l_copyRegion{};
-    l_copyRegion.srcSubresource = { VK_IMAGE_ASPECT_COLOR_BIT, 0, 0, 1 };
-    l_copyRegion.dstSubresource = { VK_IMAGE_ASPECT_COLOR_BIT, 0, 0, 1 };
-    l_copyRegion.extent.width = static_cast<uint32_t>(m_viewportWidth);
-    l_copyRegion.extent.height = static_cast<uint32_t>(m_viewportHeight);
-    l_copyRegion.extent.depth = 1;
+    ImageCopyRegion(l_copyRegion,m_viewportWidth,m_viewportHeight);
     vkCmdCopyImage(a_cmdBuffer, a_swapChain->CastVulkan()->GetSwapChainImages()[m_currentFrame], VK_IMAGE_LAYOUT_TRANSFER_SRC_OPTIMAL, m_viewportImage, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, 1, &l_copyRegion);
 
     VkImageMemoryBarrier l_barrierFinal{ };
-    l_barrierFinal.sType = VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER;
-    l_barrierFinal.oldLayout = VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL;
-    l_barrierFinal.newLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
-    l_barrierFinal.srcAccessMask = VK_ACCESS_TRANSFER_WRITE_BIT;
-    l_barrierFinal.dstAccessMask = VK_ACCESS_SHADER_READ_BIT;
-    l_barrierFinal.image = m_viewportImage;
-    l_barrierFinal.subresourceRange = { VK_IMAGE_ASPECT_COLOR_BIT, 0, 1, 0, 1 };
-    l_barrierFinal.pNext = nullptr;
+    ImageMemoryBarrierFinal(l_barrierFinal, m_viewportImage);
     vkCmdPipelineBarrier(a_cmdBuffer, VK_PIPELINE_STAGE_TRANSFER_BIT, VK_PIPELINE_STAGE_FRAGMENT_SHADER_BIT, 0, 0, nullptr, 0, nullptr, 1, &l_barrierFinal);
 }
 
@@ -456,4 +409,79 @@ VkResult VulkanRenderer::CreateViewportImageInfo(const VkDevice& a_device, const
     l_imageInfo.pNext = nullptr;
 
     return vkCreateImage(a_device, &l_imageInfo, nullptr, &m_viewportImage);
+}
+
+void VulkanRenderer::ImageViewCreateInfo(VkImageViewCreateInfo& a_viewInfo, const VkImage& a_vkImage, ISwapChain* a_swapChain)
+{
+    a_viewInfo.sType = VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO;
+    a_viewInfo.image = a_vkImage;
+    a_viewInfo.viewType = VK_IMAGE_VIEW_TYPE_2D;
+    a_viewInfo.format = a_swapChain->CastVulkan()->GetSwapChainImageFormat();
+    a_viewInfo.subresourceRange.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
+    a_viewInfo.subresourceRange.baseMipLevel = 0;
+    a_viewInfo.subresourceRange.levelCount = 1;
+    a_viewInfo.subresourceRange.baseArrayLayer = 0;
+    a_viewInfo.subresourceRange.layerCount = 1;
+    a_viewInfo.pNext = nullptr;
+}
+
+void VulkanRenderer::SamplerCreateInfo(VkSamplerCreateInfo& a_samplerInfo)
+{
+    a_samplerInfo.sType = VK_STRUCTURE_TYPE_SAMPLER_CREATE_INFO;
+    a_samplerInfo.magFilter = VK_FILTER_LINEAR;
+    a_samplerInfo.minFilter = VK_FILTER_LINEAR;
+    a_samplerInfo.addressModeU = VK_SAMPLER_ADDRESS_MODE_CLAMP_TO_EDGE;
+    a_samplerInfo.addressModeV = VK_SAMPLER_ADDRESS_MODE_CLAMP_TO_EDGE;
+    a_samplerInfo.addressModeW = VK_SAMPLER_ADDRESS_MODE_CLAMP_TO_EDGE;
+    a_samplerInfo.anisotropyEnable = VK_FALSE;
+    a_samplerInfo.borderColor = VK_BORDER_COLOR_INT_OPAQUE_BLACK;
+    a_samplerInfo.unnormalizedCoordinates = VK_FALSE;
+    a_samplerInfo.compareEnable = VK_FALSE;
+    a_samplerInfo.mipmapMode = VK_SAMPLER_MIPMAP_MODE_LINEAR;
+    a_samplerInfo.pNext = nullptr;
+}
+
+void VulkanRenderer::ImageMemoryBarrierSrc(VkImageMemoryBarrier& a_barrierSrc, ISwapChain* a_swapChain, uint32_t a_currentFrame)
+{
+    a_barrierSrc.sType = VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER;
+    a_barrierSrc.oldLayout = VK_IMAGE_LAYOUT_PRESENT_SRC_KHR;
+    a_barrierSrc.newLayout = VK_IMAGE_LAYOUT_TRANSFER_SRC_OPTIMAL;
+    a_barrierSrc.srcAccessMask = VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT;
+    a_barrierSrc.dstAccessMask = VK_ACCESS_TRANSFER_READ_BIT;
+    a_barrierSrc.image = a_swapChain->CastVulkan()->GetSwapChainImages()[a_currentFrame];
+    a_barrierSrc.subresourceRange = { VK_IMAGE_ASPECT_COLOR_BIT, 0, 1, 0, 1 };
+    a_barrierSrc.pNext = nullptr;
+}
+
+void VulkanRenderer::ImageMemoryBarrierDst(VkImageMemoryBarrier& a_barrierDst, const VkImage& a_vkImage)
+{
+    a_barrierDst.sType = VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER;
+    a_barrierDst.oldLayout = VK_IMAGE_LAYOUT_UNDEFINED;
+    a_barrierDst.newLayout = VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL;
+    a_barrierDst.srcAccessMask = 0;
+    a_barrierDst.dstAccessMask = VK_ACCESS_TRANSFER_WRITE_BIT;
+    a_barrierDst.image = a_vkImage;
+    a_barrierDst.subresourceRange = { VK_IMAGE_ASPECT_COLOR_BIT, 0, 1, 0, 1 };
+    a_barrierDst.pNext = nullptr;
+}
+
+void VulkanRenderer::ImageCopyRegion(VkImageCopy& a_copyRegion,float a_viewportWidth,float a_viewportHeight)
+{
+    a_copyRegion.srcSubresource = { VK_IMAGE_ASPECT_COLOR_BIT, 0, 0, 1 };
+    a_copyRegion.dstSubresource = { VK_IMAGE_ASPECT_COLOR_BIT, 0, 0, 1 };
+    a_copyRegion.extent.width = static_cast<uint32_t>(a_viewportWidth);
+    a_copyRegion.extent.height = static_cast<uint32_t>(a_viewportHeight);
+    a_copyRegion.extent.depth = 1;
+}
+
+void VulkanRenderer::ImageMemoryBarrierFinal(VkImageMemoryBarrier& a_barrierFinal, const VkImage& a_vkImage)
+{
+    a_barrierFinal.sType = VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER;
+    a_barrierFinal.oldLayout = VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL;
+    a_barrierFinal.newLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
+    a_barrierFinal.srcAccessMask = VK_ACCESS_TRANSFER_WRITE_BIT;
+    a_barrierFinal.dstAccessMask = VK_ACCESS_SHADER_READ_BIT;
+    a_barrierFinal.image = a_vkImage;
+    a_barrierFinal.subresourceRange = { VK_IMAGE_ASPECT_COLOR_BIT, 0, 1, 0, 1 };
+    a_barrierFinal.pNext = nullptr;
 }
