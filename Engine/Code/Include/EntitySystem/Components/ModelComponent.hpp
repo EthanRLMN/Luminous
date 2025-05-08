@@ -18,6 +18,8 @@ public:
     void SetMesh(std::string a_path);
     void SetTexture(std::string a_path);
 
+    IMesh* GetMesh() { return m_mesh; };
+    ITexture* GetTexture() { return m_texture; };
 
 private:
     IMesh* m_mesh;
