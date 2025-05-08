@@ -18,7 +18,7 @@ class EntityManager;
 class Entity : public std::enable_shared_from_this<Entity>
 {
 public:
-    inline explicit Entity(EntityManager& a_manager) : m_entityManager(a_manager) { }
+    inline explicit Entity(EntityManager& a_manager) : m_engine{ nullptr }, m_entityManager(a_manager) {}
 
     inline void SetName(const std::string& a_newName) { m_name = a_newName; }
     inline void AddComponent(const std::shared_ptr<void>& a_component) { m_components.push_back(a_component); }

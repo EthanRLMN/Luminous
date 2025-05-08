@@ -39,7 +39,6 @@ void Editor::Destroy()
             UnregisterWindow(window);
         }
 
-        m_engine->SetRunning(false);
         m_engine->GetDevice()->CastVulkan()->WaitIdle();
         ImGui_ImplVulkan_Shutdown();
         ImGui_ImplGlfw_Shutdown();
@@ -94,8 +93,6 @@ void Editor::SetupImGui() const
 
 void Editor::Update()
 {
-    constexpr float frameDuration = 1.0f / 120.0f;
-
     while (m_engine->IsRunning())
     {
         m_engine->Update();
@@ -127,7 +124,7 @@ void Editor::Render() const
     ImGui::Render();
 
     // We need to re-register the callback every frame since it needs to get the current frame rendered
-    VulkanRenderer::RegisterEditorRenderCallback([&] { ImGui_ImplVulkan_RenderDrawData(ImGui::GetDrawData(), m_engine->GetCommandBuffer()->CastVulkan()->GetCommandBuffers()[m_engine->GetRenderingDraw()->CastVulkan()->GetCurrentFrame()]); });
+    VulkanRenderer::RegisterEditorRenderCallback([&] { ImGui_ImplVulkan_RenderDrawData(ImGui::GetDrawData(), m_engine->GetCommandBuffer()->CastVulkan()->GetCommandBuffers()[m_engine->GetRenderer()->CastVulkan()->GetCurrentFrame()]); });
 
     const ImGuiIO& l_io = ImGui::GetIO();
     if (l_io.ConfigFlags & ImGuiConfigFlags_ViewportsEnable)

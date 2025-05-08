@@ -1,9 +1,10 @@
+#include "GLFW/glfw3.h"
+
 #include "WindowPanels/MainPanel.hpp"
 #include "Editor.hpp"
-#include "windows.h"
-#include "glfw/glfw3.h"
 #include "imgui.h"
 #include "stb_image.h"
+#include "windows.h"
 
 bool g_newFile = false;
 bool g_openFile = false;
@@ -22,6 +23,9 @@ bool g_delete = false;
 
 static void KeyCallback(GLFWwindow* window, int key, int scancode, int action, int mods)
 {
+    static_cast<void>(window); static_cast<void>(scancode);
+
+
     if (action == GLFW_PRESS || action == GLFW_REPEAT)
     {
         if (key == GLFW_KEY_N && (mods & GLFW_MOD_CONTROL))
@@ -163,7 +167,7 @@ void MainPanel::Render()
             if(ImGui::MenuItem("Undo", "CTRL + Z"))
             {
                 g_undo = true;
-            } 
+            }
             if (ImGui::MenuItem("Redo", "CTRL + Y"))
             {
                 g_redo = true;

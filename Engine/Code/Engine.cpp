@@ -201,7 +201,7 @@ void Engine::PreRender()
 
     // TODO : Fix CastVulkan Call
     m_renderer = m_interface->InstantiateRenderer();
-    m_renderer->Create(m_swapChain);
+    m_renderer->Create(m_device, m_swapChain);
     m_renderer->CastVulkan()->SetViewportSize(static_cast<float>(m_swapChain->CastVulkan()->GetSwapChainExtent().width), static_cast<float>(m_swapChain->CastVulkan()->GetSwapChainExtent().height));
     m_renderer->CastVulkan()->CreateViewportImage(m_device, m_swapChain);
 

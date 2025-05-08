@@ -4,6 +4,7 @@
 #include "TextEditorPanel.hpp"
 #include "WindowPanels/FileExplorerPanel.hpp"
 
+#include "Rendering/Vulkan/VulkanRenderer.hpp"
 #include "Rendering/Vulkan/VulkanTexture.hpp"
 
 
@@ -25,17 +26,17 @@ FileExplorerPanel::FileExplorerPanel(Editor* a_editor, const std::string& a_wind
     m_directoryIconTexture->CastVulkan()->CreateTextureSampler(m_engine->GetDevice());
     m_fileIconTexture->CastVulkan()->CreateTextureSampler(m_engine->GetDevice());
 
-    m_directoryDescriptor = (ImTextureID) ImGui_ImplVulkan_AddTexture(
-            m_engine->GetDefaultSampler(),
+    m_directoryDescriptor = reinterpret_cast<ImTextureID>(ImGui_ImplVulkan_AddTexture(
+            m_engine->GetRenderer()->CastVulkan()->GetDefaultTextureSampler(),
             m_directoryIconTexture->CastVulkan()->GetTextureImageView(),
             VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL
-    );
+            ));
 
-    m_fileDescriptor = (ImTextureID) ImGui_ImplVulkan_AddTexture(
-            m_engine->GetDefaultSampler(),
+    m_fileDescriptor = reinterpret_cast<ImTextureID>(ImGui_ImplVulkan_AddTexture(
+            m_engine->GetRenderer()->CastVulkan()->GetDefaultTextureSampler(),
             m_fileIconTexture->CastVulkan()->GetTextureImageView(),
             VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL
-    );
+            ));
 }
 
 
@@ -143,11 +144,10 @@ std::shared_ptr<ITexture> LoadTexture(Engine* engine, const std::string& path)
 {
     IResourceParams params{};
     params.m_device = engine->GetDevice();
-    params.m_swapChain = engine->GetSwapChain();
     params.m_commandPool = engine->GetCommandPool();
     params.m_texturePath = path;
 
     auto texture = std::make_shared<VulkanTexture>();
-    texture->CreateTextureImage(params.m_device, params.m_swapChain, params.m_commandPool, params.m_texturePath);
+    texture->CreateTextureImage(params.m_device, params.m_commandPool, params.m_texturePath);
     return texture;
 }

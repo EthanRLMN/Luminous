@@ -18,7 +18,7 @@ class VulkanRenderer final : public IRenderer
 {
 public:
     using EditorRenderCallback = std::function<void()>;
-    void Create(ISwapChain* a_swapChain) override;
+    void Create(IDevice* a_device, ISwapChain* a_swapChain) override;
     inline static void RegisterEditorRenderCallback(EditorRenderCallback a_callback) { s_editorGuiCallback = std::move(a_callback); }
 
     void DrawFrame(IWindow* a_window, IDevice* a_device, ISwapChain* a_swapChain, IPipeline* a_pipeline, IBuffer* a_buffer, IRenderPassManager* a_renderPassManager, IDescriptor* a_descriptor, ISynchronization* a_synchronization, ICommandBuffer* a_commandBuffer, IFrameBufferManager* a_frameBufferManager, IDepthResource* a_depthResource, ISurface* a_surface, IMultiSampling* a_multisampling, IInputManager* a_inputManager, EntityManager a_entityManager) override;
@@ -37,11 +37,14 @@ public:
 	[[nodiscard]] VkImageView GetViewportImageView() const { return m_viewportImageview; }
 	[[nodiscard]] VkDeviceMemory GetViewportImageMemory() const { return m_viewportMemory; }
 	[[nodiscard]] VkSampler GetViewportImageSampler() const { return m_viewportSampler; }
+    VkSampler GetDefaultTextureSampler() const { return m_defaultTexSampler; }
 
 	void CreateViewportImage(IDevice* a_device, ISwapChain* a_swapChain);
     void CopyImageToViewport(ISwapChain* a_swapChain, const VkCommandBuffer& a_cmdBuffer) const;
     void DestroyViewportImage(IDevice* a_device) const;
     void SetViewportSize(const float a_x, const float a_y) { m_viewportWidth = a_x; m_viewportHeight = a_y; };
+
+    void CreateDefaultTextureSampler(IDevice* a_device);
 
     bool bReloadImage = false;
     mutable bool bUsable = false;
@@ -63,6 +66,7 @@ private:
     VkImageView m_viewportImageview { nullptr };
     VkDeviceMemory m_viewportMemory { nullptr };
     VkSampler m_viewportSampler { nullptr };
+    VkSampler m_defaultTexSampler { nullptr };
 
     float m_viewportWidth { 2560.f };
     float m_viewportHeight { 1440.f };
