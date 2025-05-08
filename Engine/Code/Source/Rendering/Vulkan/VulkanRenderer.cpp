@@ -154,7 +154,7 @@ void VulkanRenderer::RecordCommandBuffer(const VkCommandBuffer& a_commandBuffer,
                 UniformBufferObject l_ubo{};
                 const Maths::Matrix4 l_modelMatrix = entity->GetTRS();
                 l_ubo.model = l_modelMatrix.Transpose();
-                l_ubo.view = m_cameraEditor.GetViewMatrix().Transpose();
+                l_ubo.view = m_cameraEditor.GetViewMatrix().Transpose().Inverse();
                 l_ubo.proj = m_cameraEditor.GetProjectionMatrix();
                 
                 const std::array<VkBuffer, 1> l_vertexBuffers = { entity.get()->GetComponent<ModelComponent>().get()->GetMesh()->CastVulkan()->GetVertexBuffer() };
@@ -358,7 +358,7 @@ void VulkanRenderer::CopyImageToViewport(ISwapChain* a_swapChain, const VkComman
 {
     VkImageMemoryBarrier l_barrierSrc{ };
     l_barrierSrc.sType = VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER;
-    l_barrierSrc.oldLayout = VK_IMAGE_LAYOUT_PRESENT_SRC_KHR;
+    l_barrierSrc.oldLayout = VK_IMAGE_LAYOUT_UNDEFINED;
     l_barrierSrc.newLayout = VK_IMAGE_LAYOUT_TRANSFER_SRC_OPTIMAL;
     l_barrierSrc.srcAccessMask = VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT;
     l_barrierSrc.dstAccessMask = VK_ACCESS_TRANSFER_READ_BIT;
