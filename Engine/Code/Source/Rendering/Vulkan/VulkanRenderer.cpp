@@ -34,6 +34,15 @@ void VulkanRenderer::Create(IDevice* a_device, ISwapChain* a_swapChain)
 {
     m_cameraEditor.Init(static_cast<float>(a_swapChain->CastVulkan()->GetSwapChainExtent().width) / static_cast<float>(a_swapChain->CastVulkan()->GetSwapChainExtent().height),60.f, 0.1f, 100.f);
     CreateDefaultTextureSampler(a_device);
+
+
+    LightComponent l_light = LightComponent();
+    LightComponent l_light2 = LightComponent();
+    l_light2.GetLight().m_color = Maths::Vector3(0.0f, 0.0f, 1.0f);
+    l_light2.GetLight().m_type = 1;
+    l_light2.GetLight().m_intensity = 0.0f;
+    m_lights[1] = l_light2;
+
 }
 
 void VulkanRenderer::DrawFrame(IWindow* a_window, IDevice* a_device, ISwapChain* a_swapChain, IPipeline* a_pipeline, IBuffer* a_buffer, IRenderPassManager* a_renderPassManager, IDescriptor* a_descriptor, ISynchronization* a_synchronization, ICommandBuffer* a_commandBuffer, IFrameBufferManager* a_frameBufferManager, IDepthResource* a_depthResource, ISurface* a_surface, IMultiSampling* a_multisampling, IInputManager* a_inputManager, EntityManager a_entityManager)
@@ -204,6 +213,9 @@ void VulkanRenderer::UpdateUniformBuffer(const uint32_t& a_currentFrame, IBuffer
     l_ubo.proj = m_cameraEditor.GetProjectionMatrix();
 
     memcpy(a_buffer->CastVulkan()->GetUniformBuffersMapped()[a_currentFrame], &l_ubo, sizeof(l_ubo));
+
+    VkDeviceSize size = sizeof(LightData) * 32;
+    memcpy(a_buffer->CastVulkan()->GetLightUniformBuffersMapped()[a_currentFrame], &m_lights, size);
 }
 
 

@@ -12,8 +12,8 @@ void ModelComponent::Initialize()
         DEBUG_LOG_ERROR("ENGINE OK !");
     }
 
-    SetMesh("Engine/Assets/Models/viking_room.obj");
-    SetTexture("Engine/Assets/Textures/viking_room.png");
+    SetMesh("Engine/Assets/Models/metalSonic.obj");
+    SetTexture("Engine/Assets/Textures/Untitled312.png");
 }
 
 void ModelComponent::SetMesh(const std::string& a_path)

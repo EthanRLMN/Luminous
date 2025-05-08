@@ -49,7 +49,7 @@ public:
     bool bReloadImage = false;
     mutable bool bUsable = false;
 
-    std::vector<LightComponent> m_lights;
+    LightComponent m_lights[32];
     LightComponent m_light;
 
 

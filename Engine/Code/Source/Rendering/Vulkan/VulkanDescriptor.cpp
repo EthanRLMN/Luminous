@@ -30,9 +30,9 @@ void VulkanDescriptor::SetBuffers(IBuffer* a_buffer)
     m_uniformBuffersMemory = a_buffer->CastVulkan()->GetUniformBuffersMemory();
     m_uniformBuffersMapped = a_buffer->CastVulkan()->GetUniformBuffersMapped();
 
-    m_lightUniformBuffer = a_buffer->CastVulkan()->GetUniformBuffer();
-    m_lightUniformBuffersMemory = a_buffer->CastVulkan()->GetUniformBuffersMemory();
-    m_lightUniformBuffersMapped = a_buffer->CastVulkan()->GetUniformBuffersMapped();
+    m_lightUniformBuffer = a_buffer->CastVulkan()->GetLightUniformBuffer();
+    m_lightUniformBuffersMemory = a_buffer->CastVulkan()->GetLightUniformBuffersMemory();
+    m_lightUniformBuffersMapped = a_buffer->CastVulkan()->GetLightUniformBuffersMapped();
 }
 
 
@@ -162,7 +162,7 @@ void VulkanDescriptor::UpdateDescriptorSets(IDevice* a_device, ITexture* a_textu
         VkDescriptorBufferInfo l_lightBufferInfo{};
         l_lightBufferInfo.buffer = m_lightUniformBuffer[i];
         l_lightBufferInfo.offset = 0;
-        l_lightBufferInfo.range = sizeof(LightComponent) * 32;
+        l_lightBufferInfo.range = VK_WHOLE_SIZE;
 
         std::array<VkWriteDescriptorSet, 3> l_descriptorWrites{ };
         l_descriptorWrites[0].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
