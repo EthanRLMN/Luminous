@@ -60,6 +60,14 @@ private:
     static void FillViewportInfo(VkViewport& a_viewport, const VkExtent2D& a_swapChainExtent);
 
     VkResult CreateViewportImageInfo(const VkDevice& a_device, const VkFormat& a_swapchainImageFormat);
+    
+    
+    void ImageViewCreateInfo(VkImageViewCreateInfo& a_viewInfo, const VkImage& a_vkImage,ISwapChain* a_swapChain);
+    void SamplerCreateInfo(VkSamplerCreateInfo& a_samplerInfo);
+    static void ImageMemoryBarrierSrc(VkImageMemoryBarrier& a_barrierSrc, ISwapChain* a_swapChain, uint32_t a_currentFrame);
+    static void ImageMemoryBarrierDst(VkImageMemoryBarrier& a_barrierDst, const VkImage& a_vkImage);
+    static void ImageCopyRegion(VkImageCopy& a_copyRegion, float a_viewportWidth, float a_viewportHeight);
+    static void ImageMemoryBarrierFinal(VkImageMemoryBarrier& a_barrierFinal, const VkImage& a_vkImage);
 
 	uint32_t m_currentFrame { 0 };
 
