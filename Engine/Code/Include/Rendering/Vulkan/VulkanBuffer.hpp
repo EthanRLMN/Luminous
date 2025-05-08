@@ -31,7 +31,7 @@ public:
 
 
 private:
-    static void CopyBuffer(VkDevice a_device, VkQueue a_graphicsQueue, VkCommandPool a_commandPool, VkBuffer a_srcBuffer, VkBuffer a_dstBuffer, VkDeviceSize a_size);
+    static void CopyBuffer(const VkDevice& a_device, const VkQueue& a_graphicsQueue, const VkCommandPool& a_commandPool, const VkBuffer& a_srcBuffer, const VkBuffer& a_dstBuffer, VkDeviceSize a_size);
 
     std::vector<VkBuffer> m_uniformBuffer { nullptr };
     std::vector<VkDeviceMemory> m_uniformBuffersMemory { nullptr };
