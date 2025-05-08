@@ -150,7 +150,7 @@ void VulkanRenderer::RecordCommandBuffer(const VkCommandBuffer& a_commandBuffer,
                 UniformBufferObject l_ubo{};
                 const Maths::Matrix4 l_modelMatrix = entity->GetTRS();
                 l_ubo.model = l_modelMatrix.Transpose();
-                l_ubo.view = m_cameraEditor.GetViewMatrix().Transpose().Inverse();
+                l_ubo.view = m_cameraEditor.GetViewMatrix().Transpose();
                 l_ubo.proj = m_cameraEditor.GetProjectionMatrix();
                 
                 const std::array<VkBuffer, 1> l_vertexBuffers = { entity.get()->GetComponent<ModelComponent>().get()->GetMesh()->CastVulkan()->GetVertexBuffer() };

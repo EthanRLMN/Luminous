@@ -52,7 +52,7 @@ vec3 CalculateDirectional(Light a_light)
     float spec = pow(max(dot(viewDir, reflectDir), 0.0), 32);
     vec3 specular = specularStrength * spec * lightcolor;  
 
-    vec3 result = (ambient + diffuse + 0) * a_light.intensity;
+    vec3 result = (ambient + diffuse + specular) * a_light.intensity;
     return result;
 }
 
@@ -89,7 +89,7 @@ vec3 CalculatePointLight (Light a_light)
     diffuse  *= attenuation;
     specular *= attenuation; 
 
-    vec3 result = (ambient + diffuse + 0) * a_light.intensity;
+    vec3 result = (ambient + diffuse + specular) * a_light.intensity;
     return result;
 }
 
@@ -114,5 +114,4 @@ void main(){
     outColor = texture(texSampler2,fragTexCoord) * vec4(result, 1.0);
 
 
-	//outColor = texture(texSampler2,fragTexCoord);
 }
