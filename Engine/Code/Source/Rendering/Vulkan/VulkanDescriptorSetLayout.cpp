@@ -30,9 +30,11 @@ void VulkanDescriptorSetLayout::Create(IDevice* a_device)
 
 
     const std::array<VkDescriptorSetLayoutBinding, 3> l_bindings = { l_uboLayoutBinding, l_samplerLayoutBinding, l_lightLayoutBinding };
-    VkDescriptorSetLayoutCreateInfo l_layoutInfo{ VK_STRUCTURE_TYPE_DESCRIPTOR_SET_LAYOUT_CREATE_INFO };
+    VkDescriptorSetLayoutCreateInfo l_layoutInfo{ };
+    l_layoutInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_LAYOUT_CREATE_INFO;
     l_layoutInfo.bindingCount = static_cast<uint32_t>(l_bindings.size());
     l_layoutInfo.pBindings = l_bindings.data();
+    l_layoutInfo.pNext = nullptr;
 
     const VkResult l_result = vkCreateDescriptorSetLayout(a_device->CastVulkan()->GetDevice(), &l_layoutInfo, nullptr, &m_descriptorSetLayout);
     if (l_result != VK_SUCCESS)

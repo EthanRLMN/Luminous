@@ -2,7 +2,6 @@
 
 #include "EntitySystem/EntityComponent.hpp"
 
-#include "Quaternion.hpp"
 #include "Vector3.hpp"
 
 
