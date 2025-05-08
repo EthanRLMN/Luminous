@@ -8,6 +8,7 @@
 #include "IRenderPassManager.hpp"
 #include "ISwapChain.hpp"
 #include "ISynchronization.hpp"
+#include "Rendering/Vulkan/VulkanTexture.hpp"
 
 #include "Rendering/Vulkan/VulkanRenderer.hpp"
 #include "Rendering/Vulkan/VulkanBuffer.hpp"
@@ -139,8 +140,8 @@ void VulkanRenderer::RecordCommandBuffer(IDevice* a_device,const VkCommandBuffer
                 const std::array<VkDeviceSize, 1> l_offsets = { 0 };
                 vkCmdBindVertexBuffers(a_commandBuffer, 0, 1, l_vertexBuffers.data(), l_offsets.data());
                 vkCmdBindIndexBuffer(a_commandBuffer, entity.get()->GetComponent<ModelComponent>().get()->GetMesh()->CastVulkan()->GetIndexBuffer(), 0, VK_INDEX_TYPE_UINT32);
-                a_descriptor->CastVulkan()->UpdateDescriptorSets(a_device, entity.get()->GetComponent<ModelComponent>().get()->GetTexture()); // Update des descriptors
-                vkCmdBindDescriptorSets(a_commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, a_pipelineLayout, 0, 1, &a_descriptor->CastVulkan()->GetDescriptorSet()[m_currentFrame], 0, nullptr);
+                std::vector<VkDescriptorSet> sets = { a_descriptor->CastVulkan()->GetDescriptorSet()[m_currentFrame], entity.get()->GetComponent<ModelComponent>().get()->GetTexture()->CastVulkan()->GetDescriptorSet() };
+                vkCmdBindDescriptorSets(a_commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, a_pipelineLayout, 0, static_cast<uint32_t>(sets.size()), sets.data(), 0, nullptr);
                 vkCmdPushConstants(a_commandBuffer, a_pipelineLayout, VK_SHADER_STAGE_VERTEX_BIT, 0, sizeof(UniformBufferObject), &l_ubo);
 
                 vkCmdDrawIndexed(a_commandBuffer, static_cast<uint32_t>(entity.get()->GetComponent<ModelComponent>().get()->GetMesh()->CastVulkan()->GetIndices().size()), 1, 0, 0, 0);

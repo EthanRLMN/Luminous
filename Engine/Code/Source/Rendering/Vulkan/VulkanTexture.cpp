@@ -17,6 +17,7 @@ bool VulkanTexture::Create(const IResourceParams& a_params)
     IDevice* l_device = a_params.m_device;
     ISwapChain* l_swapChain = a_params.m_swapChain;
     ICommandPool* l_commandPool = a_params.m_commandPool;
+    IDescriptorSetLayout* l_descriptorSetLayout = a_params.m_descriptorSetLayout;
 
     if (l_device == nullptr)
         DEBUG_LOG_ERROR("DEVICE IS NULL");
@@ -25,6 +26,10 @@ bool VulkanTexture::Create(const IResourceParams& a_params)
     CreateTextureImageView(l_device);
     CreateTextureSampler(l_device);
     DEBUG_LOG_INFO("Vulkan Texture : Texture Created!\n");
+
+    CreateDescriptorPool(l_device);
+    CreateDescriptorSets(l_device, l_descriptorSetLayout);
+    
 
     return true;
 }
@@ -136,6 +141,64 @@ void VulkanTexture::CreateTextureSampler(IDevice* a_device)
 
     if (vkCreateSampler(a_device->CastVulkan()->GetDevice(), &l_samplerInfo, nullptr, &m_textureSampler) != VK_SUCCESS)
         DEBUG_LOG_ERROR("Vulkan Texture : Failed to create Texture Sampler!\n");
+}
+
+
+void VulkanTexture::CreateDescriptorPool(IDevice* a_device)
+{
+
+    std::array<VkDescriptorPoolSize, 1> l_poolSizes{};
+    l_poolSizes[0].type = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
+    l_poolSizes[0].descriptorCount = 1;
+
+    VkDescriptorPoolCreateInfo l_poolInfo{ VK_STRUCTURE_TYPE_DESCRIPTOR_POOL_CREATE_INFO };
+    l_poolInfo.poolSizeCount = static_cast<uint32_t>(l_poolSizes.size());
+    l_poolInfo.pPoolSizes = l_poolSizes.data();
+    l_poolInfo.maxSets = 1;
+    l_poolInfo.flags = VK_DESCRIPTOR_POOL_CREATE_FREE_DESCRIPTOR_SET_BIT;
+
+    if (vkCreateDescriptorPool(a_device->CastVulkan()->GetDevice(), &l_poolInfo, nullptr, &m_textureDescriptorPool) != VK_SUCCESS)
+        DEBUG_LOG_ERROR("Failed to create descriptor pool\n");
+
+    DEBUG_LOG_INFO("Vulkan Descriptors : DescriptorPool created!\n");
+}
+
+void VulkanTexture::CreateDescriptorSets(IDevice* a_device, IDescriptorSetLayout* a_layout)
+{
+
+    const std::vector<VkDescriptorSetLayout> l_layouts(1, a_layout->CastVulkan()->GetTextureDescriptorSetLayout());
+
+    VkDescriptorSetAllocateInfo l_allocateInfo{ VK_STRUCTURE_TYPE_DESCRIPTOR_SET_ALLOCATE_INFO };
+    l_allocateInfo.descriptorPool = m_textureDescriptorPool;
+    l_allocateInfo.descriptorSetCount = 1;
+    l_allocateInfo.pSetLayouts = l_layouts.data();
+
+    if (vkAllocateDescriptorSets(a_device->CastVulkan()->GetDevice(), &l_allocateInfo, &m_textureDescriptorSets) != VK_SUCCESS)
+        DEBUG_LOG_ERROR("failed to allocate descriptor sets !\n");
+
+    UpdateDescriptorSets(a_device);
+}
+
+void VulkanTexture::UpdateDescriptorSets(IDevice* a_device)
+{
+
+
+    VkDescriptorImageInfo l_imageInfo{};
+    l_imageInfo.imageLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
+    l_imageInfo.imageView = GetTextureImageView();
+    l_imageInfo.sampler = GetTextureSampler();
+
+    std::array<VkWriteDescriptorSet, 1> l_descriptorWrites{ VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET };
+
+    l_descriptorWrites[0].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
+    l_descriptorWrites[0].dstSet = m_textureDescriptorSets;
+    l_descriptorWrites[0].dstBinding = 0;
+    l_descriptorWrites[0].dstArrayElement = 0;
+    l_descriptorWrites[0].descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
+    l_descriptorWrites[0].descriptorCount = 1;
+    l_descriptorWrites[0].pImageInfo = &l_imageInfo;
+
+    vkUpdateDescriptorSets(a_device->CastVulkan()->GetDevice(), static_cast<uint32_t>(l_descriptorWrites.size()), l_descriptorWrites.data(), 0, nullptr);
 }
 
 

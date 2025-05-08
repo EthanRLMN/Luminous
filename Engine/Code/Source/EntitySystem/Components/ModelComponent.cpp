@@ -27,7 +27,7 @@ void ModelComponent::SetMesh(std::string a_path)
 
 void ModelComponent::SetTexture(std::string a_path)
 { 
-    IResourceParams l_texParams{ m_engine->GetDevice(), m_engine->GetSwapChain(), m_engine->GetDepthResource(), m_engine->GetCommandPool() };
+    IResourceParams l_texParams{ m_engine->GetDevice(), m_engine->GetSwapChain(), m_engine->GetDepthResource(), m_engine->GetCommandPool(), m_engine->GetDescriptionSetLayout() };
     l_texParams.m_texturePath = a_path;
     m_texture = ResourceManager::GetInstance().LoadResource<VulkanTexture>(l_texParams);
 }

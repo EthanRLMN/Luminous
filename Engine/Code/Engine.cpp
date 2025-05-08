@@ -67,10 +67,10 @@ void Engine::Destroy()
    m_buffer->Destroy(m_device);  
    m_interface->DeleteBuffer(m_buffer);  
 
-   m_interface->DeleteModel(m_mesh);  
+   //m_interface->DeleteModel(m_mesh);  
 
-   m_texture->Destroy(m_device);  
-   m_interface->DeleteTexture(m_texture);  
+   //m_texture->Destroy(m_device);  
+   //m_interface->DeleteTexture(m_texture);  
 
    m_frameBufferManager->Destroy(m_device);  
    m_interface->DeleteFrameBufferManager(m_frameBufferManager);  
@@ -172,7 +172,7 @@ void Engine::PreRender()
     m_frameBufferManager->Create(m_device, m_swapChain, m_renderPassManager->GetRenderPasses()[1], m_depthResource, m_multiSampling, true); // Create Editor Frame Buffer
 
 
-    IResourceParams l_texParams{ m_device, m_swapChain, m_depthResource, m_commandPool };
+    IResourceParams l_texParams{ m_device, m_swapChain, m_depthResource, m_commandPool, m_descriptorSetLayout };
     l_texParams.m_texturePath = "Engine/Assets/Textures/viking_room.png";
     m_texture = ResourceManager::GetInstance().LoadResource<VulkanTexture>(l_texParams);
 
@@ -207,7 +207,7 @@ void Engine::PreRender()
     m_renderer->CastVulkan()->CreateViewportImage(m_device, m_swapChain);
 
 
-    IResourceParams l_texParams2{ m_device, m_swapChain, m_depthResource, m_commandPool };
+    IResourceParams l_texParams2{ m_device, m_swapChain, m_depthResource, m_commandPool, m_descriptorSetLayout };
     l_texParams2.m_texturePath = "Engine/Assets/Textures/Untitled312.png";
     m_texture = ResourceManager::GetInstance().LoadResource<VulkanTexture>(l_texParams2);
 
