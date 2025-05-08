@@ -11,6 +11,7 @@
 
 #include "EntitySystem/Components/ModelComponent.hpp"
 
+
 class EntityManager;
 
 
@@ -73,11 +74,18 @@ public:
 
     inline void Initialize() const
     {
-        for (const std::shared_ptr<EntityComponent>& l_logic : m_entityComponents)
+        for (const std::shared_ptr<EntityComponent>& l_logic : m_entityComponents) 
+        {
+            l_logic.get()->m_engine = m_engine;
             l_logic->Initialize();
+        }
+            
 
         for (const std::shared_ptr<Entity>& l_child : m_children)
+        {
+            l_child.get()->m_engine = m_engine;
             l_child->Initialize();
+        }
     }
 
 
@@ -101,6 +109,8 @@ public:
     }
 
 
+    Engine* m_engine;
+
 private:
     EntityManager& m_entityManager;
     std::string m_name { };
@@ -118,4 +128,6 @@ private:
     Maths::Vector3 scale = Maths::Vector3::One;
 
     Maths::Matrix4 TRS = Maths::Matrix4::TRS(position, rotation.ToEulerAngles(true), scale);
+
+    
 };

@@ -1,21 +1,27 @@
 #pragma once
 
 
-#include "IMesh.hpp"
 #include "ITexture.hpp"
+#include "IMesh.hpp"
 #include "EntitySystem/EntityComponent.hpp"
+
 
 
 class ModelComponent : public EntityComponent
 {
 public:
-    ~ModelComponent() override = default;
-    void Initialize() override { };
+    ~ModelComponent() = default;
+    void Initialize() override ;
     void GameplayStarted() override {};
     void Update() override {};
 
+    void SetMesh(std::string a_path);
+    void SetTexture(std::string a_path);
+
+    IMesh* GetMesh() { return m_mesh; };
+    ITexture* GetTexture() { return m_texture; };
 
 private:
-    //IMesh* m_mesh { nullptr };
-    //ITexture* m_texture { nullptr };
+    IMesh* m_mesh;
+    ITexture* m_texture;
 };

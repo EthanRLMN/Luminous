@@ -7,6 +7,7 @@ class IDevice;
 class ISwapChain;
 class IDepthResource;
 class ICommandPool;
+class IDescriptorSetLayout;
 
 struct IResourceParams
 {
@@ -14,6 +15,7 @@ struct IResourceParams
     ISwapChain* m_swapChain { nullptr };
     IDepthResource* m_depthResource { nullptr };
     ICommandPool* m_commandPool { nullptr };
+    IDescriptorSetLayout* m_descriptorSetLayout{ nullptr };
 
     //TODO: Add default values as a backup to avoid potential issues
     std::string m_meshPath { "" };

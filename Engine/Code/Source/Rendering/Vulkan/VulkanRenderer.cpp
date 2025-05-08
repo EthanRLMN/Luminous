@@ -1,7 +1,16 @@
-#include "Rendering/Vulkan/VulkanRenderer.hpp"
-
+#include "ICommandBuffer.hpp"
+#include "IDepthResource.hpp"
+#include "IDescriptor.hpp"
+#include "IFrameBuffer.hpp"
 #include "IFrameBufferManager.hpp"
+#include "IMesh.hpp"
+#include "IPipeline.hpp"
 #include "IRenderPassManager.hpp"
+#include "ISwapChain.hpp"
+#include "ISynchronization.hpp"
+#include "Rendering/Vulkan/VulkanTexture.hpp"
+
+#include "Rendering/Vulkan/VulkanRenderer.hpp"
 #include "Rendering/Vulkan/VulkanBuffer.hpp"
 #include "Rendering/Vulkan/VulkanCommandBuffer.hpp"
 #include "Rendering/Vulkan/VulkanDepthResource.hpp"
@@ -17,46 +26,21 @@
 #include "EntitySystem/Components/ModelComponent.hpp"
 
 #include "Matrix4.hpp"
-#include "EntitySystem/EntityManager.hpp"
 #include "Game/Systems/Time.inl"
 
 
-void VulkanRenderer::Create(ISwapChain* a_swapChain)
+void VulkanRenderer::Create(IWindow* a_window, ISwapChain* a_swapChain)
 {
-    m_cameraEditor.Init(static_cast<float>(a_swapChain->CastVulkan()->GetSwapChainExtent().width) / static_cast<float>(a_swapChain->CastVulkan()->GetSwapChainExtent().height), 60.f, 0.1f, 100.f);
-
-
-    LightComponent l_light = LightComponent();
-    m_lights.push_back(l_light);
-
-    m_light = LightComponent();
+    m_cameraEditor.Init(static_cast<float>(a_swapChain->CastVulkan()->GetSwapChainExtent().width) / static_cast<float>(a_swapChain->CastVulkan()->GetSwapChainExtent().height),60.f, 0.1f, 100.f);
 }
 
-void VulkanRenderer::DrawFrame(IWindow* a_window, IDevice* a_device, ISwapChain* a_swapChain, IPipeline* a_pipeline, IBuffer* a_buffer, IRenderPassManager* a_renderPassManager, IDescriptor* a_descriptor, std::vector<IMesh*> a_meshes, ISynchronization* a_synchronization, ICommandBuffer* a_commandBuffer, IFrameBufferManager* a_frameBufferManager, IDepthResource* a_depthResource, ISurface* a_surface, IMultiSampling* a_multisampling, IInputManager* a_inputManager, const EntityManager a_entityManager)
+void VulkanRenderer::DrawFrame(IWindow* a_window, IDevice* a_device, ISwapChain* a_swapChain, IPipeline* a_pipeline, IBuffer* a_buffer, IRenderPassManager* a_renderPassManager, IDescriptor* a_descriptor, std::vector<IMesh*> a_meshes, ISynchronization* a_synchronization, ICommandBuffer* a_commandBuffer, IFrameBufferManager* a_frameBufferManager, IDepthResource* a_depthResource, ISurface* a_surface, IMultiSampling* a_multisampling, IInputManager* a_inputManager, EntityManager a_entityManager, ITexture* a_texture)
 {
     const VkDevice& l_device{ a_device->CastVulkan()->GetDevice() };
     const VkSwapchainKHR& l_swapchain{ a_swapChain->CastVulkan()->GetSwapChain() };
 
     vkWaitForFences(l_device, 1, &a_synchronization->CastVulkan()->GetFences()[m_currentFrame], VK_TRUE, UINT64_MAX);
     uint32_t l_imageIndex{ 0 };
-    
-
-    if (a_inputManager->IsKeyDown(Key::KEY_RIGHT))
-    {
-        m_lights[0].m_position += Maths::Vector3(0.01f, 0, 0);
-    }
-    if (a_inputManager->IsKeyDown(Key::KEY_LEFT))
-    {
-        m_lights[0].m_position -= Maths::Vector3(0.01f, 0, 0);
-    }
-    if (a_inputManager->IsKeyDown(Key::KEY_UP))
-    {
-        m_lights[0].m_position += Maths::Vector3(0, 0.01f, 0);
-    }
-    if (a_inputManager->IsKeyDown(Key::KEY_DOWN))
-    {
-        m_lights[0].m_position -= Maths::Vector3(0, 0.01f, 0);
-    }
 
     VkResult l_result = vkAcquireNextImageKHR(l_device, l_swapchain, UINT64_MAX, a_synchronization->CastVulkan()->GetImageAvailableSemaphores()[m_currentFrame], nullptr, &l_imageIndex);
     if (l_result == VK_ERROR_OUT_OF_DATE_KHR)
@@ -78,25 +62,19 @@ void VulkanRenderer::DrawFrame(IWindow* a_window, IDevice* a_device, ISwapChain*
     UpdateUniformBuffer(m_currentFrame, a_buffer,a_entityManager);
     vkResetFences(l_device, 1, &a_synchronization->CastVulkan()->GetFences()[m_currentFrame]);
 
-    VkSubmitInfo l_submitInfo{ };
-    l_submitInfo.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO;
-    l_submitInfo.pNext = nullptr;
-
+    VkSubmitInfo l_submitInfo{ VK_STRUCTURE_TYPE_SUBMIT_INFO };
     const std::vector<VkSemaphore> l_waitSemaphores = { a_synchronization->CastVulkan()->GetImageAvailableSemaphores()[m_currentFrame] };
     const std::array<VkPipelineStageFlags, 1> l_waitStages = { VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT };
     const std::vector<VkSemaphore> l_signalSemaphores = { a_synchronization->CastVulkan()->GetRenderFinishedSemaphores()[m_currentFrame] };
     SetupSubmitInfo(l_submitInfo, l_waitSemaphores, l_waitStages, a_commandBuffer->CastVulkan()->GetCommandBuffers(), l_signalSemaphores);
 
     vkResetCommandBuffer(a_commandBuffer->CastVulkan()->GetCommandBuffers()[m_currentFrame], 0);
-    RecordCommandBuffer(a_commandBuffer->CastVulkan()->GetCommandBuffers()[m_currentFrame], a_pipeline->CastVulkan()->GetGraphicsPipeline(), a_pipeline->CastVulkan()->GetPipelineLayout(), l_imageIndex, a_swapChain, a_renderPassManager, a_buffer, a_descriptor, a_meshes, a_frameBufferManager, a_entityManager);
+    RecordCommandBuffer(a_device,a_commandBuffer->CastVulkan()->GetCommandBuffers()[m_currentFrame], a_pipeline->CastVulkan()->GetGraphicsPipeline(), a_pipeline->CastVulkan()->GetPipelineLayout(), l_imageIndex, a_swapChain, a_renderPassManager, a_buffer, a_descriptor, a_meshes, a_frameBufferManager,a_entityManager,a_texture);
 
     if (vkQueueSubmit(a_device->CastVulkan()->GetGraphicsQueue(), 1, &l_submitInfo, a_synchronization->CastVulkan()->GetFences()[m_currentFrame]) != VK_SUCCESS)
         DEBUG_LOG_ERROR("Failed to submit draw command buffer");
 
-    VkPresentInfoKHR l_presentInfo{ };
-    l_presentInfo.sType = VK_STRUCTURE_TYPE_PRESENT_INFO_KHR;
-    l_presentInfo.pNext = nullptr;
-
+    VkPresentInfoKHR l_presentInfo{ VK_STRUCTURE_TYPE_PRESENT_INFO_KHR };
     const std::vector<VkSwapchainKHR> l_swapChains = { l_swapchain };
     PresentRendererInfo(l_presentInfo, l_signalSemaphores, l_swapChains);
     l_presentInfo.pImageIndices = &l_imageIndex;
@@ -115,21 +93,15 @@ void VulkanRenderer::DrawFrame(IWindow* a_window, IDevice* a_device, ISwapChain*
 }
 
 
-void VulkanRenderer::RecordCommandBuffer(const VkCommandBuffer& a_commandBuffer, const VkPipeline& a_graphicsPipeline, const VkPipelineLayout& a_pipelineLayout, const uint32_t& a_imageIndex, ISwapChain* a_swapChain, const IRenderPassManager* a_renderPassManager, IBuffer* a_buffer, IDescriptor* a_descriptor, const std::vector<IMesh*>& a_meshes, const IFrameBufferManager* a_frameBufferManager, const EntityManager& a_entityManager) const
+void VulkanRenderer::RecordCommandBuffer(IDevice* a_device,const VkCommandBuffer& a_commandBuffer, const VkPipeline& a_graphicsPipeline, const VkPipelineLayout& a_pipelineLayout, const uint32_t& a_imageIndex, ISwapChain* a_swapChain, const IRenderPassManager* a_renderPassManager, IBuffer* a_buffer, IDescriptor* a_descriptor, std::vector<IMesh*> a_meshes, IFrameBufferManager* a_frameBufferManager, EntityManager a_entityManager, ITexture* a_texture) const
 {
-    VkCommandBufferBeginInfo l_bufferBeginInfo { };
-    l_bufferBeginInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
-    l_bufferBeginInfo.pNext = nullptr;
-
+    const VkCommandBufferBeginInfo l_bufferBeginInfo = { VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO };
     if (vkBeginCommandBuffer(a_commandBuffer, &l_bufferBeginInfo) != VK_SUCCESS)
         DEBUG_LOG_INFO("failed to begin recording command buffer!\n");
 
     for (IRenderPass* l_renderPass : a_renderPassManager->GetRenderPasses())
     {
-        VkRenderPassBeginInfo l_renderPassBeginInfo { };
-        l_renderPassBeginInfo.sType = VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO;
-        l_renderPassBeginInfo.pNext = nullptr;
-
+        VkRenderPassBeginInfo l_renderPassBeginInfo = { VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO };
         const std::array<VkClearValue, 2> l_clearValues{};
         if (l_renderPass == a_renderPassManager->GetRenderPassAt(0))
             PresentRenderPassInfo(l_renderPassBeginInfo, l_renderPass->CastVulkan()->GetRenderPass(), a_frameBufferManager->GetFrameBufferAt(0)->CastVulkan()->GetFrameBuffers()[a_imageIndex], a_swapChain->CastVulkan()->GetSwapChainExtent(), l_clearValues);
@@ -152,53 +124,30 @@ void VulkanRenderer::RecordCommandBuffer(const VkCommandBuffer& a_commandBuffer,
         if (l_renderPass == a_renderPassManager->GetRenderPassAt(0))
         {
 
-
             std::vector<std::shared_ptr<Entity>> entitiesWithModels = a_entityManager.GetEntitiesByComponent<ModelComponent>();
-
 
             int l_i = 0;
             for (const auto& entity : entitiesWithModels)
             {
                 UniformBufferObject l_ubo{};
-                Maths::Matrix4 modelMatrix = entity->GetTRS();
-
-                if (l_i == 1) 
-                {
-                    l_ubo.model = Maths::Matrix4::TRS(Maths::Vector3(0.0f, 0.f, 0.f), Maths::Vector3(0.f, 0.f, 0.f), Maths::Vector3(1.f, 1.0f, 1.0f)).Transpose();
-                    l_ubo.view = m_cameraEditor.GetViewMatrix().Transpose();
-                    l_ubo.proj = m_cameraEditor.GetProjectionMatrix();
-                } else
-                {
-                    l_ubo.model = modelMatrix;
-                    l_ubo.view = m_cameraEditor.GetViewMatrix().Transpose();
-                    l_ubo.proj = m_cameraEditor.GetProjectionMatrix();
-                }
+                Maths::Matrix4 modelMatrix = entity->GetTPS();
+                l_ubo.model = modelMatrix;
+                l_ubo.view = m_cameraEditor.GetViewMatrix();
+                l_ubo.proj = m_cameraEditor.GetProjectionMatrix();
+                l_ubo.proj.mat[1][1] *= -1.f;
                 
-
-                const std::array<VkBuffer, 1> l_vertexBuffers = { a_buffer->CastVulkan()->GetVertexBuffers()[l_i] };
+                const std::array<VkBuffer, 1> l_vertexBuffers = { entity.get()->GetComponent<ModelComponent>().get()->GetMesh()->CastVulkan()->GetVertexBuffer() };
                 const std::array<VkDeviceSize, 1> l_offsets = { 0 };
                 vkCmdBindVertexBuffers(a_commandBuffer, 0, 1, l_vertexBuffers.data(), l_offsets.data());
-                vkCmdBindIndexBuffer(a_commandBuffer, a_buffer->CastVulkan()->GetIndexBuffers()[l_i], 0, VK_INDEX_TYPE_UINT32);
-                //a_descriptor->CastVulkan()->UpdateDescriptorSets(a_device, a_texture);
-                vkCmdBindDescriptorSets(a_commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, a_pipelineLayout, 0, 1, &a_descriptor->CastVulkan()->GetDescriptorSet()[m_currentFrame], 0, nullptr);
+                vkCmdBindIndexBuffer(a_commandBuffer, entity.get()->GetComponent<ModelComponent>().get()->GetMesh()->CastVulkan()->GetIndexBuffer(), 0, VK_INDEX_TYPE_UINT32);
+                std::vector<VkDescriptorSet> sets = { a_descriptor->CastVulkan()->GetDescriptorSet()[m_currentFrame], entity.get()->GetComponent<ModelComponent>().get()->GetTexture()->CastVulkan()->GetDescriptorSet() };
+                vkCmdBindDescriptorSets(a_commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, a_pipelineLayout, 0, static_cast<uint32_t>(sets.size()), sets.data(), 0, nullptr);
                 vkCmdPushConstants(a_commandBuffer, a_pipelineLayout, VK_SHADER_STAGE_VERTEX_BIT, 0, sizeof(UniformBufferObject), &l_ubo);
 
-                vkCmdDrawIndexed(a_commandBuffer, static_cast<uint32_t>(a_meshes[l_i]->CastVulkan()->GetIndices().size()), 1, 0, 0, 0);
+                vkCmdDrawIndexed(a_commandBuffer, static_cast<uint32_t>(entity.get()->GetComponent<ModelComponent>().get()->GetMesh()->CastVulkan()->GetIndices().size()), 1, 0, 0, 0);
 
-                ++l_i;
+                l_i++;
             }
-
-            /*
-            UniformBufferObject l_ubo{};
-            l_ubo.model = Maths::Matrix4::TRS(Maths::Vector3(0.f, 0.f, 0.f), Maths::Vector3(0.f, 0.f, 0.f), Maths::Vector3(1.f, 1.0f, 1.0f));
-            l_ubo.view = m_cameraEditor.GetViewMatrix();
-            l_ubo.proj = m_cameraEditor.GetProjectionMatrix();
-            l_ubo.proj.mat[1][1] *= -1.f;*/
-
-            
-
-            
-
 
         }
 
@@ -225,22 +174,25 @@ void VulkanRenderer::RecordCommandBuffer(const VkCommandBuffer& a_commandBuffer,
 }
 
 
-void VulkanRenderer::UpdateUniformBuffer(const uint32_t& a_currentFrame, IBuffer* a_buffer, const EntityManager& a_entityManager) const
+void VulkanRenderer::UpdateUniformBuffer(const uint32_t& a_currentFrame, IBuffer* a_buffer, EntityManager a_entityManager) const
 {
 
     a_entityManager.Update();
-    const std::vector<std::shared_ptr<Entity>> l_entitiesWithModels = a_entityManager.GetEntitiesByComponent<ModelComponent>();
+    std::vector<std::shared_ptr<Entity>> entitiesWithModels = a_entityManager.GetEntitiesByComponent<ModelComponent>();
 
     UniformBufferObject l_ubo{};
 
 
-    for (const std::shared_ptr<Entity>& l_entity : l_entitiesWithModels)
+    for (const auto& entity : entitiesWithModels)
     {
 
-        std::shared_ptr<ModelComponent> l_modelComponent = l_entity->GetComponent<ModelComponent>();
-        if (l_modelComponent)
+        auto modelComponent = entity->GetComponent<ModelComponent>();
+        if (modelComponent)
         {
-            l_ubo.model = l_entity->GetTRS();
+
+            Maths::Matrix4 modelMatrix = entity->GetTPS();
+
+            l_ubo.model = modelMatrix;
         }
     }
 
@@ -249,11 +201,10 @@ void VulkanRenderer::UpdateUniformBuffer(const uint32_t& a_currentFrame, IBuffer
     l_ubo.proj = m_cameraEditor.GetProjectionMatrix();
 
 
+    l_ubo.proj.mat[1][1] *= -1.f;
+
+
     memcpy(a_buffer->CastVulkan()->GetUniformBuffersMapped()[a_currentFrame], &l_ubo, sizeof(l_ubo));
-
-
-    //const VkDeviceSize l_size = sizeof(LightComponent) * 32;
-    //memcpy(a_buffer->CastVulkan()->GetLightUniformBuffersMapped()[a_currentFrame], &m_light, l_size);
 }
 
 
@@ -268,7 +219,7 @@ void VulkanRenderer::RecreateSwapChain(IWindow* a_window, IDevice* a_device, ISu
     }
 
     CleanupSwapChain(a_device, a_swapChain, a_depthResource, a_frameBuffer);
-    a_swapChain->CastVulkan()->Create(a_window, a_device, a_surface);
+    a_swapChain->CastVulkan()->Create(a_window, a_device, a_surface, a_swapChain->CastVulkan()->GetMipLevel());
     
     
     CreateViewportImage(a_device, a_swapChain);
@@ -335,93 +286,83 @@ void VulkanRenderer::CreateViewportImage(IDevice* a_device, ISwapChain* a_swapCh
     }
 
 
-    VkImageCreateInfo l_imageInfo{ };
-    l_imageInfo.sType = VK_STRUCTURE_TYPE_IMAGE_CREATE_INFO;
-    l_imageInfo.imageType = VK_IMAGE_TYPE_2D;
-    l_imageInfo.extent.width = static_cast<uint32_t>(m_viewportWidth); // l_extent.width
-    l_imageInfo.extent.height = static_cast<uint32_t>(m_viewportHeight);
-    l_imageInfo.extent.depth = 1;
-    l_imageInfo.mipLevels = 1;
-    l_imageInfo.arrayLayers = 1;
-    l_imageInfo.format = a_swapChain->CastVulkan()->GetSwapChainImageFormat();
-    l_imageInfo.tiling = VK_IMAGE_TILING_OPTIMAL;
-    l_imageInfo.initialLayout = VK_IMAGE_LAYOUT_UNDEFINED;
-    l_imageInfo.usage = VK_IMAGE_USAGE_TRANSFER_DST_BIT | VK_IMAGE_USAGE_SAMPLED_BIT;
-    l_imageInfo.sharingMode = VK_SHARING_MODE_EXCLUSIVE;
-    l_imageInfo.samples = VK_SAMPLE_COUNT_1_BIT;
-    l_imageInfo.flags = 0;
-    l_imageInfo.pNext = nullptr;
+    VkImageCreateInfo imageInfo{ VK_STRUCTURE_TYPE_IMAGE_CREATE_INFO };
+    imageInfo.imageType = VK_IMAGE_TYPE_2D;
+    imageInfo.extent.width = static_cast<uint32_t>(m_viewportWidth); // l_extent.width
+    imageInfo.extent.height = static_cast<uint32_t>(m_viewportHeight);
+    imageInfo.extent.depth = 1;
+    imageInfo.mipLevels = 1;
+    imageInfo.arrayLayers = 1;
+    imageInfo.format = a_swapChain->CastVulkan()->GetSwapChainImageFormat();
+    imageInfo.tiling = VK_IMAGE_TILING_OPTIMAL;
+    imageInfo.initialLayout = VK_IMAGE_LAYOUT_UNDEFINED;
+    imageInfo.usage = VK_IMAGE_USAGE_TRANSFER_DST_BIT | VK_IMAGE_USAGE_SAMPLED_BIT;
+    imageInfo.sharingMode = VK_SHARING_MODE_EXCLUSIVE;
+    imageInfo.samples = VK_SAMPLE_COUNT_1_BIT;
+    imageInfo.flags = 0;
 
-    vkCreateImage(l_device, &l_imageInfo, nullptr, &m_viewportImage);
+    vkCreateImage(l_device, &imageInfo, nullptr, &m_viewportImage);
 
-    VkMemoryRequirements l_memRequirements;
-    vkGetImageMemoryRequirements(l_device, m_viewportImage, &l_memRequirements);
+    VkMemoryRequirements memRequirements;
+    vkGetImageMemoryRequirements(l_device, m_viewportImage, &memRequirements);
 
-    VkMemoryAllocateInfo l_allocInfo{ };
-    l_allocInfo.sType = VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO;
-    l_allocInfo.allocationSize = l_memRequirements.size;
-    l_allocInfo.memoryTypeIndex = VulkanSwapChain::FindMemoryType(a_device->CastVulkan()->GetPhysicalDevice(), l_memRequirements.memoryTypeBits, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT);
-    l_allocInfo.pNext = nullptr;
+    VkMemoryAllocateInfo allocInfo{ VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO };
+    allocInfo.allocationSize = memRequirements.size;
+    allocInfo.memoryTypeIndex = VulkanSwapChain::FindMemoryType(a_device->CastVulkan()->GetPhysicalDevice(), memRequirements.memoryTypeBits, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT);
 
-    vkAllocateMemory(l_device, &l_allocInfo, nullptr, &m_viewportMemory);
+    vkAllocateMemory(l_device, &allocInfo, nullptr, &m_viewportMemory);
     vkBindImageMemory(l_device, m_viewportImage, m_viewportMemory, 0);
 
-    VkImageViewCreateInfo l_viewInfo{ };
-    l_viewInfo.sType = VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO;
-    l_viewInfo.image = m_viewportImage;
-    l_viewInfo.viewType = VK_IMAGE_VIEW_TYPE_2D;
-    l_viewInfo.format = a_swapChain->CastVulkan()->GetSwapChainImageFormat();
-    l_viewInfo.subresourceRange.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
-    l_viewInfo.subresourceRange.baseMipLevel = 0;
-    l_viewInfo.subresourceRange.levelCount = 1;
-    l_viewInfo.subresourceRange.baseArrayLayer = 0;
-    l_viewInfo.subresourceRange.layerCount = 1;
-    l_viewInfo.pNext = nullptr;
-    vkCreateImageView(l_device, &l_viewInfo, nullptr, &m_viewportImageview);
+    VkImageViewCreateInfo viewInfo{ VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO };
+    viewInfo.image = m_viewportImage;
+    viewInfo.viewType = VK_IMAGE_VIEW_TYPE_2D;
+    viewInfo.format = a_swapChain->CastVulkan()->GetSwapChainImageFormat();
+    viewInfo.subresourceRange.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
+    viewInfo.subresourceRange.baseMipLevel = 0;
+    viewInfo.subresourceRange.levelCount = 1;
+    viewInfo.subresourceRange.baseArrayLayer = 0;
+    viewInfo.subresourceRange.layerCount = 1;
 
-    VkSamplerCreateInfo l_samplerInfo{ };
-    l_samplerInfo.sType = VK_STRUCTURE_TYPE_SAMPLER_CREATE_INFO;
-    l_samplerInfo.magFilter = VK_FILTER_LINEAR;
-    l_samplerInfo.minFilter = VK_FILTER_LINEAR;
-    l_samplerInfo.addressModeU = VK_SAMPLER_ADDRESS_MODE_CLAMP_TO_EDGE;
-    l_samplerInfo.addressModeV = VK_SAMPLER_ADDRESS_MODE_CLAMP_TO_EDGE;
-    l_samplerInfo.addressModeW = VK_SAMPLER_ADDRESS_MODE_CLAMP_TO_EDGE;
-    l_samplerInfo.anisotropyEnable = VK_FALSE;
-    l_samplerInfo.borderColor = VK_BORDER_COLOR_INT_OPAQUE_BLACK;
-    l_samplerInfo.unnormalizedCoordinates = VK_FALSE;
-    l_samplerInfo.compareEnable = VK_FALSE;
-    l_samplerInfo.mipmapMode = VK_SAMPLER_MIPMAP_MODE_LINEAR;
-    l_samplerInfo.pNext = nullptr;
+    vkCreateImageView(l_device, &viewInfo, nullptr, &m_viewportImageview);
 
-    vkCreateSampler(l_device, &l_samplerInfo, nullptr, &m_viewportSampler);
+
+    VkSamplerCreateInfo samplerInfo{ VK_STRUCTURE_TYPE_SAMPLER_CREATE_INFO };
+    samplerInfo.magFilter = VK_FILTER_LINEAR;
+    samplerInfo.minFilter = VK_FILTER_LINEAR;
+    samplerInfo.addressModeU = VK_SAMPLER_ADDRESS_MODE_CLAMP_TO_EDGE;
+    samplerInfo.addressModeV = VK_SAMPLER_ADDRESS_MODE_CLAMP_TO_EDGE;
+    samplerInfo.addressModeW = VK_SAMPLER_ADDRESS_MODE_CLAMP_TO_EDGE;
+    samplerInfo.anisotropyEnable = VK_FALSE;
+    samplerInfo.borderColor = VK_BORDER_COLOR_INT_OPAQUE_BLACK;
+    samplerInfo.unnormalizedCoordinates = VK_FALSE;
+    samplerInfo.compareEnable = VK_FALSE;
+    samplerInfo.mipmapMode = VK_SAMPLER_MIPMAP_MODE_LINEAR;
+
+    vkCreateSampler(l_device, &samplerInfo, nullptr, &m_viewportSampler);
 }
 
 
 
 void VulkanRenderer::CopyImageToViewport(ISwapChain* a_swapChain, const VkCommandBuffer& a_cmdBuffer) const
 {
-    
-   VkImageMemoryBarrier l_barrierSrc{ };
-    l_barrierSrc.sType = VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER;
-    l_barrierSrc.oldLayout = VK_IMAGE_LAYOUT_UNDEFINED;
+    VkImageMemoryBarrier l_barrierSrc{ VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER };
+    l_barrierSrc.oldLayout = VK_IMAGE_LAYOUT_PRESENT_SRC_KHR;
     l_barrierSrc.newLayout = VK_IMAGE_LAYOUT_TRANSFER_SRC_OPTIMAL;
     l_barrierSrc.srcAccessMask = VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT;
     l_barrierSrc.dstAccessMask = VK_ACCESS_TRANSFER_READ_BIT;
+    
     l_barrierSrc.image = a_swapChain->CastVulkan()->GetSwapChainImages()[m_currentFrame];
     l_barrierSrc.subresourceRange = { VK_IMAGE_ASPECT_COLOR_BIT, 0, 1, 0, 1 };
-    l_barrierSrc.pNext = nullptr;
 
     vkCmdPipelineBarrier(a_cmdBuffer, VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT, VK_PIPELINE_STAGE_TRANSFER_BIT, 0, 0, nullptr, 0, nullptr, 1, &l_barrierSrc);
 
-    VkImageMemoryBarrier l_barrierDst{ };
-    l_barrierDst.sType = VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER;
+    VkImageMemoryBarrier l_barrierDst{ VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER };
     l_barrierDst.oldLayout = VK_IMAGE_LAYOUT_UNDEFINED;
     l_barrierDst.newLayout = VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL;
     l_barrierDst.srcAccessMask = 0;
     l_barrierDst.dstAccessMask = VK_ACCESS_TRANSFER_WRITE_BIT;
     l_barrierDst.image = m_viewportImage;
     l_barrierDst.subresourceRange = { VK_IMAGE_ASPECT_COLOR_BIT, 0, 1, 0, 1 };
-    l_barrierDst.pNext = nullptr;
 
     vkCmdPipelineBarrier(a_cmdBuffer, VK_PIPELINE_STAGE_TOP_OF_PIPE_BIT, VK_PIPELINE_STAGE_TRANSFER_BIT, 0, 0, nullptr, 0, nullptr, 1, &l_barrierDst);
 
@@ -434,15 +375,13 @@ void VulkanRenderer::CopyImageToViewport(ISwapChain* a_swapChain, const VkComman
 
     vkCmdCopyImage(a_cmdBuffer, a_swapChain->CastVulkan()->GetSwapChainImages()[m_currentFrame], VK_IMAGE_LAYOUT_TRANSFER_SRC_OPTIMAL, m_viewportImage, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, 1, &l_copyRegion);
 
-    VkImageMemoryBarrier l_barrierFinal{ };
-    l_barrierFinal.sType = VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER;
+    VkImageMemoryBarrier l_barrierFinal{ VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER };
     l_barrierFinal.oldLayout = VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL;
     l_barrierFinal.newLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
     l_barrierFinal.srcAccessMask = VK_ACCESS_TRANSFER_WRITE_BIT;
     l_barrierFinal.dstAccessMask = VK_ACCESS_SHADER_READ_BIT;
     l_barrierFinal.image = m_viewportImage;
     l_barrierFinal.subresourceRange = { VK_IMAGE_ASPECT_COLOR_BIT, 0, 1, 0, 1 };
-    l_barrierFinal.pNext = nullptr;
 
     vkCmdPipelineBarrier(a_cmdBuffer, VK_PIPELINE_STAGE_TRANSFER_BIT, VK_PIPELINE_STAGE_FRAGMENT_SHADER_BIT, 0, 0, nullptr, 0, nullptr, 1, &l_barrierFinal);
 }

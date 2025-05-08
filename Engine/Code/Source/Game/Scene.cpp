@@ -6,6 +6,9 @@
 #include "Game/Scripts/Player.hpp"
 #include "Game/Scripts/Weapon.hpp"
 #include "Game/Scripts/PlayerModel.hpp"
+#include "Game/Scripts/PlayerModel2.hpp"
+#include "Engine.hpp"
+
 
 /*
 void Scene::SceneEntity()
@@ -23,7 +26,7 @@ void Scene::SceneEntity()
     entityManager.Update();
 }*/
 
-void Scene::SceneEntity(EntityManager& a_entityManager)
+void Scene::SceneEntity(EntityManager& a_entityManager, Engine* a_engine)
 {
     /*
     const std::shared_ptr<Player> l_player = std::make_shared<Player>(a_entityManager);
@@ -36,6 +39,7 @@ void Scene::SceneEntity(EntityManager& a_entityManager)
     l_player->Register();
     
 
-    const std::shared_ptr<PlayerModel> l_model2 = std::make_shared<PlayerModel>(a_entityManager);
+    
+    const std::shared_ptr<PlayerModel2> l_model2 = std::make_shared<PlayerModel2>(a_entityManager);
     l_model2->Register();
 }

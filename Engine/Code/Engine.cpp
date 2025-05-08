@@ -27,9 +27,9 @@ void Engine::Init()
     InitPhysics();
 
 
-    m_scene->SceneEntity(m_entityManager);
+    m_scene->SceneEntity(m_entityManager,this);
     
-    m_entityManager.Initialize();
+    m_entityManager.Initialize(this);
     m_entityManager.GameplayStarted();
 }
 
@@ -52,8 +52,12 @@ void Engine::Destroy()
    ResourceManager::GetInstance().DeleteResource<VulkanShader>("v=Engine/Assets/Shaders/vert.spv, f=Engine/Assets/Shaders/frag.spv, t=, g=", m_device);
 
 
+   ResourceManager::Destroy(m_device);
+
     // TODO: Cleanup
     m_renderer->CastVulkan()->DestroyViewportImage(m_device);
+
+
 
    m_descriptor->Destroy(m_device);  
    m_interface->DeleteDescriptor(m_descriptor);  
@@ -61,11 +65,10 @@ void Engine::Destroy()
    m_buffer->Destroy(m_device);  
    m_interface->DeleteBuffer(m_buffer);  
 
-   m_mesh->Destroy(m_device);  
-   m_interface->DeleteModel(m_mesh);  
+   //m_interface->DeleteModel(m_mesh);  
 
-   m_texture->Destroy(m_device);  
-   m_interface->DeleteTexture(m_texture);  
+   //m_texture->Destroy(m_device);  
+   //m_interface->DeleteTexture(m_texture);  
 
    m_frameBufferManager->Destroy(m_device);  
    m_interface->DeleteFrameBufferManager(m_frameBufferManager);  
@@ -167,7 +170,8 @@ void Engine::PreRender()
     m_frameBufferManager->Create(m_device, m_swapChain, m_renderPassManager->GetRenderPasses()[0], m_depthResource, m_multiSampling, false); // Create Renderer Frame Buffer
     m_frameBufferManager->Create(m_device, m_swapChain, m_renderPassManager->GetRenderPasses()[1], m_depthResource, m_multiSampling, true); // Create Editor Frame Buffer
 
-    IResourceParams l_texParams{ m_device, m_swapChain, m_depthResource, m_commandPool };
+
+    IResourceParams l_texParams{ m_device, m_swapChain, m_depthResource, m_commandPool, m_descriptorSetLayout };
     l_texParams.m_texturePath = "Engine/Assets/Textures/viking_room.png";
     m_texture = ResourceManager::GetInstance().LoadResource<VulkanTexture>(l_texParams);
 
@@ -202,7 +206,7 @@ void Engine::PreRender()
     m_renderer->CastVulkan()->CreateViewportImage(m_device, m_swapChain);
 
 
-    IResourceParams l_texParams2{ m_device, m_swapChain, m_depthResource, m_commandPool };
+    IResourceParams l_texParams2{ m_device, m_swapChain, m_depthResource, m_commandPool, m_descriptorSetLayout };
     l_texParams2.m_texturePath = "Engine/Assets/Textures/Untitled312.png";
     m_texture = ResourceManager::GetInstance().LoadResource<VulkanTexture>(l_texParams2);
 

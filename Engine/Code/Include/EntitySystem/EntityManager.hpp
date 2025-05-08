@@ -8,6 +8,8 @@
 #include "Entity.hpp"
 #include "EntityComponent.hpp" 
 
+class Engine;
+
 class EntityManager
 {
 public:
@@ -28,13 +30,22 @@ public:
     }
 
   
-    inline void Initialize() const
+    inline void Initialize(Engine* a_engine) 
     {
-        for (const std::shared_ptr<EntityComponent>& l_logic : m_logicComponents)
+
+        m_engine = a_engine;
+        for (const std::shared_ptr<EntityComponent>& l_logic : m_logicComponents) 
+        {
+            l_logic.get()->m_engine = a_engine;
             l_logic->Initialize();
+        }
+            
 
         for (const std::shared_ptr<Entity>& l_entity : m_entities)
+        {
+            l_entity.get()->m_engine = a_engine;
             l_entity->Initialize();
+        }
     }
 
 
@@ -135,6 +146,9 @@ public:
     [[nodiscard]] inline size_t GetLogicComponentCount() const { return m_logicComponents.size(); }
     [[nodiscard]] inline bool IsEmpty() const { return m_entities.empty(); }
     [[nodiscard]] inline bool HasEntity(const std::shared_ptr<Entity>& a_entity) const { return std::ranges::find(m_entities, a_entity) != m_entities.end(); }
+
+    Engine* m_engine{ nullptr };
+    
 
 private:
     std::vector<std::shared_ptr<Entity>> m_entities; 

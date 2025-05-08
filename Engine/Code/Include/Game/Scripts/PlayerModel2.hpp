@@ -6,18 +6,19 @@
 #include "EntitySystem/EntityManager.hpp"
 
 
-class PlayerModel : public EntityComponent, public std::enable_shared_from_this<PlayerModel>
+class PlayerModel2 : public EntityComponent, public std::enable_shared_from_this<PlayerModel2>
 {
 public:
-    explicit PlayerModel(EntityManager& a_entityManager) :
+    explicit PlayerModel2(EntityManager& a_entityManager) :
         m_entityManager(a_entityManager)
     {
 
         m_playerModelEntity = a_entityManager.CreateEntity();
-        m_playerModelEntity->SetName("PlayerModel");
+        m_playerModelEntity->SetName("PlayerModel2");
 
 
         m_playerModelEntity->AddComponent(m_modelComponent);
+        
     }
 
     void Register()
@@ -27,9 +28,11 @@ public:
 
     void Initialize() override
     {
-        m_playerModelEntity->SetTRS( Maths::Matrix4::TRS(Maths::Vector3(5.0f, 0.f, 0.f), Maths::Vector3(0.f, 90.f, 90.f), Maths::Vector3(1.f, 1.0f, 1.0f)));
+        m_playerModelEntity->SetTRS( Maths::Matrix4::TRS(Maths::Vector3(0.0f, 0.f, 0.f), Maths::Vector3(0.f, 90.f, 90.f), Maths::Vector3(1.f, 1.0f, 1.0f)));
         m_modelComponent.get()->m_engine = m_engine;
         m_modelComponent.get()->Initialize();
+        m_modelComponent.get()->SetMesh("Engine/Assets/Models/metalSonic.obj");
+        m_modelComponent.get()->SetTexture("Engine/Assets/Textures/Untitled312.png");
     }
 
     void GameplayStarted() override
