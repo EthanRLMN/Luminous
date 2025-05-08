@@ -3,12 +3,13 @@
 #include <string>
 #include <vector>
 
+#include "Matrix4.hpp"
 #include "Quaternion.hpp"
 #include "Vector3.hpp"
-#include "Matrix4.hpp"
 
-#include "../Component/EntityComponent.hpp"
-#include "../Component/ModelComponent.hpp"
+#include "Game/Systems/Component/EntityComponent.hpp"
+#include "Game/Systems/Physics/PhysicsCollisionEvent.hpp"
+#include "Game/Systems/Physics/RigidBody.hpp"
 
 class EntityManager;
 
@@ -16,35 +17,23 @@ class EntityManager;
 class Entity : public std::enable_shared_from_this<Entity>
 {
 public:
-    inline explicit Entity(EntityManager& a_manager) : m_engine{ nullptr }, m_entityManager(a_manager) {}
+    inline explicit Entity(EntityManager& a_manager) : m_entityManager(a_manager) {}
+    void Initialize() const;
+    void GameplayStarted() const;
+    void Update() const;
 
-    inline void SetName(const std::string& a_newName) { m_name = a_newName; }
-    inline void AddComponent(const std::shared_ptr<void>& a_component) { m_components.push_back(a_component); }
-    inline void AddLogic(const std::shared_ptr<EntityComponent>& a_logic) { m_entityComponents.push_back(a_logic); }
-    inline void AttachChild(const std::shared_ptr<Entity>& a_child) { m_children.push_back(a_child); a_child->SetParent(shared_from_this()); }
-    inline void SetParent(const std::shared_ptr<Entity>& a_parentEntity) { m_parent = a_parentEntity; }
-
-
-    Maths::Vector3 GetPosition() const { return position; };
-    Maths::Quaternion GetRotation() const { return rotation; };
-    Maths::Vector3 GetScale() const { return scale; };
-
+    Engine* GetEngine() const { return m_engine; }
+    EntityManager& GetEntityManager() const { return m_entityManager; }
+    Maths::Vector3 GetPosition() const { return m_position; };
+    Maths::Quaternion GetRotation() const { return m_rotation; };
+    Maths::Vector3 GetScale() const { return m_scale; };
     Maths::Matrix4 GetTRS() const { return TRS; };
-
-
-    void SetPosition(const Maths::Vector3 a_position) { position = a_position; };
-    void SetRotation(const Maths::Quaternion a_rotation) { rotation = a_rotation; };
-    void SetScale(const Maths::Vector3 a_scale) { scale = a_scale; };
-
-    void SetTRS(const Maths::Matrix4& a_TRS) { TRS = a_TRS; };
-    
-
+    std::vector<std::shared_ptr<Entity>> GetEntitiesWithModelComponent() const;
     [[nodiscard]] inline std::string GetName() const { return m_name; }
     [[nodiscard]] inline std::vector<std::shared_ptr<Entity>> GetChildren() const { return m_children; }
     [[nodiscard]] inline std::shared_ptr<Entity> GetParent() const { return m_parent; }
     [[nodiscard]] inline bool HasChildren() const { return !m_children.empty(); }
     [[nodiscard]] inline bool HasParent() const { return m_parent != nullptr; }
-    EntityManager& GetEntityManager() const { return m_entityManager; }
 
     template<typename T>
     [[nodiscard]] inline std::shared_ptr<T> GetComponent() const
@@ -58,58 +47,21 @@ public:
         return nullptr;
     }
 
-    std::vector<std::shared_ptr<Entity>> GetEntitiesWithModelComponent() const
-    {
-        std::vector<std::shared_ptr<Entity>> l_entitiesWithModel;
-        for (auto& entity : m_entities)
-        { 
-            auto modelComponent = entity->GetComponent<ModelComponent>();
-            if (modelComponent != nullptr)
-                l_entitiesWithModel.push_back(entity);
-        }
-        return l_entitiesWithModel;
-    }
+    void SetEngine(Engine* a_engine) { m_engine = a_engine; }
+    inline void SetName(const std::string& a_newName) { m_name = a_newName; }
+    inline void AddComponent(const std::shared_ptr<void>& a_component) { m_components.push_back(a_component); }
+    inline void AddLogic(const std::shared_ptr<EntityComponent>& a_logic) { m_entityComponents.push_back(a_logic); }
+    inline void AttachChild(const std::shared_ptr<Entity>& a_child) { m_children.push_back(a_child); a_child->SetParent(shared_from_this()); }
+    inline void SetParent(const std::shared_ptr<Entity>& a_parentEntity) { m_parent = a_parentEntity; }
+    inline void SetPosition(const Maths::Vector3 a_position) { m_position = a_position; };
+    inline void SetRotation(const Maths::Quaternion a_rotation) { m_rotation = a_rotation; };
+    inline void SetScale(const Maths::Vector3 a_scale) { m_scale = a_scale; };
+    inline void SetTRS(const Maths::Matrix4& a_TRS) { TRS = a_TRS; };
 
-    inline void Initialize() const
-    {
-        for (const std::shared_ptr<EntityComponent>& l_logic : m_entityComponents) 
-        {
-            l_logic->m_engine = m_engine;
-            l_logic->Initialize();
-        }
-            
-
-        for (const std::shared_ptr<Entity>& l_child : m_children)
-        {
-            l_child->m_engine = m_engine;
-            l_child->Initialize();
-        }
-    }
-
-
-    inline void GameplayStarted() const
-    {
-        for (const std::shared_ptr<EntityComponent>& l_logic : m_entityComponents)
-            l_logic->GameplayStarted();
-
-        for (const std::shared_ptr<Entity>& l_child : m_children)
-            l_child->GameplayStarted();
-    }
-
-
-    inline void Update() const
-    {
-        for (const std::shared_ptr<EntityComponent>& l_logic : m_entityComponents)
-            l_logic->Update();
-
-        for (const std::shared_ptr<Entity>& l_child : m_children)
-            l_child->Update();
-    }
-
-
-    Engine* m_engine;
 
 private:
+    Engine* m_engine { nullptr };
+
     EntityManager& m_entityManager;
     std::string m_name { };
 
@@ -120,9 +72,9 @@ private:
 
     std::vector<std::shared_ptr<Entity>> m_entities{};
 
-    Maths::Vector3 position = Maths::Vector3::Zero;
-    Maths::Quaternion rotation = Maths::Quaternion::Zero;
-    Maths::Vector3 scale = Maths::Vector3::One;
+    Maths::Vector3 m_position { Maths::Vector3::Zero };
+    Maths::Quaternion m_rotation { Maths::Quaternion::Zero };
+    Maths::Vector3 m_scale { Maths::Vector3::One };
 
-    Maths::Matrix4 TRS = Maths::Matrix4::TRS(position, rotation.ToEulerAngles(true), scale); 
+    Maths::Matrix4 TRS { Maths::Matrix4::TRS(m_position, m_rotation.ToEulerAngles(true), m_scale) };
 };

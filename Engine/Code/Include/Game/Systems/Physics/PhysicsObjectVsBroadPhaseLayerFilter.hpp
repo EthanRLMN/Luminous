@@ -8,7 +8,7 @@
 class PhysicsObjectVsBroadPhaseLayerFilter final : public JPH::ObjectVsBroadPhaseLayerFilter
 {
 public:
-    inline bool ShouldCollide(const JPH::ObjectLayer a_inLayer1, const JPH::BroadPhaseLayer a_inLayer2) const override
+    [[nodiscard]] inline bool ShouldCollide(const JPH::ObjectLayer a_inLayer1, const JPH::BroadPhaseLayer a_inLayer2) const override
     {
         switch (a_inLayer1)
         {

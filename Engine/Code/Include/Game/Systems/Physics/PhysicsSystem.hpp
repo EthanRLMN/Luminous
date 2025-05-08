@@ -13,6 +13,7 @@
 #include "Jolt/Physics/Collision/Shape/BoxShape.h"
 #include "Jolt/Physics/Collision/Shape/SphereShape.h"
 
+enum class PhysicsCollisionEvent;
 class PhysicsBodyActivationListener;
 
 namespace JPH {
@@ -37,16 +38,6 @@ public:
         float m_gravityFactor { 1.0f }; // The gravity factor
     };
 
-    enum class CollisionEvent
-    {
-        COLLISION_ENTER,
-        COLLISION_STAY,
-        COLLISION_EXIT,
-        TRIGGER_ENTER,
-        TRIGGER_STAY,
-        TRIGGER_EXIT
-    };
-
     PhysicsSystem() = default;
     ~PhysicsSystem() = default;
 
@@ -65,6 +56,10 @@ public:
     [[nodiscard]] inline JPH::BodyActivationListener* GetBodyActivationListener() const { return m_bodyActivationListener; }
     [[nodiscard]] inline JPH::ContactListener* GetContactListener() const { return m_collisionListener; }
     [[nodiscard]] inline std::vector<RigidBody*> GetRigidBodies() const { return m_rigidBodies; }
+
+
+    void NotifyCollisionEnter(PhysicsCollisionEvent a_collisionEvent, const JPH::BodyID& a_body1, const JPH::BodyID& a_body2);
+    void NotifyCollisionExit(PhysicsCollisionEvent a_collisionEvent, const JPH::BodyID& a_body1, const JPH::BodyID& a_body2);
 
 
     /*          Body Creation Functions          */

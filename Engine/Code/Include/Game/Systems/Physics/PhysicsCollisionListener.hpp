@@ -17,7 +17,7 @@ public:
         static_cast<void>(a_inManifold); static_cast<void>(a_ioSettings);
         if (a_inBody1.IsSensor() || a_inBody2.IsSensor())
         {
-            // Notify collision enter between both bodies
+
         }
     }
 

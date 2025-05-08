@@ -2,6 +2,7 @@
 #include <memory>
 #include <vector>
 
+#include "Game/Systems/Physics/PhysicsCollisionListener.hpp"
 
 /*
 class RigidbodyComponent : public std::enable_shared_from_this<RigidbodyComponent>
@@ -23,8 +24,8 @@ public:
 
     void NotifyCollisionExit(const std::shared_ptr<RigidbodyComponent>& a_other)
     {
-        for (const std::shared_ptr<ICollisionListener>& l_listener : m_listeners)
-            l_listener->OnCollisionExit(shared_from_this(), a_other);
+        for (const std::shared_ptr<PhysicsCollisionListener>& l_listener : m_listeners)
+            l_listener->OnColl(shared_from_this(), a_other);
     }
 
 
@@ -35,4 +36,5 @@ public:
 private:
     std::vector<std::shared_ptr<ICollisionListener>> m_listeners { };
     bool m_simulatePhysics { true };
-};*/
+};
+*/
