@@ -77,14 +77,24 @@ set_target_properties(${L_TARGET_NAME} PROPERTIES OUTPUT_NAME "${PROJECT_NAME}-$
 #---------------------------------------#
 #           COPY ASSETS FOLDER          #
 #---------------------------------------#
-# Copy resources dir command.
+# Copy assets after target is built
 add_custom_command(
         TARGET ${L_TARGET_NAME}
         POST_BUILD
-        COMMAND "${CMAKE_COMMAND}" -E copy_directory
+        COMMAND ${CMAKE_COMMAND} -E copy_directory
         "${CMAKE_CURRENT_SOURCE_DIR}/Assets"
         "${L_OUTPUT_DIR}/Engine/Assets"
+        COMMENT "Copying Assets to output directory after build"
 )
 
-# Force copy assets folder when building for visual studio because of issues caused by single-repository project
-file(COPY Assets DESTINATION "${CMAKE_BINARY_DIR}/Engine")
+# Ensure Assets are also present in the general binary dir (for IDEs like Visual Studio)
+add_custom_target(CopyAssets ALL
+    COMMAND ${CMAKE_COMMAND} -E remove_directory "${CMAKE_BINARY_DIR}/Engine/Assets"
+    COMMAND ${CMAKE_COMMAND} -E copy_directory
+            "${CMAKE_CURRENT_SOURCE_DIR}/Assets"
+            "${CMAKE_BINARY_DIR}/Engine/Assets"
+    COMMENT "Forcefully copying Assets to build directory"
+)
+
+# Make sure CopyAssets is executed before building the target
+add_dependencies(${L_TARGET_NAME} CopyAssets)
