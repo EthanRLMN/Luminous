@@ -8,16 +8,38 @@ void Viewport::Render()
 {
     IWindowPanel::Render();
 
-    ImGui::Begin(p_windowIdentifier.c_str(), nullptr, ImGuiWindowFlags_NoCollapse);
+    ImGui::Begin(p_windowIdentifier.c_str(), nullptr, ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoBackground);
+    
+    ImVec2 avail = ImGui::GetContentRegionAvail();
+    float buttonWidth = 0.10f * avail.x;
+    float buttonHeight = 40.f;
+    ImVec2 buttonSize(buttonWidth, buttonHeight);
 
-    VulkanRenderer* l_renderer = p_editor->GetEngine()->GetRenderingDraw()->CastVulkan();
-    if (dSets && l_renderer->bReloadImage)
+    if (ImGui::Button("Move", buttonSize)) 
     {
-        ImGui_ImplVulkan_RemoveTexture(dSets);
+    
+    }
+    ImGui::SameLine();
+    if (ImGui::Button("Rotate", buttonSize)) 
+    {
+    
+    }
+    ImGui::SameLine();
+    if (ImGui::Button("Resize", buttonSize)) 
+    {
+    
+    }
 
-        dSets = ImGui_ImplVulkan_AddTexture(l_renderer->GetViewportImageSampler(), l_renderer->GetViewportImageView(), VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL);
-        l_renderer->bReloadImage = false;
-        l_renderer->bUsable = false;
+    ImGui::SameLine(0, 0.1f * avail.x);
+
+    if (ImGui::Button("Play", buttonSize)) 
+    {
+    
+    }
+    ImGui::SameLine();
+    if (ImGui::Button("Stop", buttonSize)) 
+    {
+    
     }
 
 

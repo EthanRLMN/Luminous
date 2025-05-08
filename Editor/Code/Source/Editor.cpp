@@ -24,16 +24,31 @@
 #include "WindowPanels/MainPanel.hpp"
 #include "WindowPanels/ViewportPanel.hpp"
 
+Editor::~Editor()
+{
+    DestroyWindowPanels();
+    Destroy();
+}
+
 void Editor::Destroy()
 {
-    m_engine->GetDevice()->CastVulkan()->WaitIdle();
-    ImGui_ImplVulkan_Shutdown();
-    ImGui_ImplGlfw_Shutdown();
-    ImGui::DestroyContext();
+    if (m_engine)
+    {
+        for (IWindowPanel* window : m_windows)
+        {
+            UnregisterWindow(window);
+        }
 
-    m_engine->Destroy();
-    delete m_engine;
-    m_engine = nullptr;
+        m_engine->SetRunning(false);
+        m_engine->GetDevice()->CastVulkan()->WaitIdle();
+        ImGui_ImplVulkan_Shutdown();
+        ImGui_ImplGlfw_Shutdown();
+        ImGui::DestroyContext();
+
+        m_engine->Destroy();
+        delete m_engine;
+        m_engine = nullptr;
+    }
 }
 
 void Editor::Init()
@@ -83,24 +98,23 @@ void Editor::Update()
 
     while (m_engine->IsRunning())
     {
-        auto frameStart = std::chrono::high_resolution_clock::now();
-
         m_engine->Update();
         Render();
 
-        auto frameEnd = std::chrono::high_resolution_clock::now();
-        std::chrono::duration<float> elapsed = frameEnd - frameStart;
-
-        if (elapsed.count() < frameDuration)
+        if (ShouldExit())
         {
-            std::chrono::duration<float> sleepTime(frameDuration - elapsed.count());
-            std::this_thread::sleep_for(sleepTime);
+            Destroy();
+            break;
         }
     }
 }
 
+
 void Editor::Render() const
 {
+    if (!m_engine || !m_engine->IsRunning())
+        return;
+
     ImGui_ImplVulkan_NewFrame();
     ImGui_ImplGlfw_NewFrame();
     ImGui::NewFrame();
@@ -125,21 +139,34 @@ void Editor::Render() const
 
 void Editor::CreateWindowPanels()
 {
-    new MainPanel(this, "Editor");
-    new Viewport(this, "Viewport");
-    new FileExplorerPanel(this, "File Explorer");
-    new InspectorPanel(this, "Inspector");
-    new HierarchyPanel(this, "Hierarchy");
+    RegisterWindow(new MainPanel(this, "Editor"));
+    RegisterWindow(new Viewport(this, "Viewport"));
+    RegisterWindow(new FileExplorerPanel(this, "File Explorer"));
+    RegisterWindow(new InspectorPanel(this, "Inspector"));
+    RegisterWindow(new HierarchyPanel(this, "Hierarchy"));
 }
 
 void Editor::RenderWindowPanels() const
 {
+    if (!m_engine || !m_engine->IsRunning())
+        return;
+
     for (IWindowPanel* l_windowPanel : m_windows)
-        l_windowPanel->Render();
+    {
+        if (l_windowPanel)
+            l_windowPanel->Render();
+    }
 }
 
-void Editor::DestroyWindowPanels() const
+void Editor::DestroyWindowPanels()
 {
-    for (const IWindowPanel* l_windowPanel : m_windows)
-        delete l_windowPanel;
+    for (IWindowPanel* panel : m_windows)
+        delete panel;
+    
+    m_windows.clear();
+}
+
+void Editor::UnregisterWindow(IWindowPanel* a_windowPanel)
+{
+    m_windows.erase(std::remove(m_windows.begin(), m_windows.end(), a_windowPanel), m_windows.end());
 }
