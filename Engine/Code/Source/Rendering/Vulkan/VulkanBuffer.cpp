@@ -21,16 +21,17 @@ void VulkanBuffer::Create(IDevice* a_device, ITexture* a_texture)
 }
 
 
-void VulkanBuffer::Destroy(IDevice* a_device)
-{
+void VulkanBuffer::Destroy(IDevice* a_device)  
+{  
+   for (const VkBuffer& l_uniformBuffer : m_uniformBuffer)  
+       vkDestroyBuffer(a_device->CastVulkan()->GetDevice(), l_uniformBuffer, nullptr);  
 
-	for (const VkBuffer& l_uniformBuffer : m_uniformBuffer)
-		vkDestroyBuffer(a_device->CastVulkan()->GetDevice(), l_uniformBuffer, nullptr);
-
-	for (const VkDeviceMemory& l_vkBufferMemory : m_uniformBuffersMemory)
-		vkFreeMemory(a_device->CastVulkan()->GetDevice(), l_vkBufferMemory, nullptr);
-
-	DEBUG_LOG_INFO("Vulkan Buffer : Buffer Destroy!\n");
+   for (const VkDeviceMemory& l_vkBufferMemory : m_uniformBuffersMemory)  
+       vkFreeMemory(a_device->CastVulkan()->GetDevice(), l_vkBufferMemory, nullptr);   
+   
+   
+   m_uniformBuffersMapped.clear();
+   DEBUG_LOG_INFO("Vulkan Buffer : Buffer Destroy!\n");  
 }
 
 
