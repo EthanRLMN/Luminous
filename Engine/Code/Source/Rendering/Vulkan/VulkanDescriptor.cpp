@@ -30,9 +30,9 @@ void VulkanDescriptor::SetBuffers(IBuffer* a_buffer)
     m_uniformBuffersMemory = a_buffer->CastVulkan()->GetUniformBuffersMemory();
     m_uniformBuffersMapped = a_buffer->CastVulkan()->GetUniformBuffersMapped();
 
-    m_lightUniformBuffer = a_buffer->CastVulkan()->GetLightUniformBuffer();
-    m_lightUniformBuffersMemory = a_buffer->CastVulkan()->GetLightUniformBuffersMemory();
-    m_lightUniformBuffersMapped = a_buffer->CastVulkan()->GetLightUniformBuffersMapped();
+    m_lightUniformBuffer = a_buffer->CastVulkan()->GetUniformBuffer();
+    m_lightUniformBuffersMemory = a_buffer->CastVulkan()->GetUniformBuffersMemory();
+    m_lightUniformBuffersMapped = a_buffer->CastVulkan()->GetUniformBuffersMapped();
 }
 
 

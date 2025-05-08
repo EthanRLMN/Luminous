@@ -15,9 +15,8 @@ class IBuffer
 public:
 	virtual ~IBuffer() = default;
 
-	virtual void Create(IDevice* a_device, ICommandPool* a_commandPool, const std::vector<IMesh*>& a_meshes) = 0;
+	virtual void Create(IDevice* a_device, ITexture* a_texture) = 0;
 	virtual void Destroy(IDevice* a_device) = 0;
-    virtual void SetMeshBuffers(IDevice* a_device, ISwapChain* a_swapchain, ICommandPool* a_commandPool, IMesh* a_mesh) = 0;
 
 	virtual VulkanBuffer* CastVulkan()
 	{

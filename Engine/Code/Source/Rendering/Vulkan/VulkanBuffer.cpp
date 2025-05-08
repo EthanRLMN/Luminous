@@ -14,9 +14,9 @@
 #include "Rendering/Vulkan/VulkanTexture.hpp"
 
 
-void VulkanBuffer::Create(IDevice* a_device, ITexture* a_texture, ICommandPool* a_commandPool, ISwapChain* a_swapChain, std::vector<IMesh*> a_meshes)
+void VulkanBuffer::Create(IDevice* a_device, ITexture* a_texture)
 {
-    CreateUniformBuffers(a_device, a_texture, a_swapChain);
+    CreateUniformBuffers(a_device, a_texture);
 	DEBUG_LOG_INFO("Vulkan Buffer : Buffer created!\n");
 }
 
@@ -34,7 +34,7 @@ void VulkanBuffer::Destroy(IDevice* a_device)
 }
 
 
-void VulkanBuffer::SetMeshBuffers(IDevice* a_device,ISwapChain* a_swapchain, ICommandPool* a_commandPool, IMesh* a_mesh)
+void VulkanBuffer::SetMeshBuffers(IDevice* a_device, ICommandPool* a_commandPool, IMesh* a_mesh)
 {
 
     {
@@ -42,7 +42,7 @@ void VulkanBuffer::SetMeshBuffers(IDevice* a_device,ISwapChain* a_swapchain, ICo
         const VkDeviceSize l_bufferSize = sizeof(l_vertices.at(0)) * l_vertices.size();
         VkBuffer l_stagingBuffer{ nullptr };
         VkDeviceMemory l_stagingBufferMemory{ nullptr };
-        VulkanTexture::CreateBuffer(a_device->CastVulkan()->GetDevice(), a_device->CastVulkan()->GetPhysicalDevice(), l_bufferSize, VK_BUFFER_USAGE_TRANSFER_SRC_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT, l_stagingBuffer, l_stagingBufferMemory, a_swapchain);
+        VulkanTexture::CreateBuffer(a_device->CastVulkan()->GetDevice(), a_device->CastVulkan()->GetPhysicalDevice(), l_bufferSize, VK_BUFFER_USAGE_TRANSFER_SRC_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT, l_stagingBuffer, l_stagingBufferMemory);
 
         void* l_data = nullptr;
         vkMapMemory(a_device->CastVulkan()->GetDevice(), l_stagingBufferMemory, 0, l_bufferSize, 0, &l_data);
@@ -52,8 +52,8 @@ void VulkanBuffer::SetMeshBuffers(IDevice* a_device,ISwapChain* a_swapchain, ICo
         VkBuffer& vbuffer = a_mesh->CastVulkan()->GetVertexBuffer();
         VkDeviceMemory& vbuffermemory = a_mesh->CastVulkan()->GetVertexBufferMemory();
 
-        VulkanTexture::CreateBuffer(a_device->CastVulkan()->GetDevice(), a_device->CastVulkan()->GetPhysicalDevice(), l_bufferSize, VK_BUFFER_USAGE_TRANSFER_DST_BIT | VK_BUFFER_USAGE_VERTEX_BUFFER_BIT, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT, vbuffer, vbuffermemory, a_swapchain);
-        CopyBuffer(a_device->CastVulkan()->GetDevice(), a_device->CastVulkan()->GetGraphicsQueue(), a_commandPool->CastVulkan()->GetCommandPool(), l_stagingBuffer, vbuffer, l_bufferSize, nullptr);
+        VulkanTexture::CreateBuffer(a_device->CastVulkan()->GetDevice(), a_device->CastVulkan()->GetPhysicalDevice(), l_bufferSize, VK_BUFFER_USAGE_TRANSFER_DST_BIT | VK_BUFFER_USAGE_VERTEX_BUFFER_BIT, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT, vbuffer, vbuffermemory);
+        CopyBuffer(a_device->CastVulkan()->GetDevice(), a_device->CastVulkan()->GetGraphicsQueue(), a_commandPool->CastVulkan()->GetCommandPool(), l_stagingBuffer, vbuffer, l_bufferSize);
 
         vkDestroyBuffer(a_device->CastVulkan()->GetDevice(), l_stagingBuffer, nullptr);
         vkFreeMemory(a_device->CastVulkan()->GetDevice(), l_stagingBufferMemory, nullptr);
@@ -69,7 +69,7 @@ void VulkanBuffer::SetMeshBuffers(IDevice* a_device,ISwapChain* a_swapchain, ICo
         VkBuffer l_stagingBuffer{ nullptr };
         VkDeviceMemory l_stagingBufferMemory{ nullptr };
 
-        VulkanTexture::CreateBuffer(a_device->CastVulkan()->GetDevice(), a_device->CastVulkan()->GetPhysicalDevice(), l_bufferSize, VK_BUFFER_USAGE_TRANSFER_SRC_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT, l_stagingBuffer, l_stagingBufferMemory, a_swapchain);
+        VulkanTexture::CreateBuffer(a_device->CastVulkan()->GetDevice(), a_device->CastVulkan()->GetPhysicalDevice(), l_bufferSize, VK_BUFFER_USAGE_TRANSFER_SRC_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT, l_stagingBuffer, l_stagingBufferMemory);
 
         void* l_data = nullptr;
         vkMapMemory(a_device->CastVulkan()->GetDevice(), l_stagingBufferMemory, 0, l_bufferSize, 0, &l_data);
@@ -79,9 +79,9 @@ void VulkanBuffer::SetMeshBuffers(IDevice* a_device,ISwapChain* a_swapchain, ICo
         VkBuffer& ibuffer = a_mesh->CastVulkan()->GetIndexBuffer();
         VkDeviceMemory& ibuffermemory = a_mesh->CastVulkan()->GetIndexBufferMemory();
 
-        VulkanTexture::CreateBuffer(a_device->CastVulkan()->GetDevice(), a_device->CastVulkan()->GetPhysicalDevice(), l_bufferSize, VK_BUFFER_USAGE_TRANSFER_DST_BIT | VK_BUFFER_USAGE_INDEX_BUFFER_BIT, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT, ibuffer, ibuffermemory, a_swapchain);
+        VulkanTexture::CreateBuffer(a_device->CastVulkan()->GetDevice(), a_device->CastVulkan()->GetPhysicalDevice(), l_bufferSize, VK_BUFFER_USAGE_TRANSFER_DST_BIT | VK_BUFFER_USAGE_INDEX_BUFFER_BIT, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT, ibuffer, ibuffermemory);
 
-        CopyBuffer(a_device->CastVulkan()->GetDevice(), a_device->CastVulkan()->GetGraphicsQueue(), a_commandPool->CastVulkan()->GetCommandPool(), l_stagingBuffer, ibuffer, l_bufferSize, nullptr);
+        CopyBuffer(a_device->CastVulkan()->GetDevice(), a_device->CastVulkan()->GetGraphicsQueue(), a_commandPool->CastVulkan()->GetCommandPool(), l_stagingBuffer, ibuffer, l_bufferSize);
 
         vkDestroyBuffer(a_device->CastVulkan()->GetDevice(), l_stagingBuffer, nullptr);
         vkFreeMemory(a_device->CastVulkan()->GetDevice(), l_stagingBufferMemory, nullptr);
@@ -93,7 +93,7 @@ void VulkanBuffer::SetMeshBuffers(IDevice* a_device,ISwapChain* a_swapchain, ICo
 
 
 
-void VulkanBuffer::CreateUniformBuffers(IDevice* a_device, ITexture* a_texture, ISwapChain* a_swapChain)
+void VulkanBuffer::CreateUniformBuffers(IDevice* a_device, ITexture* a_texture)
 {
 	m_uniformBuffer.resize(MAX_FRAMES_IN_FLIGHT);
 	m_uniformBuffersMemory.resize(MAX_FRAMES_IN_FLIGHT);
@@ -102,13 +102,13 @@ void VulkanBuffer::CreateUniformBuffers(IDevice* a_device, ITexture* a_texture, 
 	for (size_t i = 0; i < MAX_FRAMES_IN_FLIGHT; ++i)
 	{
 		const VkDeviceSize l_bufferSize = sizeof(UniformBufferObject);
-        a_texture->CastVulkan()->CreateBuffer(a_device->CastVulkan()->GetDevice(), a_device->CastVulkan()->GetPhysicalDevice(), l_bufferSize, VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT, m_uniformBuffer[i], m_uniformBuffersMemory[i], a_swapChain);
+        a_texture->CastVulkan()->CreateBuffer(a_device->CastVulkan()->GetDevice(), a_device->CastVulkan()->GetPhysicalDevice(), l_bufferSize, VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT, m_uniformBuffer[i], m_uniformBuffersMemory[i]);
 		vkMapMemory(a_device->CastVulkan()->GetDevice(), m_uniformBuffersMemory[i], 0, l_bufferSize, 0, &m_uniformBuffersMapped[i]);
 	}
 }
 
 
-void VulkanBuffer::CopyBuffer(const VkDevice a_device, const VkQueue a_graphicsQueue, const VkCommandPool a_commandPool, const VkBuffer a_srcBuffer, const VkBuffer a_dstBuffer, const VkDeviceSize a_size, ITexture* a_texture)
+void VulkanBuffer::CopyBuffer(const VkDevice a_device, const VkQueue a_graphicsQueue, const VkCommandPool a_commandPool, const VkBuffer a_srcBuffer, const VkBuffer a_dstBuffer, const VkDeviceSize a_size)
 {
 	const VkCommandBuffer l_commandBuffer = VulkanTexture::BeginSingleTimeCommands(a_device, a_commandPool);
 	VkBufferCopy l_bufferCopy { };

@@ -15,8 +15,8 @@ public:
     void GameplayStarted() override {};
     void Update() override {};
 
-    void SetMesh(std::string a_path);
-    void SetTexture(std::string a_path);
+    void SetMesh(const std::string& a_path);
+    void SetTexture(const std::string& a_path);
 
     IMesh* GetMesh() { return m_mesh; };
     ITexture* GetTexture() { return m_texture; };

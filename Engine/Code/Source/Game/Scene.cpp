@@ -26,7 +26,7 @@ void Scene::SceneEntity()
     entityManager.Update();
 }*/
 
-void Scene::SceneEntity(EntityManager& a_entityManager, Engine* a_engine)
+void Scene::SceneEntity(EntityManager& a_entityManager)
 {
     /*
     const std::shared_ptr<Player> l_player = std::make_shared<Player>(a_entityManager);

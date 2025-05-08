@@ -10,13 +10,13 @@ class VulkanBuffer final : public IBuffer
 public:
     VulkanBuffer() = default;
 
-    void Create(IDevice* a_device, ITexture* a_texture, ICommandPool* a_commandPool, ISwapChain* a_swapChain, std::vector<IMesh*> a_meshes) override;
+    void Create(IDevice* a_device, ITexture* a_texture) override;
     void Destroy(IDevice* a_device) override;
 
 
-    void SetMeshBuffers(IDevice* a_device, ISwapChain* a_swapchain, ICommandPool* a_commandPool, IMesh* a_mesh);
+    static void SetMeshBuffers(IDevice* a_device, ICommandPool* a_commandPool, IMesh* a_mesh);
 
-    void CreateUniformBuffers(IDevice* a_device, ITexture* a_texture, ISwapChain* a_swapChain);
+    void CreateUniformBuffers(IDevice* a_device, ITexture* a_texture);
 
     VulkanBuffer* CastVulkan() override { return this; }
 
@@ -26,7 +26,7 @@ public:
 
 
 private:
-    void CopyBuffer(VkDevice a_device, VkQueue a_graphicsQueue, VkCommandPool a_commandPool, VkBuffer a_srcBuffer, VkBuffer a_dstBuffer, VkDeviceSize a_size, ITexture* a_texture);
+    static void CopyBuffer(VkDevice a_device, VkQueue a_graphicsQueue, VkCommandPool a_commandPool, VkBuffer a_srcBuffer, VkBuffer a_dstBuffer, VkDeviceSize a_size);
 
     std::vector<VkBuffer> m_uniformBuffer { nullptr };
     std::vector<VkDeviceMemory> m_uniformBuffersMemory { nullptr };

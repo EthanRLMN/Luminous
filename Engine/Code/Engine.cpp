@@ -27,7 +27,7 @@ void Engine::Init()
     InitPhysics();
 
 
-    m_scene->SceneEntity(m_entityManager,this);
+    m_scene->SceneEntity(m_entityManager);
     
     m_entityManager.Initialize(this);
     m_entityManager.GameplayStarted();
@@ -39,7 +39,7 @@ void Engine::Update()
 
     m_window->Update();
    
-    m_renderer->DrawFrame(m_window, m_device, m_swapChain, m_pipeline, m_buffer, m_renderPassManager, m_descriptor, l_meshes, m_synchronization, m_commandBuffer, m_frameBufferManager, m_depthResource, m_surface, m_multiSampling, m_inputManager, m_entityManager);
+    m_renderer->DrawFrame(m_window, m_device, m_swapChain, m_pipeline, m_buffer, m_renderPassManager, m_descriptor, m_synchronization, m_commandBuffer, m_frameBufferManager, m_depthResource, m_surface, m_multiSampling, m_inputManager, m_entityManager);
 
     m_physicsSystem->Update();
 
@@ -188,7 +188,7 @@ void Engine::PreRender()
     l_meshes.push_back(m_mesh2);
 
     m_buffer = m_interface->InstantiateBuffer();
-    m_buffer->Create(m_device, m_commandPool, l_meshes);
+    m_buffer->Create(m_device, m_texture);
 
     m_descriptor = m_interface->InstantiateDescriptor();
     m_descriptor->Create(m_device, m_descriptorSetLayout, m_texture, m_buffer);
