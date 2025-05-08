@@ -1,11 +1,7 @@
 #include "Game/Scene.hpp"
-#include "Logger.hpp"
-
-#include "EntitySystem/Entity.hpp"
-
 #include "Game/Scripts/Player.hpp"
 #include "Game/Scripts/VikingRoom.hpp"
-#include "Engine.hpp"
+#include "Game/Systems/Entity/Entity.hpp"
 
 void Scene::SceneEntity(EntityManager& a_entityManager)
 {

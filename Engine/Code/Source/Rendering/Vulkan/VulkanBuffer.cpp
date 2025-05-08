@@ -3,7 +3,6 @@
 #include "ICommandPool.hpp"
 #include "IDevice.hpp"
 #include "IMesh.hpp"
-#include "ITexture.hpp"
 
 #include "Struct/VulkanUtilities.hpp"
 
@@ -12,7 +11,8 @@
 #include "Rendering/Vulkan/VulkanDevice.hpp"
 #include "Rendering/Vulkan/VulkanMesh.hpp"
 #include "Rendering/Vulkan/VulkanTexture.hpp"
-#include "EntitySystem/Components/LightComponent.hpp"
+
+#include "Game/Systems/Component/LightComponent.hpp"
 
 
 void VulkanBuffer::Create(IDevice* a_device)
@@ -116,7 +116,7 @@ void VulkanBuffer::CreateUniformBuffers(IDevice* a_device)
 
 void VulkanBuffer::CopyBuffer(const VkDevice& a_device, const VkQueue& a_graphicsQueue, const VkCommandPool& a_commandPool, const VkBuffer& a_srcBuffer, const VkBuffer& a_dstBuffer, const VkDeviceSize a_size)
 {
-	const VkCommandBuffer l_commandBuffer = VulkanTexture::BeginSingleTimeCommands(a_device, a_commandPool);
+	const VkCommandBuffer& l_commandBuffer = VulkanTexture::BeginSingleTimeCommands(a_device, a_commandPool);
 	VkBufferCopy l_bufferCopy { };
 	l_bufferCopy.size = a_size;
 	vkCmdCopyBuffer(l_commandBuffer, a_srcBuffer, a_dstBuffer, 1, &l_bufferCopy);

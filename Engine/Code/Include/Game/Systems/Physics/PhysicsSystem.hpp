@@ -37,6 +37,16 @@ public:
         float m_gravityFactor { 1.0f }; // The gravity factor
     };
 
+    enum class CollisionEvent
+    {
+        COLLISION_ENTER,
+        COLLISION_STAY,
+        COLLISION_EXIT,
+        TRIGGER_ENTER,
+        TRIGGER_STAY,
+        TRIGGER_EXIT
+    };
+
     PhysicsSystem() = default;
     ~PhysicsSystem() = default;
 
@@ -58,67 +68,11 @@ public:
 
 
     /*          Body Creation Functions          */
-    RigidBody* CreateRigidBody(const JPH::Shape* a_shape, const JPH::uint8 a_layer = Layers::DYNAMIC)
-    {
-        JPH::EMotionType l_motionType = JPH::EMotionType::Static;
-        if (a_layer == Layers::DYNAMIC)
-            l_motionType = JPH::EMotionType::Dynamic;
-        else if (a_layer == Layers::KINEMATIC)
-            l_motionType = JPH::EMotionType::Kinematic;
-        else l_motionType = JPH::EMotionType::Static;
-
-        // Body settings
-        JPH::BodyCreationSettings l_bodySettings(
-            a_shape,
-            JPH::Vec3(),
-            JPH::Quat::sIdentity(),
-            l_motionType,
-            a_layer
-        );
-
-        if (a_layer == Layers::SENSOR)
-            l_bodySettings.mIsSensor = true;
-
-        // Set up the gravity factor
-        l_bodySettings.mGravityFactor = Settings().m_gravityFactor;
-
-        JPH::Body* l_body = GetBodyInterface().CreateBody(l_bodySettings);
-        GetBodyInterface().AddBody(l_body->GetID(), JPH::EActivation::Activate);
-
-        m_rigidBodies.emplace_back(reinterpret_cast<RigidBody*>(l_body));
-        return m_rigidBodies.back();
-    }
-
-
-    inline RigidBody* CreateBox(const Maths::Vector3 a_scale = Maths::Vector3::One)
-    {
-        const JPH::Vec3 l_halfSize = JPH::Vec3(a_scale.x * 0.5f, a_scale.y * 0.5f,a_scale.z * 0.5f);
-        return CreateRigidBody(new JPH::BoxShape(l_halfSize));
-    };
-
-
-    inline RigidBody* CreateSphere(const float a_radius = 1.0f)
-    {
-        return CreateRigidBody(new JPH::SphereShape(a_radius));
-    };
-
-
-    inline void RemoveBody(const JPH::BodyID& a_bodyId)
-    {
-        GetBodyInterface().RemoveBody(a_bodyId);
-
-        std::erase_if(m_rigidBodies, [&a_bodyId](const RigidBody* a_rigidBody) { return a_bodyId == a_rigidBody->GetRigidBodyID(); });
-    }
-
-
-    inline void RemoveAllBodies()
-    {
-        for (const RigidBody* l_body : m_rigidBodies)
-            RemoveBody(l_body->GetRigidBodyID());
-
-        m_rigidBodies.clear();
-    }
-
+    RigidBody* CreateRigidBody(const JPH::Shape* a_shape, JPH::uint8 a_layer = Layers::DYNAMIC);
+    RigidBody* CreateBox(Maths::Vector3 a_scale = Maths::Vector3::One);
+    inline RigidBody* CreateSphere(const float a_radius = 1.0f) { return CreateRigidBody(new JPH::SphereShape(a_radius)); };
+    void RemoveBody(const JPH::BodyID& a_bodyId);
+    void RemoveAllBodies();
 
     
 private:

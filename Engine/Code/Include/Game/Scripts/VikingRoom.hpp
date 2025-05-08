@@ -1,9 +1,9 @@
 #pragma once
 
-#include "EntitySystem/Components/ModelComponent.hpp"
-#include "EntitySystem/Entity.hpp"
-#include "EntitySystem/EntityComponent.hpp"
-#include "EntitySystem/EntityManager.hpp"
+#include "Game/Systems/Component/EntityComponent.hpp"
+#include "Game/Systems/Component/ModelComponent.hpp"
+#include "Game/Systems/Entity/Entity.hpp"
+#include "Game/Systems/Entity/EntityManager.hpp"
 
 class VikingRoom : public EntityComponent, public std::enable_shared_from_this<VikingRoom>
 {
@@ -24,8 +24,8 @@ public:
     void Initialize() override
     {
         m_vikingroom->SetTRS(Maths::Matrix4::TRS(Maths::Vector3(5.0f, 0.f, 0.f), Maths::Vector3(0.f, 0.f, 0.f), Maths::Vector3::One));
-        m_modelComponent.get()->m_engine = m_engine;
-        m_modelComponent.get()->Initialize();
+        m_modelComponent->m_engine = m_engine;
+        m_modelComponent->Initialize();
     }
 
     void GameplayStarted() override {}

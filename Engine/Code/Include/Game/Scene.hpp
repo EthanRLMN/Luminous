@@ -1,6 +1,6 @@
 #pragma once
 
-#include "EntitySystem/Entity.hpp"
+#include "Systems/Entity/Entity.hpp"
 
 class Engine;
 

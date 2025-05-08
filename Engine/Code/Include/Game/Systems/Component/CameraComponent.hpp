@@ -1,7 +1,6 @@
 #pragma once
 
-#include "EntitySystem/EntityComponent.hpp"
-#include "Rendering/Camera/Camera.hpp"
+#include "Game/Systems/Camera/Camera.hpp"
 
 class CameraComponent : public Camera
 {

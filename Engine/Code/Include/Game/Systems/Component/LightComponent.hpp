@@ -1,6 +1,6 @@
 #pragma once
 
-#include "EntitySystem/EntityComponent.hpp"
+#include "EntityComponent.hpp"
 
 #include "Vector3.hpp"
 

@@ -23,11 +23,11 @@
 #include "Rendering/Vulkan/VulkanSwapChain.hpp"
 #include "Rendering/Vulkan/VulkanSynchronization.hpp"
 
-#include "EntitySystem/Components/ModelComponent.hpp"
+#include "Game/Systems/Time.inl"
+#include "Game/Systems/Component/ModelComponent.hpp"
+#include "Game/Systems/Entity/EntityManager.hpp"
 
 #include "Matrix4.hpp"
-#include "EntitySystem/EntityManager.hpp"
-#include "Game/Systems/Time.inl"
 
 
 void VulkanRenderer::Create(IDevice* a_device, ISwapChain* a_swapChain)

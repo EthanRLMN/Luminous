@@ -1,4 +1,4 @@
-#include "EntitySystem/Components/ModelComponent.hpp"
+#include "Game/Systems/Component/ModelComponent.hpp"
 #include "Engine.hpp"
 #include "Rendering/Vulkan/VulkanBuffer.hpp"
 #include "ResourceManager/ResourceManager.hpp"

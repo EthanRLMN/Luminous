@@ -2,10 +2,11 @@
 
 #include "IRender.hpp"
 #include "ISynchronization.hpp"
+
 #include "Game/Scene.hpp"
+#include "Game/Systems/Entity/Entity.hpp"
+#include "Game/Systems/Entity/EntityManager.hpp"
 #include "Game/Systems/Physics/PhysicsSystem.hpp"
-#include "EntitySystem/Entity.hpp"
-#include "EntitySystem/EntityManager.hpp"
 
 
 class VulkanRenderInterface;

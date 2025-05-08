@@ -10,7 +10,6 @@
 #include "Rendering/Vulkan/VulkanDevice.hpp"
 #include "Rendering/Vulkan/VulkanTexture.hpp"
 
-#include "EntitySystem/Components/LightComponent.hpp"
 #include "Struct/VulkanUtilities.hpp"
 
 

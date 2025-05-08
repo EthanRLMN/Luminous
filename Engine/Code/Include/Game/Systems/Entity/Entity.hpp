@@ -7,8 +7,8 @@
 #include "Vector3.hpp"
 #include "Matrix4.hpp"
 
-#include "EntityComponent.hpp"
-#include "EntitySystem/Components/ModelComponent.hpp"
+#include "../Component/EntityComponent.hpp"
+#include "../Component/ModelComponent.hpp"
 
 class EntityManager;
 
@@ -74,14 +74,14 @@ public:
     {
         for (const std::shared_ptr<EntityComponent>& l_logic : m_entityComponents) 
         {
-            l_logic.get()->m_engine = m_engine;
+            l_logic->m_engine = m_engine;
             l_logic->Initialize();
         }
             
 
         for (const std::shared_ptr<Entity>& l_child : m_children)
         {
-            l_child.get()->m_engine = m_engine;
+            l_child->m_engine = m_engine;
             l_child->Initialize();
         }
     }

@@ -5,8 +5,8 @@
 #include <string>
 #include <vector>
 
-#include "Entity.hpp"
-#include "EntityComponent.hpp" 
+#include "Game/Systems/Component/EntityComponent.hpp"
+#include "Game/Systems/Entity/Entity.hpp"
 
 class Engine;
 

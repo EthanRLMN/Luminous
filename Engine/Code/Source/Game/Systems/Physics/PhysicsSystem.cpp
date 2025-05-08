@@ -96,7 +96,66 @@ void PhysicsSystem::Destroy()
     JPH::Factory::sInstance = nullptr;
 }
 
+
 void PhysicsSystem::TriggerPhysicsOptimization() const
 {
     m_physicsSystem->OptimizeBroadPhase();
 }
+
+
+RigidBody* PhysicsSystem::CreateRigidBody(const JPH::Shape* a_shape, const JPH::uint8 a_layer)
+{
+    JPH::EMotionType l_motionType = JPH::EMotionType::Static;
+    if (a_layer == Layers::DYNAMIC)
+        l_motionType = JPH::EMotionType::Dynamic;
+    else if (a_layer == Layers::KINEMATIC)
+        l_motionType = JPH::EMotionType::Kinematic;
+    else l_motionType = JPH::EMotionType::Static;
+
+    // Body settings
+    JPH::BodyCreationSettings l_bodySettings(
+        a_shape,
+        JPH::Vec3(),
+        JPH::Quat::sIdentity(),
+        l_motionType,
+        a_layer
+    );
+
+    if (a_layer == Layers::SENSOR)
+        l_bodySettings.mIsSensor = true;
+
+    // Set up the gravity factor
+    l_bodySettings.mGravityFactor = Settings().m_gravityFactor;
+
+    JPH::Body* l_body = GetBodyInterface().CreateBody(l_bodySettings);
+    GetBodyInterface().AddBody(l_body->GetID(), JPH::EActivation::Activate);
+
+    m_rigidBodies.emplace_back(reinterpret_cast<RigidBody*>(l_body));
+    return m_rigidBodies.back();
+}
+
+
+RigidBody* PhysicsSystem::CreateBox(const Maths::Vector3 a_scale)
+{
+    const JPH::Vec3 l_halfSize = JPH::Vec3(a_scale.x * 0.5f, a_scale.y * 0.5f,a_scale.z * 0.5f);
+    return CreateRigidBody(new JPH::BoxShape(l_halfSize));
+}
+
+
+void PhysicsSystem::RemoveBody(const JPH::BodyID& a_bodyId)
+{
+    GetBodyInterface().RemoveBody(a_bodyId);
+
+    std::erase_if(m_rigidBodies, [&a_bodyId](const RigidBody* a_rigidBody) { return a_bodyId == a_rigidBody->GetRigidBodyID(); });
+}
+
+
+void PhysicsSystem::RemoveAllBodies()
+{
+    for (const RigidBody* l_body : m_rigidBodies)
+        RemoveBody(l_body->GetRigidBodyID());
+
+    m_rigidBodies.clear();
+}
+
+
