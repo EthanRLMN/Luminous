@@ -28,6 +28,8 @@ public:
     void Initialize() override
     {
         m_playerModelEntity->SetTRS( Maths::Matrix4::TRS(Maths::Vector3(5.0f, 0.f, 0.f), Maths::Vector3(0.f, 90.f, 90.f), Maths::Vector3(1.f, 1.0f, 1.0f)));
+        m_modelComponent.get()->m_engine = m_engine;
+        m_modelComponent.get()->Initialize();
     }
 
     void GameplayStarted() override

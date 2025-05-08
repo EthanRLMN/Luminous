@@ -37,11 +37,6 @@ T* ResourceManager::LoadResource(const IResourceParams a_params)
         std::string l_info = "Trying to load " + l_file + "...";
 		DEBUG_LOG_INFO("{}", l_info);
 
-		a_params.m_commandPool = m_commandPool;
-        a_params.m_swapChain = m_swapChain;
-        a_params.m_depthResource = m_depthresource;
-        a_params.m_device = m_device;
-
 		T* l_resource = new T();
 		if (l_resource && l_resource->Create(a_params))
 		{

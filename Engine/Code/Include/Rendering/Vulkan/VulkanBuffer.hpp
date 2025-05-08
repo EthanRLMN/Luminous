@@ -13,6 +13,9 @@ public:
     void Create(IDevice* a_device, ITexture* a_texture, ICommandPool* a_commandPool, ISwapChain* a_swapChain, std::vector<IMesh*> a_meshes) override;
     void Destroy(IDevice* a_device) override;
 
+
+    void SetMeshBuffers(IDevice* a_device, ISwapChain* a_swapchain, ICommandPool* a_commandPool, IMesh* a_mesh);
+
     void CreateVertexBuffers(IDevice* a_device, ITexture* a_texture, ICommandPool* a_commandPool, ISwapChain* a_swapChain, std::vector<IMesh*> a_meshes);
     void CreateIndexBuffers(IDevice* a_device, ITexture* a_texture, ICommandPool* a_commandPool, ISwapChain* a_swapChain, std::vector<IMesh*> a_meshes);
     void CreateUniformBuffers(IDevice* a_device, ITexture* a_texture, ISwapChain* a_swapChain);

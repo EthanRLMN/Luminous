@@ -368,7 +368,7 @@ void VulkanRenderer::CreateViewportImage(IDevice* a_device, ISwapChain* a_swapCh
 void VulkanRenderer::CopyImageToViewport(ISwapChain* a_swapChain, const VkCommandBuffer& a_cmdBuffer) const
 {
     VkImageMemoryBarrier l_barrierSrc{ VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER };
-    l_barrierSrc.oldLayout = VK_IMAGE_LAYOUT_UNDEFINED;
+    l_barrierSrc.oldLayout = VK_IMAGE_LAYOUT_PRESENT_SRC_KHR;
     l_barrierSrc.newLayout = VK_IMAGE_LAYOUT_TRANSFER_SRC_OPTIMAL;
     l_barrierSrc.srcAccessMask = VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT;
     l_barrierSrc.dstAccessMask = VK_ACCESS_TRANSFER_READ_BIT;

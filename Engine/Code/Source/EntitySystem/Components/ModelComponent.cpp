@@ -2,11 +2,16 @@
 #include "ResourceManager/ResourceManager.hpp"
 
 
-void ModelComponent::Initialize() 
+void ModelComponent::Initialize()
 {
     
-    SetMesh("Engine/Assets/Models/viking_room.obj");
-    SetTexture("Engine/Assets/Textures/viking_room.png");
+    if (m_engine != nullptr) 
+    {
+        DEBUG_LOG_ERROR("ENGINE OK !");
+    }
+
+    //SetMesh("Engine/Assets/Models/viking_room.obj");
+    //SetTexture("Engine/Assets/Textures/viking_room.png");
 }
 
 void ModelComponent::SetMesh(std::string a_path) 
