@@ -18,7 +18,7 @@ struct IResourceParams
     IDescriptorSetLayout* m_descriptorSetLayout{ nullptr };
 
     //TODO: Add default values as a backup to avoid potential issues
-    std::string m_meshPath { "" };
+    std::string m_meshPath { "Engine/Assets/Default/Models/Cube.fbx" };
     std::string m_texturePath { "" };
     std::string m_vertexShaderPath { "" };
     std::string m_fragmentShaderPath { "" };

@@ -30,8 +30,8 @@ public:
         m_player->SetTRS(Maths::Matrix4::TRS(Maths::Vector3::Zero, Maths::Vector3(90.f, 0.f, 90.f), Maths::Vector3::One));
         m_modelComponent->m_engine = m_engine;
         m_modelComponent->Initialize();
-        m_modelComponent->SetMesh("Engine/Assets/Models/metalSonic.obj");
-        m_modelComponent->SetTexture("Engine/Assets/Textures/Untitled312.png");
+        m_modelComponent->SetMesh("Engine/Assets/Default/Models/metalSonic.obj");
+        m_modelComponent->SetTexture("Engine/Assets/Default/Textures/Untitled312.png");
     }
 
     void GameplayStarted() override

@@ -17,8 +17,8 @@
 void VulkanPipeline::Create(IDevice* a_device, IRenderPass* a_renderPass, IDescriptorSetLayout* a_descriptionSetLayout)
 {
     IResourceParams l_shaderParams{ a_device };
-    l_shaderParams.m_vertexShaderPath = "Engine/Assets/Shaders/vert.spv";
-    l_shaderParams.m_fragmentShaderPath = "Engine/Assets/Shaders/frag.spv";
+    l_shaderParams.m_vertexShaderPath = "Engine/Assets/Default/Shaders/vert.spv";
+    l_shaderParams.m_fragmentShaderPath = "Engine/Assets/Default/Shaders/frag.spv";
     VulkanShader* l_shader = ResourceManager::GetInstance().LoadResource<VulkanShader>(l_shaderParams);
 
     //graphics pipeline creation info requires an array of shader

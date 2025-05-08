@@ -16,19 +16,14 @@ void Engine::Init()
     m_interface = new VulkanRenderInterface();
     m_scene = new Scene();
     m_physicsSystem = new PhysicsSystem();
-
     m_isRunning = true;
-
-    
 
     Window();
     Input();
     PreRender();
     InitPhysics();
 
-
     m_scene->SceneEntity(m_entityManager);
-    
     m_entityManager.Initialize(this);
     m_entityManager.GameplayStarted();
 }
@@ -38,79 +33,70 @@ void Engine::Update()
     Time::Update();
 
     m_window->Update();
-   
     m_renderer->DrawFrame(m_window, m_device, m_swapChain, m_pipeline, m_buffer, m_renderPassManager, m_descriptor, m_synchronization, m_commandBuffer, m_frameBufferManager, m_depthResource, m_surface, m_multiSampling, m_inputManager, m_entityManager);
-
-
-    
-
     m_physicsSystem->Update();
 
     if (m_window->ShouldClose())
         m_isRunning = false;
 }
 
-void Engine::Destroy()  
-{  
-   ResourceManager::GetInstance().DeleteResource<VulkanShader>("v=Engine/Assets/Shaders/vert.spv, f=Engine/Assets/Shaders/frag.spv, t=, g=", m_device);
+void Engine::Destroy()
+{
+    ResourceManager::GetInstance().DeleteResource<VulkanShader>("v=Engine/Assets/Shaders/vert.spv, f=Engine/Assets/Shaders/frag.spv, t=, g=", m_device);
+    ResourceManager::Destroy(m_device);
 
-
-   ResourceManager::Destroy(m_device);
-
-    // TODO: Cleanup
     m_renderer->CastVulkan()->DestroyViewportImage(m_device);
+    m_descriptor->Destroy(m_device);
+    m_interface->DeleteDescriptor(m_descriptor);
 
-   m_descriptor->Destroy(m_device);  
-   m_interface->DeleteDescriptor(m_descriptor);  
+    m_buffer->Destroy(m_device);
+    m_interface->DeleteBuffer(m_buffer);
 
-   m_buffer->Destroy(m_device);  
-   m_interface->DeleteBuffer(m_buffer);  
+    m_frameBufferManager->Destroy(m_device);
+    m_interface->DeleteFrameBufferManager(m_frameBufferManager);
 
-   m_frameBufferManager->Destroy(m_device);  
-   m_interface->DeleteFrameBufferManager(m_frameBufferManager);  
+    m_depthResource->Destroy(m_device);
+    m_interface->DeleteDepthResource(m_depthResource);
 
-   m_depthResource->Destroy(m_device);  
-   m_interface->DeleteDepthResource(m_depthResource);  
+    m_multiSampling->Destroy(m_device);
+    m_interface->DeleteMultiSampling(m_multiSampling);
 
-   m_multiSampling->Destroy(m_device);  
-   m_interface->DeleteMultiSampling(m_multiSampling);  
+    m_editorCommandPool->Destroy(m_device, m_synchronization, m_renderer);
+    m_interface->DeleteCommandPool(m_editorCommandPool);
 
-   m_editorCommandPool->Destroy(m_device, m_synchronization, m_renderer);  
-   m_interface->DeleteCommandPool(m_editorCommandPool);  
+    m_commandPool->Destroy(m_device, m_synchronization, m_renderer);
+    m_interface->DeleteCommandPool(m_commandPool);
 
-   m_commandPool->Destroy(m_device, m_synchronization, m_renderer);  
-   m_interface->DeleteCommandPool(m_commandPool);  
+    m_pipeline->Destroy(m_device);
+    m_interface->DeletePipeline(m_pipeline);
 
-   m_pipeline->Destroy(m_device);  
-   m_interface->DeletePipeline(m_pipeline);  
+    m_descriptorSetLayout->Destroy(m_device);
+    m_interface->DeleteDescriptorSetLayout(m_descriptorSetLayout);
 
-   m_descriptorSetLayout->Destroy(m_device);  
-   m_interface->DeleteDescriptorSetLayout(m_descriptorSetLayout);  
+    m_renderPassManager->Destroy(m_device);
+    m_interface->DeleteRenderPassManager(m_renderPassManager);
 
-   m_renderPassManager->Destroy(m_device);  
-   m_interface->DeleteRenderPassManager(m_renderPassManager);  
+    m_swapChain->Destroy(m_device);
+    m_interface->DeleteSwapChain(m_swapChain);
 
-   m_swapChain->Destroy(m_device);  
-   m_interface->DeleteSwapChain(m_swapChain);  
+    m_synchronization->Destroy(m_device);
+    m_interface->DeleteSynchronization(m_synchronization);
 
-   m_synchronization->Destroy(m_device);  
-   m_interface->DeleteSynchronization(m_synchronization);  
+    m_device->Destroy();
+    m_interface->DeleteDevice(m_device);
 
-   m_device->Destroy();  
-   m_interface->DeleteDevice(m_device);  
+    m_surface->Destroy(m_instance);
+    m_interface->DeleteSurface(m_surface);
 
-   m_surface->Destroy(m_instance);  
-   m_interface->DeleteSurface(m_surface);  
+    m_instance->Destroy();
+    m_interface->DeleteContext(m_instance);
 
-   m_instance->Destroy();  
-   m_interface->DeleteContext(m_instance);
+    m_renderer->Destroy();
+    m_interface->DeleteRenderer(m_renderer);
 
-   m_renderer->Destroy();  
-   m_interface->DeleteRenderer(m_renderer);  
-
-   DestroyInput();  
-   DestroyWindow();  
-}    
+    DestroyInput();
+    DestroyWindow();
+}
 
 
 void Engine::Window()
@@ -125,6 +111,7 @@ void Engine::Input()
     m_inputManager = m_interface->InstantiateInputManager();
     m_inputManager->Initialize(m_window);
 }
+
 
 void Engine::PreRender()
 {
@@ -166,9 +153,6 @@ void Engine::PreRender()
     m_frameBufferManager->Create(m_device, m_swapChain, m_renderPassManager->GetRenderPasses()[0], m_depthResource, m_multiSampling, false); // Create Renderer Frame Buffer
     m_frameBufferManager->Create(m_device, m_swapChain, m_renderPassManager->GetRenderPasses()[1], m_depthResource, m_multiSampling, true); // Create Editor Frame Buffer
 
-
-
-
     m_buffer = m_interface->InstantiateBuffer();
     m_buffer->Create(m_device);
 
@@ -181,13 +165,10 @@ void Engine::PreRender()
     m_synchronization = m_interface->InstantiateSynchronization();
     m_synchronization->Create(m_device);
 
-    // TODO : Fix CastVulkan Call
     m_renderer = m_interface->InstantiateRenderer();
     m_renderer->Create(m_device, m_swapChain);
     m_renderer->CastVulkan()->SetViewportSize(static_cast<float>(m_swapChain->CastVulkan()->GetSwapChainExtent().width), static_cast<float>(m_swapChain->CastVulkan()->GetSwapChainExtent().height));
     m_renderer->CastVulkan()->CreateViewportImage(m_device, m_swapChain);
-
-
 }
 
 void Engine::InitPhysics()

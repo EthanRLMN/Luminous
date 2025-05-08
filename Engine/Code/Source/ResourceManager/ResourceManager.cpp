@@ -1,5 +1,6 @@
 #include "ResourceManager/ResourceManager.hpp"
 
+
 ResourceManager& ResourceManager::GetInstance()
 {
     static ResourceManager l_instance{};
@@ -9,15 +10,13 @@ ResourceManager& ResourceManager::GetInstance()
 
 void ResourceManager::Destroy(IDevice* a_device)
 {
-
-    for (const auto& resource : ResourceManager::GetInstance().m_resources) 
+    for (const std::pair<const std::string, IResource*>& l_resource : GetInstance().m_resources)
     {
-        if (resource.second) 
+        if (l_resource.second)
         {
-            resource.second->Destroy(a_device);
-            delete (resource.second);
+            l_resource.second->Destroy(a_device);
+            delete (l_resource.second);
         }
-        
     }
-    delete ResourceManager::GetInstance().m_meshLoader;
+    delete GetInstance().m_meshLoader;
 }
