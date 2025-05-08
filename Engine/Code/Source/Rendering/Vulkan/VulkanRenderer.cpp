@@ -213,24 +213,14 @@ void VulkanRenderer::RecreateSwapChain(IWindow* a_window, IDevice* a_device, ISu
     CleanupSwapChain(a_device, a_swapChain, a_depthResource, a_frameBuffer);
     a_swapChain->CastVulkan()->Create(a_window, a_device, a_surface);
     
-    
     CreateViewportImage(a_device, a_swapChain);
-
     bReloadImage = true;
     
     a_multisampling->CastVulkan()->CreateColorResources(a_device, a_swapChain);
     a_depthResource->CastVulkan()->Create(a_device, a_swapChain, a_renderPass->GetRenderPassAt(0));
-
     m_cameraEditor.SetAspectRatio(static_cast<float>(a_swapChain->CastVulkan()->GetSwapChainExtent().width) / static_cast<float>(a_swapChain->CastVulkan()->GetSwapChainExtent().height));
-
-    
     a_frameBuffer->GetFrameBufferAt(0)->CastVulkan()->Create(a_device, a_swapChain, a_renderPass->GetRenderPassAt(0), a_depthResource, a_multisampling, false);
-    
-
-    
-    
     a_frameBuffer->GetFrameBufferAt(1)->CastVulkan()->Create(a_device, a_swapChain, a_renderPass->GetRenderPassAt(1), a_depthResource, a_multisampling, true);
-    
 }
 
 
@@ -273,23 +263,7 @@ void VulkanRenderer::CreateViewportImage(IDevice* a_device, ISwapChain* a_swapCh
     if (m_viewportImage != VK_NULL_HANDLE && m_viewportImageview != VK_NULL_HANDLE && m_viewportMemory != VK_NULL_HANDLE)
         DestroyViewportImage(a_device);
 
-    VkImageCreateInfo l_imageInfo{ };
-    l_imageInfo.sType = VK_STRUCTURE_TYPE_IMAGE_CREATE_INFO;
-    l_imageInfo.imageType = VK_IMAGE_TYPE_2D;
-    l_imageInfo.extent.width = static_cast<uint32_t>(m_viewportWidth); 
-    l_imageInfo.extent.height = static_cast<uint32_t>(m_viewportHeight);
-    l_imageInfo.extent.depth = 1;
-    l_imageInfo.mipLevels = 1;
-    l_imageInfo.arrayLayers = 1;
-    l_imageInfo.format = a_swapChain->CastVulkan()->GetSwapChainImageFormat();
-    l_imageInfo.tiling = VK_IMAGE_TILING_OPTIMAL;
-    l_imageInfo.initialLayout = VK_IMAGE_LAYOUT_UNDEFINED;
-    l_imageInfo.usage = VK_IMAGE_USAGE_TRANSFER_DST_BIT | VK_IMAGE_USAGE_SAMPLED_BIT;
-    l_imageInfo.sharingMode = VK_SHARING_MODE_EXCLUSIVE;
-    l_imageInfo.samples = VK_SAMPLE_COUNT_1_BIT;
-    l_imageInfo.flags = 0;
-    l_imageInfo.pNext = nullptr;
-    vkCreateImage(l_device, &l_imageInfo, nullptr, &m_viewportImage);
+    CreateViewportImageInfo(a_device->CastVulkan()->GetDevice(), a_swapChain->CastVulkan()->GetSwapChainImageFormat());
 
     VkMemoryRequirements l_memRequirements;
     vkGetImageMemoryRequirements(l_device, m_viewportImage, &l_memRequirements);
@@ -459,4 +433,27 @@ void VulkanRenderer::FillViewportInfo(VkViewport& a_viewport, const VkExtent2D& 
     a_viewport.height = -l_height;
     a_viewport.minDepth = 0.0f;
     a_viewport.maxDepth = 1.0f;
+}
+
+VkResult VulkanRenderer::CreateViewportImageInfo(const VkDevice& a_device, const VkFormat& a_swapchainImageFormat)
+{
+    VkImageCreateInfo l_imageInfo {};
+
+    l_imageInfo.sType = VK_STRUCTURE_TYPE_IMAGE_CREATE_INFO;
+    l_imageInfo.imageType = VK_IMAGE_TYPE_2D;
+    l_imageInfo.extent.width = static_cast<uint32_t>(m_viewportWidth);
+    l_imageInfo.extent.height = static_cast<uint32_t>(m_viewportHeight);
+    l_imageInfo.extent.depth = 1;
+    l_imageInfo.mipLevels = 1;
+    l_imageInfo.arrayLayers = 1;
+    l_imageInfo.format = a_swapchainImageFormat;
+    l_imageInfo.tiling = VK_IMAGE_TILING_OPTIMAL;
+    l_imageInfo.initialLayout = VK_IMAGE_LAYOUT_UNDEFINED;
+    l_imageInfo.usage = VK_IMAGE_USAGE_TRANSFER_DST_BIT | VK_IMAGE_USAGE_SAMPLED_BIT;
+    l_imageInfo.sharingMode = VK_SHARING_MODE_EXCLUSIVE;
+    l_imageInfo.samples = VK_SAMPLE_COUNT_1_BIT;
+    l_imageInfo.flags = 0;
+    l_imageInfo.pNext = nullptr;
+
+    return vkCreateImage(a_device, &l_imageInfo, nullptr, &m_viewportImage);
 }

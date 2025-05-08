@@ -56,6 +56,8 @@ private:
     static void PresentRenderPassInfo(VkRenderPassBeginInfo& a_renderPassBeginInfo, const VkRenderPass& a_renderPass, const VkFramebuffer& a_framebuffer, const VkExtent2D& a_swapchainExtent, std::array<VkClearValue, 2> a_clearValues);
     static void FillViewportInfo(VkViewport& a_viewport, const VkExtent2D& a_swapChainExtent);
 
+    VkResult CreateViewportImageInfo(const VkDevice& a_device, const VkFormat& a_swapchainImageFormat);
+
 	uint32_t m_currentFrame { 0 };
 
     CameraEditor m_cameraEditor{};
