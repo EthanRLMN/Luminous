@@ -1,16 +1,14 @@
 #pragma once
-
 #include <memory>
 #include <string>
 #include <vector>
 
-#include "EntityComponent.hpp"
 #include "Quaternion.hpp"
 #include "Vector3.hpp"
 #include "Matrix4.hpp"
 
+#include "EntityComponent.hpp"
 #include "EntitySystem/Components/ModelComponent.hpp"
-
 
 class EntityManager;
 
@@ -115,7 +113,6 @@ private:
     EntityManager& m_entityManager;
     std::string m_name { };
 
-    // TODO : Use a generic virtual component so that we can replace `void` with the actual component type, making the system faster and safer
     std::vector<std::shared_ptr<void>> m_components { };
     std::vector<std::shared_ptr<EntityComponent>> m_entityComponents { };
     std::vector<std::shared_ptr<Entity>> m_children { };
@@ -127,7 +124,5 @@ private:
     Maths::Quaternion rotation = Maths::Quaternion::Zero;
     Maths::Vector3 scale = Maths::Vector3::One;
 
-    Maths::Matrix4 TRS = Maths::Matrix4::TRS(position, rotation.ToEulerAngles(true), scale);
-
-    
+    Maths::Matrix4 TRS = Maths::Matrix4::TRS(position, rotation.ToEulerAngles(true), scale); 
 };

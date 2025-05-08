@@ -18,9 +18,7 @@ public:
     [[nodiscard]] inline const std::vector<std::shared_ptr<EntityComponent>>& GetLogicComponents() const { return m_logicComponents; }
     [[nodiscard]] inline bool HasEntityByName(const std::string& a_name) const { return GetEntityByName(a_name) != nullptr; }
 
-
     inline void RegisterLogic(const std::shared_ptr<EntityComponent>& a_logic) { m_logicComponents.push_back(a_logic); }
-
 
     [[nodiscard]] inline std::shared_ptr<Entity> CreateEntity()
     {
@@ -29,10 +27,8 @@ public:
         return l_entity;
     }
 
-  
     inline void Initialize(Engine* a_engine) 
     {
-
         m_engine = a_engine;
         for (const std::shared_ptr<EntityComponent>& l_logic : m_logicComponents) 
         {
@@ -40,7 +36,6 @@ public:
             l_logic->Initialize();
         }
             
-
         for (const std::shared_ptr<Entity>& l_entity : m_entities)
         {
             l_entity.get()->m_engine = a_engine;
@@ -115,13 +110,11 @@ public:
                 entitiesWithComponent.push_back(l_entity); 
             }
         }
-
         return entitiesWithComponent; 
     }
 
     
     inline void RemoveEntity(const std::shared_ptr<Entity>& a_entity) { std::erase(m_entities, a_entity); }
-
 
     inline void RemoveEntityByName(const std::string& a_name)
     {
@@ -149,7 +142,6 @@ public:
 
     Engine* m_engine{ nullptr };
     
-
 private:
     std::vector<std::shared_ptr<Entity>> m_entities; 
     std::vector<std::shared_ptr<EntityComponent>> m_logicComponents; 

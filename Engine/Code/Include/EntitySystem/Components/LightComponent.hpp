@@ -1,14 +1,10 @@
 #pragma once
-
 #include "EntitySystem/EntityComponent.hpp"
 
 #include "Quaternion.hpp"
 #include "Vector3.hpp"
 
-
 constexpr unsigned int MAX_LIGHTS = 32;
-
-
 
 class LightComponent : public EntityComponent
 {

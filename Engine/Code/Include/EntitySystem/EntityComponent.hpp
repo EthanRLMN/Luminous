@@ -1,6 +1,4 @@
 #pragma once
-
-
 class Engine;
 
 class EntityComponent
@@ -12,5 +10,4 @@ public:
     virtual void Update() = 0;
 
     Engine* m_engine;
-
 };

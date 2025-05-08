@@ -1,10 +1,7 @@
 #pragma once
-
-
 #include "ITexture.hpp"
 #include "IMesh.hpp"
 #include "EntitySystem/EntityComponent.hpp"
-
 
 
 class ModelComponent : public EntityComponent
