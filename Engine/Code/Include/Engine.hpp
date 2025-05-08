@@ -42,7 +42,6 @@ public:
 	[[nodiscard]] ICommandPool* GetEditorCommandPool() const { return m_editorCommandPool; }
 	[[nodiscard]] IDepthResource* GetDepthResource() const { return m_depthResource; }
 	[[nodiscard]] IFrameBufferManager* GetFrameBufferManager() const { return m_frameBufferManager; }
-	[[nodiscard]] ITexture* GetTexture() const { return m_texture; }
 	[[nodiscard]] IBuffer* GetBuffer() const { return m_buffer; }
 	[[nodiscard]] IDescriptor* GetDescriptor() const { return m_descriptor; }
 	[[nodiscard]] ICommandBuffer* GetCommandBuffer() const { return m_commandBuffer; }
@@ -67,8 +66,6 @@ private:
 	ICommandPool* m_editorCommandPool{ nullptr };
 	IDepthResource* m_depthResource{ nullptr };
 	IFrameBufferManager* m_frameBufferManager{ nullptr };
-	ITexture* m_texture{ nullptr };
-	IMesh* m_mesh{ nullptr };
 	IBuffer* m_buffer { nullptr };
 	IDescriptor* m_descriptor{ nullptr };
 	ICommandBuffer* m_commandBuffer{ nullptr };
@@ -78,7 +75,6 @@ private:
 	PhysicsSystem* m_physicsSystem{ nullptr };
 
     bool m_isRunning { false };
-    std::vector<IMesh*> l_meshes;
 
 	EntityManager m_entityManager;
 };

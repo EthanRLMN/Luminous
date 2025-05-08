@@ -167,27 +167,13 @@ void Engine::PreRender()
     m_frameBufferManager->Create(m_device, m_swapChain, m_renderPassManager->GetRenderPasses()[1], m_depthResource, m_multiSampling, true); // Create Editor Frame Buffer
 
 
-    IResourceParams l_texParams{ m_device, m_swapChain, m_depthResource, m_commandPool, m_descriptorSetLayout };
-    l_texParams.m_texturePath = "Engine/Assets/Textures/viking_room.png";
-    m_texture = ResourceManager::GetInstance().LoadResource<VulkanTexture>(l_texParams);
 
-    IResourceParams l_meshParams{};
-    l_meshParams.m_meshPath = "Engine/Assets/Models/viking_room.obj";
-    m_mesh = ResourceManager::GetInstance().LoadResource<VulkanMesh>(l_meshParams);
-
-    IResourceParams l_meshParams2{};
-    l_meshParams2.m_meshPath = "Engine/Assets/Models/metalSonic.obj";
-    VulkanMesh* m_mesh2 = ResourceManager::GetInstance().LoadResource<VulkanMesh>(l_meshParams2);
-
-    
-    l_meshes.push_back(m_mesh);
-    l_meshes.push_back(m_mesh2);
 
     m_buffer = m_interface->InstantiateBuffer();
     m_buffer->Create(m_device);
 
     m_descriptor = m_interface->InstantiateDescriptor();
-    m_descriptor->Create(m_device, m_descriptorSetLayout, m_texture, m_buffer);
+    m_descriptor->Create(m_device, m_descriptorSetLayout, m_buffer);
 
     m_commandBuffer = m_interface->InstantiateCommandBuffer();
     m_commandBuffer->Create(m_device, m_commandPool);
@@ -201,10 +187,6 @@ void Engine::PreRender()
     m_renderer->CastVulkan()->SetViewportSize(static_cast<float>(m_swapChain->CastVulkan()->GetSwapChainExtent().width), static_cast<float>(m_swapChain->CastVulkan()->GetSwapChainExtent().height));
     m_renderer->CastVulkan()->CreateViewportImage(m_device, m_swapChain);
 
-
-    IResourceParams l_texParams2{ m_device, m_swapChain, m_depthResource, m_commandPool, m_descriptorSetLayout };
-    l_texParams2.m_texturePath = "Engine/Assets/Textures/Untitled312.png";
-    m_texture = ResourceManager::GetInstance().LoadResource<VulkanTexture>(l_texParams2);
 
 }
 

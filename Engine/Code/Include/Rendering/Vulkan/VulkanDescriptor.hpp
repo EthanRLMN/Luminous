@@ -7,7 +7,7 @@
 class VulkanDescriptor final : public IDescriptor
 {
 public:
-	void Create(IDevice* a_device, IDescriptorSetLayout* a_descriptorSetLayout, ITexture* a_texture, IBuffer* a_buffer) override;
+	void Create(IDevice* a_device, IDescriptorSetLayout* a_descriptorSetLayout, IBuffer* a_buffer) override;
 	void Destroy(IDevice* a_device) override;
 
 	[[nodiscard]] VkDescriptorPool GetDescriptorPool() const { return m_descriptorPool; }
@@ -15,12 +15,12 @@ public:
 	[[nodiscard]] std::vector<VkDescriptorSet> GetDescriptorSet() const { return m_descriptorSets; };
     [[nodiscard]] VkDescriptorSet GetLightDescriptorSet() const { return m_lightDescriptorSets; };
 	VulkanDescriptor* CastVulkan() override { return this; }
-    void UpdateDescriptorSets(IDevice* a_device, ITexture* a_texture) const;
+    void UpdateDescriptorSets(IDevice* a_device) const;
 
 private:
 	void CreateDescriptorPool(IDevice* a_device);
     void CreateImGUIDescriptorPool(IDevice* a_device);
-	void CreateDescriptorSets(IDevice* a_device, IDescriptorSetLayout* a_descriptorSetLayout, ITexture* a_texture);
+	void CreateDescriptorSets(IDevice* a_device, IDescriptorSetLayout* a_descriptorSetLayout);
 	void SetBuffers(IBuffer* a_buffer);
 	
 

@@ -119,7 +119,6 @@ void FileExplorerPanel::Destroy()
         m_fileIconTexture.reset();
     }
 
-    m_engine->GetTexture()->CastVulkan()->Destroy(m_engine->GetDevice());
 }
 
 void FileExplorerPanel::OpenTextEditor(const std::filesystem::path& path)

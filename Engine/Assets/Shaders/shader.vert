@@ -21,7 +21,6 @@ void main() {
 	fragNormal = mat3(uboConstant.model) * inNormal;
 	fragTexCoord = inTexCoord;
 
-	// Switch the inverse compute below to CPU instead of GPU
-	mat4 invView = uboConstant.view;
-	viewPos = vec3(invView[3]); // col 3 = cam pos
+	mat4 invView = inverse(uboConstant.view);
+	viewPos = vec3(invView[3]);
 }
