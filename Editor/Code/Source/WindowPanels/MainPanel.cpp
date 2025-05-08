@@ -1,129 +1,242 @@
+#include "GLFW/glfw3.h"
+
 #include "WindowPanels/MainPanel.hpp"
-
+#include "Editor.hpp"
 #include "imgui.h"
+#include "stb_image.h"
+#include "windows.h"
 
+bool g_newFile = false;
+bool g_openFile = false;
+bool g_saveFile = false;
+bool g_saveAs = false;
+bool g_build = false;
+bool g_buildRun = false;
+
+bool g_undo = false;
+bool g_redo = false;
+bool g_cut = false;
+bool g_copy = false;
+bool g_paste = false;
+bool g_duplicate = false;
+bool g_delete = false;
+
+static void KeyCallback(GLFWwindow* window, int key, int scancode, int action, int mods)
+{
+    static_cast<void>(window); static_cast<void>(scancode);
+
+
+    if (action == GLFW_PRESS || action == GLFW_REPEAT)
+    {
+        if (key == GLFW_KEY_N && (mods & GLFW_MOD_CONTROL))
+            g_newFile = true;
+        if (key == GLFW_KEY_O && (mods & GLFW_MOD_CONTROL))
+            g_openFile = true;
+        if (key == GLFW_KEY_S && (mods & GLFW_MOD_CONTROL) && !(mods & GLFW_MOD_ALT))
+            g_saveFile = true;
+        if (key == GLFW_KEY_S && (mods & GLFW_MOD_CONTROL) && (mods & GLFW_MOD_ALT))
+            g_saveAs = true;
+
+        if (key == GLFW_KEY_B && (mods & GLFW_MOD_CONTROL) && !(mods & GLFW_MOD_ALT))
+            g_build = true;
+        if (key == GLFW_KEY_B && (mods & GLFW_MOD_CONTROL) && (mods & GLFW_MOD_ALT))
+            g_buildRun = true;
+
+        if (key == GLFW_KEY_Z && (mods & GLFW_MOD_CONTROL))
+            g_undo = true;
+        if (key == GLFW_KEY_Y && (mods & GLFW_MOD_CONTROL))
+            g_redo = true;
+
+        if (key == GLFW_KEY_X && (mods & GLFW_MOD_CONTROL))
+            g_cut = true;
+        if (key == GLFW_KEY_C && (mods & GLFW_MOD_CONTROL))
+            g_copy = true;
+        if (key == GLFW_KEY_V && (mods & GLFW_MOD_CONTROL))
+            g_paste = true;
+        if (key == GLFW_KEY_D && (mods & GLFW_MOD_CONTROL))
+            g_duplicate = true;
+        if (key == GLFW_KEY_DELETE)
+            g_delete = true;
+    }
+}
+
+void SetupKeyCallback(GLFWwindow* window)
+{
+    glfwSetKeyCallback(window, KeyCallback);
+}
 
 void MainPanel::Render()
 {
-    // TODO: Add Draw calls of dependent popup windows here
+    if (g_newFile)
+    {
+        g_newFile = false;
+    }
+    if (g_openFile)
+    {
+        g_openFile = false;
+    }
+    if (g_saveFile)
+    {
+        g_saveFile = false;
+    }
+    if (g_saveAs)
+    {
+        g_saveAs = false;
+    }
+    if (g_build)
+    {
+        g_build = false;
+    }
+    if (g_buildRun)
+    {
+        g_buildRun = false;
+    }
+
+    if (g_undo)
+    {
+        g_undo = false;
+    }
+    if (g_redo)
+    {
+        g_redo = false;
+    }
+    if (g_cut)
+    {
+        g_cut = false;
+    }
+    if (g_copy)
+    {
+        g_copy = false;
+    }
+    if (g_paste)
+    {
+        g_paste = false;
+    }
+    if (g_duplicate)
+    {
+        g_duplicate = false;
+    }
+    if (g_delete)
+    {
+        g_delete = false;
+    }
+
     if (ImGui::BeginMainMenuBar())
     {
         if (ImGui::BeginMenu("File"))
         {
-            ImGui::MenuItem("New Project", "CTRL + N", false);
-
-            ImGui::MenuItem("Open project ...", "CTRL + O", false);
-
-            if (ImGui::BeginMenu("Open recent Project"))
+            if(ImGui::MenuItem("New Project", "CTRL + N"))
             {
-                ImGui::MenuItem("Project1", "", false);
-
-                ImGui::MenuItem("Project2", "", false);
-
-                ImGui::EndMenu();
+                g_newFile = true;
             }
-            ImGui::Separator();
-            ImGui::MenuItem("Save all", "CTRL + S", false);
-
-            ImGui::MenuItem("Save all as ...", "CTRL + ALT + S", false);
-
-            ImGui::Separator();
-            ImGui::MenuItem("Build Project", "CTRL + B", false);
-
-            ImGui::MenuItem("Build Project and Run", "CTRL + ALT + B", false);
+            if(ImGui::MenuItem("Open Project...", "CTRL + O"))
+            {
+                g_openFile = true;
+            }
 
             ImGui::Separator();
-            ImGui::MenuItem("Exit", "", false);
+            if(ImGui::MenuItem("Save All", "CTRL + S"))
+            {
+                g_saveFile = true;
+            }
+            if(ImGui::MenuItem("Save All As...", "CTRL + ALT + S"))
+            {
+                g_saveAs = true;
+            }
 
+            ImGui::Separator();
+            if(ImGui::MenuItem("Build Project", "CTRL + B"))
+            {
+                g_build = true;
+            }
+            if(ImGui::MenuItem("Build Project and Run", "CTRL + ALT + B"))
+            {
+                g_buildRun = true;
+            }
+
+            ImGui::Separator();
+            if(ImGui::MenuItem("Exit"))
+            {
+                p_editor->RequestExit();
+            }
             ImGui::EndMenu();
         }
 
         if (ImGui::BeginMenu("Edit"))
         {
-            ImGui::MenuItem("Undo", "CTRL + Z", false);
-
-            ImGui::MenuItem("Redo", "CTRL + Y", false);
-
-            ImGui::Separator();
-            ImGui::MenuItem("Cut", "CTRL + X", false);
-
-            ImGui::MenuItem("Copy", "CTRL + C", false);
-
-            ImGui::MenuItem("Paste", "CTRL + V", false);
-
-            ImGui::MenuItem("Duplicate", "CTRL + D", false);
-
-            ImGui::MenuItem("Delete", "DEL", false);
+            if(ImGui::MenuItem("Undo", "CTRL + Z"))
+            {
+                g_undo = true;
+            }
+            if (ImGui::MenuItem("Redo", "CTRL + Y"))
+            {
+                g_redo = true;
+            }
 
             ImGui::Separator();
-            ImGui::MenuItem("Settings", "", false);
+            if(ImGui::MenuItem("Cut", "CTRL + X"))
+            {
+                g_cut = true;
+            }
+            if(ImGui::MenuItem("Copy", "CTRL + C"))
+            {
+                g_copy = true;
+            }
+            if(ImGui::MenuItem("Paste", "CTRL + V"))
+            {
+                g_paste = true;
+            }
+            if(ImGui::MenuItem("Duplicate", "CTRL + D"))
+            {
+                g_duplicate = true;
+            }
+            if(ImGui::MenuItem("Delete", "DEL"))
+            {
+                g_delete = true;
+            }
+
+            ImGui::Separator();
+            ImGui::MenuItem("Settings");
 
             ImGui::EndMenu();
         }
 
         if (ImGui::BeginMenu("Window"))
         {
-            ImGui::MenuItem("Console", "", false);
+            if(ImGui::MenuItem("Scene"))
+            {
 
-            ImGui::MenuItem("Scene", "", false);
+            }
+            if(ImGui::MenuItem("Game"))
+            {
 
-            ImGui::MenuItem("Game", "", false);
-
+            }
             ImGui::EndMenu();
         }
 
+        HelpContextMenu();
 
         ImGui::EndMainMenuBar();
     }
-
-    /*static ImTextureID s_moveButton = LoadTexture("../../Assets/Move Button.png");
-    static ImTextureID s_rotateButton = LoadTexture("../../Assets/Rotate Button.png");
-    static ImTextureID s_resizeButton = LoadTexture("../../Assets/Resize Button.png");
-    static ImTextureID s_playButton = LoadTexture("../../Assets/Play Button.png");
-    static ImTextureID s_stopButton = LoadTexture("../../Assets/Stop Button.png");
-    static ImTextureID s_saveButton = LoadTexture("../../Assets/Save Button.png");
-
-    ImGui::Image(s_moveButton, { 25, 25 }, { 0, 0 }, { 1, 1 });
-    //if (ImGui::IsItemClicked())
-        //#Fonction;
-    //if (ImGui::IsItemActivated())
-        //#Fonction;
-
-    ImGui::SameLine();
-    ImGui::Image(s_rotateButton, { 25, 25 }, { 0, 0 }, { 1, 1 });
-
-    ImGui::SameLine();
-    ImGui::Image(s_resizeButton, { 25, 25 }, { 0, 0 }, { 1, 1 });
-
-    ImGui::SameLine(0, 100 * ImGui::GetStyle().ItemSpacing.x);
-    ImGui::Image(s_playButton, { 25, 25 }, { 0, 0 }, { 1, 1 });
-
-    ImGui::SameLine();
-    ImGui::Image(s_stopButton, { 25, 25 }, { 0, 0 }, { 1, 1 });
-
-    ImGui::SameLine(0, 115 * ImGui::GetStyle().ItemSpacing.x);
-    ImGui::Image(s_saveButton, { 25, 25 }, { 0, 0 }, { 1, 1 });*/
 }
-
-void MainPanel::FileContextMenu() {}
-
-void MainPanel::EditContextMenu() {}
-
-void MainPanel::WindowContextMenu() {}
 
 void MainPanel::HelpContextMenu()
 {
     if (ImGui::BeginMenu("Help"))
     {
-        ImGui::MenuItem("About", "", false);
-
+        ImGui::MenuItem("About");
         ImGui::Separator();
-        ImGui::MenuItem("Luminous Engine Docmentation", "", false);
-
-        ImGui::MenuItem("Credits", "", false);
-
-        ImGui::MenuItem("Report a bug", "", false);
-
+        if(ImGui::MenuItem("Luminous Engine Documentation"))
+        {
+            std::string l_url = "https://docs.google.com/document/d/19qMj7aVNyUmKaU75l3vGquVxbhHGDizC_6ZDZihrUx8/edit?pli=1&tab=t.0#heading=h.gb8ifdy1ueeo";
+            ShellExecuteA(NULL, "open", l_url.c_str(), NULL, NULL, SW_SHOWNORMAL);
+        }
+        if (ImGui::MenuItem("Credits"))
+        {
+            std::string l_url = "https://docs.google.com/document/d/19qMj7aVNyUmKaU75l3vGquVxbhHGDizC_6ZDZihrUx8/edit?pli=1&tab=t.0#heading=h.gb8ifdy1ueeo";
+            ShellExecuteA(NULL, "open", l_url.c_str(), NULL, NULL, SW_SHOWNORMAL);
+        }
+        ImGui::MenuItem("Report a Bug");
         ImGui::EndMenu();
     }
 }

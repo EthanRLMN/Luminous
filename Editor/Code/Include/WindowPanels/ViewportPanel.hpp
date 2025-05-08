@@ -11,7 +11,7 @@ class Viewport : public IWindowPanel
 public:
     explicit Viewport(Editor* a_editor, const std::string& a_windowIdentifier) : IWindowPanel(a_editor, a_windowIdentifier) 
     {
-        dSets = ImGui_ImplVulkan_AddTexture(p_editor->GetEngine()->GetRenderingDraw()->CastVulkan()->GetViewportImageSampler(), p_editor->GetEngine()->GetRenderingDraw()->CastVulkan()->GetViewportImageView(), VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL);
+        dSets = ImGui_ImplVulkan_AddTexture(p_editor->GetEngine()->GetRenderer()->CastVulkan()->GetViewportImageSampler(), p_editor->GetEngine()->GetRenderer()->CastVulkan()->GetViewportImageView(), VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL);
     };
     
 
