@@ -65,8 +65,15 @@ void Engine::Update()
 
 void Engine::Destroy()
 {
+    if (m_device && m_device->CastVulkan())
+        vkDeviceWaitIdle(m_device->CastVulkan()->GetDevice());
+
     m_resourceManager->DeleteResource<VulkanShader>("v=Engine/Assets/Shaders/vert.spv, f=Engine/Assets/Shaders/frag.spv, t=, g=", m_device);
 
+    if (m_imguiSampler != VK_NULL_HANDLE)
+    {
+        vkDestroySampler(m_device->CastVulkan()->GetDevice(), m_imguiSampler, nullptr);
+    }
 
     // TODO: Cleanup
     m_renderer->CastVulkan()->DestroyViewportImage(m_device);

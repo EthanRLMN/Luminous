@@ -35,28 +35,28 @@ void VulkanTexture::Destroy(IDevice* a_device)
     const VkDevice l_vkdevice = a_device->CastVulkan()->GetDevice();
     vkDeviceWaitIdle(l_vkdevice);
 
-    if (m_textureImageView != nullptr)
+    if (m_textureImageView != VK_NULL_HANDLE)
     {
         vkDestroyImageView(l_vkdevice, m_textureImageView, nullptr);
-        m_textureImageView = nullptr;
+        m_textureImageView = VK_NULL_HANDLE;
     }
 
-    if (m_textureImage != nullptr)
+    if (m_textureImage != VK_NULL_HANDLE)
     {
         vkDestroyImage(l_vkdevice, m_textureImage, nullptr);
-        m_textureImage = nullptr;
+        m_textureImage = VK_NULL_HANDLE;
     }
 
-    if (m_textureSampler != nullptr)
+    if (m_textureSampler != VK_NULL_HANDLE)
     {
         vkDestroySampler(l_vkdevice, m_textureSampler, nullptr);
-        m_textureSampler = nullptr;
+        m_textureSampler = VK_NULL_HANDLE;
     }
 
-    if (m_textureImageMemory != nullptr)
+    if (m_textureImageMemory != VK_NULL_HANDLE)
     {
         vkFreeMemory(l_vkdevice, m_textureImageMemory, nullptr);
-        m_textureImageMemory = nullptr;
+        m_textureImageMemory = VK_NULL_HANDLE;
     }
 
     DEBUG_LOG_INFO("Vulkan Texture : Texture Destroy!\n");

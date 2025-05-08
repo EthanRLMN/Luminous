@@ -38,11 +38,6 @@ FileExplorerPanel::FileExplorerPanel(Editor* a_editor, const std::string& a_wind
     );
 }
 
-FileExplorerPanel::~FileExplorerPanel()
-{
-    m_directoryIconTexture->CastVulkan()->Destroy(m_engine->GetDevice());
-    m_fileIconTexture->CastVulkan()->Destroy(m_engine->GetDevice());
-}
 
 void FileExplorerPanel::Render()
 {
@@ -108,6 +103,23 @@ void FileExplorerPanel::Render()
     ImGui::End();
 }
 
+
+void FileExplorerPanel::Destroy()
+{
+    if (m_directoryIconTexture)
+    {
+        m_directoryIconTexture->CastVulkan()->Destroy(m_engine->GetDevice());
+        m_directoryIconTexture.reset();
+    }
+
+    if (m_fileIconTexture)
+    {
+        m_fileIconTexture->CastVulkan()->Destroy(m_engine->GetDevice());
+        m_fileIconTexture.reset();
+    }
+
+    m_engine->GetTexture()->CastVulkan()->Destroy(m_engine->GetDevice());
+}
 
 void FileExplorerPanel::OpenTextEditor(const std::filesystem::path& path)
 {

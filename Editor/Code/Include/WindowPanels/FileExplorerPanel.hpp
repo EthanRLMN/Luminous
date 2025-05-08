@@ -12,12 +12,11 @@ class FileExplorerPanel : public IWindowPanel
 {
 public:
     explicit FileExplorerPanel(Editor* a_editor, const std::string& a_windowIdentifier);
-    ~FileExplorerPanel() override;
 
     void Init() override {};
     void Update() override {};
     void Render() override;
-    void Destroy() override {};
+    void Destroy() override;
 
 private:
     std::filesystem::path m_currentDirectory{};
