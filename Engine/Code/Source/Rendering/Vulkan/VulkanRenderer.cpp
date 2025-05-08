@@ -139,7 +139,7 @@ void VulkanRenderer::RecordCommandBuffer(IDevice* a_device,const VkCommandBuffer
                 const std::array<VkDeviceSize, 1> l_offsets = { 0 };
                 vkCmdBindVertexBuffers(a_commandBuffer, 0, 1, l_vertexBuffers.data(), l_offsets.data());
                 vkCmdBindIndexBuffer(a_commandBuffer, entity.get()->GetComponent<ModelComponent>().get()->GetMesh()->CastVulkan()->GetIndexBuffer(), 0, VK_INDEX_TYPE_UINT32);
-                a_descriptor->CastVulkan()->UpdateDescriptorSets(a_device, entity.get()->GetComponent<ModelComponent>().get()->GetTexture());
+                a_descriptor->CastVulkan()->UpdateDescriptorSets(a_device, entity.get()->GetComponent<ModelComponent>().get()->GetTexture()); // Update des descriptors
                 vkCmdBindDescriptorSets(a_commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, a_pipelineLayout, 0, 1, &a_descriptor->CastVulkan()->GetDescriptorSet()[m_currentFrame], 0, nullptr);
                 vkCmdPushConstants(a_commandBuffer, a_pipelineLayout, VK_SHADER_STAGE_VERTEX_BIT, 0, sizeof(UniformBufferObject), &l_ubo);
 

@@ -15,7 +15,7 @@ public:
     static ResourceManager& GetInstance();
 
     inline void Init() { m_meshLoader = new AssimpModelLoader(); }
-    inline void Destroy() const { delete m_meshLoader; }
+    static void Destroy(IDevice* a_device);
 
 	template<typename T> T* LoadResource(IResourceParams a_params);
 	template<typename T> T* GetResource(const std::string& a_file);

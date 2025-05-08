@@ -137,6 +137,6 @@ void VulkanDescriptor::UpdateDescriptorSets(IDevice* a_device, ITexture* a_textu
         l_descriptorWrites[1].pImageInfo = &l_imageInfo;
 
         vkUpdateDescriptorSets(a_device->CastVulkan()->GetDevice(), static_cast<uint32_t>(l_descriptorWrites.size()), l_descriptorWrites.data(), 0, nullptr);
-        DEBUG_LOG_INFO("Vulkan Descriptors : DescriptorSet created!\n");
+        //DEBUG_LOG_INFO("Vulkan Descriptors : DescriptorSet updated!\n");
     }
 }

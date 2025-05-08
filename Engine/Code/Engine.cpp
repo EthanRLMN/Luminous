@@ -54,8 +54,12 @@ void Engine::Destroy()
    ResourceManager::GetInstance().DeleteResource<VulkanShader>("v=Engine/Assets/Shaders/vert.spv, f=Engine/Assets/Shaders/frag.spv, t=, g=", m_device);
 
 
+   ResourceManager::Destroy(m_device);
+
     // TODO: Cleanup
     m_renderer->CastVulkan()->DestroyViewportImage(m_device);
+
+
 
    m_descriptor->Destroy(m_device);  
    m_interface->DeleteDescriptor(m_descriptor);  
@@ -63,7 +67,6 @@ void Engine::Destroy()
    m_buffer->Destroy(m_device);  
    m_interface->DeleteBuffer(m_buffer);  
 
-   m_mesh->Destroy(m_device);  
    m_interface->DeleteModel(m_mesh);  
 
    m_texture->Destroy(m_device);  
