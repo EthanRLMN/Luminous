@@ -89,10 +89,7 @@ void VulkanPipeline::Create(IDevice* a_device, IRenderPass* a_renderPass, IDescr
     std::vector<VkDescriptorSetLayout> l_descriptorSetLayouts = { l_descriptorSetLayout, l_lightDescriptorSetLayout };
     SetupDescriptorSetLayout(l_descriptorSetLayouts, l_pipelineLayoutInfo, a_device->CastVulkan()->GetDevice());
 
-    //Graphic pipeline creation
-
-    
-
+    //Graphic pipeline creation  
     VkGraphicsPipelineCreateInfo l_pipelineCreateInfo{ };
     PushPipelineInfo(l_pipelineCreateInfo, l_shaderStages, l_vertexInputCreateInfo, l_inputAssembly, l_viewportStateCreateInfo, l_rasterizerCreateInfo, l_multisamplingCreateInfo, l_depthStencil, l_colorBlending, l_dynamicStateCreationInfo, a_renderPass->CastVulkan()->GetRenderPass(), a_device->CastVulkan()->GetDevice());
 

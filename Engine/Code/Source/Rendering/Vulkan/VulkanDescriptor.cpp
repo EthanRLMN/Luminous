@@ -128,7 +128,6 @@ void VulkanDescriptor::CreateDescriptorSets(IDevice* a_device, IDescriptorSetLay
     if (vkAllocateDescriptorSets(a_device->CastVulkan()->GetDevice(), &l_allocateInfo, m_descriptorSets.data()) != VK_SUCCESS)
         DEBUG_LOG_ERROR("failed to allocate descriptor sets !\n");
 
-
     /*
     std::vector<VkDescriptorSetLayout> l_lightLayout = { a_descriptorSetLayout->CastVulkan()->GetLightDescriptorSetLayout() };
     VkDescriptorSetAllocateInfo l_lightAllocInfo{};
@@ -138,7 +137,6 @@ void VulkanDescriptor::CreateDescriptorSets(IDevice* a_device, IDescriptorSetLay
     l_lightAllocInfo.pSetLayouts = l_lightLayout.data();
 
     vkAllocateDescriptorSets(a_device->CastVulkan()->GetDevice(), &l_lightAllocInfo, &m_lightDescriptorSets);*/
-
 
     UpdateDescriptorSets(a_device, a_texture);
 }
@@ -194,7 +192,7 @@ void VulkanDescriptor::UpdateDescriptorSets(IDevice* a_device, ITexture* a_textu
 
 
         vkUpdateDescriptorSets(a_device->CastVulkan()->GetDevice(), static_cast<uint32_t>(l_descriptorWrites.size()), l_descriptorWrites.data(), 0, nullptr);
-        //DEBUG_LOG_INFO("Vulkan Descriptors : DescriptorSet updated!\n");
+        DEBUG_LOG_INFO("Vulkan Descriptors : DescriptorSet updated!\n");
     }
 
     /*// LIGHT EDIT 99
@@ -213,6 +211,4 @@ void VulkanDescriptor::UpdateDescriptorSets(IDevice* a_device, ITexture* a_textu
     descriptorWrite.pBufferInfo = &bufferInfo;
 
     vkUpdateDescriptorSets(a_device->CastVulkan()->GetDevice(), 1, &descriptorWrite, 0, nullptr);*/
-
-
 }

@@ -69,7 +69,6 @@ void VulkanTexture::Destroy(IDevice* a_device)
 }
 
 
-// TODO: Cleanup
 void VulkanTexture::CreateTextureImage(IDevice* a_device, ICommandPool* a_commandPool, const std::string& a_path)
 {
     if (a_device == nullptr)
@@ -341,7 +340,7 @@ void VulkanTexture::CopyBufferToImage(const VkDevice& a_device, const VkQueue& a
     EndSingleTimeCommands(a_device, a_graphicsQueue, a_commandPool, l_commandBuffer);
 }
 
-// TODO: Cleanup
+
 void VulkanTexture::GenerateMipMaps(IDevice* a_device, const VkQueue& a_graphicsQueue, const VkCommandPool& a_commandPool, const VkImage& a_image, const VkFormat& a_imageFormat, const uint32_t& a_width, const uint32_t& a_height) const
 {
     VkFormatProperties l_formatProperties{};

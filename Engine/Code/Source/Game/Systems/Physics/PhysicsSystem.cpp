@@ -100,4 +100,3 @@ void PhysicsSystem::TriggerPhysicsOptimization() const
 {
     m_physicsSystem->OptimizeBroadPhase();
 }
-

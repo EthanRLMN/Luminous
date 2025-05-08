@@ -1,5 +1,4 @@
 #pragma once
-
 #include "Logger.hpp"
 
 #include "ResourceManager.hpp"

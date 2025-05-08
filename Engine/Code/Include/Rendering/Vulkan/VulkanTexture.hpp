@@ -1,10 +1,8 @@
 #pragma once
-
 #include <string>
 #include <vulkan/vulkan.h>
 
 #include "ITexture.hpp"
-
 
 class VulkanTexture final : public ITexture
 {
@@ -44,6 +42,4 @@ private:
 
     VkDescriptorPool m_textureDescriptorPool{ nullptr };
     VkDescriptorSet m_textureDescriptorSets{ nullptr };
-
 };
-

@@ -27,5 +27,3 @@ void VulkanDepthResource::Destroy(IDevice* a_device)
 
     DEBUG_LOG_INFO("Vulkan DepthResource : DepthResource Destroyed!\n");
 }
-
-

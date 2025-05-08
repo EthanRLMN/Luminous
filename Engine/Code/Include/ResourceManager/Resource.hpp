@@ -43,5 +43,3 @@ public:
 private:
     bool m_isLoaded = false;
 };
-
-

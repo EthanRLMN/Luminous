@@ -48,4 +48,3 @@ public:
 		return nullptr;
 	}
 };
-

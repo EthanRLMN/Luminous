@@ -52,13 +52,9 @@ void VulkanRenderer::DrawFrame(IWindow* a_window, IDevice* a_device, ISwapChain*
     if (l_result != VK_SUCCESS && l_result != VK_SUBOPTIMAL_KHR)
         throw std::runtime_error("failed to present swap chain image");
 
-    //***********************************/
     
     m_cameraEditor.Update(static_cast<float>(a_swapChain->CastVulkan()->GetSwapChainExtent().width) / static_cast<float>(a_swapChain->CastVulkan()->GetSwapChainExtent().height));
     m_cameraEditor.UpdateInput(a_inputManager);
-
-    ///*************************************************//
-
 
     UpdateUniformBuffer(m_currentFrame, a_buffer,a_entityManager);
     vkResetFences(l_device, 1, &a_synchronization->CastVulkan()->GetFences()[m_currentFrame]);
@@ -89,7 +85,7 @@ void VulkanRenderer::DrawFrame(IWindow* a_window, IDevice* a_device, ISwapChain*
     l_result = vkQueuePresentKHR(a_device->CastVulkan()->GetPresentationQueue(), &l_presentInfo);
     if (l_result == VK_ERROR_OUT_OF_DATE_KHR || l_result == VK_SUBOPTIMAL_KHR)
     {
-        // DEBUG_LOG_ERROR("failed to present swap chain image");
+        DEBUG_LOG_ERROR("failed to present swap chain image");
         this->SetViewportSize(0, 0);
         RecreateSwapChain(a_window, a_device, a_surface, a_swapChain, a_depthResource, a_frameBufferManager, a_renderPassManager, a_multisampling);
     }
@@ -171,9 +167,7 @@ void VulkanRenderer::RecordCommandBuffer(const VkCommandBuffer& a_commandBuffer,
         
         if (l_renderPass == a_renderPassManager->GetRenderPassAt(0))
         {
-            CopyImageToViewport(a_swapChain, a_commandBuffer);
-            
-            //bUsable = true;
+            CopyImageToViewport(a_swapChain, a_commandBuffer);           
         } 
     }
 
@@ -223,7 +217,6 @@ void VulkanRenderer::RecreateSwapChain(IWindow* a_window, IDevice* a_device, ISu
     CreateViewportImage(a_device, a_swapChain);
 
     bReloadImage = true;
-    //CreateImageViews(a_device, a_swapChain);
     
     a_multisampling->CastVulkan()->CreateColorResources(a_device, a_swapChain);
     a_depthResource->CastVulkan()->Create(a_device, a_swapChain, a_renderPass->GetRenderPassAt(0));
@@ -283,7 +276,7 @@ void VulkanRenderer::CreateViewportImage(IDevice* a_device, ISwapChain* a_swapCh
     VkImageCreateInfo l_imageInfo{ };
     l_imageInfo.sType = VK_STRUCTURE_TYPE_IMAGE_CREATE_INFO;
     l_imageInfo.imageType = VK_IMAGE_TYPE_2D;
-    l_imageInfo.extent.width = static_cast<uint32_t>(m_viewportWidth); // l_extent.width
+    l_imageInfo.extent.width = static_cast<uint32_t>(m_viewportWidth); 
     l_imageInfo.extent.height = static_cast<uint32_t>(m_viewportHeight);
     l_imageInfo.extent.depth = 1;
     l_imageInfo.mipLevels = 1;

@@ -18,6 +18,5 @@ void VulkanMesh::Destroy(IDevice* a_device)
     vkDestroyBuffer(l_device, m_vertexBuffer, nullptr);
     vkDestroyBuffer(l_device, m_indexBuffer, nullptr);
     vkFreeMemory(l_device, m_vertexBufferMemory, nullptr);
-    vkFreeMemory(l_device, m_indexBufferMemory, nullptr);
-    
+    vkFreeMemory(l_device, m_indexBufferMemory, nullptr);    
 }

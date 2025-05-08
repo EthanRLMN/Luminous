@@ -1,9 +1,7 @@
 #pragma once
 
 #include <vulkan/vulkan.h>
-
 #include "IDepthResource.hpp"
-
 
 class VulkanDepthResource : public IDepthResource
 {

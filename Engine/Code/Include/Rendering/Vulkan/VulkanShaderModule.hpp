@@ -16,5 +16,4 @@ public:
 
 private:
     VkShaderModule m_shaderModule{};
-
 };

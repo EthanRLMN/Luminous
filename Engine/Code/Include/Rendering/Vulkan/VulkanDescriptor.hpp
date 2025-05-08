@@ -1,10 +1,8 @@
 #pragma once
-
 #include <vulkan/vulkan.h>
 
 #include "IBuffer.hpp"
 #include "IDescriptor.hpp"
-
 
 class VulkanDescriptor final : public IDescriptor
 {

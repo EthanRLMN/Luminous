@@ -1,9 +1,7 @@
 #pragma once
-
 #include "jolt/Jolt/Jolt.h"
 #include "jolt/Jolt/Physics/PhysicsSystem.h"
 #include "jolt/Jolt/Physics/Body/BodyCreationSettings.h"
-
 
 namespace Layers
 {
@@ -14,7 +12,6 @@ namespace Layers
     static constexpr JPH::ObjectLayer KINEMATIC = 4 ;
     static constexpr JPH::ObjectLayer NUM_LAYERS = 5;
 };
-
 
 namespace BroadPhaseLayers
 {

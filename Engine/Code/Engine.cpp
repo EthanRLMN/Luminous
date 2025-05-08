@@ -57,18 +57,11 @@ void Engine::Destroy()
     // TODO: Cleanup
     m_renderer->CastVulkan()->DestroyViewportImage(m_device);
 
-
-
    m_descriptor->Destroy(m_device);  
    m_interface->DeleteDescriptor(m_descriptor);  
 
    m_buffer->Destroy(m_device);  
    m_interface->DeleteBuffer(m_buffer);  
-
-   //m_interface->DeleteModel(m_mesh);  
-
-   //m_texture->Destroy(m_device);  
-   //m_interface->DeleteTexture(m_texture);  
 
    m_frameBufferManager->Destroy(m_device);  
    m_interface->DeleteFrameBufferManager(m_frameBufferManager);  
@@ -229,4 +222,3 @@ void Engine::DestroyInput() const
     m_inputManager->Destroy(m_window);
     m_interface->DeleteInputManager(m_inputManager);
 }
-

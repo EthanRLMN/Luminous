@@ -6,7 +6,6 @@
 
 #include "IRenderPass.hpp"
 
-
 class VulkanRenderPass final : public IRenderPass
 {
 public :

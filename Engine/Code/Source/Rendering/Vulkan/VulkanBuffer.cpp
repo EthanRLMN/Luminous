@@ -57,11 +57,8 @@ void VulkanBuffer::SetMeshBuffers(IDevice* a_device, ICommandPool* a_commandPool
 
         vkDestroyBuffer(a_device->CastVulkan()->GetDevice(), l_stagingBuffer, nullptr);
         vkFreeMemory(a_device->CastVulkan()->GetDevice(), l_stagingBufferMemory, nullptr);
-
-
     }
     
-
     {
         const std::vector<uint32_t> l_indices = a_mesh->CastVulkan()->GetIndices();
 
@@ -87,11 +84,7 @@ void VulkanBuffer::SetMeshBuffers(IDevice* a_device, ICommandPool* a_commandPool
         vkFreeMemory(a_device->CastVulkan()->GetDevice(), l_stagingBufferMemory, nullptr);
 
     }
-
 }
-
-
-
 
 void VulkanBuffer::CreateUniformBuffers(IDevice* a_device, ITexture* a_texture)
 {
@@ -106,7 +99,6 @@ void VulkanBuffer::CreateUniformBuffers(IDevice* a_device, ITexture* a_texture)
 		vkMapMemory(a_device->CastVulkan()->GetDevice(), m_uniformBuffersMemory[i], 0, l_bufferSize, 0, &m_uniformBuffersMapped[i]);
 	}
 }
-
 
 void VulkanBuffer::CopyBuffer(const VkDevice a_device, const VkQueue a_graphicsQueue, const VkCommandPool a_commandPool, const VkBuffer a_srcBuffer, const VkBuffer a_dstBuffer, const VkDeviceSize a_size)
 {

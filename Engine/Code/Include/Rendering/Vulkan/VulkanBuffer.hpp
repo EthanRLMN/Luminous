@@ -1,7 +1,6 @@
 #pragma once
 
 #include "IBuffer.hpp"
-
 #include "Struct/VulkanUtilities.hpp"
 
 

@@ -1,5 +1,4 @@
 #pragma once
-
 #include "jolt/Jolt/Jolt.h"
 #include "jolt/Jolt/Physics/PhysicsSystem.h"
 

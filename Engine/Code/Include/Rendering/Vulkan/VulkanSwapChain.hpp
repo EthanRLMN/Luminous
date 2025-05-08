@@ -1,14 +1,10 @@
 #pragma once
-
 #include <vector>
 #include <GLFW/glfw3.h>
 
 #include "ISwapChain.hpp"
-
 #include "Utils/QueueFamilyIndiceUtils.hpp"
-
 #include "Struct/VulkanUtilities.hpp"
-
 #include "VulkanSurface.hpp"
 
 class VulkanSwapChain final : public ISwapChain

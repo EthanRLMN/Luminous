@@ -8,7 +8,7 @@
 #include "Vector3.hpp"
 
 /**
- * @brief How many frames should be rendererd ahead
+ * @brief How many frames should be rendered ahead
  */
 constexpr int MAX_FRAMES_IN_FLIGHT = 3;
 
