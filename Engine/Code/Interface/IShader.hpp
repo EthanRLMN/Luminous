@@ -10,8 +10,8 @@ class IShader : public IResource
 public:
     IShader() = default;
 
-    bool Create(const IResourceParams& a_params) override { return false; };
-    void Destroy(IDevice* a_device) override {};
+    bool Create(const IResourceParams& a_params) override { static_cast<void>(a_params); return false; }
+    void Destroy(IDevice* a_device) override { static_cast<void>(a_device); }
 
     virtual VulkanShader* CastVulkan()
     {

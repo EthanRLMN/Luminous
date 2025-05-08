@@ -16,9 +16,14 @@ void VulkanSynchronization::Create(IDevice* a_device)
 	m_renderFinishedSemaphores.resize(MAX_FRAMES_IN_FLIGHT);
 	m_fences.resize(MAX_FRAMES_IN_FLIGHT);
 
-	const VkSemaphoreCreateInfo l_semaphoreInfo { VK_STRUCTURE_TYPE_SEMAPHORE_CREATE_INFO };
-	VkFenceCreateInfo l_fenceInfo { VK_STRUCTURE_TYPE_FENCE_CREATE_INFO };
+    VkSemaphoreCreateInfo l_semaphoreInfo { };
+    l_semaphoreInfo.sType = VK_STRUCTURE_TYPE_SEMAPHORE_CREATE_INFO;
+    l_semaphoreInfo.pNext = nullptr;
+
+	VkFenceCreateInfo l_fenceInfo { };
+    l_fenceInfo.sType = VK_STRUCTURE_TYPE_FENCE_CREATE_INFO;
 	l_fenceInfo.flags = VK_FENCE_CREATE_SIGNALED_BIT;
+    l_fenceInfo.pNext = nullptr;
 
 	for (size_t i = 0; i < MAX_FRAMES_IN_FLIGHT; ++i)
 	{

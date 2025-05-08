@@ -16,12 +16,12 @@ struct IResourceParams
     ICommandPool* m_commandPool { nullptr };
 
     //TODO: Add default values as a backup to avoid potential issues
-    std::string m_meshPath;
-    std::string m_texturePath;
-    std::string m_vertexShaderPath;
-    std::string m_fragmentShaderPath;
-    std::string m_tesselationShaderPath;
-    std::string m_geometryShaderPath;
+    std::string m_meshPath { "" };
+    std::string m_texturePath { "" };
+    std::string m_vertexShaderPath { "" };
+    std::string m_fragmentShaderPath { "" };
+    std::string m_tesselationShaderPath { "" };
+    std::string m_geometryShaderPath { "" };
 
     uint32_t m_mipLevels { 1 };
 };

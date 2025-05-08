@@ -10,7 +10,7 @@ class IMesh : public IResource
 {
 public:
     IMesh() = default;
-    bool Create(const IResourceParams& a_params) override { return false; };
+    bool Create(const IResourceParams& a_params) override { static_cast<void>(a_params); return false; };
 
 	virtual VulkanMesh* CastVulkan()
 	{

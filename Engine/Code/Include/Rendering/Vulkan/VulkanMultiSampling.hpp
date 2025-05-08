@@ -17,15 +17,15 @@ static constexpr std::array<VkSampleCountFlagBits, 7> VkSampleCount = {
     VK_SAMPLE_COUNT_64_BIT
 };
 
-static VkSampleCountFlagBits CastVulkanSample(const SamplingCount& a_msaa)
-{
-    const int l_msaaIndex = static_cast<int>(a_msaa);
-    return VkSampleCount[l_msaaIndex - 1];
-}
-
 class VulkanMultiSampling final : public IMultiSampling
 {
 public:
+    static VkSampleCountFlagBits CastSample(const SamplingCount& a_msaa)
+    {
+        const int l_msaaIndex = static_cast<int>(a_msaa);
+        return VkSampleCount[l_msaaIndex - 1];
+    }
+
     void Create(IDevice* a_device, ISwapChain* a_swapchain) override;
     void Destroy(IDevice* a_device) override;
     void SetSampleCount(IDevice* a_device, const SamplingCount& a_samplingCount) override;

@@ -125,7 +125,7 @@ private:
     JPH::PhysicsSystem* m_physicsSystem { nullptr };
 
     JPH::BodyID m_sphereId{};
-    JPH::Body* m_floor { nullptr };
+    //JPH::Body* m_floor { nullptr };
     JPH::BroadPhaseLayerInterface* m_broadPhaseLayerInterface { nullptr };
     JPH::ObjectVsBroadPhaseLayerFilter* m_ObjToBroadPhaseLayerFilter { nullptr };
     JPH::ObjectLayerPairFilter* m_ObjToObjLayerFilter { nullptr };
@@ -135,12 +135,12 @@ private:
 
     JPH::BodyActivationListener* m_bodyActivationListener { nullptr };
     JPH::ContactListener* m_collisionListener { nullptr };
-    JPH::BoxShapeSettings* m_floorShapeSettings { nullptr };
+    //JPH::BoxShapeSettings* m_floorShapeSettings { nullptr };
     JPH::ShapeSettings::ShapeResult m_floorShapeResult;
     JPH::ShapeRefC m_floorShape;
 
-    JPH::BodyCreationSettings* m_floorSettings { nullptr };
-    JPH::BodyCreationSettings* m_sphereSettings { nullptr };
+    //JPH::BodyCreationSettings* m_floorSettings { nullptr };
+    //JPH::BodyCreationSettings* m_sphereSettings { nullptr };
 
     std::vector<RigidBody*> m_rigidBodies{};
 };

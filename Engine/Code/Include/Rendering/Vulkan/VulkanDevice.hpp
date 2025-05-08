@@ -12,7 +12,7 @@ class VulkanDevice final : public IDevice
 {
 public:
     ~VulkanDevice() override = default;
-    void Create(IInstance* a_instance, IWindow* a_window, ISurface* a_surface) override;
+    void Create(IInstance* a_instance, ISurface* a_surface) override;
     void Destroy() override;
     VulkanDevice* CastVulkan() override { return this; }
 
@@ -22,7 +22,7 @@ public:
     bool CheckDeviceSuitable(const VkPhysicalDevice& a_device, const VkSurfaceKHR& a_surface);
     bool CheckDeviceExtensionSupport(const VkPhysicalDevice& a_device);
 
-    VkSampleCountFlagBits GetMSAASamples() const { return m_msaaSamples; }
+    [[nodiscard]] VkSampleCountFlagBits GetMSAASamples() const { return m_msaaSamples; }
     SwapChainDetails GetSwapChainDetails(const VkPhysicalDevice& a_device, const VkSurfaceKHR& a_surface);
     QueueFamilyIndices GetQueueFamilies(const VkPhysicalDevice& a_device, const VkSurfaceKHR& a_surface);
 
@@ -37,7 +37,7 @@ public:
 
 private :
     void ProcessLogicalDeviceInfo(const QueueFamilyIndices& a_queueFamilyIndices);
-    void AssignQueueFamilyIndices(const std::set<int>& a_queueFamilyIndices, std::vector<VkDeviceQueueCreateInfo>& a_queueCreateInfos);
+    static void AssignQueueFamilyIndices(const std::set<int>& a_queueFamilyIndices, std::vector<VkDeviceQueueCreateInfo>& a_queueCreateInfos);
 
     VkDevice m_device{ nullptr };
     VkPhysicalDevice m_physicalDevice{ nullptr };

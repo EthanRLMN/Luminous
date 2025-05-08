@@ -4,6 +4,7 @@
 #include <vulkan/vulkan_core.h>
 
 #include "IInstance.hpp"
+#include "VulkanValidationLayer.hpp"
 
 class Window;
 
@@ -25,11 +26,11 @@ private:
 	void Debug();
 	void SetupValidationLayers(VkInstanceCreateInfo& a_createInfo);
 
-	void SetupApplicationInfo(VkApplicationInfo& a_applicationInfo);
-	void SetupDebugCreateInfo(VkDebugUtilsMessengerCreateInfoEXT& a_createInfo);
+	static void SetupApplicationInfo(VkApplicationInfo& a_applicationInfo);
+	static void SetupDebugCreateInfo(VkDebugUtilsMessengerCreateInfoEXT& a_createInfo);
 
-	bool CheckValidationLayerSupport();
-	bool CheckInstanceExtensionSupport(const std::vector<const char*>* a_checkExtensions);
+	static bool CheckValidationLayerSupport();
+	static bool CheckInstanceExtensionSupport(const std::vector<const char*>* a_checkExtensions);
 
 	VkInstance m_instance { nullptr };
 	VkDebugUtilsMessengerEXT m_debugMessenger{ nullptr };

@@ -21,7 +21,7 @@ void VulkanMultiSampling::Destroy(IDevice* a_device)
 
 void VulkanMultiSampling::SetSampleCount(IDevice* a_device, const SamplingCount& a_samplingCount)
 {
-    const VkSampleCountFlagBits l_sampleCount = CastVulkanSample(a_samplingCount);
+    const VkSampleCountFlagBits l_sampleCount = CastSample(a_samplingCount);
     const VkSampleCountFlagBits l_maxCount = GetMaxUsableSampleCount(a_device);
     if (l_sampleCount > l_maxCount)
     {

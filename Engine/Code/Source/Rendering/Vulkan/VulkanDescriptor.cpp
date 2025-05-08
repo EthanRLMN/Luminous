@@ -55,11 +55,13 @@ void VulkanDescriptor::CreateDescriptorPool(IDevice* a_device)
     l_poolSizes[2].type = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
     l_poolSizes[2].descriptorCount = static_cast<uint32_t>(MAX_FRAMES_IN_FLIGHT);
 
-    VkDescriptorPoolCreateInfo l_poolInfo{ VK_STRUCTURE_TYPE_DESCRIPTOR_POOL_CREATE_INFO };
+    VkDescriptorPoolCreateInfo l_poolInfo{ };
+    l_poolInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_POOL_CREATE_INFO;
     l_poolInfo.poolSizeCount = static_cast<uint32_t>(l_poolSizes.size());
     l_poolInfo.pPoolSizes = l_poolSizes.data();
     l_poolInfo.maxSets = static_cast<uint32_t>(MAX_FRAMES_IN_FLIGHT);
     l_poolInfo.flags = VK_DESCRIPTOR_POOL_CREATE_FREE_DESCRIPTOR_SET_BIT;
+    l_poolInfo.pNext = nullptr;
 
     if (vkCreateDescriptorPool(a_device->CastVulkan()->GetDevice(), &l_poolInfo, nullptr, &m_descriptorPool) != VK_SUCCESS)
         DEBUG_LOG_ERROR("Failed to create descriptor pool\n");
@@ -96,13 +98,15 @@ void VulkanDescriptor::CreateImGUIDescriptorPool(IDevice* a_device)
         VkDescriptorPoolSize{ VK_DESCRIPTOR_TYPE_INPUT_ATTACHMENT, 1000 }
     };
 
-    VkDescriptorPoolCreateInfo poolInfo{ VK_STRUCTURE_TYPE_DESCRIPTOR_POOL_CREATE_INFO };
-    poolInfo.flags = VK_DESCRIPTOR_POOL_CREATE_FREE_DESCRIPTOR_SET_BIT;
-    poolInfo.maxSets = 1000;
-    poolInfo.poolSizeCount = static_cast<uint32_t>(l_poolSizes.size());
-    poolInfo.pPoolSizes = l_poolSizes.data();
+    VkDescriptorPoolCreateInfo l_poolInfo{ };
+    l_poolInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_POOL_CREATE_INFO;
+    l_poolInfo.flags = VK_DESCRIPTOR_POOL_CREATE_FREE_DESCRIPTOR_SET_BIT;
+    l_poolInfo.maxSets = 1000;
+    l_poolInfo.poolSizeCount = static_cast<uint32_t>(l_poolSizes.size());
+    l_poolInfo.pPoolSizes = l_poolSizes.data();
+    l_poolInfo.pNext = nullptr;
 
-    if (vkCreateDescriptorPool(a_device->CastVulkan()->GetDevice(), &poolInfo, nullptr, &m_imguiDescriptorPool) != VK_SUCCESS)
+    if (vkCreateDescriptorPool(a_device->CastVulkan()->GetDevice(), &l_poolInfo, nullptr, &m_imguiDescriptorPool) != VK_SUCCESS)
         DEBUG_LOG_ERROR("Failed to create ImGui descriptor pool");
 
     DEBUG_LOG_INFO("ImGui DescriptorPool created!");
@@ -113,10 +117,12 @@ void VulkanDescriptor::CreateDescriptorSets(IDevice* a_device, IDescriptorSetLay
 {
     const std::vector<VkDescriptorSetLayout> l_layouts(MAX_FRAMES_IN_FLIGHT, a_descriptorSetLayout->CastVulkan()->GetDescriptorSetLayout());
 
-    VkDescriptorSetAllocateInfo l_allocateInfo{ VK_STRUCTURE_TYPE_DESCRIPTOR_SET_ALLOCATE_INFO };
+    VkDescriptorSetAllocateInfo l_allocateInfo{ };
+    l_allocateInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_ALLOCATE_INFO;
     l_allocateInfo.descriptorPool = m_descriptorPool;
     l_allocateInfo.descriptorSetCount = static_cast<uint32_t>(MAX_FRAMES_IN_FLIGHT);
     l_allocateInfo.pSetLayouts = l_layouts.data();
+    l_allocateInfo.pNext = nullptr;
 
     m_descriptorSets.resize(MAX_FRAMES_IN_FLIGHT);
     if (vkAllocateDescriptorSets(a_device->CastVulkan()->GetDevice(), &l_allocateInfo, m_descriptorSets.data()) != VK_SUCCESS)
@@ -158,13 +164,15 @@ void VulkanDescriptor::UpdateDescriptorSets(IDevice* a_device, ITexture* a_textu
         l_lightBufferInfo.offset = 0;
         l_lightBufferInfo.range = sizeof(LightComponent) * 32;
 
-        std::array<VkWriteDescriptorSet, 3> l_descriptorWrites{ VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET };
+        std::array<VkWriteDescriptorSet, 3> l_descriptorWrites{ };
+        l_descriptorWrites[0].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
         l_descriptorWrites[0].dstSet = m_descriptorSets[i];
         l_descriptorWrites[0].dstBinding = 0;
         l_descriptorWrites[0].dstArrayElement = 0;
         l_descriptorWrites[0].descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
         l_descriptorWrites[0].descriptorCount = 1;
         l_descriptorWrites[0].pBufferInfo = &l_bufferInfo;
+        l_descriptorWrites[0].pNext = nullptr;
 
         l_descriptorWrites[1].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
         l_descriptorWrites[1].dstSet = m_descriptorSets[i];
@@ -173,8 +181,8 @@ void VulkanDescriptor::UpdateDescriptorSets(IDevice* a_device, ITexture* a_textu
         l_descriptorWrites[1].descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
         l_descriptorWrites[1].descriptorCount = 1;
         l_descriptorWrites[1].pImageInfo = &l_imageInfo;
+        l_descriptorWrites[1].pNext = nullptr;
 
-        
         l_descriptorWrites[2].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
         l_descriptorWrites[2].dstSet = m_descriptorSets[i];
         l_descriptorWrites[2].dstBinding = 2;
@@ -182,6 +190,7 @@ void VulkanDescriptor::UpdateDescriptorSets(IDevice* a_device, ITexture* a_textu
         l_descriptorWrites[2].descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
         l_descriptorWrites[2].descriptorCount = 1;
         l_descriptorWrites[2].pBufferInfo = &l_lightBufferInfo;
+        l_descriptorWrites[2].pNext = nullptr;
 
 
         vkUpdateDescriptorSets(a_device->CastVulkan()->GetDevice(), static_cast<uint32_t>(l_descriptorWrites.size()), l_descriptorWrites.data(), 0, nullptr);

@@ -26,18 +26,18 @@ public:
     inline void SetParent(const std::shared_ptr<Entity>& a_parentEntity) { m_parent = a_parentEntity; }
 
 
-    Maths::Vector3 GetPosition() { return position; };
-    Maths::Quaternion GetRotation() { return rotation; };
-    Maths::Vector3 GetScale() { return scale; };
+    Maths::Vector3 GetPosition() const { return position; };
+    Maths::Quaternion GetRotation() const { return rotation; };
+    Maths::Vector3 GetScale() const { return scale; };
 
-    Maths::Matrix4 GetTRS() { return TRS; };
+    Maths::Matrix4 GetTRS() const { return TRS; };
 
 
-    void SetPosition(Maths::Vector3 a_position) { position = a_position; };
-    void SetRotation(Maths::Quaternion a_rotation) { rotation = a_rotation; };
-    void SetScale(Maths::Vector3 a_scale) { scale = a_scale; };
+    void SetPosition(const Maths::Vector3 a_position) { position = a_position; };
+    void SetRotation(const Maths::Quaternion a_rotation) { rotation = a_rotation; };
+    void SetScale(const Maths::Vector3 a_scale) { scale = a_scale; };
 
-    void SetTRS(Maths::Matrix4 a_TRS) { TRS = a_TRS; };
+    void SetTRS(const Maths::Matrix4& a_TRS) { TRS = a_TRS; };
     
 
     [[nodiscard]] inline std::string GetName() const { return m_name; }
@@ -45,6 +45,7 @@ public:
     [[nodiscard]] inline std::shared_ptr<Entity> GetParent() const { return m_parent; }
     [[nodiscard]] inline bool HasChildren() const { return !m_children.empty(); }
     [[nodiscard]] inline bool HasParent() const { return m_parent != nullptr; }
+    EntityManager& GetEntityManager() const { return m_entityManager; }
 
     template<typename T>
     [[nodiscard]] inline std::shared_ptr<T> GetComponent() const
@@ -58,24 +59,19 @@ public:
         return nullptr;
     }
 
-    std::vector<std::shared_ptr<Entity>> GetEntitiesWithModelComponent()
+    std::vector<std::shared_ptr<Entity>> GetEntitiesWithModelComponent() const
     {
-        std::vector<std::shared_ptr<Entity>> entitiesWithModel;
-
-        
+        std::vector<std::shared_ptr<Entity>> l_entitiesWithModel;
         for (auto& entity : m_entities)
         { 
             auto modelComponent = entity->GetComponent<ModelComponent>();
             if (modelComponent != nullptr)
-            {
-                entitiesWithModel.push_back(entity);
-            }
+                l_entitiesWithModel.push_back(entity);
         }
-
-        return entitiesWithModel;
+        return l_entitiesWithModel;
     }
 
-    inline void Initialize()
+    inline void Initialize() const
     {
         for (const std::shared_ptr<EntityComponent>& l_logic : m_entityComponents)
             l_logic->Initialize();
@@ -85,7 +81,7 @@ public:
     }
 
 
-    inline void GameplayStarted()
+    inline void GameplayStarted() const
     {
         for (const std::shared_ptr<EntityComponent>& l_logic : m_entityComponents)
             l_logic->GameplayStarted();
@@ -95,7 +91,7 @@ public:
     }
 
 
-    inline void Update()
+    inline void Update() const
     {
         for (const std::shared_ptr<EntityComponent>& l_logic : m_entityComponents)
             l_logic->Update();
@@ -109,14 +105,13 @@ private:
     EntityManager& m_entityManager;
     std::string m_name { };
 
-
     // TODO : Use a generic virtual component so that we can replace `void` with the actual component type, making the system faster and safer
     std::vector<std::shared_ptr<void>> m_components { };
     std::vector<std::shared_ptr<EntityComponent>> m_entityComponents { };
     std::vector<std::shared_ptr<Entity>> m_children { };
     std::shared_ptr<Entity> m_parent { nullptr };
 
-    std::vector<std::shared_ptr<Entity>> m_entities;
+    std::vector<std::shared_ptr<Entity>> m_entities{};
 
     Maths::Vector3 position = Maths::Vector3::Zero;
     Maths::Quaternion rotation = Maths::Quaternion::Zero;

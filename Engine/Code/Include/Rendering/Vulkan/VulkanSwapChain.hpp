@@ -15,7 +15,7 @@ class VulkanSwapChain final : public ISwapChain
 {
 public:
 
-	void Create(IWindow* a_window, IDevice* a_device, ISurface* a_surface, const uint32_t& a_mipLevels) override;
+	void Create(IWindow* a_window, IDevice* a_device, ISurface* a_surface) override;
 	void Destroy(IDevice* a_device) override;
 	VulkanSwapChain* CastVulkan() override { return this; }
 

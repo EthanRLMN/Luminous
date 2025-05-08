@@ -6,7 +6,7 @@
 #include "Rendering/Vulkan/VulkanDevice.hpp"
 
 
-void VulkanSwapChain::Create(IWindow* a_window, IDevice* a_device, ISurface* a_surface, const uint32_t& a_mipLevels)
+void VulkanSwapChain::Create(IWindow* a_window, IDevice* a_device, ISurface* a_surface)
 {
     const VkPhysicalDevice l_vkPhysDevice = a_device->CastVulkan()->GetPhysicalDevice();
     const VkDevice l_vkDevice = a_device->CastVulkan()->GetDevice();
@@ -20,7 +20,9 @@ void VulkanSwapChain::Create(IWindow* a_window, IDevice* a_device, ISurface* a_s
     if (l_swapChainDetails.surfaceCapabilities.maxImageCount > 0 && l_swapChainDetails.surfaceCapabilities.maxImageCount < l_imageCount)
         l_imageCount = l_swapChainDetails.surfaceCapabilities.maxImageCount;
 
-    VkSwapchainCreateInfoKHR l_swapChainCreateInfo = { VK_STRUCTURE_TYPE_SWAPCHAIN_CREATE_INFO_KHR };
+    VkSwapchainCreateInfoKHR l_swapChainCreateInfo { };
+    l_swapChainCreateInfo.sType = VK_STRUCTURE_TYPE_SWAPCHAIN_CREATE_INFO_KHR;
+    l_swapChainCreateInfo.pNext = nullptr;
     FillSwapChainCreationInfo(l_swapChainCreateInfo, a_surface->CastVulkan()->GetSurface(), l_imageCount, l_surfaceFormat, l_extent);
 
     const QueueFamilyIndices l_indices = GetQueueFamilies(l_vkPhysDevice, l_vkSurface);
@@ -52,9 +54,11 @@ void VulkanSwapChain::CreateImage(const VkDevice& a_device, const VkPhysicalDevi
     VkMemoryRequirements l_memoryRequirement{};
     vkGetImageMemoryRequirements(a_device, a_image, &l_memoryRequirement);
 
-    VkMemoryAllocateInfo l_allocateInfo{ VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO };
+    VkMemoryAllocateInfo l_allocateInfo{ };
+    l_allocateInfo.sType = VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO;
     l_allocateInfo.allocationSize = l_memoryRequirement.size;
     l_allocateInfo.memoryTypeIndex = FindMemoryType(a_physicalDevice, l_memoryRequirement.memoryTypeBits, a_properties);
+    l_allocateInfo.pNext = nullptr;
 
     if (vkAllocateMemory(a_device, &l_allocateInfo, nullptr, &a_imageMemory) != VK_SUCCESS)
         DEBUG_LOG_ERROR("Vulkan DepthResource : Failed to allocated image memory!\n");
@@ -213,7 +217,8 @@ void VulkanSwapChain::SendSwapChainData(const VkDevice& a_vkDevice, uint32_t& a_
 
 void VulkanSwapChain::FillImageInfo(const VkDevice& a_device, const uint32_t& a_width, const uint32_t& a_height, const VkFormat& a_format, const VkImageTiling& a_tiling, const VkImageUsageFlags& a_usage, VkImage& a_image, const VkSampleCountFlagBits a_numSamples, const uint32_t a_mipLevels)
 {
-    VkImageCreateInfo l_imageInfo{ VK_STRUCTURE_TYPE_IMAGE_CREATE_INFO };
+    VkImageCreateInfo l_imageInfo{ };
+    l_imageInfo.sType = VK_STRUCTURE_TYPE_IMAGE_CREATE_INFO;
     l_imageInfo.imageType = VK_IMAGE_TYPE_2D;
     l_imageInfo.extent.width = a_width;
     l_imageInfo.extent.height = a_height;
@@ -226,6 +231,7 @@ void VulkanSwapChain::FillImageInfo(const VkDevice& a_device, const uint32_t& a_
     l_imageInfo.usage = a_usage;
     l_imageInfo.samples = a_numSamples;
     l_imageInfo.sharingMode = VK_SHARING_MODE_EXCLUSIVE;
+    l_imageInfo.pNext = nullptr;
 
     if (vkCreateImage(a_device, &l_imageInfo, nullptr, &a_image) != VK_SUCCESS)
         DEBUG_LOG_ERROR("Vulkan DepthResource : Failed to create Image!\n");
@@ -234,7 +240,8 @@ void VulkanSwapChain::FillImageInfo(const VkDevice& a_device, const uint32_t& a_
 
 VkImageView VulkanSwapChain::CreateImageView(const VkImage& a_image, const VkDevice& a_device, const VkFormat& a_format, const VkImageAspectFlags& a_aspectFlags, const uint32_t a_mipLevels)
 {
-    VkImageViewCreateInfo l_viewCreateInfo = { VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO };
+    VkImageViewCreateInfo l_viewCreateInfo { };
+    l_viewCreateInfo.sType = VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO;
     l_viewCreateInfo.image = a_image;
     l_viewCreateInfo.viewType = VK_IMAGE_VIEW_TYPE_2D;
     l_viewCreateInfo.format = a_format;
@@ -242,12 +249,12 @@ VkImageView VulkanSwapChain::CreateImageView(const VkImage& a_image, const VkDev
     l_viewCreateInfo.components.g = VK_COMPONENT_SWIZZLE_IDENTITY;
     l_viewCreateInfo.components.b = VK_COMPONENT_SWIZZLE_IDENTITY;
     l_viewCreateInfo.components.a = VK_COMPONENT_SWIZZLE_IDENTITY;
-
     l_viewCreateInfo.subresourceRange.aspectMask = a_aspectFlags;
     l_viewCreateInfo.subresourceRange.baseMipLevel = 0;
     l_viewCreateInfo.subresourceRange.levelCount = a_mipLevels;
     l_viewCreateInfo.subresourceRange.baseArrayLayer = 0;
     l_viewCreateInfo.subresourceRange.layerCount = 1;
+    l_viewCreateInfo.pNext = nullptr;
 
     VkImageView l_imageView{};
     const VkResult l_result = vkCreateImageView(a_device, &l_viewCreateInfo, nullptr, &l_imageView);

@@ -12,7 +12,7 @@ class IDevice
 public:
     virtual ~IDevice() = default;
 
-    virtual void Create(IInstance* a_instance, IWindow* a_window, ISurface* a_surface) = 0;
+    virtual void Create(IInstance* a_instance, ISurface* a_surface) = 0;
     virtual void Destroy() = 0;
 
     virtual VulkanDevice* CastVulkan()

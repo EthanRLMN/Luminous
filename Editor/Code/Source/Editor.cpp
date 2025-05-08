@@ -106,7 +106,7 @@ void Editor::Render() const
     ImGui::NewFrame();
 
     // Update the main docking space every frame
-    ImGuiID id = ImGui::DockSpaceOverViewport(0, ImGui::GetMainViewport(), ImGuiDockNodeFlags_PassthruCentralNode);
+    ImGui::DockSpaceOverViewport(0, ImGui::GetMainViewport(), ImGuiDockNodeFlags_PassthruCentralNode);
 
     RenderWindowPanels();
 

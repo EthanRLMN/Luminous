@@ -7,7 +7,7 @@
 
 bool VulkanShaderModule::Create(IDevice* a_device, const std::string& a_path)
 {
-    const std::vector<char> l_code = ReadFile(a_path);
+    std::vector<char> l_code = FileReaderUtils::ReadFile(a_path);
 
     VkShaderModuleCreateInfo l_createInfo{};
     l_createInfo.sType = VK_STRUCTURE_TYPE_SHADER_MODULE_CREATE_INFO;

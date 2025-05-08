@@ -18,13 +18,15 @@ void VulkanFrameBuffer::Create(IDevice* a_device, ISwapChain* a_swapChain, IRend
         else
             l_attachments = { l_vulkanSwapChain->GetSwapChainImageViews()[i] };
 
-        VkFramebufferCreateInfo l_framebufferCreateInfo = { VK_STRUCTURE_TYPE_FRAMEBUFFER_CREATE_INFO };
+        VkFramebufferCreateInfo l_framebufferCreateInfo = { };
+        l_framebufferCreateInfo.sType = VK_STRUCTURE_TYPE_FRAMEBUFFER_CREATE_INFO;
         l_framebufferCreateInfo.renderPass = a_renderPass->CastVulkan()->GetRenderPass();
         l_framebufferCreateInfo.attachmentCount = static_cast<uint32_t>(l_attachments.size());
         l_framebufferCreateInfo.pAttachments = l_attachments.data();
         l_framebufferCreateInfo.width = l_vulkanSwapChain->GetSwapChainExtent().width;
         l_framebufferCreateInfo.height = l_vulkanSwapChain->GetSwapChainExtent().height;
         l_framebufferCreateInfo.layers = 1;
+        l_framebufferCreateInfo.pNext = nullptr;
 
         const VkResult l_result = vkCreateFramebuffer(a_device->CastVulkan()->GetDevice(), &l_framebufferCreateInfo, nullptr, &m_frameBuffers[i]);;
         if (l_result != VK_SUCCESS)

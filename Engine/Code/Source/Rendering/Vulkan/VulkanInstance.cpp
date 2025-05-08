@@ -63,8 +63,8 @@ void VulkanInstance::SetupValidationLayers(VkInstanceCreateInfo& a_createInfo)
 
 	if (ValidationLayer::ValidationLayersEnabled)
 	{
-		a_createInfo.enabledLayerCount = static_cast<uint32_t>(ValidationLayer::m_validationLayers.size());
-		a_createInfo.ppEnabledLayerNames = ValidationLayer::m_validationLayers.data();
+		a_createInfo.enabledLayerCount = static_cast<uint32_t>(ValidationLayer::ValidationLayers.size());
+		a_createInfo.ppEnabledLayerNames = ValidationLayer::ValidationLayers.data();
 
 		VkDebugUtilsMessengerCreateInfoEXT l_debugCreateInfo { };
 		SetupDebugCreateInfo(l_debugCreateInfo);
@@ -114,7 +114,7 @@ void VulkanInstance::Destroy()
 	{
 		if (m_debugMessenger)
 		{
-			const PFN_vkDestroyDebugUtilsMessengerEXT l_destroyMessenger = reinterpret_cast<PFN_vkDestroyDebugUtilsMessengerEXT>(vkGetInstanceProcAddr(m_instance, "vkDestroyDebugUtilsMessengerEXT"));
+			const PFN_vkDestroyDebugUtilsMessengerEXT& l_destroyMessenger = reinterpret_cast<PFN_vkDestroyDebugUtilsMessengerEXT>(vkGetInstanceProcAddr(m_instance, "vkDestroyDebugUtilsMessengerEXT"));
 			if (l_destroyMessenger)
 				l_destroyMessenger(m_instance, m_debugMessenger, nullptr);
 		}
@@ -132,12 +132,12 @@ bool VulkanInstance::CheckValidationLayerSupport()
 	uint32_t l_validationLayerCount { 0 };
 	vkEnumerateInstanceLayerProperties(&l_validationLayerCount, nullptr);
 
-	if (l_validationLayerCount == 0 && !ValidationLayer::m_validationLayers.empty()) return false;
+	if (l_validationLayerCount == 0 && !ValidationLayer::ValidationLayers.empty()) return false;
 
 	std::vector<VkLayerProperties> l_availableLayers(l_validationLayerCount);
 	vkEnumerateInstanceLayerProperties(&l_validationLayerCount, l_availableLayers.data());
 
-	for (const auto& l_layer : ValidationLayer::m_validationLayers)
+	for (const auto& l_layer : ValidationLayer::ValidationLayers)
 	{
 		bool l_hasLayer = false;
 		for (const auto& l_availableLayer : l_availableLayers)

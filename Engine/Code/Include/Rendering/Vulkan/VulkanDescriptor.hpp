@@ -39,6 +39,6 @@ private:
     std::vector<void*> m_lightUniformBuffersMapped{ nullptr };
 
 
-	VkDescriptorPool m_lightDescriptorPool{ nullptr };
+	//VkDescriptorPool m_lightDescriptorPool{ nullptr };
     VkDescriptorSet m_lightDescriptorSets{ nullptr };
 };

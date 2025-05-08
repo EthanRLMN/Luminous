@@ -79,11 +79,13 @@ void VulkanRenderPass::CreateEditorPass(ISwapChain* a_swapChain, IDevice* a_devi
     l_subpass.pColorAttachments = &l_colorAttachmentReference;
 
     const std::vector<VkAttachmentDescription> l_attachments { l_colorAttachment };
-    VkRenderPassCreateInfo l_renderPassCreateInfo{ VK_STRUCTURE_TYPE_RENDER_PASS_CREATE_INFO };
+    VkRenderPassCreateInfo l_renderPassCreateInfo{ };
+    l_renderPassCreateInfo.sType = VK_STRUCTURE_TYPE_RENDER_PASS_CREATE_INFO;
     l_renderPassCreateInfo.attachmentCount = 1;
     l_renderPassCreateInfo.pAttachments = &l_colorAttachment;
     l_renderPassCreateInfo.subpassCount = 1;
     l_renderPassCreateInfo.pSubpasses = &l_subpass;
+    l_renderPassCreateInfo.pNext = nullptr;
 
     const VkResult l_result = vkCreateRenderPass(a_device->CastVulkan()->GetDevice(), &l_renderPassCreateInfo, nullptr, &m_renderPass);
     if (l_result != VK_SUCCESS)

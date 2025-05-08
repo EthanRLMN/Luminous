@@ -38,10 +38,8 @@ void Engine::Update()
     Time::Update();
 
     m_window->Update();
-    m_inputManager->Update(m_window);
-
    
-    m_renderer->DrawFrame(m_window, m_device, m_swapChain, m_pipeline, m_buffer, m_renderPassManager, m_descriptor, l_meshes, m_synchronization, m_commandBuffer, m_frameBufferManager, m_depthResource, m_surface, m_multiSampling,m_inputManager,m_entityManager,m_texture);
+    m_renderer->DrawFrame(m_window, m_device, m_swapChain, m_pipeline, m_buffer, m_renderPassManager, m_descriptor, l_meshes, m_synchronization, m_commandBuffer, m_frameBufferManager, m_depthResource, m_surface, m_multiSampling, m_inputManager, m_entityManager);
 
     m_physicsSystem->Update();
 
@@ -132,16 +130,16 @@ void Engine::Input()
 void Engine::PreRender()
 {
     m_instance = m_interface->InstantiateContext();
-    m_instance->Create(m_window);
+    m_instance->Create();
 
     m_surface = m_interface->InstantiateSurface();
     m_surface->Create(m_instance, m_window);
 
     m_device = m_interface->InstantiateDevice();
-    m_device->Create(m_instance, m_window, m_surface);
+    m_device->Create(m_instance, m_surface);
 
     m_swapChain = m_interface->InstantiateSwapChain();
-    m_swapChain->Create(m_window, m_device, m_surface, 0);
+    m_swapChain->Create(m_window, m_device, m_surface);
 
     m_multiSampling = m_interface->InstantiateMultiSampling();
     m_multiSampling->SetSampleCount(m_device, SamplingCount::MSAA_SAMPLECOUNT_4);
@@ -186,7 +184,7 @@ void Engine::PreRender()
     l_meshes.push_back(m_mesh2);
 
     m_buffer = m_interface->InstantiateBuffer();
-    m_buffer->Create(m_device, m_texture, m_commandPool, m_swapChain, l_meshes);
+    m_buffer->Create(m_device, m_commandPool, l_meshes);
 
     m_descriptor = m_interface->InstantiateDescriptor();
     m_descriptor->Create(m_device, m_descriptorSetLayout, m_texture, m_buffer);
@@ -199,7 +197,7 @@ void Engine::PreRender()
 
     // TODO : Fix CastVulkan Call
     m_renderer = m_interface->InstantiateRenderer();
-    m_renderer->Create(m_window, m_swapChain);
+    m_renderer->Create(m_swapChain);
     m_renderer->CastVulkan()->SetViewportSize(static_cast<float>(m_swapChain->CastVulkan()->GetSwapChainExtent().width), static_cast<float>(m_swapChain->CastVulkan()->GetSwapChainExtent().height));
     m_renderer->CastVulkan()->CreateViewportImage(m_device, m_swapChain);
 

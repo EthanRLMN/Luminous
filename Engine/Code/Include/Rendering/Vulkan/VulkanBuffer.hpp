@@ -10,12 +10,12 @@ class VulkanBuffer final : public IBuffer
 public:
     VulkanBuffer() = default;
 
-    void Create(IDevice* a_device, ITexture* a_texture, ICommandPool* a_commandPool, ISwapChain* a_swapChain, std::vector<IMesh*> a_meshes) override;
+    void Create(IDevice* a_device, ICommandPool* a_commandPool, const std::vector<IMesh*>& a_meshes) override;
     void Destroy(IDevice* a_device) override;
 
-    void CreateVertexBuffers(IDevice* a_device, ITexture* a_texture, ICommandPool* a_commandPool, ISwapChain* a_swapChain, std::vector<IMesh*> a_meshes);
-    void CreateIndexBuffers(IDevice* a_device, ITexture* a_texture, ICommandPool* a_commandPool, ISwapChain* a_swapChain, std::vector<IMesh*> a_meshes);
-    void CreateUniformBuffers(IDevice* a_device, ITexture* a_texture, ISwapChain* a_swapChain);
+    void CreateVertexBuffers(IDevice* a_device, ICommandPool* a_commandPool, const std::vector<IMesh*>& a_meshes);
+    void CreateIndexBuffers(IDevice* a_device, ICommandPool* a_commandPool, const std::vector<IMesh*>& a_meshes);
+    void CreateUniformBuffers(IDevice* a_device);
 
     VulkanBuffer* CastVulkan() override { return this; }
 
@@ -41,14 +41,12 @@ public:
 
 
 private:
-    void CopyBuffer(VkDevice a_device, VkQueue a_graphicsQueue, VkCommandPool a_commandPool, VkBuffer a_srcBuffer, VkBuffer a_dstBuffer, VkDeviceSize a_size, ITexture* a_texture);
+    static void CopyBuffer(const VkDevice& a_device, const VkQueue& a_graphicsQueue, const VkCommandPool& a_commandPool, const VkBuffer& a_srcBuffer, const VkBuffer& a_dstBuffer, VkDeviceSize a_size);
 
     VkBuffer m_vertexBuffer { nullptr };
     VkDeviceMemory m_vertexBufferMemory { nullptr };
     VkBuffer m_indexBuffer { nullptr };
     VkDeviceMemory m_indexBufferMemory { nullptr };
-
-
 
     std::vector<VkBuffer> m_vertexBuffers{ nullptr };
     std::vector<VkDeviceMemory> m_vertexBuffersMemory{ nullptr };

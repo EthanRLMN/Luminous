@@ -3,15 +3,15 @@
 #include "Core/GLFW/GLFWInputManager.hpp"
 #include "Core/GLFW/GLFWWindow.hpp"
 
-std::array<int, 349> GLFWInputManager::s_keyPressed { };
-std::array<Action, 349> GLFWInputManager::s_keyStatus { };
+std::array<int, 349> GLFWInputManager::s_keyPressed{};
+std::array<Action, 349> GLFWInputManager::s_keyStatus{};
 
-std::array<int, 12> GLFWInputManager::s_mouseButtonPressed { };
-std::array<Action, 12> GLFWInputManager::s_mouseButtonStatus { };
+std::array<int, 12> GLFWInputManager::s_mouseButtonPressed{};
+std::array<Action, 12> GLFWInputManager::s_mouseButtonStatus{};
 
-Maths::Vector2 GLFWInputManager::s_mouseScroll { };
-Maths::Vector2 GLFWInputManager::s_currentMousePos { };
-Maths::Vector2 GLFWInputManager::s_previousMousePos { };
+Maths::Vector2 GLFWInputManager::s_mouseScroll{};
+Maths::Vector2 GLFWInputManager::s_currentMousePos{};
+Maths::Vector2 GLFWInputManager::s_previousMousePos{};
 
 
 int GLFWInputManager::IsKeyDown(const Key& a_key)
@@ -44,15 +44,14 @@ int GLFWInputManager::IsKeyPressed(const Key& a_key)
 }
 
 
-void GLFWInputManager::ConfigureMouseInput(const CursorInputMode& a_cursorInputMode)
-{
-    glfwSetInputMode(m_window, GLFW_CURSOR, CastGlfwInput(a_cursorInputMode));
-}
+void GLFWInputManager::ConfigureMouseInput(const CursorInputMode& a_cursorInputMode) { glfwSetInputMode(m_window, GLFW_CURSOR, CastGlfwInput(a_cursorInputMode)); }
 
 
 void GLFWInputManager::KeyCallback(GLFWwindow* a_window, const int a_key, int a_scancode, int a_action, int a_mods)
 {
-    static_cast<void>(a_window); static_cast<void>(a_scancode); static_cast<void>(a_mods);
+    static_cast<void>(a_window);
+    static_cast<void>(a_scancode);
+    static_cast<void>(a_mods);
 
     const auto l_keyAction = static_cast<Action>(a_action);
     if (l_keyAction == Action::RELEASE)
@@ -94,7 +93,8 @@ int GLFWInputManager::IsMouseButtonPressed(const MouseButton& a_button)
 
 void GLFWInputManager::MouseButtonCallback(GLFWwindow* a_window, const int a_button, int a_action, int a_mods)
 {
-    static_cast<void>(a_window); static_cast<void>(a_mods);
+    static_cast<void>(a_window);
+    static_cast<void>(a_mods);
 
     const auto l_buttonAction = static_cast<Action>(a_action);
     if (l_buttonAction == Action::RELEASE)
@@ -116,6 +116,12 @@ void GLFWInputManager::MouseCursorCallback(GLFWwindow* a_window, const double a_
     SetCursorPositionCallback(a_xPos, a_yPos);
 }
 
+
+int GLFWInputManager::CastGlfwInput(const CursorInputMode& a_cursorInputMode)
+{
+    const int l_cursorInputIndex = static_cast<int>(a_cursorInputMode);
+    return glfwCursorInputType[l_cursorInputIndex];
+}
 
 void GLFWInputManager::Initialize(IWindow* a_window)
 {

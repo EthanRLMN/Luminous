@@ -15,15 +15,11 @@ static constexpr std::array<int, 4> glfwCursorInputType = {
     GLFW_CURSOR_CAPTURED
 };
 
-static int CastGlfwInput(const CursorInputMode& a_cursorInputMode)
-{
-    const int l_cursorInputIndex = static_cast<int>(a_cursorInputMode);
-    return glfwCursorInputType[l_cursorInputIndex];
-}
-
 class GLFWInputManager final : public IInputManager
 {
 public:
+    static int CastGlfwInput(const CursorInputMode& a_cursorInputMode);
+
     void Initialize(IWindow* a_window) override;
     void Destroy(IWindow* a_window) override;
 
