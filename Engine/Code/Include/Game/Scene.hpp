@@ -12,4 +12,3 @@ public:
 
     void SceneEntity(EntityManager& a_entityManager);
 };
-

@@ -13,7 +13,7 @@ public:
     {
 
         m_player = a_entityManager.CreateEntity();
-        m_player->SetName("Player");
+        m_player->SetName("Cube");
         m_player->AddComponent(m_modelComponent);
         
     }
