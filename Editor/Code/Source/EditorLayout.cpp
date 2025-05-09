@@ -12,7 +12,10 @@ void EditorLayout::LoadEditorLayout()
     {
         const std::string iniContents = LoadIniFileToString("Editor/Assets/EditorConfig.ini");
         ImGui::LoadIniSettingsFromMemory(iniContents.c_str(), iniContents.size());
-    } catch (const std::exception& e) { DEBUG_LOG_ERROR("Cannot load ini file"); }
+    } catch (const std::exception& e) 
+    { 
+        DEBUG_LOG_ERROR("Cannot load ini file {}", e.what()); 
+    }
 }
 
 std::string EditorLayout::LoadIniFileToString(const std::string& a_filePath)
