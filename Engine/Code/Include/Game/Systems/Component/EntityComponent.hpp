@@ -9,5 +9,5 @@ public:
     virtual void GameplayStarted() = 0;
     virtual void Update() = 0;
 
-    Engine* m_engine;
+    Engine* m_engine { nullptr };
 };

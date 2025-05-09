@@ -6,8 +6,8 @@
 
 void ModelComponent::Initialize()
 {
-    SetMesh("Engine/Assets/Default/Models/viking_room.obj");
-    SetTexture("Engine/Assets/Default/Textures/viking_room.png");
+    SetMesh("Engine/Assets/Default/Models/Cube.obj"); // Default mesh
+    SetTexture("Engine/Assets/Default/Textures/Dummy.png"); // Default Texture
 }
 
 void ModelComponent::SetMesh(const std::string& a_path)
