@@ -31,6 +31,12 @@ void VulkanBuffer::Destroy(IDevice* a_device)
        vkFreeMemory(a_device->CastVulkan()->GetDevice(), l_vkBufferMemory, nullptr);   
    
    
+    for (const VkBuffer& l_uniformBuffer : m_lightUniformBuffer)
+       vkDestroyBuffer(a_device->CastVulkan()->GetDevice(), l_uniformBuffer, nullptr); 
+
+    for (const VkDeviceMemory& l_vkBufferMemory : m_lightUniformBuffersMemory)
+        vkFreeMemory(a_device->CastVulkan()->GetDevice(), l_vkBufferMemory, nullptr);   
+
    m_uniformBuffersMapped.clear();
    DEBUG_LOG_INFO("Vulkan Buffer : Buffer Destroy!\n");  
 }

@@ -320,31 +320,31 @@ void VulkanRenderer::CopyImageToViewport(ISwapChain* a_swapChain, const VkComman
 }
 
 
-void VulkanRenderer::DestroyViewportImage(IDevice* a_device) const
+void VulkanRenderer::DestroyViewportImage(IDevice* a_device)
 {
     const VkDevice& l_device = a_device->CastVulkan()->GetDevice();
-    if (m_viewportSampler != nullptr)
-    {
-        vkDestroySampler(l_device, m_viewportSampler, nullptr);
-        DEBUG_LOG_INFO("Viewport sampler has been destroyed.");
-    }
-
-    if (m_viewportImageview != nullptr)
+    if (m_viewportImageview != VK_NULL_HANDLE)
     {
         vkDestroyImageView(l_device, m_viewportImageview, nullptr);
-        DEBUG_LOG_INFO("Viewport image view has been destroyed.");
-    }
-    
-    if (m_viewportMemory != nullptr)
-    {
-        vkFreeMemory(l_device, m_viewportMemory, nullptr);
-        DEBUG_LOG_INFO("Viewport image memory has been destroyed.");
+        m_viewportImageview = VK_NULL_HANDLE;
     }
 
-    if (m_viewportImage != nullptr)
+    if (m_viewportImage != VK_NULL_HANDLE)
     {
         vkDestroyImage(l_device, m_viewportImage, nullptr);
-        DEBUG_LOG_INFO("Viewport image has been destroyed.");
+        m_viewportImage = VK_NULL_HANDLE;
+    }
+
+    if (m_viewportSampler != VK_NULL_HANDLE)
+    {
+        vkDestroySampler(l_device, m_viewportSampler, nullptr);
+        m_viewportSampler = VK_NULL_HANDLE;
+    }
+
+    if (m_viewportMemory != VK_NULL_HANDLE)
+    {
+        vkFreeMemory(l_device, m_viewportMemory, nullptr);
+        m_viewportMemory = VK_NULL_HANDLE;
     }
 
     if (m_defaultTexSampler != nullptr)
