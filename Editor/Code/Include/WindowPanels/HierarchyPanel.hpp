@@ -31,6 +31,8 @@ private:
     bool m_isCreatingEntity = false;
     char m_newEntityName[256] = "New Entity";
 
+    std::shared_ptr<Entity> m_selectedEntity = nullptr;
+
     void BuildHierarchy();
     void DrawEntityNode(const EntityNode& node);
     bool IsDescendant(const std::shared_ptr<Entity>& child, const std::shared_ptr<Entity>& parent) const;

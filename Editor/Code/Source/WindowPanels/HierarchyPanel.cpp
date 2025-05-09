@@ -55,17 +55,25 @@ void HierarchyPanel::Render()
 
 void HierarchyPanel::DrawEntityNode(const EntityNode& node)
 {
-    ImGuiTreeNodeFlags flags = ImGuiTreeNodeFlags_OpenOnArrow;
+    ImGuiTreeNodeFlags flags = ImGuiTreeNodeFlags_OpenOnArrow | ImGuiTreeNodeFlags_SpanAvailWidth;
+
     if (node.children.empty())
         flags |= ImGuiTreeNodeFlags_Leaf;
 
+    if (m_selectedEntity == node.entity)
+        flags |= ImGuiTreeNodeFlags_Selected;
+
     bool open = ImGui::TreeNodeEx((void*) node.entity.get(), flags, node.entity->GetName().c_str());
+
+    if (ImGui::IsItemClicked() && !ImGui::IsItemToggledOpen())
+    {
+        m_selectedEntity = node.entity;
+    }
 
     if (ImGui::BeginDragDropSource())
     {
         std::shared_ptr<Entity> dragEntity = node.entity;
         ImGui::SetDragDropPayload("ENTITY_DRAG", &dragEntity, sizeof(std::shared_ptr<Entity>));
-
         ImGui::Text("Move %s", node.entity->GetName().c_str());
         ImGui::EndDragDropSource();
     }
@@ -79,7 +87,6 @@ void HierarchyPanel::DrawEntityNode(const EntityNode& node)
             if (droppedEntity != node.entity && !IsDescendant(node.entity, droppedEntity))
             {
                 droppedEntity->SetParent(node.entity);
-
                 BuildHierarchy();
             }
         }
@@ -95,6 +102,7 @@ void HierarchyPanel::DrawEntityNode(const EntityNode& node)
         ImGui::TreePop();
     }
 }
+
 
 void HierarchyPanel::BuildHierarchy()
 {
