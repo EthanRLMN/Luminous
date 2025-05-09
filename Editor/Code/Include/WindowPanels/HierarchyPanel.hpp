@@ -22,16 +22,17 @@ private:
         std::shared_ptr<Entity> entity;
         std::vector<EntityNode> children;
 
-        EntityNode() :
-            entity(nullptr), children() {}
-
-        EntityNode(std::shared_ptr<Entity> entity) :
-            entity(entity), children() {}
+        EntityNode() = default;
+        EntityNode(std::shared_ptr<Entity> entity) : entity(std::move(entity)) {}
     };
 
     std::vector<EntityNode> m_rootEntities;
 
+    bool m_isCreatingEntity = false;
+    char m_newEntityName[256] = "New Entity";
+
     void BuildHierarchy();
     void DrawEntityNode(const EntityNode& node);
+    bool IsDescendant(const std::shared_ptr<Entity>& child, const std::shared_ptr<Entity>& parent) const;
     std::string GenerateUniqueEntityName(const std::string& baseName);
 };

@@ -19,12 +19,28 @@ void HierarchyPanel::Render()
     {
         if (ImGui::MenuItem("Add New Entity"))
         {
-            auto newEntity = p_editor->GetEngine()->GetEntityManager()->CreateEntity();
-
-            std::string newEntityName = GenerateUniqueEntityName("New Entity");
-            newEntity->SetName(newEntityName);
+            m_isCreatingEntity = true;
+            strcpy_s(m_newEntityName, "New Entity");
         }
         ImGui::EndPopup();
+    }
+
+    if (m_isCreatingEntity)
+    {
+        ImGui::InputText("Entity Name", m_newEntityName, sizeof(m_newEntityName));
+
+        if (ImGui::Button("Create"))
+        {
+            auto newEntity = p_editor->GetEngine()->GetEntityManager()->CreateEntity();
+            newEntity->SetName(GenerateUniqueEntityName(m_newEntityName));
+            m_isCreatingEntity = false;
+        }
+
+        ImGui::SameLine();
+        if (ImGui::Button("Cancel"))
+        {
+            m_isCreatingEntity = false;
+        }
     }
 
     BuildHierarchy();
@@ -35,6 +51,49 @@ void HierarchyPanel::Render()
     }
 
     ImGui::End();
+}
+
+void HierarchyPanel::DrawEntityNode(const EntityNode& node)
+{
+    ImGuiTreeNodeFlags flags = ImGuiTreeNodeFlags_OpenOnArrow;
+    if (node.children.empty())
+        flags |= ImGuiTreeNodeFlags_Leaf;
+
+    bool open = ImGui::TreeNodeEx((void*) node.entity.get(), flags, node.entity->GetName().c_str());
+
+    if (ImGui::BeginDragDropSource())
+    {
+        std::shared_ptr<Entity> dragEntity = node.entity;
+        ImGui::SetDragDropPayload("ENTITY_DRAG", &dragEntity, sizeof(std::shared_ptr<Entity>));
+
+        ImGui::Text("Move %s", node.entity->GetName().c_str());
+        ImGui::EndDragDropSource();
+    }
+
+    if (ImGui::BeginDragDropTarget())
+    {
+        if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("ENTITY_DRAG"))
+        {
+            std::shared_ptr<Entity> droppedEntity = *(std::shared_ptr<Entity>*) payload->Data;
+
+            if (droppedEntity != node.entity && !IsDescendant(node.entity, droppedEntity))
+            {
+                droppedEntity->SetParent(node.entity);
+
+                BuildHierarchy();
+            }
+        }
+        ImGui::EndDragDropTarget();
+    }
+
+    if (open)
+    {
+        for (const auto& child : node.children)
+        {
+            DrawEntityNode(child);
+        }
+        ImGui::TreePop();
+    }
 }
 
 void HierarchyPanel::BuildHierarchy()
@@ -48,10 +107,11 @@ void HierarchyPanel::BuildHierarchy()
         entityNodeMap[entity.get()] = EntityNode(entity);
     }
 
+    m_rootEntities.clear();
+
     for (const auto& entity : allEntities)
     {
         const auto& parent = entity->GetParent();
-
         if (parent)
         {
             entityNodeMap[parent.get()].children.push_back(entityNodeMap[entity.get()]);
@@ -62,42 +122,34 @@ void HierarchyPanel::BuildHierarchy()
     }
 }
 
-void HierarchyPanel::DrawEntityNode(const EntityNode& node)
+bool HierarchyPanel::IsDescendant(const std::shared_ptr<Entity>& child, const std::shared_ptr<Entity>& parent) const
 {
-    ImGuiTreeNodeFlags flags = ImGuiTreeNodeFlags_OpenOnArrow;
-
-    if (node.children.empty())
-        flags |= ImGuiTreeNodeFlags_Leaf;
-
-    bool open = ImGui::TreeNodeEx(node.entity->GetName().c_str(), flags);
-
-    if (open)
+    auto current = child->GetParent();
+    while (current)
     {
-        for (const auto& child : node.children)
-        {
-            DrawEntityNode(child);
-        }
-        ImGui::TreePop();
+        if (current == parent)
+            return true;
+        current = current->GetParent();
     }
+    return false;
 }
 
 std::string HierarchyPanel::GenerateUniqueEntityName(const std::string& baseName)
 {
-    std::string uniqueName = baseName;
-    int counter = 1;
+    int suffix = 1;
+    std::string finalName = baseName;
+    auto& entities = p_editor->GetEngine()->GetEntityManager()->GetEntities();
 
-    const auto& allEntities = p_editor->GetEngine()->GetEntityManager()->GetEntities();
-    std::unordered_set<std::string> existingNames;
+    auto nameExists = [&entities](const std::string& name) {
+        return std::any_of(entities.begin(), entities.end(), [&](const std::shared_ptr<Entity>& e) {
+            return e->GetName() == name;
+        });
+    };
 
-    for (const auto& entity : allEntities)
+    while (nameExists(finalName))
     {
-        existingNames.insert(entity->GetName());
+        finalName = baseName + " (" + std::to_string(suffix++) + ")";
     }
 
-    while (existingNames.find(uniqueName) != existingNames.end())
-    {
-        uniqueName = baseName + " (" + std::to_string(counter++) + ")";
-    }
-
-    return uniqueName;
+    return finalName;
 }
