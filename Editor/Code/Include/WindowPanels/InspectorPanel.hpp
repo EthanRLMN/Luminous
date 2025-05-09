@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Interface/IWindowPanel.hpp"
+#include "imguizmo/ImGuizmo.h"
 
 class InspectorPanel : public IWindowPanel
 {
@@ -11,4 +12,8 @@ public:
     void Update() override {};
     void Render() override;
     void Destroy() override {};
+
+private:
+    Entity* selectedEntity{ nullptr };
+    std::array<float, 16> ToFloatArray(const Maths::Matrix4& matrix);
 };
