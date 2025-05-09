@@ -14,6 +14,19 @@ void HierarchyPanel::Render()
     ImGui::Begin(p_windowIdentifier.c_str(), nullptr, ImGuiWindowFlags_NoCollapse);
 
     m_rootEntities.clear();
+
+    if (ImGui::BeginPopupContextWindow())
+    {
+        if (ImGui::MenuItem("Add New Entity"))
+        {
+            auto newEntity = p_editor->GetEngine()->GetEntityManager()->CreateEntity();
+
+            std::string newEntityName = GenerateUniqueEntityName("New Entity");
+            newEntity->SetName(newEntityName);
+        }
+        ImGui::EndPopup();
+    }
+
     BuildHierarchy();
 
     for (const auto& root : m_rootEntities)
@@ -66,4 +79,25 @@ void HierarchyPanel::DrawEntityNode(const EntityNode& node)
         }
         ImGui::TreePop();
     }
+}
+
+std::string HierarchyPanel::GenerateUniqueEntityName(const std::string& baseName)
+{
+    std::string uniqueName = baseName;
+    int counter = 1;
+
+    const auto& allEntities = p_editor->GetEngine()->GetEntityManager()->GetEntities();
+    std::unordered_set<std::string> existingNames;
+
+    for (const auto& entity : allEntities)
+    {
+        existingNames.insert(entity->GetName());
+    }
+
+    while (existingNames.find(uniqueName) != existingNames.end())
+    {
+        uniqueName = baseName + " (" + std::to_string(counter++) + ")";
+    }
+
+    return uniqueName;
 }

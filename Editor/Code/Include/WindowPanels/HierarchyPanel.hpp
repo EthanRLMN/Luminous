@@ -1,7 +1,8 @@
 #pragma once
+#include <unordered_set>
 
-#include <memory> // Pour les shared_ptr
 #include "Game/Scene.hpp"
+#include "Game/Systems/Entity/Entity.hpp"
 #include "Interface/IWindowPanel.hpp"
 
 class HierarchyPanel : public IWindowPanel
@@ -32,4 +33,5 @@ private:
 
     void BuildHierarchy();
     void DrawEntityNode(const EntityNode& node);
+    std::string GenerateUniqueEntityName(const std::string& baseName);
 };
