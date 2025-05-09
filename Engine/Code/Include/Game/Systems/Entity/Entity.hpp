@@ -24,10 +24,10 @@ public:
 
     Engine* GetEngine() const { return m_engine; }
     EntityManager& GetEntityManager() const { return m_entityManager; }
-    Maths::Vector3 GetPosition() const { return m_position; };
-    Maths::Quaternion GetRotation() const { return m_rotation; };
-    Maths::Vector3 GetScale() const { return m_scale; };
-    Maths::Matrix4 GetTRS() const { return TRS; };
+    Maths::Vector3 GetPosition() const { return m_position; }
+    Maths::Quaternion GetRotation() const { return m_rotation; }
+    Maths::Vector3 GetScale() const { return m_scale; }
+    Maths::Matrix4 GetTRS() const { return TRS; }
     std::vector<std::shared_ptr<Entity>> GetEntitiesWithModelComponent() const;
     [[nodiscard]] inline std::string GetName() const { return m_name; }
     [[nodiscard]] inline std::vector<std::shared_ptr<Entity>> GetChildren() const { return m_children; }
@@ -53,10 +53,10 @@ public:
     inline void AddLogic(const std::shared_ptr<EntityComponent>& a_logic) { m_entityComponents.push_back(a_logic); }
     inline void AttachChild(const std::shared_ptr<Entity>& a_child) { m_children.push_back(a_child); a_child->SetParent(shared_from_this()); }
     inline void SetParent(const std::shared_ptr<Entity>& a_parentEntity) { m_parent = a_parentEntity; }
-    inline void SetPosition(const Maths::Vector3 a_position) { m_position = a_position; };
-    inline void SetRotation(const Maths::Quaternion a_rotation) { m_rotation = a_rotation; };
-    inline void SetScale(const Maths::Vector3 a_scale) { m_scale = a_scale; };
-    inline void SetTRS(const Maths::Matrix4& a_TRS) { TRS = a_TRS; };
+    inline void SetPosition(const Maths::Vector3 a_position) { m_position = a_position; }
+    inline void SetRotation(const Maths::Quaternion a_rotation) { m_rotation = a_rotation; }
+    inline void SetScale(const Maths::Vector3 a_scale) { m_scale = a_scale; }
+    inline void SetTRS(const Maths::Matrix4& a_TRS) { TRS = a_TRS; }
 
 
 private:
@@ -70,7 +70,7 @@ private:
     std::vector<std::shared_ptr<Entity>> m_children { };
     std::shared_ptr<Entity> m_parent { nullptr };
 
-    std::vector<std::shared_ptr<Entity>> m_entities{};
+    std::vector<std::shared_ptr<Entity>> m_entities { };
 
     Maths::Vector3 m_position { Maths::Vector3::Zero };
     Maths::Quaternion m_rotation { Maths::Quaternion::Zero };
