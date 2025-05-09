@@ -208,8 +208,7 @@ void VulkanRenderer::UpdateUniformBuffer(const uint32_t& a_currentFrame, IBuffer
 
     memcpy(a_buffer->CastVulkan()->GetUniformBuffersMapped()[a_currentFrame], &l_ubo, sizeof(l_ubo));
 
-    VkDeviceSize size = sizeof(LightData) * 32;
-    memcpy(a_buffer->CastVulkan()->GetLightUniformBuffersMapped()[a_currentFrame], &m_lights, size);
+    memcpy(a_buffer->CastVulkan()->GetLightUniformBuffersMapped()[a_currentFrame], const_cast<void*>(static_cast<const void*>(&m_lights)), sizeof(LightData) * MAX_LIGHTS);
 }
 
 

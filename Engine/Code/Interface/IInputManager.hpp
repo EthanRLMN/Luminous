@@ -25,9 +25,10 @@ public:
 	virtual void Destroy(IWindow* a_window) = 0;
     virtual void Update() = 0;
 
-	[[nodiscard]] virtual int IsKeyDown(const Key& a_key) = 0;
-	[[nodiscard]] virtual int IsKeyReleased(const Key& a_key) = 0;
+	[[nodiscard]] virtual int IsKeyDown(const Key& a_key) const = 0;
+	[[nodiscard]] virtual int IsKeyReleased(const Key& a_key) const = 0;
 	[[nodiscard]] virtual int IsKeyPressed(const Key& a_key) = 0;
+    [[nodiscard]] virtual bool IsShortcutPressed(const Key& a_key, int a_requiredMods, bool a_allowRepeat) = 0;
 
 	[[nodiscard]] virtual int IsMouseButtonDown(const MouseButton& a_button) = 0;
 	[[nodiscard]] virtual int IsMouseButtonReleased(const MouseButton& a_button) = 0;
@@ -42,6 +43,14 @@ public:
 
     virtual void SetCursorPosition(const double& a_xPos, const double& a_yPos) = 0;
     virtual void SetMouseScroll(const double& a_xAxis, const double& a_yAxis) = 0;
+
+    virtual void CreateAction(const std::string& a_actionName) = 0;
+    virtual void AddBinding(const std::string& a_actionName, Key a_key, int a_mods) = 0;
+    virtual void UnbindAction(const std::string& a_actionName, Key a_key, int a_mods) = 0;
+
+    [[nodiscard]] virtual bool IsActionPressed(const std::string& a_actionName) const = 0;
+    [[nodiscard]] virtual bool IsActionDown(const std::string& a_actionName) const = 0;
+    [[nodiscard]] virtual bool IsActionReleased(const std::string& a_actionName) const = 0;
 
     virtual IInputManager* CastGLFW()
 	{

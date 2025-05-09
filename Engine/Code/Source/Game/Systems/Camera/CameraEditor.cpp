@@ -38,7 +38,7 @@ void CameraEditor::MovementHandler(IInputManager* a_input)
 {
     const float l_velocity = m_movementSpeed * Time::GetDeltaTime();
 
-    if (a_input->IsKeyDown(Key::KEY_W))
+    if (a_input->IsKeyPressed(Key::KEY_W))
     {
         m_eye += m_localForward * l_velocity;
         m_center += m_localForward * l_velocity;
