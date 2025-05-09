@@ -3,6 +3,8 @@
 #include "backends/imgui_impl_vulkan.h"
 
 #include "Editor.hpp"
+
+#include "EditorLayout.hpp"
 #include "EditorStyle.hpp"
 
 #include "Interface/IWindowPanel.hpp"
@@ -17,6 +19,7 @@
 #include "Rendering/Vulkan/VulkanRenderPass.hpp"
 #include "Rendering/Vulkan/VulkanRenderPassManager.hpp"
 #include "Rendering/Vulkan/VulkanRenderer.hpp"
+#include "WindowPanels/ConsolePanel.hpp"
 
 #include "WindowPanels/FileExplorerPanel.hpp"
 #include "WindowPanels/HierarchyPanel.hpp"
@@ -34,10 +37,10 @@ void Editor::Destroy()
 {
     if (m_engine)
     {
+        ImGui::SaveIniSettingsToDisk("Editor/Assets/EditorConfig.ini");
+
         for (IWindowPanel* window : m_windows)
-        {
             UnregisterWindow(window);
-        }
 
         m_engine->GetDevice()->CastVulkan()->WaitIdle();
         ImGui_ImplVulkan_Shutdown();
@@ -60,7 +63,6 @@ void Editor::Init()
 
 void Editor::SetupImGui() const
 {
-    //
     ImGui::CreateContext();
 
     ImGuiIO& l_io = ImGui::GetIO(); static_cast<void>(l_io);
@@ -68,6 +70,8 @@ void Editor::SetupImGui() const
     l_io.ConfigViewportsNoTaskBarIcon = false;
     l_io.ConfigViewportsNoAutoMerge = false;
     l_io.ConfigDockingAlwaysTabBar = true;
+    EditorLayout::LoadEditorLayout(); // Load preconfigured editor layout
+
     l_io.Fonts->AddFontFromFileTTF("Editor/Assets/Fonts/Roboto-Bold.ttf", 18.0f, nullptr, l_io.Fonts->GetGlyphRangesDefault());
 
     EditorStyle::SetupImGuiStyle();
@@ -141,6 +145,7 @@ void Editor::CreateWindowPanels()
     RegisterWindow(new FileExplorerPanel(this, "File Explorer"));
     RegisterWindow(new InspectorPanel(this, "Inspector"));
     RegisterWindow(new HierarchyPanel(this, "Hierarchy"));
+    RegisterWindow(new ConsolePanel(this, "Console"));
 }
 
 void Editor::RenderWindowPanels() const
@@ -157,13 +162,13 @@ void Editor::RenderWindowPanels() const
 
 void Editor::DestroyWindowPanels()
 {
-    for (IWindowPanel* panel : m_windows)
-        delete panel;
+    for (const IWindowPanel* l_panel : m_windows)
+        delete l_panel;
     
     m_windows.clear();
 }
 
 void Editor::UnregisterWindow(IWindowPanel* a_windowPanel)
 {
-    m_windows.erase(std::remove(m_windows.begin(), m_windows.end(), a_windowPanel), m_windows.end());
+    std::erase(m_windows, a_windowPanel);
 }

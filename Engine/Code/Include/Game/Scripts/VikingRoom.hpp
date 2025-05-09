@@ -26,6 +26,8 @@ public:
         m_vikingroom->SetTRS(Maths::Matrix4::TRS(Maths::Vector3(5.0f, 0.f, 0.f), Maths::Vector3(0.f, 0.f, 0.f), Maths::Vector3::One));
         m_modelComponent->m_engine = m_engine;
         m_modelComponent->Initialize();
+        m_modelComponent->SetMesh("Engine/Assets/Default/Models/viking_room.obj");
+        m_modelComponent->SetTexture("Engine/Assets/Default/Textures/viking_room.png");
     }
 
     void GameplayStarted() override {}

@@ -6,8 +6,8 @@
 
 void ModelComponent::Initialize()
 {
-    SetMesh("Engine/Assets/Default/Models/Cube.obj"); // Default mesh
-    SetTexture("Engine/Assets/Default/Textures/Dummy.png"); // Default Texture
+    SetMesh("Engine/Assets/Default/Models/CCP2.fbx"); // Default mesh
+    SetTexture("Engine/Assets/Default/Textures/CCP2_albedo.png"); // Default Texture
 }
 
 void ModelComponent::SetMesh(const std::string& a_path)

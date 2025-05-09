@@ -25,7 +25,7 @@ public:
 
     void Initialize() override
     {
-        m_player->SetTRS(Maths::Matrix4::TRS(Maths::Vector3(-1.0f, 0.0f, 0.0f), Maths::Vector3::Zero, Maths::Vector3::One));
+        m_player->SetTRS(Maths::Matrix4::TRS(Maths::Vector3(-3.0f, 0.0f, 0.0f), Maths::Vector3(0.0f, 0.0f, -90.0f), Maths::Vector3::One));
         m_modelComponent->m_engine = m_engine;
         m_modelComponent->Initialize();
     }
