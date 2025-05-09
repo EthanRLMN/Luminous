@@ -23,18 +23,19 @@ public:
 	virtual ~IInputManager() = default;
 	virtual void Initialize(IWindow* a_window) = 0;
 	virtual void Destroy(IWindow* a_window) = 0;
+    virtual void Update() = 0;
 
-	virtual int IsKeyDown(const Key& a_key) = 0;
-	virtual int IsKeyReleased(const Key& a_key) = 0;
-	virtual int IsKeyPressed(const Key& a_key) = 0;
+	[[nodiscard]] virtual int IsKeyDown(const Key& a_key) const = 0;
+	[[nodiscard]] virtual int IsKeyReleased(const Key& a_key) const = 0;
+	[[nodiscard]] virtual int IsKeyPressed(const Key& a_key) const = 0;
 
-	virtual int IsMouseButtonDown(const MouseButton& a_button) = 0;
-	virtual int IsMouseButtonReleased(const MouseButton& a_button) = 0;
-	virtual int IsMouseButtonPressed(const MouseButton& a_button) = 0;
+	[[nodiscard]] virtual int IsMouseButtonDown(const MouseButton& a_button) const = 0;
+	[[nodiscard]] virtual int IsMouseButtonReleased(const MouseButton& a_button) const = 0;
+	[[nodiscard]] virtual int IsMouseButtonPressed(const MouseButton& a_button) const = 0;
 
-	virtual Maths::Vector2 GetMouseScroll() = 0;
-    virtual Maths::Vector2 GetCursorPosition() = 0;
-    virtual Maths::Vector2 GetMouseDelta() = 0;
+	[[nodiscard]] virtual Maths::Vector2 GetMouseScroll() const = 0;
+    [[nodiscard]] virtual Maths::Vector2 GetCursorPosition() const = 0;
+    [[nodiscard]] virtual Maths::Vector2 GetMouseDelta() const = 0;
 
     virtual void ConfigureMouseInput(const CursorInputMode& a_cursorInputMode) = 0;
     virtual void ResetMouseDelta() = 0;

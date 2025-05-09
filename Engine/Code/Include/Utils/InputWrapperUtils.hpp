@@ -1,5 +1,9 @@
 #pragma once
 
+constexpr int LUMINOUS_KEY_LAST = 348;
+constexpr int LUMINOUS_MOUSE_BUTTON_LAST = 7;
+constexpr int LUMINOUS_ACTION_LAST = 3;
+
 enum class Action : unsigned int
 {
     RELEASE = 0,
@@ -144,5 +148,5 @@ enum class Key : unsigned int
     KEY_RIGHT_CONTROL = 345,
     KEY_RIGHT_ALT = 346,
     KEY_RIGHT_SUPER = 347,
-    KEY_MENU = 348,
+    KEY_MENU = 348
 };
