@@ -1,7 +1,9 @@
 #pragma once
 
 #include "IInputManager.hpp"
+
 #include "Camera.hpp"
+
 
 class CameraEditor : public Camera
 {
