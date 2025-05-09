@@ -27,7 +27,12 @@
         "CMAKE_C_COMPILER": "C:/msys64/mingw64/bin/gcc.exe",
         "CMAKE_CXX_COMPILER": "C:/msys64/mingw64/bin/g++.exe",
         "CMAKE_BUILD_TYPE": "Debug",
-        "L_MATHS_UNITTEST": false
+        "L_MATHS_UNITTEST": false,
+        "USE_ASSERTS": "ON",
+        "FLOATING_POINT_EXCEPTIONS_ENABLED": "ON",
+        "DOUBLE_PRECISION": "OFF",
+        "JPH_ENABLE_SSE4_1": "ON",
+        "JPH_ENABLE_AVX": "ON"
       }
     },
     {
@@ -40,7 +45,12 @@
         "CMAKE_C_COMPILER": "C:/msys64/mingw64/bin/gcc.exe",
         "CMAKE_CXX_COMPILER": "C:/msys64/mingw64/bin/g++.exe",
         "CMAKE_BUILD_TYPE": "Release",
-        "L_MATHS_UNITTEST": false
+        "L_MATHS_UNITTEST": false,
+        "USE_ASSERTS": "OFF",
+        "FLOATING_POINT_EXCEPTIONS_ENABLED": "OFF",
+        "DOUBLE_PRECISION": "OFF",
+        "JPH_ENABLE_SSE4_1": "ON",
+        "JPH_ENABLE_AVX": "ON"
       }
     },
     {
@@ -53,7 +63,12 @@
         "CMAKE_C_COMPILER": "C:/msys64/clang64/bin/clang.exe",
         "CMAKE_CXX_COMPILER": "C:/msys64/clang64/bin/clang++.exe",
         "CMAKE_BUILD_TYPE": "Debug",
-        "L_MATHS_UNITTEST": false
+        "L_MATHS_UNITTEST": false,
+        "USE_ASSERTS": "ON",
+        "FLOATING_POINT_EXCEPTIONS_ENABLED": "ON",
+        "DOUBLE_PRECISION": "OFF",
+        "JPH_ENABLE_SSE4_1": "ON",
+        "JPH_ENABLE_AVX": "ON"
       }
     },
     {
@@ -66,7 +81,12 @@
         "CMAKE_C_COMPILER": "C:/msys64/clang64/bin/clang.exe",
         "CMAKE_CXX_COMPILER": "C:/msys64/clang64/bin/clang++.exe",
         "CMAKE_BUILD_TYPE": "Release",
-        "L_MATHS_UNITTEST": false
+        "L_MATHS_UNITTEST": false,
+        "USE_ASSERTS": "OFF",
+        "FLOATING_POINT_EXCEPTIONS_ENABLED": "OFF",
+        "DOUBLE_PRECISION": "OFF",
+        "JPH_ENABLE_SSE4_1": "ON",
+        "JPH_ENABLE_AVX": "ON"
       }
     }
   ],

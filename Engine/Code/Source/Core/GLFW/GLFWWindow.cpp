@@ -1,14 +1,24 @@
 #include "Core/GLFW/GLFWWindow.hpp"
 
-GLFWwindow* GLFWWindow::Initialize(const std::string& a_name, const int& a_width, const int& a_height)
+#include "Vector2.hpp"
+
+GLFWwindow* GLFWWindow::Initialize(const std::string& a_name, const int a_width, const int a_height, const bool a_useScreenSize)
 {
     glfwInit();
     glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
-    glfwWindowHint(GLFW_RESIZABLE, GLFW_TRUE);
+    glfwWindowHint(GLFW_RESIZABLE, GLFW_FALSE);
+    glfwWindowHint(GLFW_SRGB_CAPABLE, GLFW_TRUE);
 
-    if (glfwVulkanSupported()) { DEBUG_LOG_INFO("Vulkan Window : GLFW Vulkan Support enabled!\n"); }
+    if (glfwVulkanSupported())
+        DEBUG_LOG_INFO("Vulkan Window : GLFW Vulkan Support enabled!\n");
 
-    m_window = glfwCreateWindow(a_width, a_height, a_name.c_str(), nullptr, nullptr);
+    RetrieveMonitorInformation();
+
+    if (!a_useScreenSize)
+        m_window = glfwCreateWindow(a_width, a_height, a_name.c_str(), nullptr, nullptr);
+    else
+        m_window = glfwCreateWindow(m_vidMode->width, m_vidMode->height, a_name.c_str(), nullptr, nullptr);
+
     if (m_window)
     {
         DEBUG_LOG_INFO("Vulkan Window : Creation successful!\n");
@@ -19,6 +29,11 @@ GLFWwindow* GLFWWindow::Initialize(const std::string& a_name, const int& a_width
     return nullptr;
 }
 
+void GLFWWindow::Initialize(const std::string& a_name, const bool a_useScreenSize)
+{
+    Initialize(a_name, DefaultWidth, DefaultHeight, a_useScreenSize);
+}
+
 
 void GLFWWindow::Update() const
 {
@@ -27,16 +42,11 @@ void GLFWWindow::Update() const
 }
 
 
-void GLFWWindow::PollEvents() const { glfwPollEvents(); }
-
-bool GLFWWindow::ShouldClose() const { return glfwWindowShouldClose(m_window); }
-
-
 void GLFWWindow::Destroy() const
 {
     glfwDestroyWindow(m_window);
     glfwTerminate();
-    DEBUG_LOG_INFO("GLFW Window : Destroy!\n");
+    DEBUG_LOG_INFO("GLFW Window : Window destroyed!\n");
 }
 
 
@@ -48,16 +58,8 @@ Maths::Vector2 GLFWWindow::GetSize() const
 }
 
 
-void GLFWWindow::SetSize(const Maths::Vector2& a_size) { glfwSetWindowSize(m_window, static_cast<int>(a_size.x), static_cast<int>(a_size.y)); }
-
-
-float GLFWWindow::GetOpacity() const { return glfwGetWindowOpacity(m_window); }
-
-
-void GLFWWindow::SetOpacity(const float& a_alpha) { glfwSetWindowOpacity(m_window, a_alpha); }
-
-
-std::string GLFWWindow::GetTitle() const { return glfwGetWindowTitle(m_window); }
-
-
-void GLFWWindow::SetTitle(const std::string& a_name) { glfwSetWindowTitle(m_window, a_name.c_str()); }
+void GLFWWindow::RetrieveMonitorInformation()
+{
+    m_monitor = glfwGetPrimaryMonitor();
+    m_vidMode = glfwGetVideoMode(m_monitor);
+}

@@ -24,8 +24,8 @@ add_executable(${LE_TARGET_NAME} ${L_EDITOR_SOURCES})
 #---------------------------------------#
 #                INCLUDE                #
 #---------------------------------------#
-# Both "Libs/imgui" and "Libs" folders must be included as ismgui uses the path of the first one and we use the path of the second one
-target_include_directories(${LE_TARGET_NAME} PUBLIC "Code/Include" "Libs/imgui" "Libs")
+# Both "Libs/imgui" and "Libs" folders must be included as imgui uses the path of the first one and we use the path of the second one
+target_include_directories(${LE_TARGET_NAME} PUBLIC "Code/Include" "Code" "Libs/imgui" "Libs")
 
 
 

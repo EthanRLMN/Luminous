@@ -14,9 +14,9 @@ class IDescriptor
 public:
     virtual ~IDescriptor() = default;
 
-    virtual void Create(IDevice* a_device, IDescriptorSetLayout* a_descriptionSetLayout, ITexture* a_texture, IBuffer* a_buffer) = 0;
+    virtual void Create(IDevice* a_device, IDescriptorSetLayout* a_descriptionSetLayout, IBuffer* a_buffer) = 0;
     virtual void Destroy(IDevice* a_device) = 0;
-
+    
 
     virtual VulkanDescriptor* CastVulkan()
     {

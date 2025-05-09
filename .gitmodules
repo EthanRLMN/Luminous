@@ -5,12 +5,12 @@
 [submodule "Engine/Libs/assimp"]
 	path = Engine/Libs/assimp
 	url = https://github.com/assimp/assimp.git
-[submodule "Libs/logger"]
+[submodule "Engine/Libs/logger"]
 	path = Engine/Libs/logger
 	url = https://github.com/ZeBaananaa/LuminousLogger.git
-[submodule "Engine/Libs/vulkanmemoryallocator"]
-	path = Engine/Libs/vulkanmemoryallocator
-	url = https://github.com/GPUOpen-LibrariesAndSDKs/VulkanMemoryAllocator.git
 [submodule "Engine/Libs/luminousmaths"]
 	path = Engine/Libs/luminousmaths
 	url = https://github.com/ZeBaananaa/LuminousMaths.git
+[submodule "Engine/Libs/jolt"]
+	path = Engine/Libs/jolt
+	url = https://github.com/jrouwe/JoltPhysics.git

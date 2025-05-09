@@ -11,9 +11,9 @@
 #include "Rendering/Vulkan/VulkanValidationLayer.hpp"
 
 
-void VulkanDevice::Create(IInstance* a_instance, IWindow* a_window, ISurface* a_surface)
+void VulkanDevice::Create(IInstance* a_instance, ISurface* a_surface)
 {
-	const VkSurfaceKHR l_vkSurface = a_surface->CastVulkan()->GetSurface();
+	const VkSurfaceKHR& l_vkSurface = a_surface->CastVulkan()->GetSurface();
 
 	GetPhysicalDevice(a_instance->CastVulkan()->GetInstance(), l_vkSurface);
 	CreateLogicalDevice(l_vkSurface);
@@ -157,26 +157,39 @@ QueueFamilyIndices VulkanDevice::GetQueueFamilies(const VkPhysicalDevice& a_devi
 }
 
 
+void VulkanDevice::WaitIdle() const
+{
+    const VkResult l_idleResult = { vkDeviceWaitIdle(m_device) };
+    if (l_idleResult == VK_SUCCESS)
+        return;
+
+    DEBUG_LOG_ERROR("Device still has commands waiting for execution!");
+}
+
 void VulkanDevice::ProcessLogicalDeviceInfo(const QueueFamilyIndices& a_queueFamilyIndices)
 {
 	const std::set<int> l_queueFamilyIndices = { a_queueFamilyIndices.graphicsFamily, a_queueFamilyIndices.presentationFamily };
 	std::vector<VkDeviceQueueCreateInfo> l_queueCreateInfos { };
 	AssignQueueFamilyIndices(l_queueFamilyIndices, l_queueCreateInfos);
 
-	VkPhysicalDeviceFeatures l_physicalDeviceFeatures = { };
+	VkPhysicalDeviceFeatures l_physicalDeviceFeatures { };
 	l_physicalDeviceFeatures.samplerAnisotropy = VK_TRUE;
+    l_physicalDeviceFeatures.sampleRateShading = VK_TRUE;
 
-	VkDeviceCreateInfo l_deviceCreateInfo = { VK_STRUCTURE_TYPE_DEVICE_CREATE_INFO };
+	VkDeviceCreateInfo l_deviceCreateInfo { };
+    l_deviceCreateInfo.sType = VK_STRUCTURE_TYPE_DEVICE_CREATE_INFO;
 	l_deviceCreateInfo.queueCreateInfoCount = static_cast<uint32_t>(l_queueCreateInfos.size());
 	l_deviceCreateInfo.pQueueCreateInfos = l_queueCreateInfos.data();
 	l_deviceCreateInfo.pEnabledFeatures = &l_physicalDeviceFeatures;
 	l_deviceCreateInfo.enabledExtensionCount = static_cast<uint32_t>(deviceExtensions.size());
 	l_deviceCreateInfo.ppEnabledExtensionNames = deviceExtensions.data();
+    l_deviceCreateInfo.pNext = nullptr;
 
-	if (validationEnabled)
+
+	if (ValidationLayer::ValidationLayersEnabled)
 	{
-		l_deviceCreateInfo.enabledLayerCount = static_cast<uint32_t>(validationLayers.size());
-		l_deviceCreateInfo.ppEnabledLayerNames = validationLayers.data();
+		l_deviceCreateInfo.enabledLayerCount = static_cast<uint32_t>(ValidationLayer::ValidationLayers.size());
+		l_deviceCreateInfo.ppEnabledLayerNames = ValidationLayer::ValidationLayers.data();
 	}
 
 	const VkResult l_result = vkCreateDevice(m_physicalDevice, &l_deviceCreateInfo, nullptr, &m_device);
@@ -190,10 +203,12 @@ void VulkanDevice::AssignQueueFamilyIndices(const std::set<int>& a_queueFamilyIn
 	const float l_priority { 1.0f };
 	for (const int l_queueFamilyIndex : a_queueFamilyIndices)
 	{
-		VkDeviceQueueCreateInfo l_queueCreateInfo = { VK_STRUCTURE_TYPE_DEVICE_QUEUE_CREATE_INFO };
+		VkDeviceQueueCreateInfo l_queueCreateInfo { };
+	    l_queueCreateInfo.sType = VK_STRUCTURE_TYPE_DEVICE_QUEUE_CREATE_INFO;
 		l_queueCreateInfo.queueFamilyIndex = l_queueFamilyIndex;
 		l_queueCreateInfo.queueCount = 1;
 		l_queueCreateInfo.pQueuePriorities = &l_priority;
+	    l_queueCreateInfo.pNext = nullptr;
 
 		a_queueCreateInfos.push_back(l_queueCreateInfo); // vulkan needs to know how to handle multiple queues, so choose properly ( 1 = highest priority)
 	}

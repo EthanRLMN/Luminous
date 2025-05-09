@@ -1,14 +1,14 @@
 #pragma once
 
 #include <vector>
-#include <vulkan/vulkan.hpp>
+#include <vulkan/vulkan.h>
 
 #include "Matrix4.hpp"
 #include "Vector2.hpp"
 #include "Vector3.hpp"
 
 /**
- * @brief How many frames should be rendererd ahead
+ * @brief How many frames should be rendered ahead
  */
 constexpr int MAX_FRAMES_IN_FLIGHT = 3;
 

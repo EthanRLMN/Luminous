@@ -449,8 +449,13 @@ namespace ImGui
     // Parameters stacks (shared)
     IMGUI_API void          PushFont(ImFont* font);                                         // use NULL as a shortcut to push default font
     IMGUI_API void          PopFont();
+    IMGUI_API void          SetStyleLinearColor(bool is_linear);                            // configures styling to work correctly with sRGB
     IMGUI_API void          PushStyleColor(ImGuiCol idx, ImU32 col);                        // modify a style color. always use this if you modify the style after NewFrame().
     IMGUI_API void          PushStyleColor(ImGuiCol idx, const ImVec4& col);
+    IMGUI_API void          PushStyleLinearColor(ImGuiCol idx, ImU32 col);                  // same as PushStyleColor, but performs colour space conversions if necessary from linear color
+    IMGUI_API void          PushStyleLinearColor(ImGuiCol idx, const ImVec4& col);
+    IMGUI_API void          PushStyleSRGBColor(ImGuiCol idx, ImU32 col);                    // same as PushStyleColor, but performs colour space conversions if necessary from sRGB
+    IMGUI_API void          PushStyleSRGBColor(ImGuiCol idx, const ImVec4& col);
     IMGUI_API void          PopStyleColor(int count = 1);
     IMGUI_API void          PushStyleVar(ImGuiStyleVar idx, float val);                     // modify a style float variable. always use this if you modify the style after NewFrame()!
     IMGUI_API void          PushStyleVar(ImGuiStyleVar idx, const ImVec2& val);             // modify a style ImVec2 variable. "
@@ -477,6 +482,8 @@ namespace ImGui
     IMGUI_API ImU32         GetColorU32(const ImVec4& col);                                 // retrieve given color with style alpha applied, packed as a 32-bit value suitable for ImDrawList
     IMGUI_API ImU32         GetColorU32(ImU32 col, float alpha_mul = 1.0f);                 // retrieve given color with style alpha applied, packed as a 32-bit value suitable for ImDrawList
     IMGUI_API const ImVec4& GetStyleColorVec4(ImGuiCol idx);                                // retrieve style color as stored in ImGuiStyle structure. use to feed back into PushStyleColor(), otherwise use GetColorU32() to get style color with style alpha baked in.
+    IMGUI_API ImVec4        GetStyleLinearColor(ImGuiCol idx);                              // same as above, but always in the linear color space
+    IMGUI_API ImVec4        GetStyleSRGBColor(ImGuiCol idx);                                // same as above, but always in the sRGB color space
 
     // Layout cursor positioning
     // - By "cursor" we mean the current output position.
@@ -991,6 +998,12 @@ namespace ImGui
     IMGUI_API ImU32         ColorConvertFloat4ToU32(const ImVec4& in);
     IMGUI_API void          ColorConvertRGBtoHSV(float r, float g, float b, float& out_h, float& out_s, float& out_v);
     IMGUI_API void          ColorConvertHSVtoRGB(float h, float s, float v, float& out_r, float& out_g, float& out_b);
+
+    IMGUI_API float         SRGBToLinear(float srgb_color);
+    IMGUI_API float         LinearToSRGB(float linear_color);
+
+    IMGUI_API ImVec4        SRGBToLinear(ImVec4 srgb_color);
+    IMGUI_API ImVec4        LinearToSRGB(ImVec4 linear_color);
 
     // Inputs Utilities: Keyboard/Mouse/Gamepad
     // - the ImGuiKey enum contains all possible keyboard, mouse and gamepad inputs (e.g. ImGuiKey_A, ImGuiKey_MouseLeft, ImGuiKey_GamepadDpadUp...).

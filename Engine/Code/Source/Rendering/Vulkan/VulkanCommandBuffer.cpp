@@ -10,12 +10,13 @@ void VulkanCommandBuffer::Create(IDevice* a_device, ICommandPool* a_commandPool)
 {
     m_commandBuffers.resize(MAX_FRAMES_IN_FLIGHT);
 
-    VkCommandBufferAllocateInfo l_allocateInfo{ VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO };
+    VkCommandBufferAllocateInfo l_allocateInfo{ };
+    l_allocateInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO;
     l_allocateInfo.commandPool = a_commandPool->CastVulkan()->GetCommandPool();
     l_allocateInfo.level = VK_COMMAND_BUFFER_LEVEL_PRIMARY;
     l_allocateInfo.commandBufferCount = static_cast<uint32_t>(m_commandBuffers.size());
+    l_allocateInfo.pNext = nullptr;
 
     if (vkAllocateCommandBuffers(a_device->CastVulkan()->GetDevice(), &l_allocateInfo, m_commandBuffers.data()) != VK_SUCCESS)
         DEBUG_LOG_ERROR("Failed to allocate command Buffer!\n");
 }
-

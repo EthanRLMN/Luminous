@@ -1,37 +1,15 @@
 #pragma once
-
 #include <vector>
+#include <array>
 #include <vulkan/vulkan.h>
 
-#include "Logger.hpp"
-
-constexpr bool validationEnabled = true;
-
-const std::vector<const char*> validationLayers = { "VK_LAYER_KHRONOS_validation" };
-
-// Callback function for validation debugging (will be called when validation information record)
-static VkBool32 VKAPI_CALL DebugCallback(VkDebugUtilsMessageSeverityFlagBitsEXT a_messageSeverity, VkDebugUtilsMessageTypeFlagsEXT a_messageTypes, const VkDebugUtilsMessengerCallbackDataEXT* a_pCallbackData, void* a_pUserData)
+class ValidationLayer
 {
-	DEBUG_LOG_INFO("Validation Layer : {}\n", a_pCallbackData->pMessage);
-	return VK_FALSE;
-}
+public:
+    static constexpr bool ValidationLayersEnabled{ true };
+    static constexpr std::array<const char*, 2> ValidationLayers{ "VK_LAYER_KHRONOS_validation", "VK_LAYER_LUNARG_monitor" };
 
-
-static VkResult CreateDebugUtilsMessengerEXT(const VkInstance a_instance, const VkDebugUtilsMessengerCreateInfoEXT* a_pCreateInfo, const VkAllocationCallbacks* a_pAllocator, VkDebugUtilsMessengerEXT* a_pDebugMessenger)
-{
-	const auto l_func = reinterpret_cast<PFN_vkCreateDebugUtilsMessengerEXT>(vkGetInstanceProcAddr(a_instance, "vkCreateDebugUtilsMessengerEXT"));
-
-	if (l_func == nullptr)
-		return VK_ERROR_EXTENSION_NOT_PRESENT;
-
-	return l_func(a_instance, a_pCreateInfo, a_pAllocator, a_pDebugMessenger);
-}
-
-
-static void DestroyDebugReportCallbackEXT(const VkInstance a_instance, const VkDebugReportCallbackEXT a_callback, const VkAllocationCallbacks* a_pAllocator)
-{
-	const auto l_func = reinterpret_cast<PFN_vkDestroyDebugReportCallbackEXT>(vkGetInstanceProcAddr(a_instance, "vkDestroyDebugReportCallbackEXT"));
-
-	if (l_func != nullptr)
-		l_func(a_instance, a_callback, a_pAllocator);
-}
+    static VkBool32 VKAPI_CALL DebugCallback(VkDebugUtilsMessageSeverityFlagBitsEXT a_messageSeverity, VkDebugUtilsMessageTypeFlagsEXT a_messageTypes, const VkDebugUtilsMessengerCallbackDataEXT* a_pCallbackData, void* a_pUserData);
+    static VkResult CreateDebugUtilsMessengerEXT(const VkInstance& a_instance, const VkDebugUtilsMessengerCreateInfoEXT* a_pCreateInfo, const VkAllocationCallbacks* a_pAllocator, VkDebugUtilsMessengerEXT* a_pDebugMessenger);
+    static void DestroyDebugReportCallbackEXT(const VkInstance& a_instance, const VkDebugReportCallbackEXT& a_callback, const VkAllocationCallbacks* a_pAllocator);
+};

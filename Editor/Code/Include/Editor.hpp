@@ -2,15 +2,17 @@
 
 #include "Engine.hpp"
 
+
 class ImguiWindow;
-class GLFWWindow;
 class VulkanInstance;
+class IWindowPanel;
+
 
 class Editor
 {
 public:
     Editor() = default;
-    ~Editor() = default;
+    ~Editor();
 
     void Destroy();
     void Init();
@@ -19,10 +21,24 @@ public:
     void Update();
     void Render() const;
 
+    void CreateWindowPanels();
+    void RenderWindowPanels() const;
+    void DestroyWindowPanels();
+
+    void RegisterWindow(IWindowPanel* a_windowPanel) { m_windows.push_back(a_windowPanel); };
+    void UnregisterWindow(IWindowPanel* a_windowPanel);
+
+    void RequestExit() { m_shouldExit = true; }
+    bool ShouldExit() const { return m_shouldExit; }
+
+
     [[nodiscard]] Engine* GetEngine() const { return m_engine; }
-    [[nodiscard]] ImguiWindow* GetImguiWindow() const { return m_imguiWindow; }
+    [[nodiscard]] std::vector<IWindowPanel*> GetWindows() const { return m_windows; }
+    [[nodiscard]] IWindowPanel* GetWindow(const size_t a_index) const { return m_windows[a_index]; }
 
 private:
-    Engine* m_engine = nullptr;
-    ImguiWindow* m_imguiWindow = nullptr;
+    Engine* m_engine { nullptr };
+    std::vector<IWindowPanel*> m_windows {};
+
+    bool m_shouldExit = false;
 };

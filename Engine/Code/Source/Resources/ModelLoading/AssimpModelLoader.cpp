@@ -12,9 +12,9 @@
 void AssimpModelLoader::LoadModel(IMesh* a_mesh, const char* a_file)
 {
     Assimp::Importer l_importer { };
-    char l_buffer[1024];
-    if (_getcwd(l_buffer, 1024) != nullptr)
-        DEBUG_LOG_INFO("Current working directory: {}\n", l_buffer);
+    std::array<char, 1024> l_buffer { };
+    if (_getcwd(l_buffer.data(), 1024) != nullptr)
+        DEBUG_LOG_INFO("Current working directory: {}\n", l_buffer.data());
 
     DebugExtensionsList(&l_importer);
     const aiScene* l_scene = l_importer.ReadFile(a_file, aiProcess_CalcTangentSpace | aiProcess_Triangulate | aiProcess_JoinIdenticalVertices | aiProcess_SortByPType);
@@ -35,7 +35,7 @@ void AssimpModelLoader::LoadModel(IMesh* a_mesh, const char* a_file)
         a_mesh->m_indices = SetupIndices(l_mesh);
         l_info = std::string(a_file) + " has been successfully parsed.";
         DEBUG_LOG_INFO("{}", l_info);
-        a_mesh->isLoaded = true;
+        a_mesh->SetLoaded(true);
     }
 }
 

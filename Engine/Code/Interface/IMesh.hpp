@@ -10,9 +10,8 @@ class IMesh : public IResource
 {
 public:
     IMesh() = default;
-	~IMesh() = default;
-    bool Create(IResourceManager* a_manager, IResourceParams a_params) override { return false; };
-    void Destroy(IDevice* a_device) override { return; };
+    bool Create(const IResourceParams& a_params) override { static_cast<void>(a_params); return false; };
+	
 
 	virtual VulkanMesh* CastVulkan()
 	{

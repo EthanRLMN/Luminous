@@ -17,4 +17,3 @@ public:
 private:
 	VkSurfaceKHR m_surface = nullptr;
 };
-
