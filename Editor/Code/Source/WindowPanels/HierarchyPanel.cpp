@@ -90,6 +90,19 @@ void HierarchyPanel::DrawEntityNode(const EntityNode& node)
                 BuildHierarchy();
             }
         }
+
+        if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("FILE_DRAG"))
+        {
+            const char* droppedPath = static_cast<const char*>(payload->Data);
+            std::string filePath(droppedPath);
+
+            std::string extension = std::filesystem::path(filePath).extension().string();
+            if (extension == ".png" || extension == ".jpg")
+            {
+                std::cout << "Texture dropped on entity: " << filePath << std::endl;
+            }
+        }
+
         ImGui::EndDragDropTarget();
     }
 

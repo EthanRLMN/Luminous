@@ -92,6 +92,14 @@ void FileExplorerPanel::Render()
                 }
             }
 
+            if (ImGui::BeginDragDropSource())
+            {
+                std::string fullPath = path.string();
+                ImGui::SetDragDropPayload("FILE_DRAG", fullPath.c_str(), fullPath.size() + 1);
+                ImGui::Text("Drag: %s", filenameString.c_str());
+                ImGui::EndDragDropSource();
+            }
+
             ImGui::TextWrapped("%s", filenameString.c_str());
 
             ImGui::NextColumn();
