@@ -1,4 +1,4 @@
-#include "../../../../Include/Game/Systems/Camera/CameraEditor.hpp"
+#include "Game/Systems/Camera/CameraEditor.hpp"
 
 #include "MathUtils.hpp"
 #include "Core/GLFW/GLFWWindow.hpp"

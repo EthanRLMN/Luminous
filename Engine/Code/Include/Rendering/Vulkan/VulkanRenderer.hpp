@@ -5,11 +5,11 @@
 #include "IRenderer.hpp"
 
 #include "Core/GLFW/GLFWWindow.hpp"
-#include "../../Game/Systems/Camera/CameraEditor.hpp"
 #include "Rendering/Vulkan/VulkanDevice.hpp"
 
-#include "../../Game/Systems/Entity/Entity.hpp"
-#include "../../Game/Systems/Component/LightComponent.hpp"
+#include "Game/Systems/Camera/CameraEditor.hpp"
+#include "Game/Systems/Component/LightComponent.hpp"
+#include "Game/Systems/Entity/Entity.hpp"
 
 class IFrameBuffer;
 
