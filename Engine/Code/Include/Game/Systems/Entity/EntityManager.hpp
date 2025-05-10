@@ -47,6 +47,8 @@ public:
         }
         return l_entitiesWithComponent;
     }
+
+    std::shared_ptr<Entity> CreateEntityFromTemplate(const std::string& a_templateName);
     
     inline void RemoveEntity(const std::shared_ptr<Entity>& a_entity) { std::erase(m_entities, a_entity); }
     inline void RemoveEntityByName(const std::string& a_name) { std::erase_if(m_entities, [&](const std::shared_ptr<Entity>& l_entity) { return l_entity->GetName() == a_name; }); }

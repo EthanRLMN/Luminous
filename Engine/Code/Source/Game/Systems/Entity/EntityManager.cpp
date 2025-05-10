@@ -1,5 +1,7 @@
 #include "Game/Systems/Entity/EntityManager.hpp"
 
+#include "Game/Systems/Entity/EntityFactory.hpp"
+
 
 void EntityManager::Initialize(Engine* a_engine)
 {
@@ -55,6 +57,22 @@ std::shared_ptr<Entity> EntityManager::GetEntityByComponent(const std::shared_pt
             return l_entity;
     }
     return nullptr;
+}
+
+
+std::shared_ptr<Entity> EntityManager::CreateEntityFromTemplate(const std::string& a_templateName)
+{
+    std::shared_ptr<Entity> l_entity = EntityFactory::Get().CreateEntity(a_templateName, *this);
+    if (l_entity)
+    {
+        m_entities.push_back(l_entity);
+        if (m_engine)
+        {
+            l_entity->SetEngine(m_engine);
+            l_entity->Initialize();
+        }
+    }
+    return l_entity;
 }
 
 
