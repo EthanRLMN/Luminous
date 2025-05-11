@@ -1,18 +1,6 @@
 #include "Game/Systems/Entity/Entity.hpp"
 #include "Game/Systems/Component/ModelComponent.hpp"
 
-std::vector<std::shared_ptr<Entity>> Entity::GetEntitiesWithModelComponent() const
-{
-    std::vector<std::shared_ptr<Entity>> l_entitiesWithModel;
-    for (const std::shared_ptr<Entity>& entity : m_entities)
-    {
-        std::shared_ptr<ModelComponent> modelComponent = entity->GetComponent<ModelComponent>();
-        if (modelComponent != nullptr)
-            l_entitiesWithModel.push_back(entity);
-    }
-    return l_entitiesWithModel;
-}
-
 
 void Entity::SetActive(const bool a_isActive)
 {

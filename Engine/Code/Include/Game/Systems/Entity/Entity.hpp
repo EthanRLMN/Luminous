@@ -1,11 +1,12 @@
 #pragma once
+
 #include <memory>
 #include <string>
 #include <vector>
 
 #include "Game/Systems/Component/EntityComponent.hpp"
-#include "Game/Systems/Physics/RigidBody.hpp"
 #include "Game/Systems/Component/TransformComponent.hpp"
+#include "Game/Systems/Physics/RigidBody.hpp"
 
 class EntityManager;
 
@@ -33,7 +34,6 @@ public:
         return nullptr;
     }
 
-    std::vector<std::shared_ptr<Entity>> GetEntitiesWithModelComponent() const;
     [[nodiscard]] inline std::string GetName() const { return m_name; }
     [[nodiscard]] inline bool IsActive() const { return m_isActive; }
 
@@ -51,7 +51,6 @@ private:
     std::string m_name { };
 
     std::vector<std::shared_ptr<EntityComponent>> m_components { };
-    std::vector<std::shared_ptr<Entity>> m_entities { };
 
     bool m_isActive { true };
 };
