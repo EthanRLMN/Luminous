@@ -23,8 +23,8 @@ void Engine::Init()
     PreRender();
     InitPhysics();
 
-    m_scene->SceneEntity(m_entityManager);
     m_entityManager.Initialize(this);
+    m_scene->RegisterScene(m_entityManager);
     m_entityManager.GameplayStarted();
 }
 

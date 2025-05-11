@@ -10,6 +10,6 @@ public:
     Scene()= default;
     ~Scene()= default;
 
-    void SceneEntity(EntityManager& a_entityManager);
+    void RegisterScene(EntityManager& a_entityManager);
 };
 

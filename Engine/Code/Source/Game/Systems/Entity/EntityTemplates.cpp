@@ -46,8 +46,8 @@ void EntityTemplates::RegisterSphereEntityTemplate()
         l_entity->SetName("Sphere");
 
         std::shared_ptr<ModelComponent> l_modelComponent = std::make_shared<ModelComponent>();
-        //l_modelComponent->SetMesh("Engine/Assets/Default/Models/viking_room.obj");
-        //l_modelComponent->SetTexture("Engine/Assets/Default/Textures/viking_room.png");
+        l_modelComponent->SetMeshPath("Engine/Assets/Default/Models/viking_room.obj");
+        l_modelComponent->SetTexturePath("Engine/Assets/Default/Textures/viking_room.png");
         l_entity->AddComponent(l_modelComponent);
 
         return l_entity;
