@@ -6,6 +6,8 @@ set(GLFW_BUILD_TESTS OFF CACHE BOOL "" FORCE)
 set(GLFW_BUILD_EXAMPLES OFF CACHE BOOL "" FORCE)
 add_subdirectory(glfw)
 
+
+
 set(ASSIMP_BUILD_SHARED_LIBS OFF CACHE BOOL "" FORCE)
 set(ASSIMP_BUILD_OBJ_IMPORTER ON CACHE BOOL "" FORCE)
 set(ASSIMP_BUILD_ASSIMP_TOOLS OFF CACHE BOOL "" FORCE)
@@ -22,13 +24,24 @@ set(ASSIMP_BUILD_ASSBIN_EXPORTER ON CACHE BOOL "" FORCE)
 set(ASSIMP_BUILD_ASSXML_EXPORTER ON CACHE BOOL "" FORCE)
 add_subdirectory(assimp)
 
+
+
 add_subdirectory(logger)
+
+
+
 add_subdirectory(luminousmaths)
+
+
+
+set(REFLECTCPP_USE_STD_EXPECTED ON CACHE BOOL "" FORCE)
+set(REFLECTCPP_BUILD_SHARED OFF CACHE BOOL "" FORCE)
+add_subdirectory(reflect-cpp)
+
 
 
 # Set repository root for Jolt here since we can't edit and save changes made on their .Cmake file
 set(PHYSICS_REPO_ROOT "${CMAKE_CURRENT_SOURCE_DIR}/jolt/")
-
 # Enable some performance tweaks for Jolt (Only available for computers starting from 2008+)
 set(JPH_ENABLE_SSE4_1 ON CACHE BOOL "" FORCE)
 set(JPH_ENABLE_AVX ON CACHE BOOL "" FORCE)
