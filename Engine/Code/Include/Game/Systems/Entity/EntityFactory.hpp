@@ -1,9 +1,10 @@
 #pragma once
+
 #include <functional>
-#include <iostream>
 #include <ranges>
 
 #include "EntityManager.hpp"
+#include "Game/Systems/Component/TransformComponent.hpp"
 
 class EntityFactory
 {
@@ -18,12 +19,15 @@ public:
     }
 
 
-    std::shared_ptr<Entity> CreateEntity(const std::string& a_name, EntityManager& a_entityManager) const
+    inline std::shared_ptr<Entity> CreateEntity(const std::string& a_name, EntityManager& a_entityManager) const
     {
         const auto it = m_creators.find(a_name);
         if (it != m_creators.end())
-            return it->second(a_entityManager);
-
+        {
+            const std::shared_ptr<Entity> l_entity = it->second(a_entityManager);
+            l_entity->AddComponent(std::make_shared<TransformComponent>());
+            return l_entity;
+        }
         return nullptr;
     }
 

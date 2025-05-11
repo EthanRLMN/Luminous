@@ -148,7 +148,7 @@ void VulkanRenderer::RecordCommandBuffer(const VkCommandBuffer& a_commandBuffer,
             for (const std::shared_ptr<Entity>& entity : entitiesWithModels)
             {
                 UniformBufferObject l_ubo{};
-                const Maths::Matrix4 l_modelMatrix = entity->GetTRS();
+                const Maths::Matrix4 l_modelMatrix = entity->Transform()->GetGlobalMatrix();
                 l_ubo.model = l_modelMatrix.Transpose();
                 l_ubo.view = m_cameraEditor.GetViewMatrix().Transpose();
                 l_ubo.proj = m_cameraEditor.GetProjectionMatrix();
@@ -197,7 +197,7 @@ void VulkanRenderer::UpdateUniformBuffer(const uint32_t& a_currentFrame, IBuffer
     {
         std::shared_ptr<ModelComponent> l_modelComponent = entity->GetComponent<ModelComponent>();
         if (l_modelComponent)
-        { const Maths::Matrix4 modelMatrix = entity->GetTRS();
+        { const Maths::Matrix4 modelMatrix = entity->Transform()->GetGlobalMatrix();
 
             l_ubo.model = modelMatrix.Transpose();
         }

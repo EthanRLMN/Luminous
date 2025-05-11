@@ -1,5 +1,4 @@
 #include "Game/Systems/Entity/Entity.hpp"
-
 #include "Game/Systems/Component/ModelComponent.hpp"
 
 std::vector<std::shared_ptr<Entity>> Entity::GetEntitiesWithModelComponent() const
@@ -22,10 +21,10 @@ void Entity::Initialize() const
         l_component->Initialize();
     }
 
-    for (const std::shared_ptr<Entity>& l_child : m_children)
+    for (const std::shared_ptr<TransformComponent>& l_child : Transform()->GetChildren())
     {
-        l_child->SetEngine(m_engine);
-        l_child->Initialize();
+        l_child->GetEntity()->SetEngine(m_engine);
+        l_child->GetEntity()->Initialize();
     }
 }
 
@@ -34,8 +33,8 @@ void Entity::GameplayStarted() const
     for (const std::shared_ptr<EntityComponent>& l_component : m_components)
         l_component->GameplayStarted();
 
-    for (const std::shared_ptr<Entity>& l_child : m_children)
-        l_child->GameplayStarted();
+    for (const std::shared_ptr<TransformComponent>& l_child : Transform()->GetChildren())
+        l_child->GetEntity()->GameplayStarted();
 }
 
 void Entity::Update() const
@@ -43,6 +42,6 @@ void Entity::Update() const
     for (const std::shared_ptr<EntityComponent>& l_component : m_components)
         l_component->Update();
 
-    for (const std::shared_ptr<Entity>& l_child : m_children)
-        l_child->Update();
+    for (const std::shared_ptr<TransformComponent>& l_child : Transform()->GetChildren())
+        l_child->GetEntity()->Update();
 }

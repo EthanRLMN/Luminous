@@ -25,7 +25,7 @@ std::shared_ptr<Entity> EntityManager::GetFirstEntityByParent(const std::shared_
 {
     for (const std::shared_ptr<Entity>& l_entity : m_entities)
     {
-        if (l_entity->GetParent() == a_parent)
+        if (l_entity->Transform()->GetParent() == a_parent)
             return l_entity;
     }
     return nullptr;
