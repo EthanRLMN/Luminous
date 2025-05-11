@@ -12,15 +12,15 @@ void ModelComponent::Initialize()
 
 void ModelComponent::SetMesh(const std::string& a_path)
 {
-    IResourceParams l_meshParams{};
+    IResourceParams l_meshParams { GetEngine()->GetDevice(), GetEngine()->GetSwapChain(), GetEngine()->GetDepthResource(), GetEngine()->GetCommandPool(), GetEngine()->GetDescriptionSetLayout() };
     l_meshParams.m_meshPath = a_path;
     m_mesh = ResourceManager::GetInstance().LoadResource<VulkanMesh>(l_meshParams);
-    VulkanBuffer::SetMeshBuffers(m_engine->GetDevice(), m_engine->GetCommandPool(), m_mesh);
+    VulkanBuffer::SetMeshBuffers(GetEngine()->GetDevice(), GetEngine()->GetCommandPool(), m_mesh);
 }
 
 void ModelComponent::SetTexture(const std::string& a_path)
 { 
-    IResourceParams l_texParams{ m_engine->GetDevice(), m_engine->GetSwapChain(), m_engine->GetDepthResource(), m_engine->GetCommandPool(), m_engine->GetDescriptionSetLayout() };
+    IResourceParams l_texParams { GetEngine()->GetDevice(), GetEngine()->GetSwapChain(), GetEngine()->GetDepthResource(), GetEngine()->GetCommandPool(), GetEngine()->GetDescriptionSetLayout() };
     l_texParams.m_texturePath = a_path;
     m_texture = ResourceManager::GetInstance().LoadResource<VulkanTexture>(l_texParams);
 }

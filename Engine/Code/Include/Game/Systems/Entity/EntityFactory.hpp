@@ -1,5 +1,6 @@
 #pragma once
 #include <functional>
+#include <iostream>
 #include <ranges>
 
 #include "EntityManager.hpp"
@@ -17,14 +18,14 @@ public:
     }
 
 
-    inline std::shared_ptr<Entity> CreateEntity(const std::string& a_name, EntityManager& a_entityManager) const
+    std::shared_ptr<Entity> CreateEntity(const std::string& a_name, EntityManager& a_entityManager) const
     {
         const auto it = m_creators.find(a_name);
         if (it != m_creators.end())
             return it->second(a_entityManager);
 
         return nullptr;
-    };
+    }
 
 
     [[nodiscard]] inline std::vector<std::string> GetAvailableTemplates() const
@@ -38,7 +39,10 @@ public:
     }
 
 
-    inline void RegisterEntity(const std::string& a_name, const Creator& a_creator) { m_creators[a_name] = a_creator; }
+    inline void RegisterEntity(const std::string& a_name, const Creator& a_creator)
+    {
+        m_creators[a_name] = a_creator;
+    }
 
 
 private:

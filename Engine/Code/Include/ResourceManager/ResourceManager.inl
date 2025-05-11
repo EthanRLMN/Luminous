@@ -11,7 +11,7 @@ class VulkanMesh;
 class VulkanShader;
 
 template<typename T>
-T* ResourceManager::LoadResource(const IResourceParams a_params)
+T* ResourceManager::LoadResource(const IResourceParams& a_params)
 {
     std::string l_file = "";
 

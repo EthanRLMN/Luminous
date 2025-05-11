@@ -15,7 +15,7 @@ struct IResourceParams
     ISwapChain* m_swapChain { nullptr };
     IDepthResource* m_depthResource { nullptr };
     ICommandPool* m_commandPool { nullptr };
-    IDescriptorSetLayout* m_descriptorSetLayout{ nullptr };
+    IDescriptorSetLayout* m_descriptorSetLayout { nullptr };
 
     //TODO: Add default values as a backup to avoid potential issues
     std::string m_meshPath { "Engine/Assets/Default/Models/Cube.fbx" };

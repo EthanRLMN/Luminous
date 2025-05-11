@@ -1,5 +1,7 @@
 #include "ResourceManager/ResourceManager.hpp"
 
+#include <ranges>
+
 
 ResourceManager& ResourceManager::GetInstance()
 {
@@ -10,12 +12,12 @@ ResourceManager& ResourceManager::GetInstance()
 
 void ResourceManager::Destroy(IDevice* a_device)
 {
-    for (const std::pair<const std::string, IResource*>& l_resource : GetInstance().m_resources)
+    for (IResource* const& l_resource : GetInstance().m_resources | std::views::values)
     {
-        if (l_resource.second)
+        if (l_resource)
         {
-            l_resource.second->Destroy(a_device);
-            delete (l_resource.second);
+            l_resource->Destroy(a_device);
+            delete (l_resource);
         }
     }
     delete GetInstance().m_meshLoader;

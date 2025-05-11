@@ -9,5 +9,10 @@ public:
     virtual void GameplayStarted() = 0;
     virtual void Update() = 0;
 
+    void SetEngine(Engine* a_engine) { m_engine = a_engine; }
+    Engine* GetEngine() const { return m_engine; }
+
+
+private:
     Engine* m_engine { nullptr };
 };

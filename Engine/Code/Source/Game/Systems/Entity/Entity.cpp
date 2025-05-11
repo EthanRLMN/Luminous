@@ -16,10 +16,10 @@ std::vector<std::shared_ptr<Entity>> Entity::GetEntitiesWithModelComponent() con
 
 void Entity::Initialize() const
 {
-    for (const std::shared_ptr<EntityComponent>& l_logic : m_entityComponents)
+    for (const std::shared_ptr<EntityComponent>& l_component : m_components)
     {
-        l_logic->m_engine = m_engine;
-        l_logic->Initialize();
+        l_component->SetEngine(m_engine);
+        l_component->Initialize();
     }
 
     for (const std::shared_ptr<Entity>& l_child : m_children)
@@ -31,8 +31,8 @@ void Entity::Initialize() const
 
 void Entity::GameplayStarted() const
 {
-    for (const std::shared_ptr<EntityComponent>& l_logic : m_entityComponents)
-        l_logic->GameplayStarted();
+    for (const std::shared_ptr<EntityComponent>& l_component : m_components)
+        l_component->GameplayStarted();
 
     for (const std::shared_ptr<Entity>& l_child : m_children)
         l_child->GameplayStarted();
@@ -40,8 +40,8 @@ void Entity::GameplayStarted() const
 
 void Entity::Update() const
 {
-    for (const std::shared_ptr<EntityComponent>& l_logic : m_entityComponents)
-        l_logic->Update();
+    for (const std::shared_ptr<EntityComponent>& l_component : m_components)
+        l_component->Update();
 
     for (const std::shared_ptr<Entity>& l_child : m_children)
         l_child->Update();
