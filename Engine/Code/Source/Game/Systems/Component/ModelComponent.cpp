@@ -6,6 +6,9 @@
 
 void ModelComponent::Initialize()
 {
+    SetMesh("Engine/Assets/Default/Models/CCP2.fbx"); // Default mesh
+    SetTexture("Engine/Assets/Default/Textures/CCP2_albedo.png"); // Default Texture
+
     if (m_shouldLoadResources)
     {
         if (!m_pendingMeshPath.empty())

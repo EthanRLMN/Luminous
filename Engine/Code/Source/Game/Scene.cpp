@@ -10,4 +10,5 @@ void Scene::RegisterScene(EntityManager& a_entityManager)
 
     a_entityManager.CreateEntityFromTemplate("Cube");
     a_entityManager.CreateEntityFromTemplate("Sphere");
+    a_entityManager.CreateEntityFromTemplate("Empty");
 }
