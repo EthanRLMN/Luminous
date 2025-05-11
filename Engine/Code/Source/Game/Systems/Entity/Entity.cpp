@@ -5,9 +5,9 @@
 std::vector<std::shared_ptr<Entity>> Entity::GetEntitiesWithModelComponent() const
 {
     std::vector<std::shared_ptr<Entity>> l_entitiesWithModel;
-    for (auto& entity : m_entities)
+    for (const std::shared_ptr<Entity>& entity : m_entities)
     {
-        auto modelComponent = entity->GetComponent<ModelComponent>();
+        std::shared_ptr<ModelComponent> modelComponent = entity->GetComponent<ModelComponent>();
         if (modelComponent != nullptr)
             l_entitiesWithModel.push_back(entity);
     }
@@ -24,7 +24,7 @@ void Entity::Initialize() const
 
     for (const std::shared_ptr<Entity>& l_child : m_children)
     {
-        l_child->m_engine = m_engine;
+        l_child->SetEngine(m_engine);
         l_child->Initialize();
     }
 }

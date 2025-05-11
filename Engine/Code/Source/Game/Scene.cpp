@@ -6,6 +6,7 @@
 
 void Scene::SceneEntity(EntityManager& a_entityManager)
 {
+
     EntityTemplates templates;
     templates.RegisterEntityTemplates();
 
