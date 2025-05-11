@@ -35,19 +35,23 @@ public:
 
     std::vector<std::shared_ptr<Entity>> GetEntitiesWithModelComponent() const;
     [[nodiscard]] inline std::string GetName() const { return m_name; }
+    [[nodiscard]] inline bool IsActive() const { return m_isActive; }
+
 
     inline void SetEngine(Engine* a_engine) { m_engine = a_engine; }
     inline void SetName(const std::string& a_newName) { m_name = a_newName; }
     inline void AddComponent(const std::shared_ptr<EntityComponent>& a_component) { m_components.push_back(a_component); }
-    inline std::shared_ptr<TransformComponent> Transform() const { return GetComponent<TransformComponent>(); } // Allow retrieving transform data and update them
+    inline std::shared_ptr<TransformComponent> Transform() const { return GetComponent<TransformComponent>(); }
+    void SetActive(bool a_isActive);
 
 
 private:
     Engine* m_engine { nullptr };
-
     EntityManager& m_entityManager;
     std::string m_name { };
 
     std::vector<std::shared_ptr<EntityComponent>> m_components { };
     std::vector<std::shared_ptr<Entity>> m_entities { };
+
+    bool m_isActive { true };
 };

@@ -1,6 +1,7 @@
 #pragma once
 class Engine;
 
+
 class EntityComponent
 {
 public:
@@ -10,6 +11,7 @@ public:
     virtual void Update() = 0;
 
     void SetEngine(Engine* a_engine) { m_engine = a_engine; }
+
     [[nodiscard]] Engine* GetEngine() const { return m_engine; }
 
 

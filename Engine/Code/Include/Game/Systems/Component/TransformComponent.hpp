@@ -12,7 +12,7 @@
 class Entity;
 
 
-class TransformComponent : public EntityComponent
+class TransformComponent : public EntityComponent, std::enable_shared_from_this<TransformComponent>
 {
 public:
     void Initialize() override{};
@@ -29,31 +29,35 @@ public:
     [[nodiscard]] inline Maths::Quaternion GetGlobalRotationQuat() const { return m_globalRotation; }
     [[nodiscard]] inline Maths::Matrix4 GetLocalMatrix() const { return m_localMatrix; }
     [[nodiscard]] inline Maths::Matrix4 GetGlobalMatrix() const { return m_globalMatrix; }
-    [[nodiscard]] inline std::shared_ptr<Entity> GetParent() const { return m_parent; }
-    [[nodiscard]] inline bool HasParent() const { return m_parent != nullptr; }
+    [[nodiscard]] inline std::shared_ptr<Entity> GetParent() const { return m_parent.lock(); }
+    [[nodiscard]] inline bool HasParent() const { return m_parent.lock() != nullptr; }
     [[nodiscard]] inline bool HasChildren() const { return !m_children.empty(); }
     [[nodiscard]] inline const std::vector<std::shared_ptr<TransformComponent>>& GetChildren() const { return m_children; }
     [[nodiscard]] inline std::shared_ptr<Entity> GetEntity() const { return m_entity.lock(); }
+    [[nodiscard]] inline bool IsActive() const { return m_isActive; }
 
 
-    inline void SetLocalMatrix(const Maths::Matrix4& a_newMatrix) { m_localMatrix = a_newMatrix; UpdateGlobalTransform(); }
-    inline void SetGlobalMatrix(const Maths::Matrix4& a_newMatrix) { m_globalMatrix = a_newMatrix; UpdateGlobalTransform(); }
-    inline void SetLocalPosition(const Maths::Vector3 a_newPos) { m_localPosition = a_newPos; UpdateGlobalTransform(); }
-    inline void SetLocalScale(const Maths::Vector3 a_newScale) { m_localScale = a_newScale; UpdateGlobalTransform(); }
-    inline void SetLocalRotationVec(const Maths::Vector3 a_newRotVec) { m_localRotation = Maths::Quaternion::FromEulerAngles(a_newRotVec); UpdateGlobalTransform(); }
-    inline void SetLocalRotationQuat(const Maths::Quaternion a_newRotQuat) { m_localRotation = a_newRotQuat; UpdateGlobalTransform(); }
-    inline void SetGlobalPosition(const Maths::Vector3 a_newPos) { m_globalPosition = a_newPos; UpdateGlobalTransform(); }
-    inline void SetGlobalScale(const Maths::Vector3 a_newScale) { m_globalScale = a_newScale; UpdateGlobalTransform(); }
-    inline void SetGlobalRotationVec(const Maths::Vector3 a_newRotVec) { m_globalRotation = Maths::Quaternion::FromEulerAngles(a_newRotVec); UpdateGlobalTransform(); }
-    inline void SetGlobalRotationQuat(const Maths::Quaternion a_newRotQuat) { m_globalRotation = a_newRotQuat; UpdateGlobalTransform(); }
-    inline void AddChild(const std::shared_ptr<TransformComponent>& a_child) { m_children.push_back(a_child); }
-    inline void RemoveChild(const std::shared_ptr<TransformComponent>& a_child) { m_children.erase(std::ranges::find(m_children, a_child)); }
+    inline void AddChild(const std::shared_ptr<TransformComponent>& a_child) { m_children.push_back(a_child); a_child->SetParent(GetEntity()); }
+    inline void RemoveChild(const std::shared_ptr<TransformComponent>& a_child) { m_children.erase(std::ranges::find(m_children, a_child)); a_child->SetParent(nullptr); }
+    inline void SetEntity(const std::weak_ptr<Entity>& a_relatedEntity) { m_entity = a_relatedEntity; }
+    void SetActive(bool a_isActive);
+    void SetLocalMatrix(const Maths::Matrix4& a_newMatrix);
+    void SetLocalPosition(Maths::Vector3 a_newPos);
+    void SetLocalScale(Maths::Vector3 a_newScale);
+    void SetLocalRotationVec(Maths::Vector3 a_newRotVec);
+    void SetLocalRotationQuat(Maths::Quaternion a_newRotQuat);
+    void SetGlobalScale(Maths::Vector3 a_newScale);
+    void SetGlobalRotationVec(Maths::Vector3 a_newRotVec);
+    void SetGlobalRotationQuat(Maths::Quaternion a_newRotQuat);
+    void SetGlobalMatrix(const Maths::Matrix4& a_newMatrix);
+    void SetGlobalPosition(Maths::Vector3 a_newPos);
     void SetParent(const std::shared_ptr<Entity>& a_newParent);
+    void SetInterpolatedRotation(const Maths::Quaternion& a_start, const Maths::Quaternion& a_end, float a_factor);
 
 
 private:
     std::weak_ptr<Entity> m_entity {};
-    std::shared_ptr<Entity> m_parent { nullptr };
+    std::weak_ptr<Entity> m_parent {};
     std::vector<std::shared_ptr<TransformComponent>> m_children;
 
     Maths::Vector3 m_localPosition { Maths::Vector3::Zero };
@@ -66,4 +70,9 @@ private:
     Maths::Matrix4 m_globalMatrix { Maths::Matrix4::TRS(m_globalPosition, m_globalRotation.ToEulerAngles(true), m_globalScale) };
 
     void UpdateGlobalTransform();
+    void UpdateMatrices();
+    void UpdateLocalMatrix();
+
+    bool m_requiresUpdate { false };
+    bool m_isActive { true };
 };

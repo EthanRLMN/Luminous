@@ -13,6 +13,13 @@ std::vector<std::shared_ptr<Entity>> Entity::GetEntitiesWithModelComponent() con
     return l_entitiesWithModel;
 }
 
+
+void Entity::SetActive(const bool a_isActive)
+{
+    m_isActive = a_isActive;
+}
+
+
 void Entity::Initialize() const
 {
     for (const std::shared_ptr<EntityComponent>& l_component : m_components)
@@ -28,6 +35,7 @@ void Entity::Initialize() const
     }
 }
 
+
 void Entity::GameplayStarted() const
 {
     for (const std::shared_ptr<EntityComponent>& l_component : m_components)
@@ -36,6 +44,7 @@ void Entity::GameplayStarted() const
     for (const std::shared_ptr<TransformComponent>& l_child : Transform()->GetChildren())
         l_child->GetEntity()->GameplayStarted();
 }
+
 
 void Entity::Update() const
 {

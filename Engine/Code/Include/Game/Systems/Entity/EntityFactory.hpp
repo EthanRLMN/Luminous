@@ -26,6 +26,8 @@ public:
         {
             const std::shared_ptr<Entity> l_entity = it->second(a_entityManager);
             l_entity->AddComponent(std::make_shared<TransformComponent>());
+            l_entity->Transform()->SetEntity(l_entity);
+
             return l_entity;
         }
         return nullptr;

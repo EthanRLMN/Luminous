@@ -197,8 +197,8 @@ void VulkanRenderer::UpdateUniformBuffer(const uint32_t& a_currentFrame, IBuffer
     {
         std::shared_ptr<ModelComponent> l_modelComponent = entity->GetComponent<ModelComponent>();
         if (l_modelComponent)
-        { const Maths::Matrix4 modelMatrix = entity->Transform()->GetGlobalMatrix();
-
+        {
+            const Maths::Matrix4 modelMatrix = entity->Transform()->GetGlobalMatrix();
             l_ubo.model = modelMatrix.Transpose();
         }
     }
