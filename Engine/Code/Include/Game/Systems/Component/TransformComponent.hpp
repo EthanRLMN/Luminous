@@ -36,7 +36,6 @@ public:
     [[nodiscard]] inline std::shared_ptr<Entity> GetEntity() const { return m_entity.lock(); }
     [[nodiscard]] inline bool IsActive() const { return m_isActive; }
 
-
     inline void AddChild(const std::shared_ptr<TransformComponent>& a_child) { m_children.push_back(a_child); a_child->SetParent(GetEntity()); }
     inline void RemoveChild(const std::shared_ptr<TransformComponent>& a_child) { m_children.erase(std::ranges::find(m_children, a_child)); a_child->SetParent(nullptr); }
     inline void SetEntity(const std::weak_ptr<Entity>& a_relatedEntity) { m_entity = a_relatedEntity; }

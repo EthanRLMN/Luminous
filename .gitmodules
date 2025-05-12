@@ -14,3 +14,6 @@
 [submodule "Engine/Libs/jolt"]
 	path = Engine/Libs/jolt
 	url = https://github.com/jrouwe/JoltPhysics.git
+[submodule "Engine/Libs/reflect-cpp"]
+	path = Engine/Libs/reflect-cpp
+	url = https://github.com/getml/reflect-cpp.git

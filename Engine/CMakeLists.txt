@@ -59,7 +59,7 @@ set(CMAKE_POSITION_INDEPENDENT_CODE ON)
 set(CMAKE_C_EXTENSIONS OFF)
 set(CMAKE_CXX_EXTENSIONS OFF)
 
-target_link_libraries(${L_TARGET_NAME} PUBLIC Vulkan::Vulkan glfw assimp L_LOGGER L_MATHS Jolt)
+target_link_libraries(${L_TARGET_NAME} PUBLIC Vulkan::Vulkan glfw assimp L_LOGGER L_MATHS Jolt reflectcpp)
 
 
 
@@ -87,6 +87,8 @@ add_custom_command(
         COMMENT "Copying Assets to output directory after build"
 )
 
+
+
 # Ensure Assets are also present in the general binary dir (for IDEs like Visual Studio)
 add_custom_target(CopyAssets ALL
     COMMAND ${CMAKE_COMMAND} -E remove_directory "${CMAKE_BINARY_DIR}/Engine/Assets"
@@ -95,6 +97,8 @@ add_custom_target(CopyAssets ALL
             "${CMAKE_BINARY_DIR}/Engine/Assets"
     COMMENT "Forcefully copying Assets to build directory"
 )
+
+
 
 # Make sure CopyAssets is executed before building the target
 add_dependencies(${L_TARGET_NAME} CopyAssets)
