@@ -11,6 +11,7 @@ class VulkanSwapChain final : public ISwapChain
 public:
 	void Create(IWindow* a_window, IDevice* a_device, ISurface* a_surface) override;
 	void Destroy(IDevice* a_device) override;
+    [[nodiscard]] Maths::Vector2 GetSize() const override { return Maths::Vector2{ static_cast<float>(m_swapChainExtent.width), static_cast<float>(m_swapChainExtent.height) }; }
 	VulkanSwapChain* CastVulkan() override { return this; }
 
     static uint32_t FindMemoryType(const VkPhysicalDevice& a_physicalDevice, const uint32_t& a_typeFilter, const VkMemoryPropertyFlags& a_properties);

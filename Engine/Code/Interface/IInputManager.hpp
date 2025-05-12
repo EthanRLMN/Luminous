@@ -22,7 +22,7 @@ class IInputManager
 public:
 	virtual ~IInputManager() = default;
 	virtual void Initialize(IWindow* a_window) = 0;
-	virtual void Destroy(IWindow* a_window) = 0;
+	virtual void Destroy() = 0;
     virtual void Update() = 0;
 
 	[[nodiscard]] virtual int IsKeyDown(const Key& a_key) const = 0;

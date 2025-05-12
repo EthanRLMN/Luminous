@@ -31,7 +31,7 @@ public:
     static int CastGlfwInput(const CursorInputMode& a_cursorInputMode);
 
     void Initialize(IWindow* a_window) override;
-    void Destroy(IWindow* a_window) override {};
+    void Destroy() override { };
     void Update() override;
 
     [[nodiscard]] int IsKeyDown(const Key& a_key) const override;

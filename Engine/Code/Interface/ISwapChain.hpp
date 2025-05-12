@@ -1,5 +1,6 @@
 #pragma once
-#include <iostream>
+
+#include "Vector2.hpp"
 
 class VulkanSwapChain;
 class IWindow;
@@ -14,8 +15,8 @@ public:
 	virtual ~ISwapChain() = default;
 
 	virtual void Create(IWindow* a_window, IDevice* a_device, ISurface* a_surface) = 0;
-
 	virtual void Destroy(IDevice* a_device) = 0;
+    [[nodiscard]] virtual Maths::Vector2 GetSize() const = 0;
 
 	virtual VulkanSwapChain* CastVulkan()
 	{

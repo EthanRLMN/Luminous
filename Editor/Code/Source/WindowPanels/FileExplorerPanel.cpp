@@ -4,6 +4,8 @@
 #include "TextEditorPanel.hpp"
 #include "WindowPanels/FileExplorerPanel.hpp"
 
+#include <iostream>
+
 #include "Rendering/Vulkan/VulkanRenderer.hpp"
 #include "Rendering/Vulkan/VulkanTexture.hpp"
 

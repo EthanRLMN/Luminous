@@ -23,6 +23,7 @@ public:
 
     void DrawFrame(IWindow* a_window, IDevice* a_device, ISwapChain* a_swapChain, IPipeline* a_pipeline, IBuffer* a_buffer, IRenderPassManager* a_renderPassManager, IDescriptor* a_descriptor, ISynchronization* a_synchronization, ICommandBuffer* a_commandBuffer, IFrameBufferManager* a_frameBufferManager, IDepthResource* a_depthResource, ISurface* a_surface, IMultiSampling* a_multisampling, IInputManager* a_inputManager, EntityManager a_entityManager) override;
     void Destroy() override {};
+    void SetViewportSize(float a_width, float a_height) override { m_viewportWidth = a_width; m_viewportHeight = a_height; };
     VulkanRenderer* CastVulkan() override { return this; }
 
 	void RecordCommandBuffer(const VkCommandBuffer& a_commandBuffer, const VkPipeline& a_graphicsPipeline, const VkPipelineLayout& a_pipelineLayout, const uint32_t& a_imageIndex, ISwapChain* a_swapChain, const IRenderPassManager* a_renderPassManager, IDescriptor* a_descriptor, const IFrameBufferManager* a_frameBufferManager, const EntityManager& a_entityManager) const;
@@ -42,7 +43,6 @@ public:
 	void CreateViewportImage(IDevice* a_device, ISwapChain* a_swapChain);
     void CopyImageToViewport(ISwapChain* a_swapChain, const VkCommandBuffer& a_cmdBuffer) const;
     void DestroyViewportImage(IDevice* a_device);
-    void SetViewportSize(const float a_x, const float a_y) { m_viewportWidth = a_x; m_viewportHeight = a_y; };
 
     void CreateDefaultTextureSampler(IDevice* a_device);
 
