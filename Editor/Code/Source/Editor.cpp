@@ -36,7 +36,6 @@ Editor::~Editor()
 void Editor::Destroy()
 {
     ImGuiIO& l_io = ImGui::GetIO();
-    ImGui::SaveIniSettingsToDisk(l_io.IniFilename);
 
     if (m_engine)
     {
@@ -71,7 +70,7 @@ void Editor::SetupImGui() const
     l_io.ConfigViewportsNoTaskBarIcon = false;
     l_io.ConfigViewportsNoAutoMerge = false;
     l_io.ConfigDockingAlwaysTabBar = true;
-    EditorLayout::LoadEditorLayout(); // Load preconfigured editor layout
+    l_io.IniFilename = "Editor/Assets/EditorConfig.ini";
 
     l_io.Fonts->AddFontFromFileTTF("Editor/Assets/Fonts/Roboto-Bold.ttf", 18.0f, nullptr, l_io.Fonts->GetGlyphRangesDefault());
 
