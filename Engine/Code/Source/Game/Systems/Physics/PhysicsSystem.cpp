@@ -16,6 +16,8 @@
 #include "Game/Systems/Physics/PhysicsObjectLayerPairFilter.hpp"
 #include "Game/Systems/Physics/PhysicsObjectVsBroadPhaseLayerFilter.hpp"
 
+#include "jolt/Physics/Body/Body.h"
+
 
 // Default value for the TempAllocator (10MB by default)
 constexpr JPH::uint32 TempAllocatorSize = 10 * 1024 * 1024;
@@ -43,6 +45,28 @@ void PhysicsSystem::Init(const Settings& a_settings)
 
     m_collisionListener = new PhysicsCollisionListener(); // Create a contact listener that gets notified when bodies (are about to) collide, and when they separate again | MUST BE THREAD SAFE
     m_physicsSystem->SetContactListener(m_collisionListener);
+
+
+    
+    JPH::BoxShapeSettings settings(JPH::Vec3(40.0f,50.f,50.f));
+    settings.SetEmbedded();
+    JPH::ShapeSettings::ShapeResult floor_shape_result = settings.Create();
+    JPH::ShapeRefC floor_shape = floor_shape_result.Get();
+
+    JPH::BodyCreationSettings bodysettings(floor_shape, JPH::RVec3(0.0f, -1.0f, 0.0f), JPH::Quat::sIdentity(), JPH::EMotionType::Dynamic, Layers::DYNAMIC);
+
+    JPH::Body* body1 = GetBodyInterface().CreateBody(bodysettings);
+
+    JPH::BoxShapeSettings settings2(JPH::Vec3(50.f, 50.f, 50.f));
+    settings2.SetEmbedded();
+    JPH::ShapeSettings::ShapeResult floor_shape_result2 = settings2.Create();
+    JPH::ShapeRefC floor_shape2 = floor_shape_result2.Get();
+
+    JPH::BodyCreationSettings bodysettings2(floor_shape2, JPH::RVec3(0.0f, -1.0f, 0.0f), JPH::Quat::sIdentity(), JPH::EMotionType::Dynamic, Layers::DYNAMIC);
+
+    JPH::Body* body2 = GetBodyInterface().CreateBody(bodysettings2);
+
+    
 }
 
 
