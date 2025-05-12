@@ -16,7 +16,7 @@ public:
     inline void OnContactAdded(const JPH::Body& a_inBody1, const JPH::Body& a_inBody2, const JPH::ContactManifold& a_inManifold, JPH::ContactSettings& a_ioSettings) override
     {
 
-        DEBUG_LOG_INFO("bite");
+        
         static_cast<void>(a_inManifold); static_cast<void>(a_ioSettings);
         if (a_inBody1.IsSensor() || a_inBody2.IsSensor())
         {

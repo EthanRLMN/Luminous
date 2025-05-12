@@ -44,6 +44,7 @@ void PhysicsSystem::Init(const Settings& a_settings)
     m_physicsSystem->SetBodyActivationListener(m_bodyActivationListener);
 
     m_collisionListener = new PhysicsCollisionListener(); // Create a contact listener that gets notified when bodies (are about to) collide, and when they separate again | MUST BE THREAD SAFE
+    
     m_physicsSystem->SetContactListener(m_collisionListener);
 
 
@@ -65,6 +66,15 @@ void PhysicsSystem::Init(const Settings& a_settings)
     JPH::BodyCreationSettings bodysettings2(floor_shape2, JPH::RVec3(0.0f, -1.0f, 0.0f), JPH::Quat::sIdentity(), JPH::EMotionType::Dynamic, Layers::DYNAMIC);
 
     JPH::Body* body2 = GetBodyInterface().CreateBody(bodysettings2);
+
+    GetBodyInterface().AddBody(body1->GetID(), JPH::EActivation::Activate);
+    GetBodyInterface().AddBody(body2->GetID(), JPH::EActivation::Activate);
+
+    JPH::BodyIDVector bvecid;
+    m_physicsSystem->GetBodies(bvecid);
+    DEBUG_LOG_ERROR("{}", bvecid.size());
+
+    //DEBUG_LOG_INFO("{}", GetBodyInterface().);
 
     
 }
