@@ -1,8 +1,20 @@
 #include "Game/Systems/Component/TransformComponent.hpp"
-
-#include <iostream>
-
 #include "Game/Systems/Entity/Entity.hpp"
+
+
+void TransformComponent::AddChild(const std::shared_ptr<TransformComponent>& a_child)
+{
+    if (a_child && std::ranges::find(m_children, a_child) == m_children.end())
+        m_children.push_back(a_child);
+}
+
+
+void TransformComponent::RemoveChild(const std::shared_ptr<TransformComponent>& a_child)
+{
+    const auto it = std::ranges::find(m_children, a_child);
+    if (it != m_children.end())
+        m_children.erase(it);
+}
 
 
 void TransformComponent::SetActive(const bool a_isActive)
@@ -153,35 +165,28 @@ void TransformComponent::SetGlobalPosition(const Maths::Vector3 a_newPos)
 }
 
 
-void TransformComponent::SetParent(const std::shared_ptr<Entity>& a_newParent)
+void TransformComponent::SetParent(const std::shared_ptr<TransformComponent>& a_newParent)
 {
-    if (m_parent.lock() != a_newParent)
+    if (m_parent.lock() != (a_newParent ? a_newParent->GetEntity() : nullptr ))
     {
-        std::shared_ptr<TransformComponent> l_tempParent = a_newParent->Transform();
+        std::shared_ptr<TransformComponent> l_tempParent = a_newParent;
         while (l_tempParent)
         {
-            if (l_tempParent == shared_from_this())
+            if (l_tempParent.get() == this)
                 return;
 
-            l_tempParent = l_tempParent->GetParent()->Transform();
+            l_tempParent = l_tempParent->GetParent() ? l_tempParent->GetParent()->Transform() : nullptr;
         }
 
-        if (m_parent.lock())
+        if (std::shared_ptr<Entity> l_oldParent = m_parent.lock())
         {
-            const std::shared_ptr<TransformComponent> l_oldParentTransform = m_parent.lock()->Transform();
+            const std::shared_ptr<TransformComponent> l_oldParentTransform = l_oldParent->Transform();
             if (l_oldParentTransform)
-                l_oldParentTransform->RemoveChild(m_parent.lock()->Transform());
+                l_oldParentTransform->RemoveChild(std::shared_ptr<TransformComponent>(this));
         }
 
-        m_parent = a_newParent;
+        m_parent = a_newParent ? a_newParent->GetEntity() : nullptr;
         UpdateGlobalTransform();
-
-        if (m_parent.lock())
-        {
-            const std::shared_ptr<TransformComponent> l_newParentTransform = m_parent.lock()->Transform();
-            if (l_newParentTransform)
-                l_newParentTransform->AddChild(std::shared_ptr<TransformComponent>(this));
-        }
     }
 }
 

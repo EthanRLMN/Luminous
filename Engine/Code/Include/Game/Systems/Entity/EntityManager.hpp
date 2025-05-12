@@ -25,6 +25,7 @@ public:
     [[nodiscard]] inline size_t GetEntityCount() const { return m_entities.size(); }
     [[nodiscard]] inline bool IsEmpty() const { return m_entities.empty(); }
     [[nodiscard]] inline bool HasEntity(const std::shared_ptr<Entity>& a_entity) const { return std::ranges::find(m_entities, a_entity) != m_entities.end(); }
+    [[nodiscard]] static std::vector<std::string> GetAvailableTemplates();
 
     [[nodiscard]] std::shared_ptr<Entity> GetEntityByName(const std::string& a_name) const;
     [[nodiscard]] std::shared_ptr<Entity> GetFirstEntityByParent(const std::shared_ptr<Entity>& a_parent) const;

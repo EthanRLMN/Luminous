@@ -156,7 +156,7 @@ public:
 private:
     inline static void UpdateDeltaTime()
     {
-        const std::chrono::high_resolution_clock::time_point l_currentTimePoint = std::chrono::high_resolution_clock::now();
+        const std::chrono::steady_clock::time_point l_currentTimePoint = std::chrono::steady_clock::now();
         const double l_delta = std::chrono::duration<double>(l_currentTimePoint - s_lastTime).count();
 
         s_deltaTime = static_cast<float>(l_delta);
@@ -190,5 +190,5 @@ private:
 
     inline static double s_totalTimeElapsed { 0.0 }; // Captures the total time elapsed since the beginning of the program. Useful for timers
 
-    inline static std::chrono::high_resolution_clock::time_point s_lastTime { std::chrono::high_resolution_clock::now() };
+    inline static std::chrono::steady_clock::time_point s_lastTime{ std::chrono::steady_clock::now() };
 };

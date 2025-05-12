@@ -1,6 +1,5 @@
 #pragma once
 
-#include <algorithm>
 #include <memory>
 #include <vector>
 
@@ -36,9 +35,9 @@ public:
     [[nodiscard]] inline std::shared_ptr<Entity> GetEntity() const { return m_entity.lock(); }
     [[nodiscard]] inline bool IsActive() const { return m_isActive; }
 
-    inline void AddChild(const std::shared_ptr<TransformComponent>& a_child) { m_children.push_back(a_child); a_child->SetParent(GetEntity()); }
-    inline void RemoveChild(const std::shared_ptr<TransformComponent>& a_child) { m_children.erase(std::ranges::find(m_children, a_child)); a_child->SetParent(nullptr); }
     inline void SetEntity(const std::weak_ptr<Entity>& a_relatedEntity) { m_entity = a_relatedEntity; }
+    void AddChild(const std::shared_ptr<TransformComponent>& a_child);
+    void RemoveChild(const std::shared_ptr<TransformComponent>& a_child);
     void SetActive(bool a_isActive);
     void SetLocalMatrix(const Maths::Matrix4& a_newMatrix);
     void SetLocalPosition(Maths::Vector3 a_newPos);
@@ -50,7 +49,7 @@ public:
     void SetGlobalRotationQuat(Maths::Quaternion a_newRotQuat);
     void SetGlobalMatrix(const Maths::Matrix4& a_newMatrix);
     void SetGlobalPosition(Maths::Vector3 a_newPos);
-    void SetParent(const std::shared_ptr<Entity>& a_newParent);
+    void SetParent(const std::shared_ptr<TransformComponent>& a_newParent);
     void SetInterpolatedRotation(const Maths::Quaternion& a_start, const Maths::Quaternion& a_end, float a_factor);
 
 

@@ -58,6 +58,7 @@ set(CMAKE_POSITION_INDEPENDENT_CODE ON)
 # Disable C and C++ compiler extensions.
 set(CMAKE_C_EXTENSIONS OFF)
 set(CMAKE_CXX_EXTENSIONS OFF)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 target_link_libraries(${L_TARGET_NAME} PUBLIC Vulkan::Vulkan glfw assimp L_LOGGER L_MATHS Jolt reflectcpp)
 

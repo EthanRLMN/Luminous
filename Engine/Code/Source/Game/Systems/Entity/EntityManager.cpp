@@ -55,6 +55,12 @@ void EntityManager::GameplayStarted() const
 }
 
 
+std::vector<std::string> EntityManager::GetAvailableTemplates()
+{
+    return EntityFactory::Get().GetAvailableTemplates();
+}
+
+
 std::shared_ptr<Entity> EntityManager::GetEntityByName(const std::string& a_name) const
 {
     for (const std::shared_ptr<Entity>& l_entity : m_entities)

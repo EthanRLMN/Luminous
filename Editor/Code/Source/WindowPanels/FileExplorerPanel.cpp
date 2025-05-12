@@ -1,21 +1,19 @@
-#include "imgui.h"
-#include "imgui/backends/imgui_impl_vulkan.h"
-
-#include "TextEditorPanel.hpp"
 #include "WindowPanels/FileExplorerPanel.hpp"
 
+#include <filesystem>
 #include <iostream>
+#include <string>
 
 #include "Rendering/Vulkan/VulkanRenderer.hpp"
 #include "Rendering/Vulkan/VulkanTexture.hpp"
+#include "backends/imgui_impl_vulkan.h"
 
 
 static const std::filesystem::path s_AssetPath = "Engine/Assets";
 static const std::filesystem::path s_IconPath = "Editor/Assets/Icons/";
 
 
-FileExplorerPanel::FileExplorerPanel(Editor* a_editor, const std::string& a_windowIdentifier) :
-    IWindowPanel(a_editor, a_windowIdentifier)
+FileExplorerPanel::FileExplorerPanel(Editor* a_editor, const std::string& a_windowIdentifier) : IWindowPanel(a_editor, a_windowIdentifier)
 {
     m_currentDirectory = s_AssetPath;
     m_engine = a_editor->GetEngine();
@@ -63,7 +61,7 @@ void FileExplorerPanel::Render()
         float thumbnailSize = 64.0f;
         float cellSize = thumbnailSize + padding;
         float panelWidth = ImGui::GetContentRegionAvail().x;
-        int columnCount = (int) (panelWidth / cellSize);
+        int columnCount = static_cast<int>(panelWidth / cellSize);
         if (columnCount < 1)
             columnCount = 1;
 

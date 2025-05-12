@@ -1,11 +1,7 @@
 #pragma once
 
-#include <filesystem>
-#include "GLFW/glfw3.h"
-
-#include "Interface/IWindowPanel.hpp"
 #include "TextEditorPanel.hpp"
-#include "stb_image.h"
+#include "Interface/IWindowPanel.hpp"
 
 
 class FileExplorerPanel : public IWindowPanel
@@ -13,8 +9,8 @@ class FileExplorerPanel : public IWindowPanel
 public:
     explicit FileExplorerPanel(Editor* a_editor, const std::string& a_windowIdentifier);
 
-    void Init() override {};
-    void Update() override {};
+    void Init() override {}
+    void Update() override {}
     void Render() override;
     void Destroy() override;
 
@@ -28,8 +24,8 @@ private:
     std::shared_ptr<ITexture> m_directoryIconTexture;
     std::shared_ptr<ITexture> m_fileIconTexture;
 
-    ImTextureID m_directoryDescriptor = NULL;
-    ImTextureID m_fileDescriptor = NULL;
+    ImTextureID m_directoryDescriptor;
+    ImTextureID m_fileDescriptor;
 };
 
 std::shared_ptr<ITexture> LoadTexture(Engine* engine, const std::string& path);
