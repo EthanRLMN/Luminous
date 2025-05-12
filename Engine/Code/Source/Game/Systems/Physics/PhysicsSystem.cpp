@@ -61,6 +61,7 @@ void PhysicsSystem::Init(const Settings& a_settings)
     settings2.SetEmbedded();
     JPH::ShapeSettings::ShapeResult floor_shape_result2 = settings2.Create();
     JPH::ShapeRefC floor_shape2 = floor_shape_result2.Get();
+    
     RigidBody* l_rigidbody2 = CreateRigidBody(floor_shape2);
     //DEBUG_LOG_INFO("{}", GetBodyInterface().);
 

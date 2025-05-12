@@ -26,16 +26,28 @@ public:
 
         RigidBody* l_rigidbodySource = m_physicsSystem->GetRigidBodyMap()[a_inBody1.GetID()];
         RigidBody* l_rigidbodyOther = m_physicsSystem->GetRigidBodyMap()[a_inBody2.GetID()];
+        
 
-        if (m_physicsSystem) 
+        if (m_physicsSystem)
         {
-            l_rigidbodySource->OnCollisionEnter(l_rigidbodyOther);
+            if (a_inBody1.IsSensor())
+            {
+                l_rigidbodySource->OnTriggerEnter(l_rigidbodyOther);
+            } else
+            {
+                l_rigidbodySource->OnCollisionEnter(l_rigidbodyOther);
+            }
+
+            if (a_inBody2.IsSensor())
+            {
+                l_rigidbodyOther->OnTriggerEnter(l_rigidbodySource);
+            } else
+            {
+                l_rigidbodyOther->OnCollisionEnter(l_rigidbodySource);
+            }
         }
 
-        if (a_inBody1.IsSensor() || a_inBody2.IsSensor())
-        {
-            
-        }
+        
     }
 
 

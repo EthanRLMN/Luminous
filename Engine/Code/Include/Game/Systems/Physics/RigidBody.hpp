@@ -104,6 +104,7 @@ public:
     inline void SetUserData(const JPH::uint64 a_inUserData) const { m_rigidBody->SetUserData(a_inUserData); }
 
     inline virtual void OnCollisionEnter(RigidBody* a_other) { DEBUG_LOG_ERROR("COLLIDED"); };
+    inline virtual void OnTriggerEnter(RigidBody* a_other) { DEBUG_LOG_ERROR("TRIGGERED"); };
 
 private:
     JPH::Body* m_rigidBody { nullptr };
