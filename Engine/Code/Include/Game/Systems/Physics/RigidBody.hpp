@@ -6,6 +6,7 @@
 #include "Jolt/Physics/Body/BodyCreationSettings.h"
 #include "Jolt/Physics/Body/BodyID.h"
 #include "Jolt/Physics/SoftBody/SoftBodyCreationSettings.h"
+#include "Logger.hpp"
 
 
 class RigidBody

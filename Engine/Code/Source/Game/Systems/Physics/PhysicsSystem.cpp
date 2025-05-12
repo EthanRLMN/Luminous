@@ -49,31 +49,19 @@ void PhysicsSystem::Init(const Settings& a_settings)
 
 
     
-    JPH::BoxShapeSettings settings(JPH::Vec3(40.0f,50.f,50.f));
+
+
+    JPH::BoxShapeSettings settings(JPH::Vec3(40.0f, 50.f, 50.f));
     settings.SetEmbedded();
     JPH::ShapeSettings::ShapeResult floor_shape_result = settings.Create();
     JPH::ShapeRefC floor_shape = floor_shape_result.Get();
-
-    JPH::BodyCreationSettings bodysettings(floor_shape, JPH::RVec3(0.0f, -1.0f, 0.0f), JPH::Quat::sIdentity(), JPH::EMotionType::Dynamic, Layers::DYNAMIC);
-
-    JPH::Body* body1 = GetBodyInterface().CreateBody(bodysettings);
+    RigidBody* l_rigidbody1 = CreateRigidBody(floor_shape);
 
     JPH::BoxShapeSettings settings2(JPH::Vec3(50.f, 50.f, 50.f));
     settings2.SetEmbedded();
     JPH::ShapeSettings::ShapeResult floor_shape_result2 = settings2.Create();
     JPH::ShapeRefC floor_shape2 = floor_shape_result2.Get();
-
-    JPH::BodyCreationSettings bodysettings2(floor_shape2, JPH::RVec3(0.0f, -1.0f, 0.0f), JPH::Quat::sIdentity(), JPH::EMotionType::Dynamic, Layers::DYNAMIC);
-
-    JPH::Body* body2 = GetBodyInterface().CreateBody(bodysettings2);
-
-    GetBodyInterface().AddBody(body1->GetID(), JPH::EActivation::Activate);
-    GetBodyInterface().AddBody(body2->GetID(), JPH::EActivation::Activate);
-
-    JPH::BodyIDVector bvecid;
-    m_physicsSystem->GetBodies(bvecid);
-    DEBUG_LOG_ERROR("{}", bvecid.size());
-
+    RigidBody* l_rigidbody2 = CreateRigidBody(floor_shape2);
     //DEBUG_LOG_INFO("{}", GetBodyInterface().);
 
     
@@ -163,8 +151,11 @@ RigidBody* PhysicsSystem::CreateRigidBody(const JPH::Shape* a_shape, const JPH::
 
     JPH::Body* l_body = GetBodyInterface().CreateBody(l_bodySettings);
     GetBodyInterface().AddBody(l_body->GetID(), JPH::EActivation::Activate);
+    
+    RigidBody* l_rig = new RigidBody(l_body);
 
-    m_rigidBodies.emplace_back(reinterpret_cast<RigidBody*>(l_body));
+    m_rigidBodies.emplace_back(l_rig);
+
     return m_rigidBodies.back();
 }
 
