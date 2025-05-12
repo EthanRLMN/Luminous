@@ -3,8 +3,6 @@
 #include "backends/imgui_impl_vulkan.h"
 
 #include "Editor.hpp"
-
-#include "EditorLayout.hpp"
 #include "EditorStyle.hpp"
 
 #include "Interface/IWindowPanel.hpp"
@@ -35,8 +33,6 @@ Editor::~Editor()
 
 void Editor::Destroy()
 {
-    ImGuiIO& l_io = ImGui::GetIO();
-
     if (m_engine)
     {
         for (IWindowPanel* window : m_windows)
