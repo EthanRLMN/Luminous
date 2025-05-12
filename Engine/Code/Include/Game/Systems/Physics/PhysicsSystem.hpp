@@ -56,6 +56,8 @@ public:
     [[nodiscard]] inline JPH::BodyActivationListener* GetBodyActivationListener() const { return m_bodyActivationListener; }
     [[nodiscard]] inline JPH::ContactListener* GetContactListener() const { return m_collisionListener; }
     [[nodiscard]] inline std::vector<RigidBody*> GetRigidBodies() const { return m_rigidBodies; }
+    [[nodiscard]] inline std::unordered_map<JPH::BodyID, RigidBody*> GetRigidBodyMap() const { return m_bodiesToRigidBodies; }
+
 
 
     void NotifyCollisionEnter(PhysicsCollisionEvent a_collisionEvent, const JPH::BodyID& a_body1, const JPH::BodyID& a_body2);

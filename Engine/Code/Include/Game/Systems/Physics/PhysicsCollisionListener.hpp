@@ -13,7 +13,8 @@
 class PhysicsCollisionListener final : public JPH::ContactListener
 {
 public:
-    explicit PhysicsCollisionListener() = default;
+    PhysicsCollisionListener(PhysicsSystem* manager) :
+        m_physicsSystem(manager) {}
 
     void Init(PhysicsSystem* a_system) { m_physicsSystem = a_system; }
 
@@ -22,6 +23,15 @@ public:
     inline void OnContactAdded(const JPH::Body& a_inBody1, const JPH::Body& a_inBody2, const JPH::ContactManifold& a_inManifold, JPH::ContactSettings& a_ioSettings) override
     {
         static_cast<void>(a_inManifold); static_cast<void>(a_ioSettings);
+
+        RigidBody* l_rigidbodySource = m_physicsSystem->GetRigidBodyMap()[a_inBody1.GetID()];
+        RigidBody* l_rigidbodyOther = m_physicsSystem->GetRigidBodyMap()[a_inBody2.GetID()];
+
+        if (m_physicsSystem) 
+        {
+            l_rigidbodySource->OnCollisionEnter(l_rigidbodyOther);
+        }
+
         if (a_inBody1.IsSensor() || a_inBody2.IsSensor())
         {
             

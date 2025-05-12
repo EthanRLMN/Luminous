@@ -43,7 +43,7 @@ void PhysicsSystem::Init(const Settings& a_settings)
     m_bodyActivationListener = new PhysicsBodyActivationListener(); // Create a body activation listener that gets notified when bodies activate and go to sleep | MUST BE THREAD SAFE
     m_physicsSystem->SetBodyActivationListener(m_bodyActivationListener);
 
-    m_collisionListener = new PhysicsCollisionListener(); // Create a contact listener that gets notified when bodies (are about to) collide, and when they separate again | MUST BE THREAD SAFE
+    m_collisionListener = new PhysicsCollisionListener(this); // Create a contact listener that gets notified when bodies (are about to) collide, and when they separate again | MUST BE THREAD SAFE
     
     m_physicsSystem->SetContactListener(m_collisionListener);
 
