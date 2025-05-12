@@ -6,12 +6,18 @@
 #include "jolt/Jolt/Physics/PhysicsSystem.h"
 #include "Logger.hpp"
 
+#include "PhysicsSystem.hpp"
+
 
 // TODO : Finish this class
 class PhysicsCollisionListener final : public JPH::ContactListener
 {
 public:
     explicit PhysicsCollisionListener() = default;
+
+    void Init(PhysicsSystem* a_system) { m_physicsSystem = a_system; }
+
+
 
     inline void OnContactAdded(const JPH::Body& a_inBody1, const JPH::Body& a_inBody2, const JPH::ContactManifold& a_inManifold, JPH::ContactSettings& a_ioSettings) override
     {
@@ -51,4 +57,8 @@ public:
 
         return JPH::ValidateResult::AcceptContact;
     }
+
+private:
+    PhysicsSystem* m_physicsSystem;
+
 };

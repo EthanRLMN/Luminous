@@ -92,6 +92,7 @@ private:
     //JPH::BodyCreationSettings* m_sphereSettings { nullptr };
 
     std::vector<RigidBody*> m_rigidBodies{};
+    std::unordered_map<JPH::BodyID, RigidBody*> m_bodiesToRigidBodies;
 };
 
 

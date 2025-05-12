@@ -154,9 +154,13 @@ RigidBody* PhysicsSystem::CreateRigidBody(const JPH::Shape* a_shape, const JPH::
     
     RigidBody* l_rig = new RigidBody(l_body);
 
-    m_rigidBodies.emplace_back(l_rig);
+    //m_rigidBodies.emplace_back(l_rig);
 
-    return m_rigidBodies.back();
+    
+
+    m_bodiesToRigidBodies[l_body->GetID()] = l_rig;
+
+    return l_rig;
 }
 
 
