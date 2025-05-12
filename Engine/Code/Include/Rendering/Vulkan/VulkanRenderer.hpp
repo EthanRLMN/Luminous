@@ -62,8 +62,8 @@ private:
     VkResult CreateViewportImageInfo(const VkDevice& a_device, const VkFormat& a_swapchainImageFormat);
     
     
-    void ImageViewCreateInfo(VkImageViewCreateInfo& a_viewInfo, const VkImage& a_vkImage,ISwapChain* a_swapChain);
-    void SamplerCreateInfo(VkSamplerCreateInfo& a_samplerInfo);
+    static void ImageViewCreateInfo(VkImageViewCreateInfo& a_viewInfo, const VkImage& a_vkImage,ISwapChain* a_swapChain);
+    static void SamplerCreateInfo(VkSamplerCreateInfo& a_samplerInfo);
     static void ImageMemoryBarrierSrc(VkImageMemoryBarrier& a_barrierSrc, ISwapChain* a_swapChain, uint32_t a_currentFrame);
     static void ImageMemoryBarrierDst(VkImageMemoryBarrier& a_barrierDst, const VkImage& a_vkImage);
     static void ImageCopyRegion(VkImageCopy& a_copyRegion, float a_viewportWidth, float a_viewportHeight);
