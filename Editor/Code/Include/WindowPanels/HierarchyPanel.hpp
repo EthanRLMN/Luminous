@@ -3,6 +3,7 @@
 
 #include "Game/Scene.hpp"
 #include "Game/Systems/Entity/Entity.hpp"
+#include "Game/Systems/Entity/EntityManager.hpp"
 #include "Interface/IWindowPanel.hpp"
 
 class HierarchyPanel : public IWindowPanel
@@ -30,8 +31,6 @@ private:
 
     bool m_isCreatingEntity = false;
     char m_newEntityName[256] = "New Entity";
-
-    std::shared_ptr<Entity> m_selectedEntity = nullptr;
 
     void BuildHierarchy();
     void DrawEntityNode(const EntityNode& node);

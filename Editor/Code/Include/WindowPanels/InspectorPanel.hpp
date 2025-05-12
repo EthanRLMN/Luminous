@@ -2,6 +2,7 @@
 
 #include "Interface/IWindowPanel.hpp"
 #include "imguizmo/ImGuizmo.h"
+#include "Game/Systems/Camera/CameraEditor.hpp"
 
 class InspectorPanel : public IWindowPanel
 {
@@ -14,6 +15,6 @@ public:
     void Destroy() override {};
 
 private:
-    Entity* selectedEntity{ nullptr };
     std::array<float, 16> ToFloatArray(const Maths::Matrix4& matrix);
+    CameraEditor* m_camera = nullptr;
 };

@@ -1,8 +1,4 @@
 #include "WindowPanels/HierarchyPanel.hpp"
-#include "Editor.hpp"
-#include "Game/Systems/Entity/Entity.hpp"
-#include "Game/Systems/Entity/EntityManager.hpp"
-#include "imgui.h"
 
 void HierarchyPanel::Render()
 {
@@ -25,7 +21,7 @@ void HierarchyPanel::Render()
         ImGui::EndPopup();
     }
 
-    if (m_isCreatingEntity)
+        if (m_isCreatingEntity)
     {
         ImGui::InputText("Entity Name", m_newEntityName, sizeof(m_newEntityName));
 
@@ -60,14 +56,14 @@ void HierarchyPanel::DrawEntityNode(const EntityNode& node)
     if (node.children.empty())
         flags |= ImGuiTreeNodeFlags_Leaf;
 
-    if (m_selectedEntity == node.entity)
+    if (p_isEntitySelected == node.entity)
         flags |= ImGuiTreeNodeFlags_Selected;
 
     bool open = ImGui::TreeNodeEx((void*) node.entity.get(), flags, node.entity->GetName().c_str());
 
     if (ImGui::IsItemClicked() && !ImGui::IsItemToggledOpen())
     {
-        m_selectedEntity = node.entity;
+        p_isEntitySelected = node.entity;
     }
 
     if (ImGui::BeginDragDropSource())

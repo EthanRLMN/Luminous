@@ -36,13 +36,13 @@ void InspectorPanel::Render()
             ImGui::EndPopup();
         }
 
-       if (selectedEntity)
+        if (p_isEntitySelected)
         {
             if (ImGui::CollapsingHeader("Transform"))
             {
-                Maths::Vector3 position = selectedEntity->GetPosition();
-                Maths::Quaternion rotationQuat = selectedEntity->GetRotation();
-                Maths::Vector3 scale = selectedEntity->GetScale();
+                Maths::Vector3 position = p_isEntitySelected->GetPosition();
+                Maths::Quaternion rotationQuat = p_isEntitySelected->GetRotation();
+                Maths::Vector3 scale = p_isEntitySelected->GetScale();
 
                 Maths::Vector3 rotation = rotationQuat.ToEulerAngles(true);
 
@@ -50,14 +50,14 @@ void InspectorPanel::Render()
                 ImGui::InputFloat3("Rotation", &rotation.x);
                 ImGui::InputFloat3("Scale", &scale.x);
 
-                selectedEntity->SetPosition(position);
-                selectedEntity->SetRotation(Maths::Quaternion::FromEulerAngles(rotation));
-                selectedEntity->SetScale(scale);
+                p_isEntitySelected->SetPosition(position);
+                p_isEntitySelected->SetRotation(Maths::Quaternion::FromEulerAngles(rotation));
+                p_isEntitySelected->SetScale(scale);
             }
 
             ImGuizmo::BeginFrame();
 
-            Maths::Matrix4 transform = selectedEntity->GetTRS();
+            Maths::Matrix4 transform = p_isEntitySelected->GetTRS();
             float matrixArray[16];
             MatrixToArray(transform, matrixArray);
 
@@ -65,8 +65,13 @@ void InspectorPanel::Render()
             ImVec2 size = ImGui::GetContentRegionAvail();
             ImGuizmo::SetRect(pos.x, pos.y, size.x, size.y);
 
+            Maths::Matrix4 viewMatrix = m_camera->GetViewMatrix();
+            Maths::Matrix4 projectionMatrix = m_camera->GetProjectionMatrix();
+
             float view[16];
             float projection[16];
+            MatrixToArray(viewMatrix, view);
+            MatrixToArray(projectionMatrix, projection);
 
             ImGuizmo::Manipulate(view, projection,
                                  ImGuizmo::TRANSLATE | ImGuizmo::ROTATE | ImGuizmo::SCALE,
@@ -75,9 +80,9 @@ void InspectorPanel::Render()
             Maths::Vector3 newPosition, newEuler, newScale;
             ImGuizmo::DecomposeMatrixToComponents(matrixArray, &newPosition.x, &newEuler.x, &newScale.x);
 
-            selectedEntity->SetPosition(newPosition);
-            selectedEntity->SetRotation(Maths::Quaternion::FromEulerAngles(newEuler));
-            selectedEntity->SetScale(newScale);
+            p_isEntitySelected->SetPosition(newPosition);
+            p_isEntitySelected->SetRotation(Maths::Quaternion::FromEulerAngles(newEuler));
+            p_isEntitySelected->SetScale(newScale);
         }
 
         ImGui::PopStyleColor();
