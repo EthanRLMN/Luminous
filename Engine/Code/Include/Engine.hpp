@@ -19,7 +19,7 @@ public:
 
     void Init();
 	void Update();
-	void Destroy();
+	void Destroy() const;
 
 	void Window();
     void Input();

@@ -2,7 +2,6 @@
 
 #include "Game/Systems/Time.inl"
 #include "Rendering/Vulkan/VulkanRenderInterface.hpp"
-#include "Rendering/Vulkan/VulkanRenderPass.hpp"
 #include "ResourceManager/ResourceManager.hpp"
 
 
@@ -48,7 +47,7 @@ void Engine::Update()
         m_isRunning = false;
 }
 
-void Engine::Destroy()
+void Engine::Destroy() const
 {
     ResourceManager::GetInstance().DeleteResource<VulkanShader>("v=Engine/Assets/Shaders/vert.spv, f=Engine/Assets/Shaders/frag.spv, t=, g=", m_device);
     ResourceManager::Destroy(m_device);

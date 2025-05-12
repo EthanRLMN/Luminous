@@ -35,7 +35,8 @@ Editor::~Editor()
 
 void Editor::Destroy()
 {
-    ImGui::SaveIniSettingsToDisk("Editor/Assets/EditorConfig.ini");
+    ImGuiIO& l_io = ImGui::GetIO();
+    ImGui::SaveIniSettingsToDisk(l_io.IniFilename);
 
     if (m_engine)
     {

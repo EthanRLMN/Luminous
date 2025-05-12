@@ -8,7 +8,7 @@
 void EditorLayout::LoadEditorLayout()
 {
     ImGuiIO& l_io = ImGui::GetIO();
-    l_io.IniFilename = nullptr;
+    l_io.IniFilename = "Editor/Assets/EditorConfig.ini";
 
     try
     {
