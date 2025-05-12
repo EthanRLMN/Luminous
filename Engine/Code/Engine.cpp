@@ -38,7 +38,7 @@ void Engine::Update()
 
     for (const std::shared_ptr<Entity>& entity : m_entityManager.GetEntities())
     {
-        if (entity->GetName() == "Cube")
+        if (entity->GetName() == "Sphere")
         {
             const std::shared_ptr<TransformComponent> l_transform = entity->Transform();
             l_transform->SetLocalPosition(l_transform->GetLocalPosition() + Maths::Vector3::One * Time::GetDeltaTime());

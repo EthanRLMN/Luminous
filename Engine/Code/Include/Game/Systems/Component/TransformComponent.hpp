@@ -36,7 +36,7 @@ public:
     [[nodiscard]] inline bool IsActive() const { return m_isActive; }
 
     inline void SetEntity(const std::weak_ptr<Entity>& a_relatedEntity) { m_entity = a_relatedEntity; }
-    void AddChild(const std::shared_ptr<TransformComponent>& a_child);
+    void AddChild(const std::shared_ptr<TransformComponent>& a_child) const;
     void RemoveChild(const std::shared_ptr<TransformComponent>& a_child);
     void SetActive(bool a_isActive);
     void SetLocalMatrix(const Maths::Matrix4& a_newMatrix);
@@ -49,7 +49,7 @@ public:
     void SetGlobalRotationQuat(Maths::Quaternion a_newRotQuat);
     void SetGlobalMatrix(const Maths::Matrix4& a_newMatrix);
     void SetGlobalPosition(Maths::Vector3 a_newPos);
-    void SetParent(const std::shared_ptr<TransformComponent>& a_newParent);
+    void SetParent(const std::shared_ptr<Entity>& a_newParent);
     void SetInterpolatedRotation(const Maths::Quaternion& a_start, const Maths::Quaternion& a_end, float a_factor);
 
 
