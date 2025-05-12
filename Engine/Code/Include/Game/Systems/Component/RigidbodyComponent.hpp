@@ -3,8 +3,8 @@
 #include <vector>
 
 #include "Game/Systems/Physics/PhysicsCollisionListener.hpp"
-#include "Component/ModelComponent.hpp"
-#include "Physics/RigidBody.hpp"
+#include "Game/Systems/Component/ModelComponent.hpp"
+#include "Game/Systems/Physics/RigidBody.hpp"
 
 class RigidbodyComponent : public EntityComponent
 {

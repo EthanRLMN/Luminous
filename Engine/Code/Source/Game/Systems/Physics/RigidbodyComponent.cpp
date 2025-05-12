@@ -1,4 +1,4 @@
-#include "Component/RigidbodyComponent.hpp"
+#include "Game/Systems/Component/RigidbodyComponent.hpp"
 
 void RigidbodyComponent::Initialize()
 {
