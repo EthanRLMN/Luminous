@@ -21,14 +21,21 @@ void HierarchyPanel::Render()
         ImGui::EndPopup();
     }
 
+    static int selectedTemplate = 0;
+    const char* templates[] = { "Empty", "Light", "Camera" };
+
         if (m_isCreatingEntity)
     {
         ImGui::InputText("Entity Name", m_newEntityName, sizeof(m_newEntityName));
+
+        ImGui::Combo("Template", &selectedTemplate, templates, IM_ARRAYSIZE(templates));
+
 
         if (ImGui::Button("Create"))
         {
             auto newEntity = p_editor->GetEngine()->GetEntityManager()->CreateEntity();
             newEntity->SetName(GenerateUniqueEntityName(m_newEntityName));
+
             m_isCreatingEntity = false;
         }
 

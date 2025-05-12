@@ -118,6 +118,7 @@ void MainPanel::Render()
     }
     if (g_delete)
     {
+        p_editor->GetEngine()->GetEntityManager()->RemoveEntity(p_isEntitySelected);
         g_delete = false;
     }
 

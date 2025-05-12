@@ -26,7 +26,6 @@ void InspectorPanel::Render()
     {
         ImGui::Begin(p_windowIdentifier.c_str(), nullptr, ImGuiWindowFlags_NoCollapse);
         ImGui::PushStyleColor(ImGuiCol_WindowBg, 0xff323432);
-
         if (ImGui::BeginPopupContextWindow())
         {
             if (ImGui::MenuItem("Add Component"))
