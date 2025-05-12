@@ -95,6 +95,9 @@ private:
 
     std::vector<RigidBody*> m_rigidBodies{};
     std::unordered_map<JPH::BodyID, RigidBody*> m_bodiesToRigidBodies;
+
+    RigidBody* l_rigidbodySource;
+    RigidBody* l_rigidbodySource2;
 };
 
 

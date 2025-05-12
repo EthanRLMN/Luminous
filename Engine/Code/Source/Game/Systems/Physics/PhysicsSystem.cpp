@@ -55,16 +55,23 @@ void PhysicsSystem::Init(const Settings& a_settings)
     settings.SetEmbedded();
     JPH::ShapeSettings::ShapeResult floor_shape_result = settings.Create();
     JPH::ShapeRefC floor_shape = floor_shape_result.Get();
-    RigidBody* l_rigidbody1 = CreateRigidBody(floor_shape);
+    l_rigidbodySource = CreateRigidBody(floor_shape);
+    l_rigidbodySource->SetIsSensor(true);
+
+    l_rigidbodySource->AddForce(JPH::Vec3Arg(-5.0f, 0.0f, 0.0f));
 
     JPH::BoxShapeSettings settings2(JPH::Vec3(50.f, 50.f, 50.f));
     settings2.SetEmbedded();
     JPH::ShapeSettings::ShapeResult floor_shape_result2 = settings2.Create();
     JPH::ShapeRefC floor_shape2 = floor_shape_result2.Get();
-    
-    RigidBody* l_rigidbody2 = CreateRigidBody(floor_shape2);
-    //DEBUG_LOG_INFO("{}", GetBodyInterface().);
 
+    
+    
+    l_rigidbodySource2 = CreateRigidBody(floor_shape2);
+    l_rigidbodySource2->SetIsSensor(true);
+    l_rigidbodySource2->AddForce(JPH::Vec3Arg(0.0f, 5.0f, 0.0f));
+    //DEBUG_LOG_INFO("{}", GetBodyInterface().);
+    
     
 }
 
@@ -77,6 +84,9 @@ void PhysicsSystem::Update()
 
     // TODO : Update collision steps to run properly (accumulator returns floats on a scale from 0.25 to 10, we need integers scaled properly)
     constexpr int l_step { 1 };
+
+    std::cout << l_rigidbodySource->GetPosition() << "\n";
+    std::cout << l_rigidbodySource2->GetPosition() << "\n";
 
     m_physicsSystem->Update(Time::GetFixedDeltaTime(), l_step, m_tempAllocator, m_jobSystem);
 }
