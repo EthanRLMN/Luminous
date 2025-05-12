@@ -27,7 +27,7 @@ public:
     void InitPhysics();
 
 
-	void DestroyWindow();
+	void DestroyWindow() const;
     void DestroyInput() const;
 
 	[[nodiscard]] IWindow* GetWindow() const { return m_window; }

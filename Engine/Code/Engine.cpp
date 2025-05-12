@@ -102,8 +102,8 @@ void Engine::Destroy()
     m_renderer->Destroy();
     m_interface->DeleteRenderer(m_renderer);
 
-    DestroyInput();
-    DestroyWindow();
+    DestroyInput(); // Destroy InputManager before the window as it relies on the window's context
+    DestroyWindow(); // Then destroy the window
 }
 
 
@@ -185,7 +185,7 @@ void Engine::InitPhysics()
     m_physicsSystem->Init(l_settings);
 }
 
-void Engine::DestroyWindow()
+void Engine::DestroyWindow() const
 {
     m_window->Destroy();
     m_interface->DeleteWindow(m_window);
@@ -193,6 +193,5 @@ void Engine::DestroyWindow()
 
 void Engine::DestroyInput() const
 {
-    m_inputManager->Destroy(m_window);
     m_interface->DeleteInputManager(m_inputManager);
 }

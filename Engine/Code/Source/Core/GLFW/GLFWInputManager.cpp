@@ -1,6 +1,9 @@
 #include "IWindow.hpp"
 
 #include "Core/GLFW/GLFWInputManager.hpp"
+
+#include <ranges>
+
 #include "Core/GLFW/GLFWWindow.hpp"
 #include "Game/Systems/Input/InputAction.hpp"
 
@@ -18,15 +21,9 @@ void GLFWInputManager::Initialize(IWindow* a_window)
 }
 
 
-void GLFWInputManager::Destroy(IWindow* a_window)
-{
-    glfwDestroyWindow(a_window->CastGLFW()->GetGLFWWindow());
-}
-
-
 void GLFWInputManager::Update()
 {
-    for (auto& [l_name, l_action] : m_actions)
+    for (auto& l_action : m_actions | std::views::values)
     {
         l_action.m_isPressed = false;
         l_action.m_isDown = false;
