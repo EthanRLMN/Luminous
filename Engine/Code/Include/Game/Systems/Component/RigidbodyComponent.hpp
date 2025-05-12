@@ -3,6 +3,26 @@
 #include <vector>
 
 #include "Game/Systems/Physics/PhysicsCollisionListener.hpp"
+#include "Component/ModelComponent.hpp"
+#include "Physics/RigidBody.hpp"
+
+class RigidbodyComponent : public EntityComponent
+{
+public:
+    ~RigidbodyComponent() override = default;
+    void Initialize() override;
+    void GameplayStarted() override{};
+    void Update() override{};
+
+    [[nodiscard]] inline std::shared_ptr<Entity> GetEntity() const { return m_entity.lock(); }
+    inline void SetEntity(const std::weak_ptr<Entity>& a_relatedEntity) { m_entity = a_relatedEntity; }
+
+private:
+    std::weak_ptr<Entity> m_entity{};
+    ModelComponent* m_collisionDebugModel;
+    RigidBody* m_rigidbody;
+};
+
 
 /*
 class RigidbodyComponent : public std::enable_shared_from_this<RigidbodyComponent>

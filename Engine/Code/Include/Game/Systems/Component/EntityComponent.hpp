@@ -1,6 +1,9 @@
 #pragma once
 class Engine;
-
+#include <algorithm>
+#include <memory>
+#include <vector>
+class Entity;
 
 class EntityComponent
 {
@@ -16,5 +19,6 @@ public:
 
 
 private:
+    //std::weak_ptr<Entity> m_entity2{};
     Engine* m_engine { nullptr };
 };
