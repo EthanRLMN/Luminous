@@ -35,10 +35,10 @@ Editor::~Editor()
 
 void Editor::Destroy()
 {
+    ImGui::SaveIniSettingsToDisk("Editor/Assets/EditorConfig.ini");
+
     if (m_engine)
     {
-        ImGui::SaveIniSettingsToDisk("Editor/Assets/EditorConfig.ini");
-
         for (IWindowPanel* window : m_windows)
             UnregisterWindow(window);
 
