@@ -4,6 +4,7 @@
 #include "Game/Scene.hpp"
 #include "Game/Systems/Entity/Entity.hpp"
 #include "Game/Systems/Entity/EntityManager.hpp"
+#include "InspectorPanel.hpp"
 #include "Interface/IWindowPanel.hpp"
 
 class HierarchyPanel : public IWindowPanel
@@ -17,6 +18,8 @@ public:
     void Render() override;
     void Destroy() override {};
 
+    void SetInspectorPanel(InspectorPanel* inspector) { m_inspectorPanel = inspector; }
+
 private:
     struct EntityNode
     {
@@ -28,6 +31,7 @@ private:
     };
 
     std::vector<EntityNode> m_rootEntities;
+    InspectorPanel* m_inspectorPanel = nullptr;
 
     bool m_isCreatingEntity = false;
     char m_newEntityName[256] = "New Entity";

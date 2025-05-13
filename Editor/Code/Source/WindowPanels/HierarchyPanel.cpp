@@ -102,14 +102,17 @@ void HierarchyPanel::DrawEntityNode(const EntityNode& node)
     if (node.children.empty())
         flags |= ImGuiTreeNodeFlags_Leaf;
 
-    if (p_isEntitySelected == node.entity)
+    if (p_isEntitySelected && node.entity && p_isEntitySelected == node.entity)
         flags |= ImGuiTreeNodeFlags_Selected;
+
 
     bool open = ImGui::TreeNodeEx((void*) node.entity.get(), flags, node.entity->GetName().c_str());
 
     if (ImGui::IsItemClicked() && !ImGui::IsItemToggledOpen())
     {
         p_isEntitySelected = node.entity;
+        if (m_inspectorPanel)
+            m_inspectorPanel->SetSelectedEntity(node.entity);
     }
 
     if (ImGui::BeginDragDropSource())
