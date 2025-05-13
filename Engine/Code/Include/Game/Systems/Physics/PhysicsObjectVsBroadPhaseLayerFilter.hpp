@@ -19,6 +19,8 @@ public:
                 return true;
             case Layers::DISABLED:
                 return false;
+            case Layers::KINEMATIC:
+                return true;
             default:
                 JPH_ASSERT(false);
                 return false;
