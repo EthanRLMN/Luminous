@@ -1,18 +1,12 @@
 #include "Editor.hpp"
 
-#include <iostream>
-#include <rfl.hpp>
-#include <rfl/json.hpp>
-#include <string>
-#include <vector>
 
-
-struct Person
+/*struct Person
 {
     rfl::Rename<"firstName", std::string> first_name;
     rfl::Rename<"lastName", std::string> last_name;
     std::vector<Person> children;
-};
+};*/
 
 
 int main()
@@ -57,12 +51,12 @@ int main()
 
     
     Person person;
-    /*
+
     person.first_name = "Alice";
-    person.last_name = "Smith";*/
+    person.last_name = "Smith";
 
 
-    /*
+
     const std::string json_string = rfl::json::write(person, rfl::json::pretty);
     std::cout << json_string << std::endl;
 
