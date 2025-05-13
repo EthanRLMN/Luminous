@@ -95,9 +95,7 @@ void PhysicsSystem::Update()
 
     for (RigidBody* const& l_resource : m_bodiesToRigidBodies | std::views::values)
     {
-        JPH::Vec3 l_bodyPosition = l_resource->GetPosition();
-        Maths::Vector3 l_position = Maths::Vector3(l_bodyPosition.GetX(), l_bodyPosition.GetY(), l_bodyPosition.GetZ());
-        l_resource->GetParentComponent()->GetEntity().get()->Transform()->SetLocalPosition(l_position);
+        l_resource->UpdateToTransform();
     }
 }
 

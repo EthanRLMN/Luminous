@@ -20,6 +20,8 @@ public:
 
     explicit RigidBody(JPH::Body* a_rigidBody) : m_rigidBody(a_rigidBody) {}
 
+
+    void UpdateToTransform();
     inline void GetSubmergedVolume(const JPH::RVec3Arg a_inSurfacePosition, const JPH::Vec3Arg a_inSurfaceNormal, float& a_outTotalVolume, float& a_outSubmergedVolume, JPH::Vec3& a_outRelativeCenterOfBuoyancy) const { return m_rigidBody->GetSubmergedVolume(a_inSurfacePosition, a_inSurfaceNormal, a_outTotalVolume, a_outSubmergedVolume, a_outRelativeCenterOfBuoyancy); }
     [[nodiscard]] inline float GetFriction() const { return m_rigidBody->GetFriction(); }
     [[nodiscard]] inline float GetRestitution() const { return m_rigidBody->GetRestitution(); }
@@ -119,3 +121,5 @@ private:
     RigidbodyComponent* m_parentComponent{ nullptr };
     static JPH::Body s_fixedToWorld;
 };
+
+
