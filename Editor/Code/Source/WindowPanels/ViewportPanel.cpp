@@ -19,19 +19,19 @@ void Viewport::Render()
     float buttonHeight = 40.f;
     ImVec2 buttonSize(buttonWidth, buttonHeight);
 
-    if (ImGui::ImageButton("Move",m_iconMoveID, buttonSize)) 
+    if (ImGui::ImageButton("Move", m_iconMoveID, buttonSize))
     {
-    
+        m_currentGizmoOperation = ImGuizmo::TRANSLATE;
     }
     ImGui::SameLine();
-    if (ImGui::ImageButton("Rotate",m_iconRotateID, buttonSize)) 
+    if (ImGui::ImageButton("Rotate", m_iconRotateID, buttonSize))
     {
-    
+        m_currentGizmoOperation = ImGuizmo::ROTATE;
     }
     ImGui::SameLine();
-    if (ImGui::ImageButton("Resize", m_iconResizeID, buttonSize)) 
+    if (ImGui::ImageButton("Resize", m_iconResizeID, buttonSize))
     {
-    
+        m_currentGizmoOperation = ImGuizmo::SCALE;
     }
 
     ImGui::SameLine(0, 0.4f * avail.x);
@@ -45,7 +45,6 @@ void Viewport::Render()
     {
     
     }
-
 
     VkExtent2D l_extent = p_editor->GetEngine()->GetSwapChain()->CastVulkan()->GetSwapChainExtent();
 
@@ -73,6 +72,7 @@ void Viewport::Render()
 
 
     ImGui::Image(reinterpret_cast<ImTextureID>(dSets), l_imageSize);
+
     ImGui::End();
 }
 

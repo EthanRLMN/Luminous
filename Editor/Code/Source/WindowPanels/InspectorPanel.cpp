@@ -2,7 +2,7 @@
 
 #include "imgui.h"
 
-void MatrixToArray(const Maths::Matrix4& matrix, float out[16])
+void InspectorPanel::MatrixToArray(const Maths::Matrix4& matrix, float out[16])
 {
     for (int row = 0; row < 4; ++row)
         for (int col = 0; col < 4; ++col)
@@ -14,7 +14,7 @@ void InspectorPanel::SetSelectedEntity(const std::shared_ptr<Entity>& entity)
     p_isEntitySelected = entity;
 }
 
-Maths::Matrix4 ArrayToMatrix(const float in[16])
+Maths::Matrix4 InspectorPanel::ArrayToMatrix(const float in[16])
 {
     Maths::Matrix4 result;
     for (int row = 0; row < 4; ++row)
@@ -45,43 +45,18 @@ void InspectorPanel::Render()
             if (ImGui::CollapsingHeader("Transform"))
             {
                 Maths::Vector3 position = p_isEntitySelected->Transform()->GetLocalPosition();
-                Maths::Quaternion rotationQuat = p_isEntitySelected->Transform()->GetLocalRotationQuat();
+                Maths::Vector3 rotation = p_isEntitySelected->Transform()->GetLocalRotationVec();
                 Maths::Vector3 scale = p_isEntitySelected->Transform()->GetLocalScale();
 
-                Maths::Vector3 rotation = rotationQuat.ToEulerAngles(true);
+                if (ImGui::InputFloat3("Position", &position.x))
+                  p_isEntitySelected->Transform()->SetLocalPosition(position);
 
-                ImGui::InputFloat3("Position", &position.x);
                 ImGui::InputFloat3("Rotation", &rotation.x);
                 ImGui::InputFloat3("Scale", &scale.x);
 
-                p_isEntitySelected->Transform()->SetLocalPosition(position);
-                p_isEntitySelected->Transform()->SetLocalRotationQuat(Maths::Quaternion::FromEulerAngles(rotation));
+                p_isEntitySelected->Transform()->SetLocalRotationVec(rotation);
                 p_isEntitySelected->Transform()->SetLocalScale(scale);
             }
-
-            ImGuizmo::BeginFrame();
-
-            Maths::Matrix4 transform = p_isEntitySelected->Transform()->GetLocalMatrix();
-            float matrixArray[16];
-            MatrixToArray(transform, matrixArray);
-
-            ImVec2 pos = ImGui::GetCursorScreenPos();
-            ImVec2 size = ImGui::GetContentRegionAvail();
-            ImGuizmo::SetRect(pos.x, pos.y, size.x, size.y);
-
-            float view[16];
-            float projection[16];
-
-            ImGuizmo::Manipulate(view, projection,
-                                 ImGuizmo::TRANSLATE | ImGuizmo::ROTATE | ImGuizmo::SCALE,
-                                 ImGuizmo::LOCAL, matrixArray);
-
-            Maths::Vector3 newPosition, newEuler, newScale;
-            ImGuizmo::DecomposeMatrixToComponents(matrixArray, &newPosition.x, &newEuler.x, &newScale.x);
-
-            p_isEntitySelected->Transform()->SetLocalPosition(newPosition);
-            p_isEntitySelected->Transform()->SetLocalRotationQuat(Maths::Quaternion::FromEulerAngles(newEuler));
-            p_isEntitySelected->Transform()->SetLocalScale(newScale);
         }
 
         ImGui::PopStyleColor();

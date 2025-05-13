@@ -5,6 +5,8 @@
 #include "Rendering/Vulkan/VulkanDescriptor.hpp"
 #include "Rendering/Vulkan/VulkanSwapChain.hpp"
 #include "backends/imgui_impl_vulkan.h"
+#include "InspectorPanel.hpp"
+#include "Game/Systems/Camera/Camera.hpp"
 #include "stb_image.h"
 
 class Viewport : public IWindowPanel
@@ -37,4 +39,6 @@ private:
     ImTextureID m_iconResizeID = NULL;
     ImTextureID m_iconPlayID = NULL;
     ImTextureID m_iconStopID = NULL;
+
+    ImGuizmo::OPERATION m_currentGizmoOperation = ImGuizmo::TRANSLATE;
 };
