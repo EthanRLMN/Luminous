@@ -65,7 +65,7 @@ public:
 
 
     /*          Body Creation Functions          */
-    RigidBody* CreateRigidBody(const JPH::Shape* a_shape, JPH::uint8 a_layer = Layers::DYNAMIC);
+    RigidBody* CreateRigidBody(const JPH::Shape* a_shape, JPH::Vec3 a_pos = JPH::Vec3(0.0f, 0.0f, 0.0f), JPH::Quat a_rot = JPH::Quat(1.0f,0.0f,0.0f,0.0f), JPH::uint8 a_layer = Layers::DYNAMIC);
     RigidBody* CreateBox(Maths::Vector3 a_scale = Maths::Vector3::One);
     inline RigidBody* CreateSphere(const float a_radius = 1.0f) { return CreateRigidBody(new JPH::SphereShape(a_radius)); };
     void RemoveBody(const JPH::BodyID& a_bodyId);

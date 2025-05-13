@@ -49,6 +49,7 @@ public:
 	[[nodiscard]] ISynchronization* GetSynchronization() const { return m_synchronization; }
 	[[nodiscard]] IRenderer* GetRenderer() const { return m_renderer; }
     [[nodiscard]] bool IsRunning() const { return m_isRunning; }
+    PhysicsSystem* GetPhysicsSystem() const { return m_physicsSystem; }
 
 
 private:

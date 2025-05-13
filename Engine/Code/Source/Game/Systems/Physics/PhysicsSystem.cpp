@@ -1,7 +1,7 @@
 #include "Game/Systems/Physics/PhysicsSystem.hpp"
 
 #include <thread>
-
+#include <ranges>
 #include "Jolt/RegisterTypes.h"
 #include "Jolt/Core/Factory.h"
 #include "Jolt/Core/JobSystemThreadPool.h"
@@ -50,7 +50,7 @@ void PhysicsSystem::Init(const Settings& a_settings)
 
     
 
-
+    /*
     JPH::BoxShapeSettings settings(JPH::Vec3(40.0f, 50.f, 50.f));
     settings.SetEmbedded();
     JPH::ShapeSettings::ShapeResult floor_shape_result = settings.Create();
@@ -69,7 +69,7 @@ void PhysicsSystem::Init(const Settings& a_settings)
     
     l_rigidbodySource2 = CreateRigidBody(floor_shape2);
     l_rigidbodySource2->SetIsSensor(true);
-    l_rigidbodySource2->AddForce(JPH::Vec3Arg(0.0f, 5.0f, 0.0f));
+    l_rigidbodySource2->AddForce(JPH::Vec3Arg(0.0f, 5.0f, 0.0f));*/
     //DEBUG_LOG_INFO("{}", GetBodyInterface().);
     
     
@@ -84,9 +84,16 @@ void PhysicsSystem::Update()
 
     // TODO : Update collision steps to run properly (accumulator returns floats on a scale from 0.25 to 10, we need integers scaled properly)
     constexpr int l_step { 1 };
-
-    std::cout << l_rigidbodySource->GetPosition() << "\n";
-    std::cout << l_rigidbodySource2->GetPosition() << "\n";
+    
+    for (RigidBody* const& l_resource : m_bodiesToRigidBodies | std::views::values)
+    {
+        if (l_resource)
+        {
+           
+        }
+    }
+    
+        
 
     m_physicsSystem->Update(Time::GetFixedDeltaTime(), l_step, m_tempAllocator, m_jobSystem);
 }
@@ -136,7 +143,7 @@ void PhysicsSystem::TriggerPhysicsOptimization() const
 }
 
 
-RigidBody* PhysicsSystem::CreateRigidBody(const JPH::Shape* a_shape, const JPH::uint8 a_layer)
+RigidBody* PhysicsSystem::CreateRigidBody(const JPH::Shape* a_shape, JPH::Vec3 a_pos, JPH::Quat a_rot, JPH::uint8 a_layer)
 {
     JPH::EMotionType l_motionType = JPH::EMotionType::Static;
     if (a_layer == Layers::DYNAMIC)
@@ -148,8 +155,8 @@ RigidBody* PhysicsSystem::CreateRigidBody(const JPH::Shape* a_shape, const JPH::
     // Body settings
     JPH::BodyCreationSettings l_bodySettings(
         a_shape,
-        JPH::Vec3(),
-        JPH::Quat::sIdentity(),
+        a_pos,
+        a_rot,
         l_motionType,
         a_layer
     );
