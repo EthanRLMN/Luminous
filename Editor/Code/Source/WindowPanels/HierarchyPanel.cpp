@@ -11,41 +11,78 @@ void HierarchyPanel::Render()
 
     m_rootEntities.clear();
 
-    if (ImGui::BeginPopupContextWindow())
+    static enum class EntityTemplate {
+        None,
+        Empty,
+        Light,
+        Camera
+    } selectedEntityTemplate = EntityTemplate::None;
+
+    static char newEntityName[128] = "New Entity";
+
+    if (ImGui::BeginPopupContextWindow("HierarchyContextMenu", ImGuiPopupFlags_MouseButtonRight | ImGuiPopupFlags_NoOpenOverItems))
     {
-        if (ImGui::MenuItem("Add New Entity"))
+        if (ImGui::BeginMenu("Add new Entity..."))
         {
-            m_isCreatingEntity = true;
-            strcpy_s(m_newEntityName, "New Entity");
+            if (ImGui::MenuItem("Empty"))
+            {
+                selectedEntityTemplate = EntityTemplate::Empty;
+                ImGui::OpenPopup("CreateEntityPopup");
+            }
+            if (ImGui::MenuItem("Light"))
+            {
+                selectedEntityTemplate = EntityTemplate::Light;
+                ImGui::OpenPopup("CreateEntityPopup");
+            }
+            if (ImGui::MenuItem("Camera"))
+            {
+                selectedEntityTemplate = EntityTemplate::Camera;
+                ImGui::OpenPopup("CreateEntityPopup");
+            }
+            ImGui::EndMenu();
         }
         ImGui::EndPopup();
     }
 
-    static int selectedTemplate = 0;
-    const char* templates[] = { "Empty", "Light", "Camera" };
-
-        if (m_isCreatingEntity)
+    if (ImGui::BeginPopupModal("CreateEntityPopup", nullptr, ImGuiWindowFlags_AlwaysAutoResize))
     {
-        ImGui::InputText("Entity Name", m_newEntityName, sizeof(m_newEntityName));
-
-        ImGui::Combo("Template", &selectedTemplate, templates, IM_ARRAYSIZE(templates));
-
+        ImGui::InputText("Entity name", newEntityName, IM_ARRAYSIZE(newEntityName));
 
         if (ImGui::Button("Create"))
         {
-            auto newEntity = p_editor->GetEngine()->GetEntityManager()->CreateEntity();
-            newEntity->SetName(GenerateUniqueEntityName(m_newEntityName));
+            auto entityManager = p_editor->GetEngine()->GetEntityManager();
+            auto newEntity = entityManager->CreateEntity();
+            newEntity->SetName(GenerateUniqueEntityName(newEntityName));
 
-            m_isCreatingEntity = false;
+            // Create Components based on the selected template
+            /*switch (selectedEntityTemplate)
+            {
+                case EntityTemplate::Camera:
+                    newEntity->AddComponent<CameraComponent>();
+                    break;
+                case EntityTemplate::Light:
+                    newEntity->AddComponent<LightComponent>();
+                    break;
+                case EntityTemplate::Empty:
+                default:
+                    break;
+            }*/
+
+            selectedEntityTemplate = EntityTemplate::None;
+            std::memset(newEntityName, 0, sizeof(newEntityName));
+            ImGui::CloseCurrentPopup();
         }
 
         ImGui::SameLine();
         if (ImGui::Button("Cancel"))
         {
-            m_isCreatingEntity = false;
+            selectedEntityTemplate = EntityTemplate::None;
+            std::memset(newEntityName, 0, sizeof(newEntityName));
+            ImGui::CloseCurrentPopup();
         }
-    }
 
+        ImGui::EndPopup();
+    }
     BuildHierarchy();
 
     for (const auto& root : m_rootEntities)
