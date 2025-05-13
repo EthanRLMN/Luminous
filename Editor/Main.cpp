@@ -1,23 +1,23 @@
 #include "Editor.hpp"
-/*
+
 #include <iostream>
 #include <rfl.hpp>
 #include <rfl/json.hpp>
 #include <string>
-#include <vector>*/
+#include <vector>
 
-/*
+
 struct Person
 {
     rfl::Rename<"firstName", std::string> first_name;
     rfl::Rename<"lastName", std::string> last_name;
     std::vector<Person> children;
-};*/
+};
 
 
 int main()
 {
-    
+    /*
     Editor* l_editor = new Editor();
     l_editor->Init();
 
@@ -28,39 +28,37 @@ int main()
     l_editor = nullptr;
 
     return 0;
+    */
 
+    const rfl::Result<Person> result = rfl::json::load<Person>("Engine/Assets/Default/Save/exemple.json");
 
-    /*
-    const std::string json_str = R"({
-        "firstName": "John",
-        "lastName": "Doe",
-        "birthday": "1980-01-01",
-        "children": [
-            {
-                "firstName": "Jane",
-                "lastName": "Doe",
-                "children": []
-            }
-        ]
-    })";
+    namespace fs = std::filesystem;
 
+    const std::string filepath = "Engine/Assets/Default/Save/exemple.json";
 
-    const rfl::Result<Person> result = rfl::json::read<Person>(json_str);
-
-    if (result)
+    if (!fs::exists(filepath))
     {
-        const Person& person = result.value();
-        std::cout << "First Name: " << person.first_name.value() << std::endl;
-        std::cout << "Last Name: " << person.last_name.value() << std::endl;
+        std::cerr << "JSon was not find : " << filepath << std::endl;
     } else
     {
-        std::cerr << "Erreur de parsing JSON." << std::endl;
+        const rfl::Result<Person> result = rfl::json::load<Person>(filepath);
+
+        if (result)
+        {
+            const Person& person = result.value();
+            std::cout << "First Name: " << person.first_name.value() << std::endl;
+            std::cout << "Last Name: " << person.last_name.value() << std::endl;
+        } else
+        {
+            std::cerr << "Erreur de parsing JSON." << std::endl;
+        }
     }
 
     
     Person person;
+    /*
     person.first_name = "Alice";
-    person.last_name = "Smith";
+    person.last_name = "Smith";*/
 
 
 
@@ -68,5 +66,5 @@ int main()
     std::cout << json_string << std::endl;
 
 
-    return 0;*/
+    return 0;
 }
