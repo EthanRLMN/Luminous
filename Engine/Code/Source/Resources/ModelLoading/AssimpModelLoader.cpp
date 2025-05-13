@@ -17,7 +17,7 @@ void AssimpModelLoader::LoadModel(IMesh* a_mesh, const char* a_file)
         DEBUG_LOG_INFO("Current working directory: {}\n", l_buffer.data());
 
     DebugExtensionsList(&l_importer);
-    const aiScene* l_scene = l_importer.ReadFile(a_file, aiProcess_CalcTangentSpace | aiProcess_Triangulate | aiProcess_JoinIdenticalVertices | aiProcess_SortByPType);
+    const aiScene* l_scene = l_importer.ReadFile(a_file, aiProcess_CalcTangentSpace | aiProcess_Triangulate | aiProcess_JoinIdenticalVertices | aiProcess_SortByPType | aiProcess_ImproveCacheLocality | aiProcess_RemoveRedundantMaterials | aiProcess_FindDegenerates | aiProcess_FindInvalidData | aiProcess_OptimizeMeshes | aiProcess_OptimizeGraph | aiProcess_GenSmoothNormals | aiProcess_FixInfacingNormals);
     if (!l_scene || l_scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !l_scene->mRootNode)
     {
         std::string l_info = "ASSIMP : " + std::string(l_importer.GetErrorString());

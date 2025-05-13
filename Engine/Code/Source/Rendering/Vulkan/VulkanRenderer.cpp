@@ -37,9 +37,10 @@ void VulkanRenderer::Create(IDevice* a_device, ISwapChain* a_swapChain)
 
     LightComponent l_light = LightComponent();
     LightComponent l_light2 = LightComponent();
-    l_light2.GetLight().m_color = Maths::Vector3(0.0f, 0.0f, 1.0f);
+    l_light2.GetLight().m_color = Maths::Vector3(1.0f, 1.0f, 1.0f);
+    l_light2.GetLight().m_position = Maths::Vector3(0.0f, 3.0f, 0.0f);
     l_light2.GetLight().m_type = 1;
-    l_light2.GetLight().m_intensity = 0.0f;
+    l_light2.GetLight().m_intensity = 1.0f;
     m_lights[1] = l_light2;
 }
 

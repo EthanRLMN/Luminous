@@ -5,14 +5,15 @@
 
 void EntityTemplates::RegisterEntityTemplates()
 {
-    RegisterEmptyEntityTemplate();
-    RegisterCubeEntityTemplate();
-    RegisterPlaneEntityTemplate();
-    RegisterSphereEntityTemplate();
+    Empty();
+    Cube();
+    Plane();
+    Sphere();
+    Companion();
 }
 
 
-void EntityTemplates::RegisterEmptyEntityTemplate()
+void EntityTemplates::Empty()
 {
     EntityFactory::Get().RegisterEntity("Empty", [](EntityManager& a_entityManager)
     {
@@ -23,7 +24,7 @@ void EntityTemplates::RegisterEmptyEntityTemplate()
 }
 
 
-void EntityTemplates::RegisterCubeEntityTemplate()
+void EntityTemplates::Cube()
 {
     EntityFactory::Get().RegisterEntity("Cube", [](EntityManager& a_entityManager)
     {
@@ -31,6 +32,8 @@ void EntityTemplates::RegisterCubeEntityTemplate()
         l_entity->SetName("Cube");
 
         std::shared_ptr<ModelComponent> l_modelComponent = std::make_shared<ModelComponent>();
+        l_modelComponent->SetMeshPath("Engine/Assets/Default/Models/CubeUE.FBX");
+        l_modelComponent->SetTexturePath("Engine/Assets/Default/Textures/DefaultTexture.png");
         l_entity->AddComponent(l_modelComponent);
 
         return l_entity;
@@ -38,7 +41,7 @@ void EntityTemplates::RegisterCubeEntityTemplate()
 }
 
 
-void EntityTemplates::RegisterSphereEntityTemplate()
+void EntityTemplates::Sphere()
 {
     EntityFactory::Get().RegisterEntity("Sphere", [](EntityManager& a_entityManager)
     {
@@ -55,7 +58,36 @@ void EntityTemplates::RegisterSphereEntityTemplate()
 }
 
 
-void EntityTemplates::RegisterPlaneEntityTemplate()
+void EntityTemplates::Capsule() {}
+
+
+void EntityTemplates::Cylinder() {}
+
+
+void EntityTemplates::Cone() {}
+
+
+void EntityTemplates::Monkey() {}
+
+
+void EntityTemplates::Companion()
+{
+    EntityFactory::Get().RegisterEntity("Companion", [](EntityManager& a_entityManager)
+    {
+        std::shared_ptr<Entity> l_entity = std::make_shared<Entity>(a_entityManager);
+        l_entity->SetName("Companion");
+
+        std::shared_ptr<ModelComponent> l_modelComponent = std::make_shared<ModelComponent>();
+        l_modelComponent->SetMeshPath("Engine/Assets/Default/Models/CCP2.fbx");
+        l_modelComponent->SetTexturePath("Engine/Assets/Default/Textures/CCP2_Albedo.png");
+        l_entity->AddComponent(l_modelComponent);
+
+        return l_entity;
+    });
+}
+
+
+void EntityTemplates::Plane()
 {
     EntityFactory::Get().RegisterEntity("Plane", [](EntityManager& a_entityManager)
     {

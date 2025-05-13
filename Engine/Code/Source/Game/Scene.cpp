@@ -9,13 +9,16 @@ void Scene::RegisterScene(EntityManager& a_entityManager)
     EntityTemplates l_defaultTemplates {};
     l_defaultTemplates.RegisterEntityTemplates();
 
-    auto l_cube = a_entityManager.CreateEntityFromTemplate("Cube");
-    auto l_sphere = a_entityManager.CreateEntityFromTemplate("Sphere");
-    l_sphere->Transform()->SetLocalPosition(Maths::Vector3::One);
-    l_sphere->Transform()->SetParent(l_cube);
+    a_entityManager.CreateEntityFromTemplate("Companion");
+
 
     for (const auto& l_entity : EntityManager::GetAvailableTemplates())
     {
         DEBUG_LOG_CRITICAL("{}", l_entity);
+    }
+
+    for (const auto& l_entity : a_entityManager.GetEntities())
+    {
+        DEBUG_LOG_CRITICAL("ENTITY = {}", l_entity->GetUUID());
     }
 }

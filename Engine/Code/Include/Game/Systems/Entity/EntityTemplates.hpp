@@ -11,8 +11,13 @@ public:
 
 
 private:
-    void RegisterEmptyEntityTemplate();
-    void RegisterCubeEntityTemplate();
-    void RegisterPlaneEntityTemplate();
-    void RegisterSphereEntityTemplate();
+    void Empty();
+    void Plane();
+    void Cube();
+    void Sphere();
+    void Capsule();
+    void Cylinder();
+    void Cone();
+    void Monkey();
+    void Companion();
 };
