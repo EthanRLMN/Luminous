@@ -39,7 +39,7 @@ void Scene::LoadScene(std::string filename)
 
 void Scene::SaveScene(std::string filename)
 {
-
+    //SaveEntitiesToFile(filename, a_entityManager);
 }
 
 void Scene::SaveEntitiesToFile(const std::string& filepath, EntityManager& a_entityManager)
@@ -58,9 +58,8 @@ void Scene::SaveEntitiesToFile(const std::string& filepath, EntityManager& a_ent
         entityData.push_back(saver);
     }
 
-    // Serialize to JSON and save to file
-    const std::string json_string = rfl::json::write(entityData);
-    rfl::json::save(filepath, entityData);
+    const std::string json_string = rfl::json::write(entityData, rfl::json::pretty);
+    rfl::json::save(filepath, entityData, rfl::json::pretty);
 }
 
 void Scene::EnterScene(std::string filename)
