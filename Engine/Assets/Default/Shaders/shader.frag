@@ -1,8 +1,6 @@
 #version 460
 
-layout (binding = 1) uniform sampler2D texSampler;
-
-layout (set = 1 ,binding = 0) uniform sampler2D texSampler2;
+layout (set = 1, binding = 0) uniform sampler2D texSampler2;
 
 
 layout (location = 0) in vec3 fragPos;
@@ -15,12 +13,9 @@ layout (location = 0) out vec4 outColor;
 
 
 struct Light {
-    vec3 padding;
     vec3 position;
     vec3 direction;
     vec3 color;
-    
-
     int type;
     float intensity;
     float ambientStrength;
@@ -28,7 +23,7 @@ struct Light {
     int count;
 } light;
 
-layout (binding = 2) uniform LightBuffer {
+layout (set = 0, binding = 2) uniform LightBuffer {
     Light lights[32];
 } lightsList;
 

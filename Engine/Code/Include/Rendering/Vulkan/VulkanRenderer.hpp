@@ -49,8 +49,7 @@ public:
     bool bReloadImage = false;
     mutable bool bUsable = false;
 
-    LightComponent m_lights[32];
-    LightComponent m_light;
+    LightData m_lights[32];
 
 
 private:
