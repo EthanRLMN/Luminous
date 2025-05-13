@@ -153,6 +153,7 @@ void VulkanRenderer::RecordCommandBuffer(const VkCommandBuffer& a_commandBuffer,
                 l_ubo.model = l_modelMatrix.Transpose();
                 l_ubo.view = m_cameraEditor.GetViewMatrix().Transpose();
                 l_ubo.proj = m_cameraEditor.GetProjectionMatrix();
+                l_ubo.debug = 0;
                 
                 const std::array<VkBuffer, 1> l_vertexBuffers = { entity.get()->GetComponent<ModelComponent>().get()->GetMesh()->CastVulkan()->GetVertexBuffer() };
                 const std::array<VkDeviceSize, 1> l_offsets = { 0 };
@@ -161,6 +162,7 @@ void VulkanRenderer::RecordCommandBuffer(const VkCommandBuffer& a_commandBuffer,
                 std::vector<VkDescriptorSet> sets = { a_descriptor->CastVulkan()->GetDescriptorSet()[m_currentFrame], entity.get()->GetComponent<ModelComponent>().get()->GetTexture()->CastVulkan()->GetDescriptorSet() };
                 vkCmdBindDescriptorSets(a_commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, a_pipelineLayout, 0, static_cast<uint32_t>(sets.size()), sets.data(), 0, nullptr);
                 vkCmdPushConstants(a_commandBuffer, a_pipelineLayout, VK_SHADER_STAGE_VERTEX_BIT, 0, sizeof(UniformBufferObject), &l_ubo);
+                
 
                 vkCmdDrawIndexed(a_commandBuffer, static_cast<uint32_t>(entity.get()->GetComponent<ModelComponent>().get()->GetMesh()->CastVulkan()->GetIndices().size()), 1, 0, 0, 0);
             }
@@ -177,6 +179,7 @@ void VulkanRenderer::RecordCommandBuffer(const VkCommandBuffer& a_commandBuffer,
                 l_ubo.model = l_modelMatrix.Transpose();
                 l_ubo.view = m_cameraEditor.GetViewMatrix().Transpose();
                 l_ubo.proj = m_cameraEditor.GetProjectionMatrix();
+                l_ubo.debug = 1;
 
                 const std::array<VkBuffer, 1> l_vertexBuffers = { entity.get()->GetComponent<RigidbodyComponent>().get()->GetModelDebug()->GetMesh()->CastVulkan()->GetVertexBuffer() };
                 const std::array<VkDeviceSize, 1> l_offsets = { 0 };
@@ -216,23 +219,6 @@ void VulkanRenderer::RecordCommandBuffer(const VkCommandBuffer& a_commandBuffer,
 void VulkanRenderer::UpdateUniformBuffer(const uint32_t& a_currentFrame, IBuffer* a_buffer, const EntityManager& a_entityManager) const
 {
     a_entityManager.Update();
-    const std::vector<std::shared_ptr<Entity>> l_entitiesWithModels = a_entityManager.GetEntitiesByComponent<ModelComponent>();
-    UniformBufferObject l_ubo{};
-
-    for (const std::shared_ptr<Entity>& entity : l_entitiesWithModels)
-    {
-        std::shared_ptr<ModelComponent> l_modelComponent = entity->GetComponent<ModelComponent>();
-        if (l_modelComponent)
-        {
-            const Maths::Matrix4 modelMatrix = entity->Transform()->GetGlobalMatrix();
-            l_ubo.model = modelMatrix.Transpose();
-        }
-    }
-
-    l_ubo.view = m_cameraEditor.GetViewMatrix().Transpose();
-    l_ubo.proj = m_cameraEditor.GetProjectionMatrix();
-
-    memcpy(a_buffer->CastVulkan()->GetUniformBuffersMapped()[a_currentFrame], &l_ubo, sizeof(l_ubo));
 
     memcpy(a_buffer->CastVulkan()->GetLightUniformBuffersMapped()[a_currentFrame], const_cast<void*>(static_cast<const void*>(&m_lights)), sizeof(LightData) * MAX_LIGHTS);
 }

@@ -61,4 +61,5 @@ struct UniformBufferObject
     alignas(16) Maths::Matrix4 model;
     alignas(16) Maths::Matrix4 view;
     alignas(16) Maths::Matrix4 proj;
+    alignas(4) int debug;
 };
