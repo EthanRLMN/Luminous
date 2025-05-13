@@ -24,5 +24,14 @@ public:
     ~Scene()= default;
 
     void RegisterScene(EntityManager& a_entityManager);
+
+    void LoadScene(std::string filename);
+    void SaveScene(std::string filename);
+    void SaveEntitiesToFile(const std::string& filepath, EntityManager& a_entityManager);
+    void EnterScene(std::string filename);
+
+
+    bool CheckIfFileDetected(std::string filename);
+    bool IsEmpty(std::string filename);
 };
 
