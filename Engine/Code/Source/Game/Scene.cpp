@@ -40,8 +40,13 @@ void Scene::RegisterScene(EntityManager& a_entityManager)
 
     for (const auto& l_entity : a_entityManager.GetEntities())
     {
-        //DEBUG_LOG_CRITICAL("ENTITY = {}", l_entity->GetUUID());
-        l_entity->SetActive(entitySaver.isActive);
+        DEBUG_LOG_CRITICAL("ENTITY = {}", l_entity->GetUUID());
+
+
+       l_entity->SetActive(entitySaver.isActive);
+
+
+
         DEBUG_LOG_CRITICAL("ENTITY is active ? = {}",l_entity->IsActive());
     }
 }

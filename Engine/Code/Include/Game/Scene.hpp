@@ -12,7 +12,7 @@ class Engine;
 
 struct Entity_Saver
 {
-    rfl::Rename<"name", std::string> entityName;
+    std::string entityName;
     uint16_t entityUUID;
     bool isActive;
 };
