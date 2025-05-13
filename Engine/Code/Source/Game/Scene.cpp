@@ -4,7 +4,8 @@
 #include "Game/Systems/Entity/EntityFactory.hpp"
 #include "Game/Systems/Entity/EntityTemplates.hpp"
 
-Entity_Saver entitySaver; 
+Entity_Saver entitySaver;
+
 
 void Scene::RegisterScene(EntityManager& a_entityManager)
 {
@@ -30,21 +31,40 @@ void Scene::RegisterScene(EntityManager& a_entityManager)
         DEBUG_LOG_CRITICAL("ENTITY = {}", l_entity->IsActive());
     }
 
-    SaveEntitiesToFile(filepath, a_entityManager);
+    
 }
 
 void Scene::LoadScene(std::string filename)
-{
+{ 
+    if (!CheckIfFileDetected(filename))
+    {
+        DEBUG_LOG_CRITICAL("Scene don't Exit {}", filename);
+        return;
+    }
+
+
+    const rfl::Result<std::vector<Entity_Saver>> result = rfl::json::load<std::vector<Entity_Saver>>(filename);
+    if (!result)
+    {
+        DEBUG_LOG_CRITICAL("Error with the load of JSON.");
+        return;
+    }
+
+
+    const std::vector<Entity_Saver>& entityData = result.value();
+
+    for (const Entity_Saver& saver : entityData)
+    {
+   
+       
+
+    }
+
+    DEBUG_LOG_CRITICAL("Scene load {} with sucess.", filename);
 }
 
-void Scene::SaveScene(std::string filename)
+void Scene::SaveScene(const std::string& filepath, EntityManager& a_entityManager)
 {
-    //SaveEntitiesToFile(filename, a_entityManager);
-}
-
-void Scene::SaveEntitiesToFile(const std::string& filepath, EntityManager& a_entityManager)
-{
-
     std::vector<Entity_Saver> entityData;
     rfl::json::save(filepath, entityData);
 
@@ -69,7 +89,8 @@ void Scene::EnterScene(std::string filename)
         if (IsEmpty(filename))
         {
             // load new Scene
-        } else
+        } 
+        else
         {
             LoadScene(filename);
         }
