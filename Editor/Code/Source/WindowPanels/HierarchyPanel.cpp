@@ -1,5 +1,7 @@
 #include "WindowPanels/HierarchyPanel.hpp"
 
+#include <iostream>
+
 void HierarchyPanel::Render()
 {
     IWindowPanel::Render();
@@ -51,7 +53,7 @@ void HierarchyPanel::Render()
         if (ImGui::Button("Create"))
         {
             auto entityManager = p_editor->GetEngine()->GetEntityManager();
-            auto newEntity = entityManager->CreateEntity();
+            auto newEntity = entityManager->CreateEntityFromTemplate("Companion");
             newEntity->SetName(GenerateUniqueEntityName(newEntityName));
 
             // Create Components based on the selected template
@@ -126,7 +128,7 @@ void HierarchyPanel::DrawEntityNode(const EntityNode& node)
 
             if (droppedEntity != node.entity && !IsDescendant(node.entity, droppedEntity))
             {
-                droppedEntity->SetParent(node.entity);
+                droppedEntity->Transform()->SetParent(node.entity);
                 BuildHierarchy();
             }
         }
@@ -172,7 +174,7 @@ void HierarchyPanel::BuildHierarchy()
 
     for (const auto& entity : allEntities)
     {
-        const auto& parent = entity->GetParent();
+        const auto& parent = entity->Transform()->GetParent();
         if (parent)
         {
             entityNodeMap[parent.get()].children.push_back(entityNodeMap[entity.get()]);
@@ -185,12 +187,12 @@ void HierarchyPanel::BuildHierarchy()
 
 bool HierarchyPanel::IsDescendant(const std::shared_ptr<Entity>& child, const std::shared_ptr<Entity>& parent) const
 {
-    auto current = child->GetParent();
+    auto current = child->Transform()->GetParent();
     while (current)
     {
         if (current == parent)
             return true;
-        current = current->GetParent();
+        current = current->Transform()->GetParent();
     }
     return false;
 }

@@ -39,9 +39,9 @@ void InspectorPanel::Render()
         {
             if (ImGui::CollapsingHeader("Transform"))
             {
-                Maths::Vector3 position = p_isEntitySelected->GetPosition();
-                Maths::Quaternion rotationQuat = p_isEntitySelected->GetRotation();
-                Maths::Vector3 scale = p_isEntitySelected->GetScale();
+                Maths::Vector3 position = p_isEntitySelected->Transform()->GetLocalPosition();
+                Maths::Quaternion rotationQuat = p_isEntitySelected->Transform()->GetLocalRotationQuat();
+                Maths::Vector3 scale = p_isEntitySelected->Transform()->GetLocalScale();
 
                 Maths::Vector3 rotation = rotationQuat.ToEulerAngles(true);
 
@@ -49,14 +49,14 @@ void InspectorPanel::Render()
                 ImGui::InputFloat3("Rotation", &rotation.x);
                 ImGui::InputFloat3("Scale", &scale.x);
 
-                p_isEntitySelected->SetPosition(position);
-                p_isEntitySelected->SetRotation(Maths::Quaternion::FromEulerAngles(rotation));
-                p_isEntitySelected->SetScale(scale);
+                p_isEntitySelected->Transform()->SetLocalPosition(position);
+                p_isEntitySelected->Transform()->SetLocalRotationQuat(Maths::Quaternion::FromEulerAngles(rotation));
+                p_isEntitySelected->Transform()->SetLocalScale(scale);
             }
 
             ImGuizmo::BeginFrame();
 
-            Maths::Matrix4 transform = p_isEntitySelected->GetTRS();
+            Maths::Matrix4 transform = p_isEntitySelected->Transform()->GetLocalMatrix();
             float matrixArray[16];
             MatrixToArray(transform, matrixArray);
 
@@ -79,9 +79,9 @@ void InspectorPanel::Render()
             Maths::Vector3 newPosition, newEuler, newScale;
             ImGuizmo::DecomposeMatrixToComponents(matrixArray, &newPosition.x, &newEuler.x, &newScale.x);
 
-            p_isEntitySelected->SetPosition(newPosition);
-            p_isEntitySelected->SetRotation(Maths::Quaternion::FromEulerAngles(newEuler));
-            p_isEntitySelected->SetScale(newScale);
+            p_isEntitySelected->Transform()->SetLocalPosition(newPosition);
+            p_isEntitySelected->Transform()->SetLocalRotationQuat(Maths::Quaternion::FromEulerAngles(newEuler));
+            p_isEntitySelected->Transform()->SetLocalScale(newScale);
         }
 
         ImGui::PopStyleColor();

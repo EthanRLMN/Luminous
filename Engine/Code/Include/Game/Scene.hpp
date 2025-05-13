@@ -11,7 +11,5 @@ public:
     ~Scene()= default;
 
     void RegisterScene(EntityManager& a_entityManager);
-};
-
-    void SceneEntity(EntityManager& a_entityManager);
+    void SceneEntity(EntityManager& a_entityManager) { static_cast<void>(a_entityManager); };
 };
