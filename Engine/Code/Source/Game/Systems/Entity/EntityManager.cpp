@@ -1,5 +1,5 @@
+#include "Game/Systems/Component/MeshRendererComponent.hpp"
 #include "Game/Systems/Entity/EntityManager.hpp"
-
 #include "Game/Systems/Entity/EntityFactory.hpp"
 
 
@@ -45,6 +45,17 @@ std::shared_ptr<Entity> EntityManager::CreateEntityFromTemplate(const std::strin
         }
     }
     return l_entity;
+}
+
+
+void EntityManager::UpdateRenderableEntities()
+{
+    m_renderableEntities.clear();
+    for (const std::shared_ptr<Entity>& entity : m_entities)
+    {
+        if (entity->GetComponent<MeshRendererComponent>())
+            m_renderableEntities.push_back(entity);
+    }
 }
 
 

@@ -11,7 +11,7 @@
 class Entity;
 
 
-class TransformComponent : public EntityComponent, std::enable_shared_from_this<TransformComponent>
+class TransformComponent : public EntityComponent
 {
 public:
     void Initialize() override{};
@@ -32,10 +32,10 @@ public:
     [[nodiscard]] inline bool HasParent() const { return m_parent.lock() != nullptr; }
     [[nodiscard]] inline bool HasChildren() const { return !m_children.empty(); }
     [[nodiscard]] inline const std::vector<std::shared_ptr<TransformComponent>>& GetChildren() const { return m_children; }
-    [[nodiscard]] inline std::shared_ptr<Entity> GetEntity() const { return m_entity.lock(); }
+    [[nodiscard]] inline std::shared_ptr<Entity> GetOwner() const override { return p_owner; }
     [[nodiscard]] inline bool IsActive() const { return m_isActive; }
 
-    inline void SetEntity(const std::weak_ptr<Entity>& a_relatedEntity) { m_entity = a_relatedEntity; }
+    inline void SetOwner(const std::shared_ptr<Entity>& a_relatedEntity) override { p_owner = a_relatedEntity; }
     void AddChild(const std::shared_ptr<TransformComponent>& a_child) const;
     void RemoveChild(const std::shared_ptr<TransformComponent>& a_child);
     void SetActive(bool a_isActive);
@@ -54,7 +54,6 @@ public:
 
 
 private:
-    std::weak_ptr<Entity> m_entity {};
     std::weak_ptr<Entity> m_parent {};
     std::vector<std::shared_ptr<TransformComponent>> m_children;
 

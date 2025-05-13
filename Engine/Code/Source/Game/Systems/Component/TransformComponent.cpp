@@ -1,3 +1,5 @@
+#include <algorithm>
+
 #include "Game/Systems/Component/TransformComponent.hpp"
 #include "Game/Systems/Entity/Entity.hpp"
 
@@ -5,7 +7,7 @@
 void TransformComponent::AddChild(const std::shared_ptr<TransformComponent>& a_child) const
 {
     if (a_child)
-        a_child->SetParent(GetEntity());
+        a_child->SetParent(GetOwner());
 }
 
 
@@ -20,7 +22,7 @@ void TransformComponent::RemoveChild(const std::shared_ptr<TransformComponent>& 
 void TransformComponent::SetActive(const bool a_isActive)
 {
     m_isActive = a_isActive;
-    if (const std::shared_ptr<Entity> l_entity = m_entity.lock())
+    if (const std::shared_ptr<Entity> l_entity = p_owner)
         l_entity->SetActive(a_isActive);
 
     if (m_isActive)
@@ -194,7 +196,7 @@ void TransformComponent::SetParent(const std::shared_ptr<Entity>& a_newParent)
     {
         const std::shared_ptr<TransformComponent> l_newParentTransform = a_newParent->Transform();
         if (l_newParentTransform)
-            l_newParentTransform->m_children.push_back(GetEntity()->Transform());
+            l_newParentTransform->m_children.push_back(GetOwner()->Transform());
     }
 
     UpdateGlobalTransform();
@@ -211,7 +213,7 @@ void TransformComponent::SetInterpolatedRotation(const Maths::Quaternion& a_star
 
 void TransformComponent::UpdateGlobalTransform()
 {
-    if (!m_requiresUpdate || !m_entity.lock() || m_entity.lock() == nullptr || !m_entity.lock()->IsActive())
+    if (!m_requiresUpdate || !p_owner || p_owner == nullptr || !p_owner->IsActive())
         return;
 
     UpdateLocalMatrix();

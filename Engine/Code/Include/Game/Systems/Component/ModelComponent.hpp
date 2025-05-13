@@ -1,8 +1,8 @@
 #pragma once
+
 #include "EntityComponent.hpp"
 #include "IMesh.hpp"
 #include "ITexture.hpp"
-#include "ResourceManager/ResourceContext.hpp"
 
 
 class ModelComponent : public EntityComponent
@@ -25,7 +25,6 @@ public:
 private:
     IMesh* m_mesh { nullptr };
     ITexture* m_texture { nullptr };
-    ResourceContext m_context {};
 
     std::string m_pendingMeshPath {};
     std::string m_pendingTexturePath {};

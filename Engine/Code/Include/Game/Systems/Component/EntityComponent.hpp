@@ -1,6 +1,9 @@
 #pragma once
-class Engine;
 
+#include <memory>
+
+class Engine;
+class Entity;
 
 class EntityComponent
 {
@@ -10,9 +13,18 @@ public:
     virtual void GameplayStarted() = 0;
     virtual void Update() = 0;
 
-    void SetEngine(Engine* a_engine) { m_engine = a_engine; }
+    /*          Getters         */
+    inline void SetEngine(Engine* a_engine) { m_engine = a_engine; }
+    inline virtual void SetOwner(const std::shared_ptr<Entity>& a_relatedEntity) { p_owner = a_relatedEntity; }
 
-    [[nodiscard]] Engine* GetEngine() const { return m_engine; }
+
+    /*          Setters         */
+    [[nodiscard]] inline virtual std::shared_ptr<Entity> GetOwner() const { return p_owner; }
+    [[nodiscard]] inline Engine* GetEngine() const { return m_engine; }
+
+
+protected:
+    std::shared_ptr<Entity> p_owner {};
 
 
 private:

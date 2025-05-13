@@ -2,7 +2,6 @@
 #include <unordered_map>
 
 #include "Resource.hpp"
-#include "ResourceContext.hpp"
 #include "Resources/ModelLoading/AssimpModelLoader.hpp"
 
 
@@ -22,14 +21,10 @@ public:
 
 	[[nodiscard]] AssimpModelLoader* GetMeshLoader() const { return m_meshLoader; };
 
-    inline void SetContext(const ResourceContext& a_context) { m_context = a_context; }
-    inline const ResourceContext& GetContext() const { return m_context; }
-
 
 private:
     explicit ResourceManager() = default;
 
-    ResourceContext m_context { };
 	AssimpModelLoader* m_meshLoader { nullptr };
     std::unordered_map<std::string, IResource*> m_resources{};
 };
