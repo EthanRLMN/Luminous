@@ -17,7 +17,7 @@ struct Person
 
 int main()
 {
-    /*
+    
     Editor* l_editor = new Editor();
     l_editor->Init();
 
@@ -27,14 +27,15 @@ int main()
     delete l_editor;
     l_editor = nullptr;
 
-    return 0;
-    */
 
-    const rfl::Result<Person> result = rfl::json::load<Person>("Engine/Assets/Default/Save/exemple.json");
+    return 0;
+    /*
+
+    const rfl::Result<Person> result = rfl::json::load<Person>("Engine/Assets/Default/Save/Scene.json");
 
     namespace fs = std::filesystem;
 
-    const std::string filepath = "Engine/Assets/Default/Save/exemple.json";
+    const std::string filepath = "Engine/Assets/Default/Save/Scene.json";
 
     if (!fs::exists(filepath))
     {
@@ -61,10 +62,10 @@ int main()
     person.last_name = "Smith";*/
 
 
-
+    /*
     const std::string json_string = rfl::json::write(person, rfl::json::pretty);
     std::cout << json_string << std::endl;
 
 
-    return 0;
+    return 0;*/
 }

@@ -5,10 +5,9 @@
 
 void Scene::RegisterScene(EntityManager& a_entityManager)
 {
-    EntityTemplates l_defaultTemplates {};
+    EntityTemplates l_defaultTemplates{};
     l_defaultTemplates.RegisterEntityTemplates();
 
-    a_entityManager.CreateEntityFromTemplate("Cube");
-    //a_entityManager.CreateEntityFromTemplate("Sphere");
-    //a_entityManager.CreateEntityFromTemplate("Empty");
+    auto l_cube = a_entityManager.CreateEntityFromTemplate("Cube");
+    auto getglobal = l_cube->GetComponent<TransformComponent>()->GetGlobalPosition();
 }
