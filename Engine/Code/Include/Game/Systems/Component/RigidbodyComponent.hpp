@@ -8,6 +8,13 @@
 #include "Game/Systems/Physics/LayerSystem.hpp"
 
 
+enum ColliderType
+{
+    BOXCOLLIDER = 0,
+    SPHERECOLLIDER = 1,
+    CAPSULECOLLIDER = 2
+};
+
 class RigidbodyComponent : public EntityComponent
 {
 public:
@@ -29,6 +36,7 @@ private:
     std::weak_ptr<Entity> m_entity{};
     ModelComponent* m_collisionDebugModel;
     RigidBody* m_rigidbody;
+    ColliderType m_colliderType = ColliderType::SPHERECOLLIDER;
 };
 
 

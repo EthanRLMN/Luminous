@@ -10,7 +10,15 @@ void RigidbodyComponent::Initialize()
 
 	m_collisionDebugModel->SetEngine(GetEngine());
 
-	m_collisionDebugModel->SetMeshPath("Engine/Assets/Default/Models/colliderCube.obj");
+
+    if (m_colliderType == ColliderType::BOXCOLLIDER)
+    {
+        m_collisionDebugModel->SetMeshPath("Engine/Assets/Default/Models/colliderCube.obj");
+    } else if (m_colliderType == ColliderType::SPHERECOLLIDER)
+    {
+        m_collisionDebugModel->SetMeshPath("Engine/Assets/Default/Models/colliderSphere.obj");
+    }
+	
     m_collisionDebugModel->SetTexturePath("Engine/Assets/Default/Textures/colliderTexture.png");
 	//Set le mesh en fonction du type de collider
     m_collisionDebugModel->Initialize();
@@ -20,15 +28,35 @@ void RigidbodyComponent::Initialize()
     JPH::Vec3 l_scale = JPH::Vec3(l_transform->GetLocalScale().x, l_transform->GetLocalScale().y, l_transform->GetLocalScale().z);
     JPH::Quat l_rotation = JPH::Quat(l_transform->GetLocalRotationQuat().x, l_transform->GetLocalRotationQuat().y, l_transform->GetLocalRotationQuat().z, l_transform->GetLocalRotationQuat().w);
 
-	JPH::BoxShapeSettings settings(l_scale);
-    settings.SetEmbedded();
-    JPH::ShapeSettings::ShapeResult floor_shape_result = settings.Create();
-    JPH::ShapeRefC floor_shape = floor_shape_result.Get();
 
-    PhysicsSystem* l_phys = GetEngine()->GetPhysicsSystem();
+    if (m_colliderType == ColliderType::BOXCOLLIDER)
+    {
+        JPH::BoxShapeSettings settings(l_scale);
+        settings.SetEmbedded();
+        JPH::ShapeSettings::ShapeResult floor_shape_result = settings.Create();
+        JPH::ShapeRefC floor_shape = floor_shape_result.Get();
 
-    m_rigidbody = GetEngine()->GetPhysicsSystem()->CreateRigidBody(floor_shape, l_position, l_rotation, m_layer,m_active);
-    m_rigidbody->SetParentComponent(this);
+
+        PhysicsSystem* l_phys = GetEngine()->GetPhysicsSystem();
+
+        m_rigidbody = GetEngine()->GetPhysicsSystem()->CreateRigidBody(floor_shape, l_position, l_rotation, m_layer, m_active);
+        m_rigidbody->SetParentComponent(this);
+    }
+    else if (m_colliderType == ColliderType::SPHERECOLLIDER)
+    {
+        JPH::SphereShapeSettings settings(1.0f);
+        settings.SetEmbedded();
+        JPH::ShapeSettings::ShapeResult floor_shape_result = settings.Create();
+        JPH::ShapeRefC floor_shape = floor_shape_result.Get();
+
+
+        PhysicsSystem* l_phys = GetEngine()->GetPhysicsSystem();
+
+        m_rigidbody = GetEngine()->GetPhysicsSystem()->CreateRigidBody(floor_shape, l_position, l_rotation, m_layer, m_active);
+        m_rigidbody->SetParentComponent(this);
+    }
+
+	
     //m_rigidbody->SetAllowSleeping(false);
     
 
