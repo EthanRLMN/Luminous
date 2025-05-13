@@ -18,7 +18,7 @@ void RigidbodyComponent::Initialize()
     TransformComponent* l_transform = m_entity.lock().get()->GetComponent<TransformComponent>().get();
     JPH::Vec3 l_position = JPH::Vec3(l_transform->GetLocalPosition().x, l_transform->GetLocalPosition().y, l_transform->GetLocalPosition().z);
     JPH::Vec3 l_scale = JPH::Vec3(l_transform->GetLocalScale().x, l_transform->GetLocalScale().y, l_transform->GetLocalScale().z);
-    JPH::Quat l_rotation = JPH::Quat(l_transform->GetLocalRotationQuat().w, l_transform->GetLocalRotationQuat().x, l_transform->GetLocalRotationQuat().y, l_transform->GetLocalRotationQuat().z);
+    JPH::Quat l_rotation = JPH::Quat(l_transform->GetLocalRotationQuat().x, l_transform->GetLocalRotationQuat().y, l_transform->GetLocalRotationQuat().z, l_transform->GetLocalRotationQuat().w);
 
 	JPH::BoxShapeSettings settings(l_scale);
     settings.SetEmbedded();

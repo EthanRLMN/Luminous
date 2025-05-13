@@ -26,11 +26,11 @@ void Scene::RegisterScene(EntityManager& a_entityManager)
     a_entityManager.GetEntities()[1].get()->GetComponent<RigidbodyComponent>().get()->m_active = JPH::EActivation::Activate;
     a_entityManager.GetEntities()[1].get()->GetComponent<RigidbodyComponent>().get()->Initialize();
 
-    a_entityManager.GetEntities()[2].get()->GetComponent<TransformComponent>().get()->SetLocalScale(Maths::Vector3(30.f, 0.5f, 30.0f));
+    //a_entityManager.GetEntities()[2].get()->GetComponent<TransformComponent>().get()->SetLocalScale(Maths::Vector3(30.f, 0.5f, 30.0f));
     a_entityManager.GetEntities()[2].get()->AddComponent(std::make_shared<RigidbodyComponent>());
     a_entityManager.GetEntities()[2].get()->GetComponent<RigidbodyComponent>().get()->SetEngine(engine);
     a_entityManager.GetEntities()[2].get()->GetComponent<RigidbodyComponent>().get()->SetEntity(a_entityManager.GetEntities()[2]);
-    a_entityManager.GetEntities()[2].get()->GetComponent<TransformComponent>().get()->SetLocalPosition(Maths::Vector3(5.f, -10.0f, 0.0f));
+    a_entityManager.GetEntities()[2].get()->GetComponent<TransformComponent>().get()->SetLocalPosition(Maths::Vector3(6.5f, -10.0f, 1.5f));
     a_entityManager.GetEntities()[2].get()->GetComponent<RigidbodyComponent>().get()->SetLayer(Layers::STATIC);
     a_entityManager.GetEntities()[2].get()->GetComponent<RigidbodyComponent>().get()->m_active = JPH::EActivation::DontActivate;
     a_entityManager.GetEntities()[2].get()->GetComponent<RigidbodyComponent>().get()->Initialize();
