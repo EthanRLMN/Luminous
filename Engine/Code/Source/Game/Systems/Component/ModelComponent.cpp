@@ -6,8 +6,8 @@
 
 void ModelComponent::Initialize()
 {
-    SetMesh("Engine/Assets/Default/Models/CCP2.fbx"); // Default mesh
-    SetTexture("Engine/Assets/Default/Textures/CCP2_albedo.png"); // Default Texture
+    SetMesh("Engine/Assets/Default/Models/CompanionCube.fbx"); // Default mesh
+    SetTexture("Engine/Assets/Default/Textures/CompanionCube.png"); // Default Texture
 
     if (m_shouldLoadResources)
     {

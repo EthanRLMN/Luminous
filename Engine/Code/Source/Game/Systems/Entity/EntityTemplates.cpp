@@ -49,8 +49,8 @@ void EntityTemplates::Sphere()
         l_entity->SetName("Sphere");
 
         std::shared_ptr<ModelComponent> l_modelComponent = std::make_shared<ModelComponent>();
-        l_modelComponent->SetMeshPath("Engine/Assets/Default/Models/viking_room.obj");
-        l_modelComponent->SetTexturePath("Engine/Assets/Default/Textures/viking_room.png");
+        l_modelComponent->SetMeshPath("Engine/Assets/Default/Models/VikingRoom.obj");
+        l_modelComponent->SetTexturePath("Engine/Assets/Default/Textures/VikingRoom.png");
         l_entity->AddComponent(l_modelComponent);
 
         return l_entity;
@@ -78,8 +78,8 @@ void EntityTemplates::Companion()
         l_entity->SetName("Companion");
 
         std::shared_ptr<ModelComponent> l_modelComponent = std::make_shared<ModelComponent>();
-        l_modelComponent->SetMeshPath("Engine/Assets/Default/Models/CCP2.fbx");
-        l_modelComponent->SetTexturePath("Engine/Assets/Default/Textures/CCP2_Albedo.png");
+        l_modelComponent->SetMeshPath("Engine/Assets/Default/Models/CompanionCube.fbx");
+        l_modelComponent->SetTexturePath("Engine/Assets/Default/Textures/CompanionCube.png");
         l_entity->AddComponent(l_modelComponent);
 
         return l_entity;
