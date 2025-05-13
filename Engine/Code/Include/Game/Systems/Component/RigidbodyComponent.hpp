@@ -17,6 +17,8 @@ public:
     [[nodiscard]] inline std::shared_ptr<Entity> GetEntity() const { return m_entity.lock(); }
     inline void SetEntity(const std::weak_ptr<Entity>& a_relatedEntity) { m_entity = a_relatedEntity; }
 
+    ModelComponent* GetModelDebug() { return m_collisionDebugModel; }
+
 private:
     std::weak_ptr<Entity> m_entity{};
     ModelComponent* m_collisionDebugModel;
