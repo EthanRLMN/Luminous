@@ -28,6 +28,7 @@ void RigidbodyComponent::Initialize()
     PhysicsSystem* l_phys = GetEngine()->GetPhysicsSystem();
 
     m_rigidbody = GetEngine()->GetPhysicsSystem()->CreateRigidBody(floor_shape, l_position, l_rotation);
+    m_rigidbody->SetParentComponent(this);
     m_rigidbody->SetIsSensor(true);
 
 

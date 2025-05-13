@@ -9,6 +9,9 @@
 #include "Logger.hpp"
 
 
+class RigidbodyComponent;
+
+
 class RigidBody
 {
 public:
@@ -70,7 +73,9 @@ public:
     [[nodiscard]] inline const JPH::MotionProperties* GetMotionPropertiesUnchecked() const { return m_rigidBody->GetMotionPropertiesUnchecked(); }
     [[nodiscard]] inline const JPH::MotionProperties* GetMotionProperties() const { return m_rigidBody->GetMotionProperties(); }
     inline static JPH::Body& GetFixedToWorld() { return s_fixedToWorld; }
+    inline RigidbodyComponent* GetParentComponent() { return m_parentComponent; }
 
+    inline void SetParentComponent(RigidbodyComponent* a_parentComponent) { m_parentComponent = a_parentComponent; }
     inline void SetEnhancedInternalEdgeRemoval(const bool a_inApply) const { return m_rigidBody->SetEnhancedInternalEdgeRemoval(a_inApply); }
     inline void SetApplyGyroscopicForce(const bool a_inApply) const { m_rigidBody->SetApplyGyroscopicForce(a_inApply); }
     inline void SetUseManifoldReduction(const bool a_inUseReduction) const { m_rigidBody->SetUseManifoldReduction(a_inUseReduction); }
@@ -111,5 +116,6 @@ public:
 
 private:
     JPH::Body* m_rigidBody { nullptr };
+    RigidbodyComponent* m_parentComponent{ nullptr };
     static JPH::Body s_fixedToWorld;
 };

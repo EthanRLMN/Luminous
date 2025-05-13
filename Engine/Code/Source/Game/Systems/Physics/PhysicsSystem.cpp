@@ -10,6 +10,8 @@
 
 
 #include "Game/Systems/Time.inl"
+#include "Game/Systems/Component/RigidbodyComponent.hpp"
+#include "Game/Systems/Entity/Entity.hpp"
 #include "Game/Systems/Physics/BodyActivationListener.hpp"
 #include "Game/Systems/Physics/PhysicsBroadPhaseLayerInterface.hpp"
 #include "Game/Systems/Physics/PhysicsCollisionListener.hpp"
@@ -85,17 +87,18 @@ void PhysicsSystem::Update()
     // TODO : Update collision steps to run properly (accumulator returns floats on a scale from 0.25 to 10, we need integers scaled properly)
     constexpr int l_step { 1 };
     
-    for (RigidBody* const& l_resource : m_bodiesToRigidBodies | std::views::values)
-    {
-        if (l_resource)
-        {
-           
-        }
-    }
+    
     
         
 
     m_physicsSystem->Update(Time::GetFixedDeltaTime(), l_step, m_tempAllocator, m_jobSystem);
+
+    for (RigidBody* const& l_resource : m_bodiesToRigidBodies | std::views::values)
+    {
+        JPH::Vec3 l_bodyPosition = l_resource->GetPosition();
+        Maths::Vector3 l_position = Maths::Vector3(l_bodyPosition.GetX(), l_bodyPosition.GetY(), l_bodyPosition.GetZ());
+        l_resource->GetParentComponent()->GetEntity().get()->Transform()->SetLocalPosition(l_position);
+    }
 }
 
 
