@@ -1,0 +1,12 @@
+{
+    "firstName": "John",
+    "lastName": "Doe",
+    "birthday": "1980-01-01",
+    "children": [
+        {
+            "firstName": "Jane",
+            "lastName": "Doe",
+            "children": []
+        }
+    ]
+}

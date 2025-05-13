@@ -4,8 +4,12 @@
 #include "Rendering/Vulkan/VulkanRenderInterface.hpp"
 #include "ResourceManager/ResourceManager.hpp"
 
+#include <iostream>
+
+
 
 #define JPH_DEBUG_RENDERER
+
 
 void Engine::Init()
 {
@@ -25,6 +29,7 @@ void Engine::Init()
     m_entityManager.Initialize(this);
     m_scene->RegisterScene(m_entityManager);
     m_entityManager.GameplayStarted();
+
 }
 
 void Engine::Update()
