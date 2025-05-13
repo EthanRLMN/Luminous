@@ -3,6 +3,10 @@
 
 #include "WindowPanels/ViewportPanel.hpp"
 
+#include "Rendering/Vulkan/VulkanRenderer.hpp"
+#include "Rendering/Vulkan/VulkanTexture.hpp"
+
+static const std::filesystem::path s_IconPath = "Editor/Assets/Icons/";
 
 void Viewport::Render()
 {
@@ -11,33 +15,33 @@ void Viewport::Render()
     ImGui::Begin(p_windowIdentifier.c_str(), nullptr, ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoBackground);
     
     ImVec2 avail = ImGui::GetContentRegionAvail();
-    float buttonWidth = 0.10f * avail.x;
+    float buttonWidth = 40.f;
     float buttonHeight = 40.f;
     ImVec2 buttonSize(buttonWidth, buttonHeight);
 
-    if (ImGui::Button("Move", buttonSize)) 
+    if (ImGui::ImageButton("Move",m_iconMoveID, buttonSize)) 
     {
     
     }
     ImGui::SameLine();
-    if (ImGui::Button("Rotate", buttonSize)) 
+    if (ImGui::ImageButton("Rotate",m_iconRotateID, buttonSize)) 
     {
     
     }
     ImGui::SameLine();
-    if (ImGui::Button("Resize", buttonSize)) 
+    if (ImGui::ImageButton("Resize", m_iconResizeID, buttonSize)) 
     {
     
     }
 
-    ImGui::SameLine(0, 0.1f * avail.x);
+    ImGui::SameLine(0, 0.4f * avail.x);
 
-    if (ImGui::Button("Play", buttonSize)) 
+    if (ImGui::ImageButton("Play", m_iconPlayID, buttonSize)) 
     {
     
     }
     ImGui::SameLine();
-    if (ImGui::Button("Stop", buttonSize)) 
+    if (ImGui::ImageButton("Stop", m_iconStopID, buttonSize)) 
     {
     
     }
@@ -70,4 +74,47 @@ void Viewport::Render()
 
     ImGui::Image(reinterpret_cast<ImTextureID>(dSets), l_imageSize);
     ImGui::End();
+}
+
+void Viewport::InitIcons()
+{
+    Engine* engine = p_editor->GetEngine();
+    auto* device = engine->GetDevice();
+    auto* renderer = engine->GetRenderer()->CastVulkan();
+
+    m_iconMove = LoadTexture(engine, (s_IconPath / "MoveIcon.png").string());
+    m_iconRotate = LoadTexture(engine, (s_IconPath / "RotateIcon.png").string());
+    m_iconResize = LoadTexture(engine, (s_IconPath / "ResizeIcon.png").string());
+    m_iconPlay = LoadTexture(engine, (s_IconPath / "PlayIcon.png").string());
+    m_iconStop = LoadTexture(engine, (s_IconPath / "StopIcon.png").string());
+
+    auto sampler = renderer->GetDefaultTextureSampler();
+
+    auto loadImg = [&](std::shared_ptr<ITexture>& tex, ImTextureID& id)
+    {
+        tex->CastVulkan()->CreateTextureImageView(device);
+        tex->CastVulkan()->CreateTextureSampler(device);
+        id = reinterpret_cast<ImTextureID>(ImGui_ImplVulkan_AddTexture(
+                sampler,
+                tex->CastVulkan()->GetTextureImageView(),
+                VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL));
+    };
+
+    loadImg(m_iconMove, m_iconMoveID);
+    loadImg(m_iconRotate, m_iconRotateID);
+    loadImg(m_iconResize, m_iconResizeID);
+    loadImg(m_iconPlay, m_iconPlayID);
+    loadImg(m_iconStop, m_iconStopID);
+}
+
+std::shared_ptr<ITexture> Viewport::LoadTexture(Engine* engine, const std::string& path)
+{
+    IResourceParams params{};
+    params.m_device = engine->GetDevice();
+    params.m_commandPool = engine->GetCommandPool();
+    params.m_texturePath = path;
+
+    auto texture = std::make_shared<VulkanTexture>();
+    texture->CreateTextureImage(params.m_device, params.m_commandPool, params.m_texturePath);
+    return texture;
 }

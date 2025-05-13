@@ -7,7 +7,7 @@ project(Editor
 #---------------------------------------#
 #                SOURCES                #
 #---------------------------------------#
-file(GLOB_RECURSE L_EDITOR_SOURCES "Main.cpp" "Code/Source/*.cpp" "Libs/imgui/*.cpp" "Libs/imgui/backends/*.cpp")
+file(GLOB_RECURSE L_EDITOR_SOURCES "Main.cpp" "Code/Source/*.cpp" "Libs/imgui/*.cpp" "Libs/imgui/backends/*.cpp" "Libs/imguizmo/*.cpp")
 
 # Define the lib name for easy modification
 set(LE_TARGET_NAME L_EDITOR)
@@ -25,7 +25,7 @@ add_executable(${LE_TARGET_NAME} ${L_EDITOR_SOURCES})
 #                INCLUDE                #
 #---------------------------------------#
 # Both "Libs/imgui" and "Libs" folders must be included as imgui uses the path of the first one and we use the path of the second one
-target_include_directories(${LE_TARGET_NAME} PUBLIC "Code/Include" "Code" "Libs/imgui" "Libs")
+target_include_directories(${LE_TARGET_NAME} PUBLIC "Code/Include" "Code" "Libs/imgui" "Libs" "Libs/imguizmo")
 
 
 

@@ -17,6 +17,7 @@ public:
 private:
     std::filesystem::path m_currentDirectory{};
     void OpenTextEditor(const std::filesystem::path& path);
+    ImTextureID GetOrLoadImageThumbnail(const std::string& filepath);
 
     Engine* m_engine{ nullptr };
 
@@ -24,8 +25,10 @@ private:
     std::shared_ptr<ITexture> m_directoryIconTexture;
     std::shared_ptr<ITexture> m_fileIconTexture;
 
-    ImTextureID m_directoryDescriptor;
-    ImTextureID m_fileDescriptor;
+    std::unordered_map<std::string, ImTextureID> m_thumbnailCache;
+
+    ImTextureID m_directoryDescriptor = NULL;
+    ImTextureID m_fileDescriptor = NULL;
 };
 
 std::shared_ptr<ITexture> LoadTexture(Engine* engine, const std::string& path);
