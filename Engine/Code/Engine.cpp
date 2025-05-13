@@ -4,8 +4,6 @@
 #include "Rendering/Vulkan/VulkanRenderInterface.hpp"
 #include "ResourceManager/ResourceManager.hpp"
 
-#include <iostream>
-
 
 #define JPH_DEBUG_RENDERER
 
@@ -39,14 +37,6 @@ void Engine::Update()
     m_inputManager->Update();
     m_renderer->DrawFrame(m_window, m_device, m_swapChain, m_pipeline, m_buffer, m_renderPassManager, m_descriptor, m_synchronization, m_commandBuffer, m_frameBufferManager, m_depthResource, m_surface, m_multiSampling, m_inputManager, m_entityManager);
     m_physicsSystem->Update();
-
-
-    for (const std::shared_ptr<Entity>& entity : m_entityManager.GetEntities())
-    {
-        const std::shared_ptr<TransformComponent> l_transform = entity->Transform();
-        l_transform->SetLocalPosition(l_transform->GetLocalPosition() + Maths::Vector3::One * Time::GetDeltaTime());
-    }
-
 
     m_inputManager->ResetMouseDelta();
     if (m_window->ShouldClose())

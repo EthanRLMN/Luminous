@@ -7,9 +7,13 @@ void EntityTemplates::RegisterEntityTemplates()
 {
     DefaultEmpty();
     DefaultCube();
-    DefaultPlane();
     DefaultSphere();
+    DefaultCapsule();
+    DefaultCylinder();
+    DefaultCone();
+    DefaultMonkey();
     DefaultCompanion();
+    DefaultPlane();
 }
 
 
@@ -31,9 +35,9 @@ void EntityTemplates::DefaultCube()
         std::shared_ptr<Entity> l_entity = std::make_shared<Entity>(a_entityManager);
         l_entity->SetName("DefaultCube");
 
-        std::shared_ptr<ModelComponent> l_modelComponent = std::make_shared<ModelComponent>();
-        l_modelComponent->SetMeshPath("Engine/Assets/Default/Models/Cube.obj");
-        l_modelComponent->SetTexturePath("Engine/Assets/Default/Textures/Cube.png");
+        const std::shared_ptr<ModelComponent> l_modelComponent = std::make_shared<ModelComponent>();
+        l_modelComponent->SetMeshPath("Engine/Assets/Default/Models/Cube.fbx");
+        l_modelComponent->SetTexturePath("Engine/Assets/Default/Textures/White.png");
         l_entity->AddComponent(l_modelComponent);
 
         return l_entity;
@@ -48,9 +52,9 @@ void EntityTemplates::DefaultSphere()
         std::shared_ptr<Entity> l_entity = std::make_shared<Entity>(a_entityManager);
         l_entity->SetName("DefaultSphere");
 
-        std::shared_ptr<ModelComponent> l_modelComponent = std::make_shared<ModelComponent>();
-        l_modelComponent->SetMeshPath("Engine/Assets/Default/Models/VikingRoom.obj");
-        l_modelComponent->SetTexturePath("Engine/Assets/Default/Textures/VikingRoom.png");
+        const std::shared_ptr<ModelComponent> l_modelComponent = std::make_shared<ModelComponent>();
+        l_modelComponent->SetMeshPath("Engine/Assets/Default/Models/Sphere.fbx");
+        l_modelComponent->SetTexturePath("Engine/Assets/Default/Textures/White.png");
         l_entity->AddComponent(l_modelComponent);
 
         return l_entity;
@@ -58,27 +62,71 @@ void EntityTemplates::DefaultSphere()
 }
 
 
-void EntityTemplates::Capsule()
+void EntityTemplates::DefaultCapsule()
 {
+    EntityFactory::Get().RegisterEntity("DefaultCapsule", [](EntityManager& a_entityManager)
+    {
+        std::shared_ptr<Entity> l_entity = std::make_shared<Entity>(a_entityManager);
+        l_entity->SetName("DefaultCapsule");
 
+        const std::shared_ptr<ModelComponent> l_modelComponent = std::make_shared<ModelComponent>();
+        l_modelComponent->SetMeshPath("Engine/Assets/Default/Models/Capsule.fbx");
+        l_modelComponent->SetTexturePath("Engine/Assets/Default/Textures/White.png");
+        l_entity->AddComponent(l_modelComponent);
+
+        return l_entity;
+    });
 }
 
 
-void EntityTemplates::Cylinder()
+void EntityTemplates::DefaultCylinder()
 {
+    EntityFactory::Get().RegisterEntity("DefaultCylinder", [](EntityManager& a_entityManager)
+    {
+        std::shared_ptr<Entity> l_entity = std::make_shared<Entity>(a_entityManager);
+        l_entity->SetName("DefaultCylinder");
 
+        const std::shared_ptr<ModelComponent> l_modelComponent = std::make_shared<ModelComponent>();
+        l_modelComponent->SetMeshPath("Engine/Assets/Default/Models/Cylinder.fbx");
+        l_modelComponent->SetTexturePath("Engine/Assets/Default/Textures/White.png");
+        l_entity->AddComponent(l_modelComponent);
+
+        return l_entity;
+    });
 }
 
 
-void EntityTemplates::Cone()
+void EntityTemplates::DefaultCone()
 {
+    EntityFactory::Get().RegisterEntity("DefaultCone", [](EntityManager& a_entityManager)
+    {
+        std::shared_ptr<Entity> l_entity = std::make_shared<Entity>(a_entityManager);
+        l_entity->SetName("DefaultCone");
 
+        const std::shared_ptr<ModelComponent> l_modelComponent = std::make_shared<ModelComponent>();
+        l_modelComponent->SetMeshPath("Engine/Assets/Default/Models/Cone.fbx");
+        l_modelComponent->SetTexturePath("Engine/Assets/Default/Textures/White.png");
+        l_entity->AddComponent(l_modelComponent);
+
+        return l_entity;
+    });
 }
 
 
-void EntityTemplates::Monkey()
+void EntityTemplates::DefaultMonkey()
 {
+    EntityFactory::Get().RegisterEntity("DefaultMonkey", [](EntityManager& a_entityManager)
+    {
+        std::shared_ptr<Entity> l_entity = std::make_shared<Entity>(a_entityManager);
+        l_entity->SetName("DefaultMonkey");
 
+        const std::shared_ptr<ModelComponent> l_modelComponent = std::make_shared<ModelComponent>();
+        l_modelComponent->SetMeshPath("Engine/Assets/Default/Models/Monkey.fbx");
+        l_modelComponent->SetTexturePath("Engine/Assets/Default/Textures/White.png");
+        l_entity->AddComponent(l_modelComponent);
+
+        return l_entity;
+    });
 }
 
 
@@ -103,8 +151,14 @@ void EntityTemplates::DefaultPlane()
 {
     EntityFactory::Get().RegisterEntity("DefaultPlane", [](EntityManager& a_entityManager)
     {
-        auto l_entity = std::make_shared<Entity>(a_entityManager);
+        std::shared_ptr<Entity> l_entity = std::make_shared<Entity>(a_entityManager);
         l_entity->SetName("DefaultPlane");
+
+        std::shared_ptr<ModelComponent> l_modelComponent = std::make_shared<ModelComponent>();
+        l_modelComponent->SetMeshPath("Engine/Assets/Default/Models/Plane.fbx");
+        l_modelComponent->SetTexturePath("Engine/Assets/Default/Textures/White.png");
+        l_entity->AddComponent(l_modelComponent);
+
         return l_entity;
     });
 }

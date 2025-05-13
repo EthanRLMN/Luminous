@@ -15,9 +15,9 @@ private:
     void DefaultPlane();
     void DefaultCube();
     void DefaultSphere();
-    void Capsule();
-    void Cylinder();
-    void Cone();
-    void Monkey();
+    void DefaultCapsule();
+    void DefaultCylinder();
+    void DefaultCone();
+    void DefaultMonkey();
     void DefaultCompanion();
 };

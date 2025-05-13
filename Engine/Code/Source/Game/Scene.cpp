@@ -9,8 +9,17 @@ void Scene::RegisterScene(EntityManager& a_entityManager)
     EntityTemplates l_defaultTemplates {};
     l_defaultTemplates.RegisterEntityTemplates();
 
-    a_entityManager.CreateEntityFromTemplate("DefaultCube");
+    for (int i = 0; i < EntityManager::GetAvailableTemplates().size(); ++i)
+    {
+        auto l_obj = a_entityManager.CreateEntityFromTemplate(EntityManager::GetAvailableTemplates()[i]);
 
+        Maths::Vector3 l_position = Maths::Vector3(4.0f, 0.0f, 0.0f) * i;
+        l_obj->Transform()->SetLocalPosition(l_position);
+    }
+
+    for (const auto& l_entity : EntityManager::GetAvailableTemplates())
+    {
+    }
 
     for (const auto& l_entity : EntityManager::GetAvailableTemplates())
     {
