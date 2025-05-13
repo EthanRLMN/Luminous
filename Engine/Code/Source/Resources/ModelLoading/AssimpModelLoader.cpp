@@ -1,4 +1,3 @@
-#include <direct.h>
 #include <string>
 
 #include "assimp/Importer.hpp"
