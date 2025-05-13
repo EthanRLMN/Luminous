@@ -14,6 +14,7 @@ public:
             case Layers::STATIC: // Only trigger collisions with DYNAMIC objects
                 return a_inObject2 == Layers::DYNAMIC;
             case Layers::DYNAMIC: // Collides with everything
+            case Layers::KINEMATIC:
             case Layers::SENSOR:
                 return true;
             case Layers::DISABLED: // Disable all collisions

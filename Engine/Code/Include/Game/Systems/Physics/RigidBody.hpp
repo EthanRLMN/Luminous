@@ -113,8 +113,8 @@ public:
     inline virtual void OnCollisionEnter(RigidBody* a_other) { DEBUG_LOG_ERROR("COLLIDED"); };
     inline virtual void OnTriggerEnter(RigidBody* a_other) { DEBUG_LOG_ERROR("TRIGGERED"); };
 
-    inline virtual void OnCollisionExit(RigidBody* a_other) { DEBUG_LOG_ERROR("COLLISION ENDED"); };
-    inline virtual void OnTriggerExit(RigidBody* a_other) { DEBUG_LOG_ERROR("TRIGGER ENDED"); };
+    inline virtual void OnCollisionExit(RigidBody* a_other) { /*DEBUG_LOG_ERROR("COLLISION ENDED");*/ };
+    inline virtual void OnTriggerExit(RigidBody* a_other) { /*DEBUG_LOG_ERROR("TRIGGER ENDED");*/ };
 
 private:
     JPH::Body* m_rigidBody { nullptr };

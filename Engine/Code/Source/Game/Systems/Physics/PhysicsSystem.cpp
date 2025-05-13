@@ -49,7 +49,7 @@ void PhysicsSystem::Init(const Settings& a_settings)
     
     m_physicsSystem->SetContactListener(m_collisionListener);
 
-
+    
     
 
     /*
@@ -144,7 +144,7 @@ void PhysicsSystem::TriggerPhysicsOptimization() const
 }
 
 
-RigidBody* PhysicsSystem::CreateRigidBody(const JPH::Shape* a_shape, JPH::Vec3 a_pos, JPH::Quat a_rot, JPH::uint8 a_layer)
+RigidBody* PhysicsSystem::CreateRigidBody(const JPH::Shape* a_shape, JPH::Vec3 a_pos, JPH::Quat a_rot, JPH::uint8 a_layer, JPH::EActivation a_activate)
 {
     JPH::EMotionType l_motionType = JPH::EMotionType::Static;
     if (a_layer == Layers::DYNAMIC)
@@ -161,6 +161,8 @@ RigidBody* PhysicsSystem::CreateRigidBody(const JPH::Shape* a_shape, JPH::Vec3 a
         l_motionType,
         a_layer
     );
+    if (a_layer == Layers::DYNAMIC)
+        l_bodySettings.mAllowSleeping = false;
 
     if (a_layer == Layers::SENSOR)
         l_bodySettings.mIsSensor = true;
@@ -169,7 +171,7 @@ RigidBody* PhysicsSystem::CreateRigidBody(const JPH::Shape* a_shape, JPH::Vec3 a
     l_bodySettings.mGravityFactor = Settings().m_gravityFactor;
 
     JPH::Body* l_body = GetBodyInterface().CreateBody(l_bodySettings);
-    GetBodyInterface().AddBody(l_body->GetID(), JPH::EActivation::Activate);
+    GetBodyInterface().AddBody(l_body->GetID(), a_activate);
     
     RigidBody* l_rig = new RigidBody(l_body);
 

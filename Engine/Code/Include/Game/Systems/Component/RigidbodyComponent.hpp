@@ -5,6 +5,8 @@
 #include "Game/Systems/Physics/PhysicsCollisionListener.hpp"
 #include "Game/Systems/Component/ModelComponent.hpp"
 #include "Game/Systems/Physics/RigidBody.hpp"
+#include "Game/Systems/Physics/LayerSystem.hpp"
+
 
 class RigidbodyComponent : public EntityComponent
 {
@@ -18,8 +20,12 @@ public:
     inline void SetEntity(const std::weak_ptr<Entity>& a_relatedEntity) { m_entity = a_relatedEntity; }
 
     ModelComponent* GetModelDebug() { return m_collisionDebugModel; }
+    void SetLayer(JPH::uint8 a_layer) { m_layer = a_layer; }
+
+    JPH::EActivation m_active = JPH::EActivation::Activate;
 
 private:
+    JPH::uint8 m_layer = Layers::KINEMATIC;
     std::weak_ptr<Entity> m_entity{};
     ModelComponent* m_collisionDebugModel;
     RigidBody* m_rigidbody;
