@@ -8,7 +8,7 @@ void RigidbodyComponent::Initialize()
 	m_collisionDebugModel->SetEngine(GetEngine());
 
 	m_collisionDebugModel->SetMeshPath("Engine/Assets/Default/Models/colliderCube.obj");
-    m_collisionDebugModel->SetTexturePath("Engine/Assets/Default/Textures/Dummy.png");
+    m_collisionDebugModel->SetTexturePath("Engine/Assets/Default/Textures/colliderTexture.png");
 	//Set le mesh en fonction du type de collider
     m_collisionDebugModel->Initialize();
 

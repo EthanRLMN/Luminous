@@ -26,7 +26,7 @@ public:
     void SetViewportSize(float a_width, float a_height) override { m_viewportWidth = a_width; m_viewportHeight = a_height; };
     VulkanRenderer* CastVulkan() override { return this; }
 
-	void RecordCommandBuffer(const VkCommandBuffer& a_commandBuffer, const VkPipeline& a_graphicsPipeline, const VkPipelineLayout& a_pipelineLayout, const uint32_t& a_imageIndex, ISwapChain* a_swapChain, const IRenderPassManager* a_renderPassManager, IDescriptor* a_descriptor, const IFrameBufferManager* a_frameBufferManager, const EntityManager& a_entityManager) const;
+	void RecordCommandBuffer(const VkCommandBuffer& a_commandBuffer, const VkPipeline& a_graphicsPipeline, const VkPipelineLayout& a_pipelineLayout, const uint32_t& a_imageIndex, ISwapChain* a_swapChain, const IRenderPassManager* a_renderPassManager, IDescriptor* a_descriptor, const IFrameBufferManager* a_frameBufferManager, const EntityManager& a_entityManager, const VkPipeline& a_wireGraphicsPipeline) const;
 
     void UpdateUniformBuffer(const uint32_t& a_currentFrame, IBuffer* a_buffer, const EntityManager& a_entityManager) const;
 	void RecreateSwapChain(IWindow* a_window, IDevice* a_device, ISurface* a_surface, ISwapChain* a_swapChain, IDepthResource* a_depthResource, const IFrameBufferManager* a_frameBuffer, const IRenderPassManager* a_renderPass, IMultiSampling* a_multisampling);

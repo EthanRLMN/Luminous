@@ -80,7 +80,7 @@ void VulkanRenderer::DrawFrame(IWindow* a_window, IDevice* a_device, ISwapChain*
     SetupSubmitInfo(l_submitInfo, l_waitSemaphores, l_waitStages, a_commandBuffer->CastVulkan()->GetCommandBuffers(), l_signalSemaphores);
 
     vkResetCommandBuffer(a_commandBuffer->CastVulkan()->GetCommandBuffers()[m_currentFrame], 0);
-    RecordCommandBuffer(a_commandBuffer->CastVulkan()->GetCommandBuffers()[m_currentFrame], a_pipeline->CastVulkan()->GetGraphicsPipeline(), a_pipeline->CastVulkan()->GetPipelineLayout(), l_imageIndex, a_swapChain, a_renderPassManager, a_descriptor, a_frameBufferManager, a_entityManager);
+    RecordCommandBuffer(a_commandBuffer->CastVulkan()->GetCommandBuffers()[m_currentFrame], a_pipeline->CastVulkan()->GetGraphicsPipeline(), a_pipeline->CastVulkan()->GetPipelineLayout(), l_imageIndex, a_swapChain, a_renderPassManager, a_descriptor, a_frameBufferManager, a_entityManager, a_pipeline->CastVulkan()->GetWireframeGraphicsPipeline());
 
     if (vkQueueSubmit(a_device->CastVulkan()->GetGraphicsQueue(), 1, &l_submitInfo, a_synchronization->CastVulkan()->GetFences()[m_currentFrame]) != VK_SUCCESS)
         DEBUG_LOG_ERROR("Failed to submit draw command buffer");
@@ -107,7 +107,7 @@ void VulkanRenderer::DrawFrame(IWindow* a_window, IDevice* a_device, ISwapChain*
 }
 
 
-void VulkanRenderer::RecordCommandBuffer(const VkCommandBuffer& a_commandBuffer, const VkPipeline& a_graphicsPipeline, const VkPipelineLayout& a_pipelineLayout, const uint32_t& a_imageIndex, ISwapChain* a_swapChain, const IRenderPassManager* a_renderPassManager, IDescriptor* a_descriptor, const IFrameBufferManager* a_frameBufferManager, const EntityManager& a_entityManager) const
+void VulkanRenderer::RecordCommandBuffer(const VkCommandBuffer& a_commandBuffer, const VkPipeline& a_graphicsPipeline, const VkPipelineLayout& a_pipelineLayout, const uint32_t& a_imageIndex, ISwapChain* a_swapChain, const IRenderPassManager* a_renderPassManager, IDescriptor* a_descriptor, const IFrameBufferManager* a_frameBufferManager, const EntityManager& a_entityManager, const VkPipeline& a_wireGraphicsPipeline) const
 {
     VkCommandBufferBeginInfo l_bufferBeginInfo { };
     l_bufferBeginInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
@@ -168,6 +168,8 @@ void VulkanRenderer::RecordCommandBuffer(const VkCommandBuffer& a_commandBuffer,
             
             std::vector<std::shared_ptr<Entity>> entitieswithColliders = a_entityManager.GetEntitiesByComponent<RigidbodyComponent>();
 
+            vkCmdBindPipeline(a_commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, a_wireGraphicsPipeline);
+
             for (const std::shared_ptr<Entity>& entity : entitieswithColliders)
             {
                 UniformBufferObject l_ubo{};
@@ -186,7 +188,7 @@ void VulkanRenderer::RecordCommandBuffer(const VkCommandBuffer& a_commandBuffer,
 
                 vkCmdDrawIndexed(a_commandBuffer, static_cast<uint32_t>(entity.get()->GetComponent<RigidbodyComponent>().get()->GetModelDebug()->GetMesh()->CastVulkan()->GetIndices().size()), 1, 0, 0, 0);
             }
-
+            vkCmdBindPipeline(a_commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, a_graphicsPipeline);
 
         }
 
