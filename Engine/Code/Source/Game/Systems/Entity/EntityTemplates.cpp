@@ -5,35 +5,35 @@
 
 void EntityTemplates::RegisterEntityTemplates()
 {
-    Empty();
-    Cube();
-    Plane();
-    Sphere();
-    Companion();
+    DefaultEmpty();
+    DefaultCube();
+    DefaultPlane();
+    DefaultSphere();
+    DefaultCompanion();
 }
 
 
-void EntityTemplates::Empty()
+void EntityTemplates::DefaultEmpty()
 {
-    EntityFactory::Get().RegisterEntity("Empty", [](EntityManager& a_entityManager)
+    EntityFactory::Get().RegisterEntity("DefaultEmpty", [](EntityManager& a_entityManager)
     {
         auto l_entity = std::make_shared<Entity>(a_entityManager);
-        l_entity->SetName("Empty");
+        l_entity->SetName("DefaultEmpty");
         return l_entity;
     });
 }
 
 
-void EntityTemplates::Cube()
+void EntityTemplates::DefaultCube()
 {
-    EntityFactory::Get().RegisterEntity("Cube", [](EntityManager& a_entityManager)
+    EntityFactory::Get().RegisterEntity("DefaultCube", [](EntityManager& a_entityManager)
     {
         std::shared_ptr<Entity> l_entity = std::make_shared<Entity>(a_entityManager);
-        l_entity->SetName("Cube");
+        l_entity->SetName("DefaultCube");
 
         std::shared_ptr<ModelComponent> l_modelComponent = std::make_shared<ModelComponent>();
-        l_modelComponent->SetMeshPath("Engine/Assets/Default/Models/CubeUE.FBX");
-        l_modelComponent->SetTexturePath("Engine/Assets/Default/Textures/DefaultTexture.png");
+        l_modelComponent->SetMeshPath("Engine/Assets/Default/Models/Cube.obj");
+        l_modelComponent->SetTexturePath("Engine/Assets/Default/Textures/Cube.png");
         l_entity->AddComponent(l_modelComponent);
 
         return l_entity;
@@ -41,12 +41,12 @@ void EntityTemplates::Cube()
 }
 
 
-void EntityTemplates::Sphere()
+void EntityTemplates::DefaultSphere()
 {
-    EntityFactory::Get().RegisterEntity("Sphere", [](EntityManager& a_entityManager)
+    EntityFactory::Get().RegisterEntity("DefaultSphere", [](EntityManager& a_entityManager)
     {
         std::shared_ptr<Entity> l_entity = std::make_shared<Entity>(a_entityManager);
-        l_entity->SetName("Sphere");
+        l_entity->SetName("DefaultSphere");
 
         std::shared_ptr<ModelComponent> l_modelComponent = std::make_shared<ModelComponent>();
         l_modelComponent->SetMeshPath("Engine/Assets/Default/Models/VikingRoom.obj");
@@ -58,24 +58,36 @@ void EntityTemplates::Sphere()
 }
 
 
-void EntityTemplates::Capsule() {}
-
-
-void EntityTemplates::Cylinder() {}
-
-
-void EntityTemplates::Cone() {}
-
-
-void EntityTemplates::Monkey() {}
-
-
-void EntityTemplates::Companion()
+void EntityTemplates::Capsule()
 {
-    EntityFactory::Get().RegisterEntity("Companion", [](EntityManager& a_entityManager)
+
+}
+
+
+void EntityTemplates::Cylinder()
+{
+
+}
+
+
+void EntityTemplates::Cone()
+{
+
+}
+
+
+void EntityTemplates::Monkey()
+{
+
+}
+
+
+void EntityTemplates::DefaultCompanion()
+{
+    EntityFactory::Get().RegisterEntity("DefaultCompanion", [](EntityManager& a_entityManager)
     {
         std::shared_ptr<Entity> l_entity = std::make_shared<Entity>(a_entityManager);
-        l_entity->SetName("Companion");
+        l_entity->SetName("DefaultCompanion");
 
         std::shared_ptr<ModelComponent> l_modelComponent = std::make_shared<ModelComponent>();
         l_modelComponent->SetMeshPath("Engine/Assets/Default/Models/CompanionCube.fbx");
@@ -87,12 +99,12 @@ void EntityTemplates::Companion()
 }
 
 
-void EntityTemplates::Plane()
+void EntityTemplates::DefaultPlane()
 {
-    EntityFactory::Get().RegisterEntity("Plane", [](EntityManager& a_entityManager)
+    EntityFactory::Get().RegisterEntity("DefaultPlane", [](EntityManager& a_entityManager)
     {
         auto l_entity = std::make_shared<Entity>(a_entityManager);
-        l_entity->SetName("Plane");
+        l_entity->SetName("DefaultPlane");
         return l_entity;
     });
 }
