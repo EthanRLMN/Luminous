@@ -9,6 +9,11 @@ void MatrixToArray(const Maths::Matrix4& matrix, float out[16])
             out[col + row * 4] = matrix.mat[row][col];
 }
 
+void InspectorPanel::SetSelectedEntity(const std::shared_ptr<Entity>& entity)
+{
+    p_isEntitySelected = entity;
+}
+
 Maths::Matrix4 ArrayToMatrix(const float in[16])
 {
     Maths::Matrix4 result;
@@ -64,13 +69,8 @@ void InspectorPanel::Render()
             ImVec2 size = ImGui::GetContentRegionAvail();
             ImGuizmo::SetRect(pos.x, pos.y, size.x, size.y);
 
-            Maths::Matrix4 viewMatrix = m_camera->GetViewMatrix();
-            Maths::Matrix4 projectionMatrix = m_camera->GetProjectionMatrix();
-
             float view[16];
             float projection[16];
-            MatrixToArray(viewMatrix, view);
-            MatrixToArray(projectionMatrix, projection);
 
             ImGuizmo::Manipulate(view, projection,
                                  ImGuizmo::TRANSLATE | ImGuizmo::ROTATE | ImGuizmo::SCALE,
