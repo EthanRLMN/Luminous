@@ -206,6 +206,37 @@ void VulkanRenderer::RecordCommandBuffer(const VkCommandBuffer& a_commandBuffer,
                     l_modelMatrixSphere.mat[2][2] = l_modelMatrixSphere.mat[1][1];
 
                     l_ubo.model = l_modelMatrixSphere2.Transpose();
+                } else if (entity.get()->GetComponent<RigidbodyComponent>()->GetColliderType() == ColliderType::CAPSULECOLLIDER)
+                {
+
+                    Maths::Vector3 l_pos = entity->Transform()->GetGlobalPosition();
+                    Maths::Vector3 l_rot = entity->Transform()->GetGlobalRotationVec();
+                    l_rot = Maths::Vector3(-l_rot.x, -l_rot.y, -l_rot.z);
+                    Maths::Vector3 l_scale = entity->Transform()->GetGlobalScale();
+                    l_scale.y = l_scale.x;
+
+                    Maths::Matrix4 l_posMat = Maths::Matrix4::Translation(l_pos);
+                    Maths::Matrix4 l_rotMat = Maths::Matrix4::RotationXYZ(l_rot);
+                    Maths::Matrix4 l_scaleMat = Maths::Matrix4::Scale(l_scale);
+                    Maths::Matrix4 l_modelMatrixSphere2 = Maths::Matrix4::TRS(l_posMat, l_rotMat, l_scaleMat);
+
+
+                    l_ubo.model = l_modelMatrixSphere2.Transpose();
+
+
+                    for (int l_i = 0; l_i < 2; ++l_i)
+                    {
+                        const std::array<VkBuffer, 1> l_vertexBuffers = { entity.get()->GetComponent<RigidbodyComponent>().get()->GetCapsuleSphereDebug()->GetMesh()->CastVulkan()->GetVertexBuffer() };
+                        const std::array<VkDeviceSize, 1> l_offsets = { 0 };
+                        vkCmdBindVertexBuffers(a_commandBuffer, 0, 1, l_vertexBuffers.data(), l_offsets.data());
+                        vkCmdBindIndexBuffer(a_commandBuffer, entity.get()->GetComponent<RigidbodyComponent>().get()->GetCapsuleSphereDebug()->GetMesh()->CastVulkan()->GetIndexBuffer(), 0, VK_INDEX_TYPE_UINT32);
+                        std::vector<VkDescriptorSet> sets = { a_descriptor->CastVulkan()->GetDescriptorSet()[m_currentFrame], entity.get()->GetComponent<RigidbodyComponent>().get()->GetCapsuleSphereDebug()->GetTexture()->CastVulkan()->GetDescriptorSet() };
+                        vkCmdBindDescriptorSets(a_commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, a_pipelineLayout, 0, static_cast<uint32_t>(sets.size()), sets.data(), 0, nullptr);
+                        vkCmdPushConstants(a_commandBuffer, a_pipelineLayout, VK_SHADER_STAGE_VERTEX_BIT, 0, sizeof(UniformBufferObject), &l_ubo);
+
+                        vkCmdDrawIndexed(a_commandBuffer, static_cast<uint32_t>(entity.get()->GetComponent<RigidbodyComponent>().get()->GetCapsuleSphereDebug()->GetMesh()->CastVulkan()->GetIndices().size()), 1, 0, 0, 0);                        
+                    }
+                    l_ubo.model = l_modelMatrix.Transpose();
                 }
 
                 const std::array<VkBuffer, 1> l_vertexBuffers = { entity.get()->GetComponent<RigidbodyComponent>().get()->GetModelDebug()->GetMesh()->CastVulkan()->GetVertexBuffer() };

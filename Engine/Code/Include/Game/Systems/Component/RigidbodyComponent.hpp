@@ -33,6 +33,7 @@ public:
     [[nodiscard]] inline std::shared_ptr<Entity> GetEntity() const { return m_entity.lock(); }
     inline ColliderType GetColliderType() { return m_colliderType; }
     inline ModelComponent* GetModelDebug() { return m_collisionDebugModel; }
+    inline ModelComponent* GetCapsuleSphereDebug() { return m_capsuleDebugSphere; }
     inline JPH::EActivation GetActivation() { return m_active; }
 
     
