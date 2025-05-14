@@ -1,6 +1,5 @@
 #pragma once
 
-
 class EntityTemplates
 {
 public:
@@ -8,8 +7,6 @@ public:
     ~EntityTemplates() = default;
 
     void RegisterEntityTemplates();
-
-
 private:
     void DefaultEmpty();
     void DefaultPlane();
