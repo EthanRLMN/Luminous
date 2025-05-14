@@ -209,23 +209,36 @@ void VulkanRenderer::RecordCommandBuffer(const VkCommandBuffer& a_commandBuffer,
                 } else if (entity.get()->GetComponent<RigidbodyComponent>()->GetColliderType() == ColliderType::CAPSULECOLLIDER)
                 {
 
-                    Maths::Vector3 l_pos = entity->Transform()->GetGlobalPosition();
+                    
+                    
                     Maths::Vector3 l_rot = entity->Transform()->GetGlobalRotationVec();
+                    Maths::Quaternion l_rotQ = entity->Transform()->GetGlobalRotationQuat();
                     l_rot = Maths::Vector3(-l_rot.x, -l_rot.y, -l_rot.z);
                     Maths::Vector3 l_scale = entity->Transform()->GetGlobalScale();
-                    l_scale.y = l_scale.x;
+                    l_scale.x = entity.get()->GetComponent<RigidbodyComponent>()->GetCapsuleWidth();
+                    l_scale.y = entity.get()->GetComponent<RigidbodyComponent>()->GetCapsuleWidth();
+                    l_scale.z = entity.get()->GetComponent<RigidbodyComponent>()->GetCapsuleWidth();
 
-                    Maths::Matrix4 l_posMat = Maths::Matrix4::Translation(l_pos);
                     Maths::Matrix4 l_rotMat = Maths::Matrix4::RotationXYZ(l_rot);
                     Maths::Matrix4 l_scaleMat = Maths::Matrix4::Scale(l_scale);
-                    Maths::Matrix4 l_modelMatrixSphere2 = Maths::Matrix4::TRS(l_posMat, l_rotMat, l_scaleMat);
-
-
-                    l_ubo.model = l_modelMatrixSphere2.Transpose();
+                    
 
 
                     for (int l_i = 0; l_i < 2; ++l_i)
                     {
+                        Maths::Vector3 l_pos = entity->Transform()->GetGlobalPosition();
+                        Maths::Vector3 l_add = Maths::Vector3(0, l_scale.y, 0) * l_rotQ * 1.5f;
+                        if (l_i == 0)
+                            l_pos += l_add;
+                        else
+                            l_pos -= l_add;
+
+                        Maths::Matrix4 l_posMat = Maths::Matrix4::Translation(l_pos);
+                        
+
+                        Maths::Matrix4 l_modelMatrixSphere2 = Maths::Matrix4::TRS(l_posMat, l_rotMat, l_scaleMat);
+                        l_ubo.model = l_modelMatrixSphere2.Transpose();
+
                         const std::array<VkBuffer, 1> l_vertexBuffers = { entity.get()->GetComponent<RigidbodyComponent>().get()->GetCapsuleSphereDebug()->GetMesh()->CastVulkan()->GetVertexBuffer() };
                         const std::array<VkDeviceSize, 1> l_offsets = { 0 };
                         vkCmdBindVertexBuffers(a_commandBuffer, 0, 1, l_vertexBuffers.data(), l_offsets.data());

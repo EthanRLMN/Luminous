@@ -65,11 +65,11 @@ void RigidbodyComponent::Initialize()
         m_rigidbody->SetParentComponent(this);
     } else if (m_colliderType == ColliderType::CAPSULECOLLIDER)
     {
-        JPH::CapsuleShapeSettings settings(l_scale.GetY()/2,(l_scale.GetZ() + l_scale.GetX()) / 2);
+        JPH::CapsuleShapeSettings settings(l_scale.GetY(),(l_scale.GetZ() + l_scale.GetX()) / 2);
         settings.SetEmbedded();
         JPH::ShapeSettings::ShapeResult floor_shape_result = settings.Create();
         JPH::ShapeRefC floor_shape = floor_shape_result.Get();
-
+        m_capsuleWidth = (l_scale.GetZ() + l_scale.GetX()) / 2;
 
         PhysicsSystem* l_phys = GetEngine()->GetPhysicsSystem();
 
