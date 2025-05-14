@@ -78,6 +78,13 @@ void Scene::LoadScene(std::string filename,EntityManager& a_entityManager)
             transform->SetLocalScale(Maths::Vector3(data.localScaleX, data.localScaleY, data.localScaleZ));
         }
 
+        auto model = entity->GetComponent<ModelComponent>();
+
+        if (model) {
+            model->SetMeshPath(data.modelPath);
+            model->SetTexturePath(data.texturePath);
+        }
+
         ++entityIt; 
     }
 
@@ -128,6 +135,11 @@ void Scene::SaveScene(const std::string& filepath, EntityManager& a_entityManage
         }
 
         auto model = entity->GetComponent<ModelComponent>();
+
+        if (model) {
+            saver.modelPath = model->GetMeshPath();
+            saver.texturePath = model->GetTexturePath();
+        }
 
         entityData.push_back(saver);
     }

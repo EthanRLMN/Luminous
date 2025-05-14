@@ -51,10 +51,8 @@ struct Entity_Saver
     //Model Component:
 
     std::string texturePath;
-    std::string texture;
-
     std::string modelPath;
-    std::string model;
+
 };
 
 class Scene
