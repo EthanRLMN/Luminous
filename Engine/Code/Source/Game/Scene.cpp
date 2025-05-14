@@ -83,6 +83,20 @@ void Scene::SaveScene(const std::string& filepath, EntityManager& a_entityManage
         saver.entityUUID = entity->GetUUID(); 
         saver.isActive = entity->IsActive(); 
 
+        auto transform = entity->GetComponent<TransformComponent>();
+
+        if (transform)
+        {
+            saver.globalPosition = transform->GetGlobalPosition();
+            saver.globalRotation = transform->GetGlobalRotationQuat();
+            saver.globalScale = transform->GetGlobalScale();
+
+            saver.localPosition = transform->GetLocalPosition();
+            saver.localRotation = transform->GetLocalRotationQuat();
+            saver.localScale = transform->GetLocalScale();
+        }
+
+
         entityData.push_back(saver);
     }
 

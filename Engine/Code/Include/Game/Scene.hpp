@@ -12,9 +12,22 @@ class Engine;
 
 struct Entity_Saver
 {
+    //Entity
     std::string entityName;
     uint16_t entityUUID;
     bool isActive;
+
+    //Transform Global
+    Maths::Vector3 globalPosition;
+    Maths::Quaternion globalRotation;
+    Maths::Vector3 globalScale;
+
+    //Transform Local
+    Maths::Vector3 localPosition;
+    Maths::Quaternion localRotation;
+    Maths::Vector3 localScale;
+
+
 };
 
 class Scene
