@@ -18,16 +18,32 @@ struct Entity_Saver
     bool isActive;
 
     //Transform Global
-    Maths::Vector3 globalPosition;
-    Maths::Quaternion globalRotation;
-    Maths::Vector3 globalScale;
+    float globalPositionX;
+    float globalPositionY;
+    float globalPositionZ;
+
+    float globalRotationX;
+    float globalRotationY;
+    float globalRotationZ;
+    float globalRotationW;
+
+    float globalScaleX;
+    float globalScaleY;
+    float globalScaleZ;
 
     //Transform Local
-    Maths::Vector3 localPosition;
-    Maths::Quaternion localRotation;
-    Maths::Vector3 localScale;
+    float localPositionX;
+    float localPositionY;
+    float localPositionZ;
 
+    float localRotationX;
+    float localRotationY;
+    float localRotationZ;
+    float localRotationW;
 
+    float localScaleX;
+    float localScaleY;
+    float localScaleZ;
 };
 
 class Scene

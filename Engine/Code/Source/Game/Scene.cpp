@@ -87,13 +87,22 @@ void Scene::SaveScene(const std::string& filepath, EntityManager& a_entityManage
 
         if (transform)
         {
-            saver.globalPosition = transform->GetGlobalPosition();
-            saver.globalRotation = transform->GetGlobalRotationQuat();
-            saver.globalScale = transform->GetGlobalScale();
+            saver.globalPositionX =  transform->GetGlobalPosition().x;
+            saver.globalPositionY = transform->GetGlobalPosition().y;
+            saver.globalPositionZ = transform->GetGlobalPosition().z;
 
-            saver.localPosition = transform->GetLocalPosition();
-            saver.localRotation = transform->GetLocalRotationQuat();
-            saver.localScale = transform->GetLocalScale();
+            saver.globalRotationX = transform->GetGlobalRotationQuat().x;
+            saver.globalRotationY = transform->GetGlobalRotationQuat().y;
+            saver.globalRotationZ = transform->GetGlobalRotationQuat().z;
+            saver.globalRotationW = transform->GetGlobalRotationQuat().w;
+
+            saver.globalScaleX = transform->GetGlobalScale().x;
+            saver.globalScaleY = transform->GetGlobalScale().y;
+            saver.globalScaleZ = transform->GetGlobalScale().z;
+
+            //saver.localPosition = transform->GetLocalPosition();
+            //saver.localRotation = transform->GetLocalRotationQuat();
+            //saver.localScale = transform->GetLocalScale();
         }
 
 
