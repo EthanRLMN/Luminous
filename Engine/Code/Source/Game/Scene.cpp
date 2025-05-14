@@ -89,7 +89,7 @@ void Scene::LoadScene(std::string filename,EntityManager& a_entityManager)
         auto light = entity->GetComponent<LightComponent>();
 
         if (light) {
-            light->SetLight(Maths::Vector3(data.))
+            light->SetLight(Maths::Vector3(data.lightPositionX, data.lightPositionY, data.lightPositionZ), Maths::Vector3(data.lightDirectionX, data.lightDirectionY, data.lightDirectionZ), Maths::Vector3(data.lightColorX, data.lightColorY, data.lightColorZ), data.lightType, data.lightIntensity, data.lightAmbientStrength, data.lightSpecularStrength, data.lightCount);
         }
 
 
@@ -147,6 +147,29 @@ void Scene::SaveScene(const std::string& filepath, EntityManager& a_entityManage
         if (model) {
             saver.modelPath = model->GetMeshPath();
             saver.texturePath = model->GetTexturePath();
+        }
+
+        auto light = entity->GetComponent<LightComponent>();
+
+        if (light) {
+            saver.lightPositionX = light->GetLight().m_position.x;
+            saver.lightPositionY = light->GetLight().m_position.y;
+            saver.lightPositionZ = light->GetLight().m_position.z;
+
+            saver.lightDirectionX = light->GetLight().m_direction.x;
+            saver.lightDirectionY = light->GetLight().m_direction.y;
+            saver.lightDirectionZ = light->GetLight().m_direction.z;
+
+            saver.lightColorX = light->GetLight().m_color.x;
+            saver.lightColorY = light->GetLight().m_color.y;
+            saver.lightColorZ = light->GetLight().m_color.z;
+
+            saver.lightType = light->GetLight().m_type;
+            saver.lightIntensity = light->GetLight().m_intensity;
+            saver.lightAmbientStrength = light->GetLight().m_ambientStrength;
+            saver.lightSpecularStrength = light->GetLight().m_specularStrength;
+
+            saver.lightCount = light->GetLight().m_count;
         }
 
         entityData.push_back(saver);
