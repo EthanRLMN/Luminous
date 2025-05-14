@@ -5,194 +5,181 @@
 #include "Game/Systems/Entity/EntityTemplates.hpp"
 
 
-Entity_Saver entitySaver;
 
 void Scene::RegisterScene(EntityManager& a_entityManager)
 {
     const std::string filepath = "Engine/Assets/Default/Save/Scene.json";
-    const rfl::Result<Entity_Saver> result = rfl::json::load<Entity_Saver>(filepath);
+    const rfl::Result<EntityData> result = rfl::json::load<EntityData>(filepath);
 
     EntityTemplates l_defaultTemplates{};
     l_defaultTemplates.RegisterEntityTemplates();
 
-    auto l_entity = a_entityManager.CreateEntityFromTemplate("Companion");
+    LoadScene(filepath, a_entityManager);
 
-    LoadScene(filepath,a_entityManager);
+    for (size_t i = 0; i < EntityManager::GetAvailableTemplates().size(); ++i)
+    {
+        const std::shared_ptr<Entity> l_obj = a_entityManager.CreateEntityFromTemplate(EntityManager::GetAvailableTemplates()[i]);
 
-    DEBUG_LOG_CRITICAL("name {} ", l_entity->GetName());
+        const Maths::Vector3 l_position = Maths::Vector3(4.0f, 0.0f, 0.0f) * i;
+        l_obj->Transform()->SetLocalPosition(l_position);
+    }
 
     for (const auto& l_entity : EntityManager::GetAvailableTemplates())
-    {
         DEBUG_LOG_CRITICAL("{}", l_entity);
-    }
-    
+
 }
 
-void Scene::LoadScene(std::string filename,EntityManager& a_entityManager)
-{ 
-    
-   if (!CheckIfFileDetected(filename))
+void Scene::LoadScene(std::string filename, const EntityManager& a_entityManager)
+{
+    if (!CheckIfFileDetected(filename))
     {
-        DEBUG_LOG_CRITICAL("Scene don't exist: {}", filename);
+        DEBUG_LOG_CRITICAL("Scene doesn't exist: {}", filename);
         return;
     }
 
-    const rfl::Result<std::vector<Entity_Saver>> result = rfl::json::load<std::vector<Entity_Saver>>(filename);
-    if (!result)
+    const rfl::Result<std::vector<EntityData>> l_result = rfl::json::load<std::vector<EntityData>>(filename);
+    if (!l_result)
     {
         DEBUG_LOG_CRITICAL("Error loading the JSON.");
         return;
     }
 
-    const std::vector<Entity_Saver>& entityData = result.value();
-    
-    if (entityData.empty())
+    const std::vector<EntityData>& l_entitiesData = l_result.value();
+
+    if (l_entitiesData.empty())
     {
         DEBUG_LOG_CRITICAL("The JSON file is empty or contains no entities.");
         return;
     }
 
-    auto entityIt = a_entityManager.GetEntities().begin();
-    for (const auto& data : entityData)
+    auto l_entityIt = a_entityManager.GetEntities().begin();
+    for (const auto& l_entityData : l_entitiesData)
     {
-        if (entityIt == a_entityManager.GetEntities().end())
+        if (l_entityIt == a_entityManager.GetEntities().end())
         {
             DEBUG_LOG_CRITICAL("No more entities available in the manager.");
             break;
         }
 
-        auto entity = *entityIt;
-        entity->SetName(data.entityName);
-        entity->SetUUID(data.entityUUID);
-        entity->SetActive(data.isActive);
+        std::shared_ptr<Entity> l_entity = *l_entityIt;
+        l_entity->SetName(l_entityData.entityName);
+        l_entity->SetUUID(l_entityData.entityUUID);
+        l_entity->SetActive(l_entityData.isActive);
 
-        auto transform = entity->GetComponent<TransformComponent>();
+        for (size_t i = 0; i < l_entityData.components.size(); ++i)
+        {
+            const SerializedComponent& l_component = l_entityData.components[i];
 
-        if (transform) {
+            rfl::visit([&]<typename T0>(T0&& compData)
+            {
+                using T = std::decay_t<T0>;
 
-            transform->SetGlobalPosition(Maths::Vector3(data.globalPositionX, data.globalPositionY, data.globalPositionZ));
-            transform->SetGlobalRotationQuat(Maths::Quaternion(data.globalRotationX, data.globalRotationY, data.globalRotationZ, data.globalRotationW));
-            transform->SetGlobalScale(Maths::Vector3(data.globalScaleX, data.globalScaleY, data.globalScaleZ));
-
-            transform->SetLocalPosition(Maths::Vector3(data.localPositionX, data.localPositionY, data.localPositionZ));
-            transform->SetLocalRotationQuat(Maths::Quaternion(data.localRotationX, data.localRotationY, data.localRotationZ, data.localRotationW));
-            transform->SetLocalScale(Maths::Vector3(data.localScaleX, data.localScaleY, data.localScaleZ));
+                if constexpr (std::is_same_v<T, TransformComponentData>)
+                {
+                    if (const std::shared_ptr<TransformComponent> l_transform = l_entity->GetComponent<TransformComponent>())
+                    {
+                        l_transform->SetGlobalPosition(Maths::Vector3(compData.globalPosition));
+                        l_transform->SetGlobalRotationQuat(Maths::Quaternion(compData.globalRotation));
+                        l_transform->SetGlobalScale(Maths::Vector3(compData.globalScale));
+                        l_transform->SetLocalPosition(Maths::Vector3(compData.localPosition));
+                        l_transform->SetLocalRotationQuat(Maths::Quaternion(compData.localRotation));
+                        l_transform->SetLocalScale(Maths::Vector3(compData.localScale));
+                    }
+                }
+                else if constexpr (std::is_same_v<T, ModelComponentData>)
+                {
+                    if (const std::shared_ptr<ModelComponent> l_model = l_entity->GetComponent<ModelComponent>())
+                    {
+                        l_model->SetMeshPath(compData.modelPath);
+                        l_model->SetTexturePath(compData.texturePath);
+                    }
+                }
+                else if constexpr (std::is_same_v<T, LightComponentData>)
+                {
+                    if (const std::shared_ptr<LightComponent> l_light = l_entity->GetComponent<LightComponent>())
+                    {
+                        l_light->GetLight().m_position = Maths::Vector3(compData.position);
+                        l_light->GetLight().m_direction = Maths::Vector3(compData.direction);
+                        l_light->GetLight().m_color = Maths::Vector3(compData.color);
+                        l_light->GetLight().m_type = compData.type;
+                        l_light->GetLight().m_intensity = compData.intensity;
+                        l_light->GetLight().m_ambientStrength = compData.ambientStrength;
+                        l_light->GetLight().m_specularStrength = compData.specularStrength;
+                        l_light->GetLight().m_count = compData.count;
+                    }
+                }
+            }, l_component);
         }
-
-        auto model = entity->GetComponent<ModelComponent>();
-
-        if (model) {
-            model->SetMeshPath(data.modelPath);
-            model->SetTexturePath(data.texturePath);
-        }
-
-        auto light = entity->GetComponent<LightComponent>();
-
-        if (light) {
-            light->SetLight(Maths::Vector3(data.lightPositionX, data.lightPositionY, data.lightPositionZ), Maths::Vector3(data.lightDirectionX, data.lightDirectionY, data.lightDirectionZ), Maths::Vector3(data.lightColorX, data.lightColorY, data.lightColorZ), data.lightType, data.lightIntensity, data.lightAmbientStrength, data.lightSpecularStrength, data.lightCount);
-        }
-
-
-        ++entityIt; 
+        ++l_entityIt;
     }
-
     DEBUG_LOG_CRITICAL("Scene loaded successfully: {}", filename);
 }
 
-void Scene::SaveScene(const std::string& filepath, EntityManager& a_entityManager)
+void Scene::SaveScene(const std::string& filepath, const EntityManager& a_entityManager)
 {
-    std::vector<Entity_Saver> entityData;
-    rfl::json::save(filepath, entityData);
+    std::vector<EntityData> l_entityData;
 
-    for (const auto& entity : a_entityManager.GetEntities())
+    for (const std::shared_ptr<Entity>& l_entity : a_entityManager.GetEntities())
     {
-        Entity_Saver saver;
-        saver.entityName = entity->GetName(); 
-        saver.entityUUID = entity->GetUUID(); 
-        saver.isActive = entity->IsActive(); 
+        EntityData l_datasaver;
+        l_datasaver.entityName = l_entity->GetName();
+        l_datasaver.entityUUID = l_entity->GetUUID();
+        l_datasaver.isActive = l_entity->IsActive();
 
-        auto transform = entity->GetComponent<TransformComponent>();
-
-        if (transform)
+        if (const std::shared_ptr<TransformComponent>& l_transform = l_entity->GetComponent<TransformComponent>())
         {
-            saver.globalPositionX =  transform->GetGlobalPosition().x;
-            saver.globalPositionY = transform->GetGlobalPosition().y;
-            saver.globalPositionZ = transform->GetGlobalPosition().z;
+            TransformComponentData l_transformData;
+            l_transformData.globalPosition = Vec3(l_transform->GetGlobalPosition());
+            l_transformData.globalRotation = Quat(l_transform->GetGlobalRotationQuat());
+            l_transformData.globalScale = Vec3(l_transform->GetGlobalScale());
+            l_transformData.localPosition = Vec3(l_transform->GetLocalPosition());
+            l_transformData.localRotation = Quat(l_transform->GetLocalRotationQuat());
+            l_transformData.localScale = Vec3(l_transform->GetLocalScale());
 
-            saver.globalRotationX = transform->GetGlobalRotationQuat().x;
-            saver.globalRotationY = transform->GetGlobalRotationQuat().y;
-            saver.globalRotationZ = transform->GetGlobalRotationQuat().z;
-            saver.globalRotationW = transform->GetGlobalRotationQuat().w;
-
-            saver.globalScaleX = transform->GetGlobalScale().x;
-            saver.globalScaleY = transform->GetGlobalScale().y;
-            saver.globalScaleZ = transform->GetGlobalScale().z;
-
-            saver.localPositionX = transform->GetLocalPosition().x;
-            saver.localPositionY = transform->GetLocalPosition().y;
-            saver.localPositionZ = transform->GetLocalPosition().z;
-
-            saver.localRotationX = transform->GetLocalRotationQuat().x;
-            saver.localRotationY = transform->GetLocalRotationQuat().y;
-            saver.localRotationZ = transform->GetLocalRotationQuat().z;
-            saver.localRotationW = transform->GetLocalRotationQuat().w;
-
-            saver.localScaleX = transform->GetLocalScale().x;
-            saver.localScaleY = transform->GetLocalScale().y;
-            saver.localScaleZ = transform->GetLocalScale().z;
+            l_datasaver.componentType = "Transform";
+            l_datasaver.components.push_back(l_transformData);
         }
 
-        auto model = entity->GetComponent<ModelComponent>();
+        if (const std::shared_ptr<ModelComponent>& l_model = l_entity->GetComponent<ModelComponent>())
+        {
+            ModelComponentData l_modelData;
+            l_modelData.modelPath = l_model->GetMeshPath();
+            l_modelData.texturePath = l_model->GetTexturePath();
 
-        if (model) {
-            saver.modelPath = model->GetMeshPath();
-            saver.texturePath = model->GetTexturePath();
+            l_datasaver.componentType = "Model";
+            l_datasaver.components.push_back(l_modelData);
         }
 
-        auto light = entity->GetComponent<LightComponent>();
+        if (const std::shared_ptr<LightComponent>& l_light = l_entity->GetComponent<LightComponent>())
+        {
+            LightComponentData l_lightData;
+            l_lightData.position = Vec3(l_light->GetLight().m_position);
+            l_lightData.direction = Vec3(l_light->GetLight().m_direction);
+            l_lightData.color = Vec3(l_light->GetLight().m_color);
+            l_lightData.type = l_light->GetLight().m_type;
+            l_lightData.intensity = l_light->GetLight().m_intensity;
+            l_lightData.ambientStrength = l_light->GetLight().m_ambientStrength;
+            l_lightData.specularStrength = l_light->GetLight().m_specularStrength;
+            l_lightData.count = l_light->GetLight().m_count;
 
-        if (light) {
-            saver.lightPositionX = light->GetLight().m_position.x;
-            saver.lightPositionY = light->GetLight().m_position.y;
-            saver.lightPositionZ = light->GetLight().m_position.z;
-
-            saver.lightDirectionX = light->GetLight().m_direction.x;
-            saver.lightDirectionY = light->GetLight().m_direction.y;
-            saver.lightDirectionZ = light->GetLight().m_direction.z;
-
-            saver.lightColorX = light->GetLight().m_color.x;
-            saver.lightColorY = light->GetLight().m_color.y;
-            saver.lightColorZ = light->GetLight().m_color.z;
-
-            saver.lightType = light->GetLight().m_type;
-            saver.lightIntensity = light->GetLight().m_intensity;
-            saver.lightAmbientStrength = light->GetLight().m_ambientStrength;
-            saver.lightSpecularStrength = light->GetLight().m_specularStrength;
-
-            saver.lightCount = light->GetLight().m_count;
+            l_datasaver.componentType = "Light";
+            l_datasaver.components.push_back(l_lightData);
         }
-
-        entityData.push_back(saver);
+        l_entityData.push_back(l_datasaver);
     }
-
-    const std::string json_string = rfl::json::write(entityData, rfl::json::pretty);
-    rfl::json::save(filepath, entityData, rfl::json::pretty);
+    rfl::json::save(filepath, l_entityData, rfl::json::pretty);
+    DEBUG_LOG_INFO("Data was saved to file : {}!", filepath);
 }
 
-bool Scene::CheckIfFileDetected(std::string filename)
+bool Scene::CheckIfFileDetected(const std::string& a_filename)
 {
-    const std::string filepath = filename;
+    const std::string filepath = a_filename;
 
     if (!std::filesystem::exists(filepath))
     {
+        DEBUG_LOG_ERROR("File Not Detected");
         return false;
-        DEBUG_LOG_ERROR("File Not Detected 1 ");
     }
-    else
-    {
-        return true;
-        DEBUG_LOG_ERROR("File Detected 1 ");
-    }
-    return false;
-    DEBUG_LOG_ERROR("File Not Detected 2 ");
+    DEBUG_LOG_ERROR("File Detected");
+    return true;
 }
