@@ -23,22 +23,28 @@ public:
     void GameplayStarted() override{};
     void Update() override{};
 
-    [[nodiscard]] inline std::shared_ptr<Entity> GetEntity() const { return m_entity.lock(); }
-    inline ColliderType GetColliderType() { return m_colliderType; }
+    
+    
     inline void SetEntity(const std::weak_ptr<Entity>& a_relatedEntity) { m_entity = a_relatedEntity; }
     inline void SetColliderType(ColliderType a_type) { m_colliderType = a_type; }
+    inline void SetLayer(JPH::uint8 a_layer) { m_layer = a_layer; }
+    inline void SetActive(JPH::EActivation a_active) { m_active = a_active; }
 
-    ModelComponent* GetModelDebug() { return m_collisionDebugModel; }
-    void SetLayer(JPH::uint8 a_layer) { m_layer = a_layer; }
+    [[nodiscard]] inline std::shared_ptr<Entity> GetEntity() const { return m_entity.lock(); }
+    inline ColliderType GetColliderType() { return m_colliderType; }
+    inline ModelComponent* GetModelDebug() { return m_collisionDebugModel; }
+    inline JPH::EActivation GetActivation() { return m_active; }
 
-    JPH::EActivation m_active = JPH::EActivation::Activate;
+    
 
 private:
     JPH::uint8 m_layer = Layers::KINEMATIC;
     std::weak_ptr<Entity> m_entity{};
     ModelComponent* m_collisionDebugModel;
+    ModelComponent* m_capsuleDebugSphere;
     RigidBody* m_rigidbody;
-    ColliderType m_colliderType = ColliderType::SPHERECOLLIDER;
+    ColliderType m_colliderType = ColliderType::CAPSULECOLLIDER;
+    JPH::EActivation m_active = JPH::EActivation::Activate;
 };
 
 

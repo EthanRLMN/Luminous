@@ -8,9 +8,13 @@ void RigidbodyComponent::Initialize()
 {
 
 	m_collisionDebugModel = new ModelComponent();
+    m_capsuleDebugSphere = new ModelComponent();
 
 	m_collisionDebugModel->SetEngine(GetEngine());
+    m_capsuleDebugSphere->SetEngine(GetEngine());
 
+    m_collisionDebugModel->SetTexturePath("Engine/Assets/Default/Textures/colliderTexture.png");
+    m_capsuleDebugSphere->SetTexturePath("Engine/Assets/Default/Textures/colliderTexture.png");
 
     if (m_colliderType == ColliderType::BOXCOLLIDER)
     {
@@ -20,11 +24,12 @@ void RigidbodyComponent::Initialize()
         m_collisionDebugModel->SetMeshPath("Engine/Assets/Default/Models/colliderSphere.obj");
     } else if (m_colliderType == ColliderType::CAPSULECOLLIDER)
     {
-        m_collisionDebugModel->SetMeshPath("Engine/Assets/Default/Models/colliderCapsule.obj");
+        m_collisionDebugModel->SetMeshPath("Engine/Assets/Default/Models/colliderCylinder.obj");
+        m_capsuleDebugSphere->SetMeshPath("Engine/Assets/Default/Models/colliderSphere.obj");
+        m_capsuleDebugSphere->Initialize();
     }
 	
-    m_collisionDebugModel->SetTexturePath("Engine/Assets/Default/Textures/colliderTexture.png");
-	//Set le mesh en fonction du type de collider
+
     m_collisionDebugModel->Initialize();
 
     TransformComponent* l_transform = m_entity.lock().get()->GetComponent<TransformComponent>().get();
@@ -60,7 +65,7 @@ void RigidbodyComponent::Initialize()
         m_rigidbody->SetParentComponent(this);
     } else if (m_colliderType == ColliderType::CAPSULECOLLIDER)
     {
-        JPH::CapsuleShapeSettings settings(l_scale.GetY()*1.5f,(l_scale.GetZ() + l_scale.GetX()) / 2);
+        JPH::CapsuleShapeSettings settings(l_scale.GetY()/2,(l_scale.GetZ() + l_scale.GetX()) / 2);
         settings.SetEmbedded();
         JPH::ShapeSettings::ShapeResult floor_shape_result = settings.Create();
         JPH::ShapeRefC floor_shape = floor_shape_result.Get();
