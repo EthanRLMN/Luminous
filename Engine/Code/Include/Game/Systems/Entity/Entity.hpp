@@ -8,6 +8,7 @@
 #include "Game/Systems/Component/EntityComponent.hpp"
 #include "Game/Systems/Component/TransformComponent.hpp"
 #include "Game/Systems/Physics/RigidBody.hpp"
+#include <Game/Systems/Component/ModelComponent.hpp>
 
 class EntityManager;
 
@@ -45,6 +46,7 @@ public:
     inline void SetUUID(const EntityID a_uuid) { m_uuid = a_uuid; }
     inline void AddComponent(const std::shared_ptr<EntityComponent>& a_component) { m_components.push_back(a_component); }
     inline std::shared_ptr<TransformComponent> Transform() const { return GetComponent<TransformComponent>(); }
+    inline std::shared_ptr<ModelComponent> Model() const { return GetComponent<ModelComponent>(); }
     void SetActive(bool a_isActive);
 
 

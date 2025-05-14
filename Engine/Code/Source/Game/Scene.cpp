@@ -100,9 +100,24 @@ void Scene::SaveScene(const std::string& filepath, EntityManager& a_entityManage
             saver.globalScaleY = transform->GetGlobalScale().y;
             saver.globalScaleZ = transform->GetGlobalScale().z;
 
-            //saver.localPosition = transform->GetLocalPosition();
-            //saver.localRotation = transform->GetLocalRotationQuat();
-            //saver.localScale = transform->GetLocalScale();
+            saver.localPositionX = transform->GetLocalPosition().x;
+            saver.localPositionY = transform->GetLocalPosition().y;
+            saver.localPositionZ = transform->GetLocalPosition().z;
+
+            saver.localRotationX = transform->GetLocalRotationQuat().x;
+            saver.localRotationY = transform->GetLocalRotationQuat().y;
+            saver.localRotationZ = transform->GetLocalRotationQuat().z;
+            saver.localRotationW = transform->GetLocalRotationQuat().w;
+
+            saver.localScaleX = transform->GetLocalScale().x;
+            saver.localScaleY = transform->GetLocalScale().y;
+            saver.localScaleZ = transform->GetLocalScale().z;
+        }
+
+        auto model = entity->GetComponent<ModelComponent>();
+
+        if (model) {
+            
         }
 
 

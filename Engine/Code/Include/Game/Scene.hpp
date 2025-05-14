@@ -17,6 +17,8 @@ struct Entity_Saver
     uint16_t entityUUID;
     bool isActive;
 
+
+    //Transform Component : 
     //Transform Global
     float globalPositionX;
     float globalPositionY;
@@ -44,6 +46,15 @@ struct Entity_Saver
     float localScaleX;
     float localScaleY;
     float localScaleZ;
+
+
+    //Model Component:
+
+    std::string texturePath;
+    std::string texture;
+
+    std::string modelPath;
+    std::string model;
 };
 
 class Scene
