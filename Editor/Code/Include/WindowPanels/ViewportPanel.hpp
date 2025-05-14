@@ -1,4 +1,5 @@
 #pragma once
+#include "stb_image.h"
 
 #include "Interface/IWindowPanel.hpp"
 #include "Rendering/Vulkan/VulkanRenderer.hpp"
@@ -6,8 +7,8 @@
 #include "Rendering/Vulkan/VulkanSwapChain.hpp"
 #include "backends/imgui_impl_vulkan.h"
 #include "InspectorPanel.hpp"
-#include "Game/Systems/Camera/Camera.hpp"
-#include "stb_image.h"
+#include "Game/Systems/Camera/CameraEditor.hpp"
+#include "Game/Systems/Component/TransformComponent.hpp"
 
 class Viewport : public IWindowPanel
 {
@@ -41,4 +42,5 @@ private:
     ImTextureID m_iconStopID = NULL;
 
     ImGuizmo::OPERATION m_currentGizmoOperation = ImGuizmo::TRANSLATE;
+    CameraEditor* m_camera = nullptr;
 };

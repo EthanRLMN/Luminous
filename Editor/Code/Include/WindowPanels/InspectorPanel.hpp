@@ -2,6 +2,8 @@
 
 #include "Interface/IWindowPanel.hpp"
 #include "FileExplorerPanel.hpp"
+#include "Rendering/Vulkan/VulkanTexture.hpp"
+#include "Rendering/Vulkan/VulkanRenderer.hpp"
 #include "backends/imgui_impl_vulkan.h"
 #include "Game/Systems/Camera/CameraEditor.hpp"
 #include "Game/Systems/Entity/Entity.hpp"

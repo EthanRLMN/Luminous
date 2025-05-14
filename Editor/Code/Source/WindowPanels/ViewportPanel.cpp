@@ -73,6 +73,34 @@ void Viewport::Render()
 
     ImGui::Image(reinterpret_cast<ImTextureID>(dSets), l_imageSize);
 
+    ImGuizmo::SetDrawlist();
+    ImGuizmo::SetOrthographic(false);
+    ImGuizmo::SetRect(l_screenPos.x + l_offsetX, l_screenPos.y + l_offsetY, l_imageSize.x, l_imageSize.y);
+
+    Camera* camera = m_camera->GetActiveCamera();
+    Maths::Matrix4 view = m_camera->GetViewMatrix();
+    Maths::Matrix4 projection = m_camera->GetProjectionMatrix();
+
+    std::shared_ptr<TransformComponent> transform = p_isEntitySelected->GetComponent<TransformComponent>();
+    Maths::Matrix4 model = transform->GetGlobalMatrix();
+
+    ImGuizmo::Manipulate(view.Data(),
+                         projection.Data(),
+                         m_currentGizmoOperation,
+                         ImGuizmo::WORLD,
+                         model.Data());
+
+    if (ImGuizmo::IsUsing())
+    {
+        Maths::Vector3 pos, scale;
+        Maths::Quaternion rot;
+
+        model.Decompose(pos, rot, scale);
+
+        transform->SetGlobalPosition(pos);
+        transform->SetGlobalRotationQuat(rot);
+        transform->SetGlobalScale(scale);
+    }
     ImGui::End();
 }
 

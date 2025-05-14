@@ -142,8 +142,32 @@ void InspectorPanel::Render()
                     std::string currentTextureName = textureName.substr(textureName.find_last_of("/\\") + 1);
                     ImGui::Text("Texture:");
 
-                    if (ImGui::Button((currentTextureName + "##texture").c_str(), ImVec2(200, 0)))
+                    static std::unordered_map<std::string, ImTextureID> s_textureCache;
+
+                    ImTextureID textureID = NULL;
+                    if (!textureName.empty())
                     {
+                        if (s_textureCache.find(textureName) == s_textureCache.end())
+                        {
+                            std::shared_ptr<ITexture> texture = LoadTexture(p_editor->GetEngine(), textureName);
+                            texture->CastVulkan()->CreateTextureImageView(p_editor->GetEngine()->GetDevice());
+                            texture->CastVulkan()->CreateTextureSampler(p_editor->GetEngine()->GetDevice());
+
+                            auto descriptor = reinterpret_cast<ImTextureID>(
+                                    ImGui_ImplVulkan_AddTexture(
+                                            p_editor->GetEngine()->GetRenderer()->CastVulkan()->GetDefaultTextureSampler(),
+                                            texture->CastVulkan()->GetTextureImageView(),
+                                            VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL));
+
+                            s_textureCache[textureName] = descriptor;
+                        }
+
+                        textureID = s_textureCache[textureName];
+                    }
+
+                    if (textureID)
+                    {
+                        ImGui::Image(textureID, ImVec2(128, 128));
                     }
 
                     if (ImGui::BeginDragDropTarget())
@@ -156,6 +180,7 @@ void InspectorPanel::Render()
                             if (pathStr.ends_with(".png") || pathStr.ends_with(".jpg"))
                             {
                                 modelComponent->SetTexture(pathStr);
+                                s_textureCache.erase(textureName);
                             }
                         }
                         ImGui::EndDragDropTarget();
