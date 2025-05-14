@@ -35,7 +35,6 @@ void InspectorPanel::Render()
         {
             if (ImGui::MenuItem("Add Component"))
             {
-
             }
             ImGui::EndPopup();
         }
@@ -48,17 +47,123 @@ void InspectorPanel::Render()
                 Maths::Vector3 rotation = p_isEntitySelected->Transform()->GetLocalRotationVec();
                 Maths::Vector3 scale = p_isEntitySelected->Transform()->GetLocalScale();
 
-                if (ImGui::InputFloat3("Position", &position.x))
-                  p_isEntitySelected->Transform()->SetLocalPosition(position);
+                const float inputWidth = 150.0f;
 
-                ImGui::InputFloat3("Rotation", &rotation.x);
-                ImGui::InputFloat3("Scale", &scale.x);
+                // Position
+                ImGui::Text("Position");
+                bool posChanged = false;
+                ImGui::PushItemWidth(inputWidth);
+                ImGui::Text("X:");
+                ImGui::SameLine();
+                posChanged |= ImGui::InputFloat("##posX", &position.x, 0.1f, 1.0f, "%.2f");
+                ImGui::SameLine();
+                ImGui::Text("Y:");
+                ImGui::SameLine();
+                posChanged |= ImGui::InputFloat("##posY", &position.y, 0.1f, 1.0f, "%.2f");
+                ImGui::SameLine();
+                ImGui::Text("Z:");
+                ImGui::SameLine();
+                posChanged |= ImGui::InputFloat("##posZ", &position.z, 0.1f, 1.0f, "%.2f");
+                if (posChanged)
+                    p_isEntitySelected->Transform()->SetLocalPosition(position);
+                ImGui::PopItemWidth();
 
-                p_isEntitySelected->Transform()->SetLocalRotationVec(rotation);
-                p_isEntitySelected->Transform()->SetLocalScale(scale);
+                // Rotation
+                ImGui::Text("Rotation");
+                bool rotChanged = false;
+                ImGui::PushItemWidth(inputWidth);
+                ImGui::Text("X:");
+                ImGui::SameLine();
+                rotChanged |= ImGui::InputFloat("##rotX", &rotation.x, 0.1f, 1.0f, "%.2f");
+                ImGui::SameLine();
+                ImGui::Text("Y:");
+                ImGui::SameLine();
+                rotChanged |= ImGui::InputFloat("##rotY", &rotation.y, 0.1f, 1.0f, "%.2f");
+                ImGui::SameLine();
+                ImGui::Text("Z:");
+                ImGui::SameLine();
+                rotChanged |= ImGui::InputFloat("##rotZ", &rotation.z, 0.1f, 1.0f, "%.2f");
+                if (rotChanged)
+                    p_isEntitySelected->Transform()->SetLocalRotationVec(rotation);
+                ImGui::PopItemWidth();
+
+                // Scale
+                ImGui::Text("Scale");
+                bool scaleChanged = false;
+                ImGui::PushItemWidth(inputWidth);
+                ImGui::Text("X:");
+                ImGui::SameLine();
+                scaleChanged |= ImGui::InputFloat("##scaleX", &scale.x, 0.1f, 1.0f, "%.2f");
+                ImGui::SameLine();
+                ImGui::Text("Y:");
+                ImGui::SameLine();
+                scaleChanged |= ImGui::InputFloat("##scaleY", &scale.y, 0.1f, 1.0f, "%.2f");
+                ImGui::SameLine();
+                ImGui::Text("Z:");
+                ImGui::SameLine();
+                scaleChanged |= ImGui::InputFloat("##scaleZ", &scale.z, 0.1f, 1.0f, "%.2f");
+                if (scaleChanged)
+                    p_isEntitySelected->Transform()->SetLocalScale(scale);
+                ImGui::PopItemWidth();
             }
-        }
 
+            if (ImGui::CollapsingHeader("Mesh Renderer"))
+            {
+                if (auto modelComponent = p_isEntitySelected->GetComponent<ModelComponent>())
+                {
+                    std::string meshName = modelComponent->GetMeshPath();
+                    std::string textureName = modelComponent->GetTexturePath();
+
+                    std::string currentMeshName = meshName.substr(meshName.find_last_of("/\\") + 1);
+                    ImGui::Text("Mesh:");
+
+                    if(ImGui::Button((currentMeshName + "##mesh").c_str(), ImVec2(200, 0)))
+                    {
+                    }
+
+                    if (ImGui::BeginDragDropTarget())
+                    {
+                        if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("FILE_DRAG"))
+                        {
+                            const char* droppedPath = static_cast<const char*>(payload->Data);
+                            std::string pathStr = std::string(droppedPath);
+
+                            if (pathStr.ends_with(".obj") || pathStr.ends_with(".fbx") || pathStr.ends_with(".gltf"))
+                            {
+                                modelComponent->SetMesh(pathStr);
+                                meshName = modelComponent->GetMeshPath();
+                                currentMeshName = meshName.substr(meshName.find_last_of("/\\") + 1);
+                            }
+                        }
+                        ImGui::EndDragDropTarget();
+                    }
+
+
+                    std::string currentTextureName = textureName.substr(textureName.find_last_of("/\\") + 1);
+                    ImGui::Text("Texture:");
+
+                    if (ImGui::Button((currentTextureName + "##texture").c_str(), ImVec2(200, 0)))
+                    {
+                    }
+
+                    if (ImGui::BeginDragDropTarget())
+                    {
+                        if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("FILE_DRAG"))
+                        {
+                            const char* droppedPath = static_cast<const char*>(payload->Data);
+                            std::string pathStr = std::string(droppedPath);
+
+                            if (pathStr.ends_with(".png") || pathStr.ends_with(".jpg"))
+                            {
+                                modelComponent->SetTexture(pathStr);
+                            }
+                        }
+                        ImGui::EndDragDropTarget();
+                    }
+                }
+            }
+
+        }
         ImGui::PopStyleColor();
         ImGui::End();
     }

@@ -7,10 +7,10 @@
 #include "EntityIDPool.hpp"
 #include "Game/Systems/Component/EntityComponent.hpp"
 #include "Game/Systems/Component/TransformComponent.hpp"
+#include "Game/Systems/Component/ModelComponent.hpp"
 #include "Game/Systems/Physics/RigidBody.hpp"
 
 class EntityManager;
-
 
 class Entity : public std::enable_shared_from_this<Entity>
 {
@@ -36,15 +36,18 @@ public:
         return nullptr;
     }
 
+
     [[nodiscard]] inline std::string GetName() const { return m_name; }
     [[nodiscard]] inline bool IsActive() const { return m_isActive; }
-
 
     inline void SetEngine(Engine* a_engine) { m_engine = a_engine; }
     inline void SetName(const std::string& a_newName) { m_name = a_newName; }
     inline void SetUUID(const EntityID a_uuid) { m_uuid = a_uuid; }
     inline void AddComponent(const std::shared_ptr<EntityComponent>& a_component) { m_components.push_back(a_component); }
+
+    inline std::shared_ptr<ModelComponent> Model() const { return GetComponent<ModelComponent>(); }
     inline std::shared_ptr<TransformComponent> Transform() const { return GetComponent<TransformComponent>(); }
+
     void SetActive(bool a_isActive);
 
 

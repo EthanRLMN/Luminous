@@ -1,7 +1,10 @@
 #pragma once
 
 #include "Interface/IWindowPanel.hpp"
+#include "FileExplorerPanel.hpp"
+#include "backends/imgui_impl_vulkan.h"
 #include "Game/Systems/Camera/CameraEditor.hpp"
+#include "Game/Systems/Entity/Entity.hpp"
 
 class InspectorPanel : public IWindowPanel
 {

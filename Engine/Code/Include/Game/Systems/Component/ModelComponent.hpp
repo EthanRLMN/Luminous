@@ -19,6 +19,9 @@ public:
     void SetMeshPath(const std::string& a_path);
     void SetTexturePath(const std::string& a_path);
 
+    [[nodiscard]] std::string GetMeshPath() const { return m_pendingMeshPath; };
+    [[nodiscard]] std::string GetTexturePath() const { return m_pendingTexturePath; };
+
     [[nodiscard]] IMesh* GetMesh() const { return m_mesh; };
     [[nodiscard]] ITexture* GetTexture() const { return m_texture; };
 
