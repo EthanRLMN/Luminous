@@ -65,6 +65,19 @@ void Scene::LoadScene(std::string filename,EntityManager& a_entityManager)
         entity->SetUUID(data.entityUUID);
         entity->SetActive(data.isActive);
 
+        auto transform = entity->GetComponent<TransformComponent>();
+
+        if (transform) {
+
+            transform->SetGlobalPosition(Maths::Vector3(data.globalPositionX, data.globalPositionY, data.globalPositionZ));
+            transform->SetGlobalRotationQuat(Maths::Quaternion(data.globalRotationX, data.globalRotationY, data.globalRotationZ, data.globalRotationW));
+            transform->SetGlobalScale(Maths::Vector3(data.globalScaleX, data.globalScaleY, data.globalScaleZ));
+
+            transform->SetLocalPosition(Maths::Vector3(data.localPositionX, data.localPositionY, data.localPositionZ));
+            transform->SetLocalRotationQuat(Maths::Quaternion(data.localRotationX, data.localRotationY, data.localRotationZ, data.localRotationW));
+            transform->SetLocalScale(Maths::Vector3(data.localScaleX, data.localScaleY, data.localScaleZ));
+        }
+
         ++entityIt; 
     }
 
@@ -115,11 +128,6 @@ void Scene::SaveScene(const std::string& filepath, EntityManager& a_entityManage
         }
 
         auto model = entity->GetComponent<ModelComponent>();
-
-        if (model) {
-            
-        }
-
 
         entityData.push_back(saver);
     }
