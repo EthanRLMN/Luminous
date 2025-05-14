@@ -12,55 +12,69 @@ void Scene::RegisterScene(EntityManager& a_entityManager)
     const std::string filepath = "Engine/Assets/Default/Save/Scene.json";
     const rfl::Result<Entity_Saver> result = rfl::json::load<Entity_Saver>(filepath);
 
-    EnterScene(filepath);
+   // EnterScene(filepath);
 
     EntityTemplates l_defaultTemplates {};
     l_defaultTemplates.RegisterEntityTemplates();
 
     auto l_entity = a_entityManager.CreateEntityFromTemplate("Companion");
 
+    LoadScene(filepath,a_entityManager);
+
+    DEBUG_LOG_CRITICAL("name {} ", l_entity->GetName());
 
     for (const auto& l_entity : EntityManager::GetAvailableTemplates())
     {
         DEBUG_LOG_CRITICAL("{}", l_entity);
     }
 
+
+
+    /*
     for (const auto& l_entity : a_entityManager.GetEntities())
     {
        
         DEBUG_LOG_CRITICAL("ENTITY = {}", l_entity->IsActive());
-    }
-
+    }*/
+   // SaveScene(filepath,a_entityManager);
     
 }
 
-void Scene::LoadScene(std::string filename)
+void Scene::LoadScene(std::string filename,EntityManager& a_entityManager)
 { 
-    if (!CheckIfFileDetected(filename))
+   if (!CheckIfFileDetected(filename))
     {
-        DEBUG_LOG_CRITICAL("Scene don't Exit {}", filename);
+        DEBUG_LOG_CRITICAL("Scene don't exist: {}", filename);
         return;
     }
-
 
     const rfl::Result<std::vector<Entity_Saver>> result = rfl::json::load<std::vector<Entity_Saver>>(filename);
     if (!result)
     {
-        DEBUG_LOG_CRITICAL("Error with the load of JSON.");
+        DEBUG_LOG_CRITICAL("Error loading the JSON.");
         return;
     }
 
-
     const std::vector<Entity_Saver>& entityData = result.value();
 
-    for (const Entity_Saver& saver : entityData)
+    auto entityIt = a_entityManager.GetEntities().begin();
+    for (const auto& data : entityData)
     {
-   
-       
+        if (entityIt == a_entityManager.GetEntities().end())
+        {
+            DEBUG_LOG_CRITICAL("No more entities available in the manager.");
+            break;
+        }
 
+        auto entity = *entityIt;
+        entity->SetName(data.entityName);
+        entity->SetUUID(data.entityUUID);
+        entity->SetActive(data.isActive);
+
+        ++entityIt; 
     }
 
-    DEBUG_LOG_CRITICAL("Scene load {} with sucess.", filename);
+    DEBUG_LOG_CRITICAL("Scene loaded successfully: {}", filename);
 }
 
 void Scene::SaveScene(const std::string& filepath, EntityManager& a_entityManager)
@@ -92,7 +106,7 @@ void Scene::EnterScene(std::string filename)
         } 
         else
         {
-            LoadScene(filename);
+           // LoadScene(filename);
         }
     }
 }
