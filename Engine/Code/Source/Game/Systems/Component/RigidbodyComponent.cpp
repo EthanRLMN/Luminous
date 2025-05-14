@@ -2,6 +2,7 @@
 
 #include "Game/Systems/Entity/Entity.hpp"
 #include "Engine.hpp"
+#include "Jolt/Physics/Collision/Shape/CapsuleShape.h"
 
 void RigidbodyComponent::Initialize()
 {
@@ -17,6 +18,9 @@ void RigidbodyComponent::Initialize()
     } else if (m_colliderType == ColliderType::SPHERECOLLIDER)
     {
         m_collisionDebugModel->SetMeshPath("Engine/Assets/Default/Models/colliderSphere.obj");
+    } else if (m_colliderType == ColliderType::CAPSULECOLLIDER)
+    {
+        m_collisionDebugModel->SetMeshPath("Engine/Assets/Default/Models/colliderCapsule.obj");
     }
 	
     m_collisionDebugModel->SetTexturePath("Engine/Assets/Default/Textures/colliderTexture.png");
@@ -44,7 +48,19 @@ void RigidbodyComponent::Initialize()
     }
     else if (m_colliderType == ColliderType::SPHERECOLLIDER)
     {
-        JPH::SphereShapeSettings settings(1.0f);
+        JPH::SphereShapeSettings settings(l_scale.GetY());
+        settings.SetEmbedded();
+        JPH::ShapeSettings::ShapeResult floor_shape_result = settings.Create();
+        JPH::ShapeRefC floor_shape = floor_shape_result.Get();
+
+
+        PhysicsSystem* l_phys = GetEngine()->GetPhysicsSystem();
+
+        m_rigidbody = GetEngine()->GetPhysicsSystem()->CreateRigidBody(floor_shape, l_position, l_rotation, m_layer, m_active);
+        m_rigidbody->SetParentComponent(this);
+    } else if (m_colliderType == ColliderType::CAPSULECOLLIDER)
+    {
+        JPH::CapsuleShapeSettings settings(l_scale.GetY(),(l_scale.GetZ() + l_scale.GetX()) / 2);
         settings.SetEmbedded();
         JPH::ShapeSettings::ShapeResult floor_shape_result = settings.Create();
         JPH::ShapeRefC floor_shape = floor_shape_result.Get();

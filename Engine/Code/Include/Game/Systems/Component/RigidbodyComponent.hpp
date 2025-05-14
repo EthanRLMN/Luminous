@@ -36,7 +36,7 @@ private:
     std::weak_ptr<Entity> m_entity{};
     ModelComponent* m_collisionDebugModel;
     RigidBody* m_rigidbody;
-    ColliderType m_colliderType = ColliderType::SPHERECOLLIDER;
+    ColliderType m_colliderType = ColliderType::CAPSULECOLLIDER;
 };
 
 
