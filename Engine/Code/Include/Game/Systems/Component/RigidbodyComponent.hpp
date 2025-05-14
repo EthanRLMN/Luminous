@@ -26,6 +26,7 @@ public:
     [[nodiscard]] inline std::shared_ptr<Entity> GetEntity() const { return m_entity.lock(); }
     inline ColliderType GetColliderType() { return m_colliderType; }
     inline void SetEntity(const std::weak_ptr<Entity>& a_relatedEntity) { m_entity = a_relatedEntity; }
+    inline void SetColliderType(ColliderType a_type) { m_colliderType = a_type; }
 
     ModelComponent* GetModelDebug() { return m_collisionDebugModel; }
     void SetLayer(JPH::uint8 a_layer) { m_layer = a_layer; }

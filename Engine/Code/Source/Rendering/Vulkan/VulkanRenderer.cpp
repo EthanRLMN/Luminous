@@ -187,6 +187,7 @@ void VulkanRenderer::RecordCommandBuffer(const VkCommandBuffer& a_commandBuffer,
 
                 if (entity.get()->GetComponent<RigidbodyComponent>()->GetColliderType() == ColliderType::SPHERECOLLIDER)
                 {
+
                     Maths::Matrix4 l_modelMatrixSphere = entity->Transform()->GetGlobalMatrix();
 
                     Maths::Vector3 l_pos = entity->Transform()->GetGlobalPosition();
