@@ -28,6 +28,25 @@ public:
     void Update() override{};
 
     LightData& GetLight() { return light; };
+
+    void SetLight(const Maths::Vector3& position,
+             const Maths::Vector3& direction,
+             const Maths::Vector3& color,
+             int type,
+             float intensity,
+             float ambientStrength,
+             float specularStrength,
+             int count)
+    {
+        light.m_position = position;
+        light.m_direction = direction;
+        light.m_color = color;
+        light.m_type = type;
+        light.m_intensity = intensity;
+        light.m_ambientStrength = ambientStrength;
+        light.m_specularStrength = specularStrength;
+        light.m_count = count;
+    }
 private:
     LightData light{};
 };

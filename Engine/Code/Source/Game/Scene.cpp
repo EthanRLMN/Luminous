@@ -4,6 +4,7 @@
 #include "Game/Systems/Entity/EntityFactory.hpp"
 #include "Game/Systems/Entity/EntityTemplates.hpp"
 
+
 Entity_Saver entitySaver;
 
 void Scene::RegisterScene(EntityManager& a_entityManager)
@@ -84,6 +85,13 @@ void Scene::LoadScene(std::string filename,EntityManager& a_entityManager)
             model->SetMeshPath(data.modelPath);
             model->SetTexturePath(data.texturePath);
         }
+
+        auto light = entity->GetComponent<LightComponent>();
+
+        if (light) {
+            light->SetLight(Maths::Vector3(data.))
+        }
+
 
         ++entityIt; 
     }

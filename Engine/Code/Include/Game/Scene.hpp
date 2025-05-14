@@ -19,6 +19,7 @@ struct Entity_Saver
 
 
     //Transform Component : 
+ 
     //Transform Global
     float globalPositionX;
     float globalPositionY;
@@ -53,6 +54,27 @@ struct Entity_Saver
     std::string texturePath;
     std::string modelPath;
 
+    //light Component:
+
+    float lightPositionX;
+    float lightPositionY;
+    float lightPositionZ;
+
+    float lightDirectionX;
+    float lightDirectionY;
+    float lightDirectionZ;
+
+    float lightColorX;
+    float lightColorY;
+    float lightColorZ;
+
+    int lightType;
+
+    float lightIntensity;
+    float lightAmbientStrength;
+    float lightSpecularStrength;
+
+    int lightCount;
 };
 
 class Scene
