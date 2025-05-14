@@ -20,12 +20,12 @@ public:
 
     [[nodiscard]] inline Maths::Vector3 GetLocalPosition() const { return m_localPosition; }
     [[nodiscard]] inline Maths::Vector3 GetLocalScale() const { return m_localScale; }
-    [[nodiscard]] inline Maths::Vector3 GetLocalRotationVec() const { return m_localRotation.ToEulerAngles(true); }
-    [[nodiscard]] inline Maths::Quaternion GetLocalRotationQuat() const { return m_localRotation; }
+    [[nodiscard]] inline Maths::Vector3 GetLocalRotationVec() const { return m_localRotationVec; }
+    [[nodiscard]] inline Maths::Quaternion GetLocalRotationQuat() const { return m_localRotationQuat; }
     [[nodiscard]] inline Maths::Vector3 GetGlobalPosition() const { return m_globalPosition; }
     [[nodiscard]] inline Maths::Vector3 GetGlobalScale() const { return m_globalScale; }
-    [[nodiscard]] inline Maths::Vector3 GetGlobalRotationVec() const { return m_globalRotation.ToEulerAngles(true); }
-    [[nodiscard]] inline Maths::Quaternion GetGlobalRotationQuat() const { return m_globalRotation; }
+    [[nodiscard]] inline Maths::Vector3 GetGlobalRotationVec() const { return m_globalRotationVec; }
+    [[nodiscard]] inline Maths::Quaternion GetGlobalRotationQuat() const { return m_globalRotationQuat; }
     [[nodiscard]] inline Maths::Matrix4 GetLocalMatrix() const { return m_localMatrix; }
     [[nodiscard]] inline Maths::Matrix4 GetGlobalMatrix() const { return m_globalMatrix; }
     [[nodiscard]] inline std::shared_ptr<Entity> GetParent() const { return m_parent.lock(); }
@@ -57,14 +57,18 @@ private:
     std::weak_ptr<Entity> m_parent {};
     std::vector<std::shared_ptr<TransformComponent>> m_children;
 
+    Maths::Quaternion m_localRotationQuat { Maths::Quaternion::Identity };
+    Maths::Vector3 m_localRotationVec { Maths::Vector3::Zero };
     Maths::Vector3 m_localPosition { Maths::Vector3::Zero };
-    Maths::Quaternion m_localRotation { Maths::Quaternion::Identity };
     Maths::Vector3 m_localScale { Maths::Vector3::One };
+
+    Maths::Quaternion m_globalRotationQuat { Maths::Quaternion::Identity };
+    Maths::Vector3 m_globalRotationVec { Maths::Vector3::Zero };
     Maths::Vector3 m_globalPosition { Maths::Vector3::Zero };
-    Maths::Quaternion m_globalRotation { Maths::Quaternion::Identity };
     Maths::Vector3 m_globalScale { Maths::Vector3::One };
-    Maths::Matrix4 m_localMatrix { Maths::Matrix4::TRS(m_localPosition, m_localRotation.ToEulerAngles(true), m_localScale) };
-    Maths::Matrix4 m_globalMatrix { Maths::Matrix4::TRS(m_globalPosition, m_globalRotation.ToEulerAngles(true), m_globalScale) };
+
+    Maths::Matrix4 m_localMatrix { Maths::Matrix4::TRS(m_localPosition, m_localRotationVec, m_localScale) };
+    Maths::Matrix4 m_globalMatrix { Maths::Matrix4::TRS(m_globalPosition, m_globalRotationVec, m_globalScale) };
 
     void UpdateGlobalTransform();
     void UpdateMatrices();
