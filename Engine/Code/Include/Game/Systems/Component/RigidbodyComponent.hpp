@@ -24,6 +24,7 @@ public:
     void Update() override{};
 
     [[nodiscard]] inline std::shared_ptr<Entity> GetEntity() const { return m_entity.lock(); }
+    inline ColliderType GetColliderType() { return m_colliderType; }
     inline void SetEntity(const std::weak_ptr<Entity>& a_relatedEntity) { m_entity = a_relatedEntity; }
 
     ModelComponent* GetModelDebug() { return m_collisionDebugModel; }

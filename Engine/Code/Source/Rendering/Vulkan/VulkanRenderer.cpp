@@ -29,6 +29,7 @@
 #include "Game/Systems/Entity/EntityManager.hpp"
 
 #include "Matrix4.hpp"
+#include <array>
 
 
 void VulkanRenderer::Create(IDevice* a_device, ISwapChain* a_swapChain)
@@ -176,10 +177,19 @@ void VulkanRenderer::RecordCommandBuffer(const VkCommandBuffer& a_commandBuffer,
             {
                 UniformBufferObject l_ubo{};
                 const Maths::Matrix4 l_modelMatrix = entity->Transform()->GetGlobalMatrix();
+
+
+
                 l_ubo.model = l_modelMatrix.Transpose();
                 l_ubo.view = m_cameraEditor.GetViewMatrix().Transpose();
                 l_ubo.proj = m_cameraEditor.GetProjectionMatrix();
                 l_ubo.debug = 1;
+
+                if (entity.get()->GetComponent<RigidbodyComponent>()->GetColliderType() == ColliderType::SPHERECOLLIDER)
+                {
+                    //const Maths::Matrix4 l_modelMatrixSphere = entity->Transform()->GetGlobalMatrix();
+                    //l_modelMatrixSphere
+                }
 
                 const std::array<VkBuffer, 1> l_vertexBuffers = { entity.get()->GetComponent<RigidbodyComponent>().get()->GetModelDebug()->GetMesh()->CastVulkan()->GetVertexBuffer() };
                 const std::array<VkDeviceSize, 1> l_offsets = { 0 };
