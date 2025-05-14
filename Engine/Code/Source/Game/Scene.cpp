@@ -6,15 +6,12 @@
 
 Entity_Saver entitySaver;
 
-
 void Scene::RegisterScene(EntityManager& a_entityManager)
 {
     const std::string filepath = "Engine/Assets/Default/Save/Scene.json";
     const rfl::Result<Entity_Saver> result = rfl::json::load<Entity_Saver>(filepath);
 
-   // EnterScene(filepath);
-
-    EntityTemplates l_defaultTemplates {};
+    EntityTemplates l_defaultTemplates{};
     l_defaultTemplates.RegisterEntityTemplates();
 
     auto l_entity = a_entityManager.CreateEntityFromTemplate("Companion");
@@ -27,21 +24,12 @@ void Scene::RegisterScene(EntityManager& a_entityManager)
     {
         DEBUG_LOG_CRITICAL("{}", l_entity);
     }
-
-
-
-    /*
-    for (const auto& l_entity : a_entityManager.GetEntities())
-    {
-       
-        DEBUG_LOG_CRITICAL("ENTITY = {}", l_entity->IsActive());
-    }*/
-   // SaveScene(filepath,a_entityManager);
     
 }
 
 void Scene::LoadScene(std::string filename,EntityManager& a_entityManager)
 { 
+    
    if (!CheckIfFileDetected(filename))
     {
         DEBUG_LOG_CRITICAL("Scene don't exist: {}", filename);
@@ -56,6 +44,12 @@ void Scene::LoadScene(std::string filename,EntityManager& a_entityManager)
     }
 
     const std::vector<Entity_Saver>& entityData = result.value();
+    
+    if (entityData.empty())
+    {
+        DEBUG_LOG_CRITICAL("The JSON file is empty or contains no entities.");
+        return;
+    }
 
     auto entityIt = a_entityManager.GetEntities().begin();
     for (const auto& data : entityData)
@@ -96,22 +90,6 @@ void Scene::SaveScene(const std::string& filepath, EntityManager& a_entityManage
     rfl::json::save(filepath, entityData, rfl::json::pretty);
 }
 
-void Scene::EnterScene(std::string filename)
-{
-    if (CheckIfFileDetected(filename))
-    {
-        if (IsEmpty(filename))
-        {
-            // load new Scene
-        } 
-        else
-        {
-           // LoadScene(filename);
-        }
-    }
-}
-
-
 bool Scene::CheckIfFileDetected(std::string filename)
 {
     const std::string filepath = filename;
@@ -119,15 +97,13 @@ bool Scene::CheckIfFileDetected(std::string filename)
     if (!std::filesystem::exists(filepath))
     {
         return false;
+        DEBUG_LOG_ERROR("File Not Detected 1 ");
     }
     else
     {
         return true;
+        DEBUG_LOG_ERROR("File Detected 1 ");
     }
     return false;
+    DEBUG_LOG_ERROR("File Not Detected 2 ");
 }
-
-bool Scene::IsEmpty(std::string filename)
-{
-    return false;
-}   

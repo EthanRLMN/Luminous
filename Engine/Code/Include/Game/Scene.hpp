@@ -27,10 +27,8 @@ public:
 
     void LoadScene(std::string filename, EntityManager& a_entitymanager);
     void SaveScene(const std::string& filepath, EntityManager& a_entityManager);
-    void EnterScene(std::string filename);
-
 
     bool CheckIfFileDetected(std::string filename);
-    bool IsEmpty(std::string filename);
+
 };
 
