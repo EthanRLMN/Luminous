@@ -30,6 +30,7 @@ public:
     inline void SetLayer(JPH::uint8 a_layer) { m_layer = a_layer; }
     inline void SetActive(JPH::EActivation a_active) { m_active = a_active; }
     inline void SetCapsuleWidth(float a_width) { m_capsuleWidth = a_width; }
+    inline void SetCapsuleHeight(float a_height) { m_capsuleHeight = a_height; }
 
     [[nodiscard]] inline std::shared_ptr<Entity> GetEntity() const { return m_entity.lock(); }
     inline ColliderType GetColliderType() { return m_colliderType; }
@@ -37,10 +38,11 @@ public:
     inline ModelComponent* GetCapsuleSphereDebug() { return m_capsuleDebugSphere; }
     inline JPH::EActivation GetActivation() { return m_active; }
     inline float GetCapsuleWidth() { return m_capsuleWidth; }
-     
+    inline float GetCapsuleHeight() { return m_capsuleHeight; }
 
 private:
     float m_capsuleWidth{ 0.0f };
+    float m_capsuleHeight{ 0.0f };
     JPH::uint8 m_layer = Layers::KINEMATIC;
     std::weak_ptr<Entity> m_entity{};
     ModelComponent* m_collisionDebugModel;

@@ -227,7 +227,7 @@ void VulkanRenderer::RecordCommandBuffer(const VkCommandBuffer& a_commandBuffer,
                     for (int l_i = 0; l_i < 2; ++l_i)
                     {
                         Maths::Vector3 l_pos = entity->Transform()->GetGlobalPosition();
-                        Maths::Vector3 l_add = Maths::Vector3(0, l_scale.y, 0) * l_rotQ * 1.5f;
+                        Maths::Vector3 l_add = Maths::Vector3(0, entity.get()->GetComponent<RigidbodyComponent>()->GetCapsuleHeight(), 0) * l_rotQ;
                         if (l_i == 0)
                             l_pos += l_add;
                         else

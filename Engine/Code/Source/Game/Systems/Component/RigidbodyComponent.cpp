@@ -70,6 +70,7 @@ void RigidbodyComponent::Initialize()
         JPH::ShapeSettings::ShapeResult floor_shape_result = settings.Create();
         JPH::ShapeRefC floor_shape = floor_shape_result.Get();
         m_capsuleWidth = (l_scale.GetZ() + l_scale.GetX()) / 2;
+        m_capsuleHeight = l_scale.GetY();
 
         PhysicsSystem* l_phys = GetEngine()->GetPhysicsSystem();
 
