@@ -28,9 +28,9 @@ public:
     inline virtual bool IsOpen() const { return p_isOpen; }
     inline virtual std::string GetWindowIdentifier() const { return p_windowIdentifier; }
 
+    std::shared_ptr<Entity> p_isEntitySelected{};
 protected:
     Editor* p_editor{ nullptr };
     bool p_isOpen{ true };
-    std::shared_ptr<Entity> p_isEntitySelected{};
     std::string p_windowIdentifier{ std::to_string(rand() % 100) };
 };

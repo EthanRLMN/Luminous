@@ -73,33 +73,42 @@ void Viewport::Render()
 
     ImGui::Image(reinterpret_cast<ImTextureID>(dSets), l_imageSize);
 
-    ImGuizmo::SetDrawlist();
-    ImGuizmo::SetOrthographic(false);
-    ImGuizmo::SetRect(l_screenPos.x + l_offsetX, l_screenPos.y + l_offsetY, l_imageSize.x, l_imageSize.y);
-
-    //CameraEditor* camera = m_camera.Update(static_cast<float>(a_swapChain->CastVulkan()->GetSwapChainExtent().width) / static_cast<float>(a_swapChain->CastVulkan()->GetSwapChainExtent().height));;
-    Maths::Matrix4 view = m_camera->GetViewMatrix();
-    Maths::Matrix4 projection = m_camera->GetProjectionMatrix();
-
-    std::shared_ptr<TransformComponent> transform = p_isEntitySelected->GetComponent<TransformComponent>();
-    Maths::Matrix4 model = transform->GetGlobalMatrix();
-
-    ImGuizmo::Manipulate(view.Data(),
-                         projection.Data(),
-                         m_currentGizmoOperation,
-                         ImGuizmo::WORLD,
-                         model.Data());
-
-    if (ImGuizmo::IsUsing())
+    if (m_camera)
     {
-        Maths::Vector3 pos, scale;
-        Maths::Quaternion rot;
+        VkExtent2D l_extent = p_editor->GetEngine()->GetSwapChain()->CastVulkan()->GetSwapChainExtent();
+        float aspectRatio = static_cast<float>(l_extent.width) / static_cast<float>(l_extent.height);
+        m_camera->Update(aspectRatio);
 
-        model.Decompose(pos, rot, scale);
+        Maths::Matrix4 view = m_camera->GetViewMatrix();
+        Maths::Matrix4 projection = m_camera->GetProjectionMatrix();
 
-        transform->SetGlobalPosition(pos);
-        transform->SetGlobalRotationQuat(rot);
-        transform->SetGlobalScale(scale);
+        if (p_isEntitySelected)
+        {
+            std::shared_ptr<TransformComponent> transform = p_isEntitySelected->GetComponent<TransformComponent>();
+            if (transform)
+            {
+                Maths::Matrix4 model = transform->GetGlobalMatrix();
+
+                ImGuizmo::Manipulate(
+                        view.Data(),
+                        projection.Data(),
+                        m_currentGizmoOperation,
+                        ImGuizmo::WORLD,
+                        model.Data());
+
+                if (ImGuizmo::IsUsing())
+                {
+                    Maths::Vector3 pos, scale;
+                    Maths::Quaternion rot;
+
+                    model.Decompose(pos, rot, scale);
+
+                    transform->SetGlobalPosition(pos);
+                    transform->SetGlobalRotationQuat(rot);
+                    transform->SetGlobalScale(scale);
+                }
+            }
+        }
     }
     ImGui::End();
 }
