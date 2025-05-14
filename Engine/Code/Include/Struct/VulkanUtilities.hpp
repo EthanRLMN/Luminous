@@ -59,7 +59,7 @@ struct VertexHasher
 
 struct UniformBufferObject
 {
-    alignas(16) Maths::Matrix4 model;
-    alignas(16) Maths::Matrix4 view;
-    alignas(16) Maths::Matrix4 proj;
+    Maths::Matrix4 model { Maths::Matrix4::identity };
+    Maths::Matrix4 view { Maths::Matrix4::identity };
+    Maths::Matrix4 proj { Maths::Matrix4::identity };
 };
