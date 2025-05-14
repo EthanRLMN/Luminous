@@ -26,7 +26,6 @@ public:
     [[nodiscard]] float GetYaw() const { return m_yaw; }
     [[nodiscard]] float GetPitch() const { return m_pitch; }
     [[nodiscard]] float GetSpeedMultiplier() const { return m_speedMultiplier; }
-    [[nodiscard]] Camera* GetActiveCamera() const { return m_activeCamera; }
 
     [[nodiscard]] Maths::Vector3 GetEye() const { return m_eye; }
     [[nodiscard]] Maths::Vector3 GetCenter() const { return m_center; }
@@ -96,6 +95,5 @@ private:
     float m_pitch { 0.0f };
     float m_mouseSensitivity { 10.0f };
     bool m_isRotating { false };
-    Camera* m_activeCamera{ nullptr };
 };
 

@@ -77,7 +77,7 @@ void Viewport::Render()
     ImGuizmo::SetOrthographic(false);
     ImGuizmo::SetRect(l_screenPos.x + l_offsetX, l_screenPos.y + l_offsetY, l_imageSize.x, l_imageSize.y);
 
-    Camera* camera = m_camera->GetActiveCamera();
+    //CameraEditor* camera = m_camera.Update(static_cast<float>(a_swapChain->CastVulkan()->GetSwapChainExtent().width) / static_cast<float>(a_swapChain->CastVulkan()->GetSwapChainExtent().height));;
     Maths::Matrix4 view = m_camera->GetViewMatrix();
     Maths::Matrix4 projection = m_camera->GetProjectionMatrix();
 
