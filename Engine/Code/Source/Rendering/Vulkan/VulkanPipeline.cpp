@@ -55,11 +55,10 @@ void VulkanPipeline::Create(IDevice* a_device, IRenderPass* a_renderPass, IDescr
     l_wireRasterizerCreateInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_RASTERIZATION_STATE_CREATE_INFO;
     l_wireRasterizerCreateInfo.pNext = nullptr;
     SetupRasterizerCreationInfo(l_wireRasterizerCreateInfo);
-    l_wireRasterizerCreateInfo.polygonMode = VK_POLYGON_MODE_LINE;
     l_wireRasterizerCreateInfo.depthClampEnable = VK_FALSE;
     l_wireRasterizerCreateInfo.rasterizerDiscardEnable = VK_FALSE;
     l_wireRasterizerCreateInfo.polygonMode = VK_POLYGON_MODE_LINE;
-    l_wireRasterizerCreateInfo.lineWidth = 1.0f;
+    l_wireRasterizerCreateInfo.lineWidth = 1.f;
     l_wireRasterizerCreateInfo.cullMode = VK_CULL_MODE_NONE;
     l_wireRasterizerCreateInfo.frontFace = VK_FRONT_FACE_COUNTER_CLOCKWISE;
     l_wireRasterizerCreateInfo.depthBiasEnable = VK_FALSE;
