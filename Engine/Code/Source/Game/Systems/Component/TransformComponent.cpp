@@ -139,17 +139,18 @@ void TransformComponent::SetGlobalMatrix(const Maths::Matrix4& a_newMatrix)
 
 void TransformComponent::SetGlobalPosition(const Maths::Vector3 a_newPos)
 {
-    if (m_globalPosition == a_newPos)
-        return;
-
     m_globalPosition = a_newPos;
+
     if (m_parent.lock())
     {
         const Maths::Matrix4 l_parentGlobalInverse = m_parent.lock()->Transform()->GetGlobalMatrix().Inverse();
-        m_localMatrix = l_parentGlobalInverse * Maths::Matrix4::TRS(a_newPos, m_globalRotationVec, m_globalScale);
+        m_localMatrix = l_parentGlobalInverse * Maths::Matrix4::TRS(a_newPos, m_globalRotation.ToEulerAngles(true), m_globalScale);
+    } else
+    {
+        m_localMatrix = Maths::Matrix4::TRS(a_newPos, m_globalRotation.ToEulerAngles(true), m_globalScale);
     }
 
-    SetLocalPosition(a_newPos);
+    UpdateGlobalTransform();
 }
 
 

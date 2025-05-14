@@ -11,7 +11,7 @@ void RigidBody::UpdateToTransform()
     JPH::Quat l_bodyRotation = GetRotation();
     Maths::Vector3 l_position = Maths::Vector3(l_bodyPosition.GetX(), l_bodyPosition.GetY(), l_bodyPosition.GetZ());
     Maths::Quaternion l_rotation = Maths::Quaternion(-l_bodyRotation.GetX(), -l_bodyRotation.GetY(), -l_bodyRotation.GetZ(), l_bodyRotation.GetW());
-    GetParentComponent()->GetEntity()->Transform()->SetGlobalPosition(l_position);
-    GetParentComponent()->GetEntity()->Transform()->SetGlobalRotationQuat(l_rotation);
+    GetParentComponent()->GetEntity()->Transform()->SetLocalPosition(l_position);
+    GetParentComponent()->GetEntity()->Transform()->SetLocalRotationQuat(l_rotation);
     
 }
