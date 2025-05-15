@@ -50,8 +50,8 @@ void Viewport::Render()
     if (p_editor->GetEngine()->GetRenderer()->CastVulkan()->m_recreateDsets)
     {
         p_editor->GetEngine()->GetRenderer()->CastVulkan()->m_recreateDsets = false;
-        dSets = ImGui_ImplVulkan_AddTexture(ResourceManager::GetInstance().GetStandardSampler(), p_editor->GetEngine()->GetRenderer()->CastVulkan()->GetViewportImageView(), VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL);
-    }
+        dSets = reinterpret_cast<ImTextureID>(ImGui_ImplVulkan_AddTexture(ResourceManager::GetInstance().GetStandardSampler(), p_editor->GetEngine()->GetRenderer()->CastVulkan()->GetViewportImageView(), VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL));
+    };
 
 
     VkExtent2D l_extent = p_editor->GetEngine()->GetSwapChain()->CastVulkan()->GetSwapChainExtent();
