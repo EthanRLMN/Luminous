@@ -140,24 +140,23 @@ void VulkanRenderer::RecordCommandBuffer(const VkCommandBuffer& a_commandBuffer,
 
         if (l_renderPass == a_renderPassManager->GetRenderPassAt(0))
         {
-            std::vector<std::shared_ptr<Entity> > entitiesWithModels = a_entityManager.GetEntitiesByComponent<ModelComponent>();
-            for (const std::shared_ptr<Entity>& entity : entitiesWithModels)
+            const std::vector<std::shared_ptr<Entity>>& l_renderableEntities = a_entityManager.GetRenderableEntities();
+            for (const std::shared_ptr<Entity>& l_renderableEntity : l_renderableEntities)
             {
                 UniformBufferObject l_ubo{};
-                const Maths::Matrix4 l_modelMatrix = entity->Transform()->GetGlobalMatrix();
+                const Maths::Matrix4 l_modelMatrix = l_renderableEntity->Transform()->GetGlobalMatrix();
                 l_ubo.model = l_modelMatrix.Transpose();
                 l_ubo.view = m_cameraEditor.GetViewMatrix().Transpose();
                 l_ubo.proj = m_cameraEditor.GetProjectionMatrix();
 
-                const std::array<VkBuffer, 1> l_vertexBuffers = { entity->GetComponent<ModelComponent>()->GetMesh()->CastVulkan()->GetVertexBuffer() };
+                const std::array<VkBuffer, 1> l_vertexBuffers = { l_renderableEntity->GetComponent<ModelComponent>()->GetMesh()->CastVulkan()->GetVertexBuffer() };
                 const std::array<VkDeviceSize, 1> l_offsets = { 0 };
                 vkCmdBindVertexBuffers(a_commandBuffer, 0, 1, l_vertexBuffers.data(), l_offsets.data());
-                vkCmdBindIndexBuffer(a_commandBuffer, entity->GetComponent<ModelComponent>()->GetMesh()->CastVulkan()->GetIndexBuffer(), 0, VK_INDEX_TYPE_UINT32);
-                std::vector<VkDescriptorSet> sets = { a_descriptor->CastVulkan()->GetDescriptorSet()[m_currentFrame], entity->GetComponent<ModelComponent>()->GetTexture()->CastVulkan()->GetDescriptorSet() };
+                vkCmdBindIndexBuffer(a_commandBuffer, l_renderableEntity->GetComponent<ModelComponent>()->GetMesh()->CastVulkan()->GetIndexBuffer(), 0, VK_INDEX_TYPE_UINT32);
+                std::vector<VkDescriptorSet> sets = { a_descriptor->CastVulkan()->GetDescriptorSet()[m_currentFrame], l_renderableEntity->GetComponent<ModelComponent>()->GetTexture()->CastVulkan()->GetDescriptorSet() };
                 vkCmdBindDescriptorSets(a_commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, a_pipelineLayout, 0, static_cast<uint32_t>(sets.size()), sets.data(), 0, nullptr);
                 vkCmdPushConstants(a_commandBuffer, a_pipelineLayout, VK_SHADER_STAGE_VERTEX_BIT, 0, sizeof(UniformBufferObject), &l_ubo);
-
-                vkCmdDrawIndexed(a_commandBuffer, static_cast<uint32_t>(entity->GetComponent<ModelComponent>()->GetMesh()->CastVulkan()->GetIndices().size()), 1, 0, 0, 0);
+                vkCmdDrawIndexed(a_commandBuffer, static_cast<uint32_t>(l_renderableEntity->GetComponent<ModelComponent>()->GetMesh()->CastVulkan()->GetIndices().size()), 1, 0, 0, 0);
             }
         }
 
@@ -170,7 +169,6 @@ void VulkanRenderer::RecordCommandBuffer(const VkCommandBuffer& a_commandBuffer,
         if (l_renderPass == a_renderPassManager->GetRenderPassAt(0))
             CopyImageToViewport(a_swapChain, a_commandBuffer);
     }
-
     const VkResult l_result = vkEndCommandBuffer(a_commandBuffer);
     if (l_result != VK_SUCCESS)
         throw std::runtime_error("Failed to stop recording a command buffer ");
@@ -180,16 +178,16 @@ void VulkanRenderer::RecordCommandBuffer(const VkCommandBuffer& a_commandBuffer,
 void VulkanRenderer::UpdateUniformBuffer(const uint32_t& a_currentFrame, IBuffer* a_buffer, const EntityManager& a_entityManager) const
 {
     a_entityManager.Update();
-    const std::vector<std::shared_ptr<Entity> > l_entitiesWithModels = a_entityManager.GetEntitiesByComponent<ModelComponent>();
-    UniformBufferObject l_ubo{};
+    const std::vector<std::shared_ptr<Entity>>& l_renderableEntities = a_entityManager.GetRenderableEntities();
 
-    for (const std::shared_ptr<Entity>& entity : l_entitiesWithModels)
+    UniformBufferObject l_ubo{};
+    for (const std::shared_ptr<Entity>& l_renderableEntity : l_renderableEntities)
     {
-        std::shared_ptr<ModelComponent> l_modelComponent = entity->GetComponent<ModelComponent>();
+        std::shared_ptr<ModelComponent> l_modelComponent = l_renderableEntity->GetComponent<ModelComponent>();
         if (l_modelComponent)
         {
-            const Maths::Matrix4 modelMatrix = entity->Transform()->GetGlobalMatrix();
-            l_ubo.model = modelMatrix.Transpose();
+            const Maths::Matrix4 l_modelMatrix = l_renderableEntity->Transform()->GetGlobalMatrix();
+            l_ubo.model = l_modelMatrix.Transpose();
         }
     }
 
@@ -197,7 +195,6 @@ void VulkanRenderer::UpdateUniformBuffer(const uint32_t& a_currentFrame, IBuffer
     l_ubo.proj = m_cameraEditor.GetProjectionMatrix();
 
     memcpy(a_buffer->CastVulkan()->GetUniformBuffersMapped()[a_currentFrame], &l_ubo, sizeof(l_ubo));
-
     memcpy(a_buffer->CastVulkan()->GetLightUniformBuffersMapped()[a_currentFrame], &m_lights, sizeof(LightData) * MAX_LIGHTS);
 }
 

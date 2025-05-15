@@ -48,14 +48,15 @@ std::shared_ptr<Entity> EntityManager::CreateEntityFromTemplate(const std::strin
 }
 
 
-void EntityManager::UpdateRenderableEntities()
+void EntityManager::RegisterRenderable(const std::shared_ptr<Entity>& a_entity)
 {
-    m_renderableEntities.clear();
-    for (const std::shared_ptr<Entity>& entity : m_entities)
-    {
-        if (entity->GetComponent<MeshRendererComponent>())
-            m_renderableEntities.push_back(entity);
-    }
+    m_renderableEntities.push_back(a_entity);
+}
+
+
+void EntityManager::UnregisterRenderable(const std::shared_ptr<Entity>& a_entity)
+{
+    std::erase(m_renderableEntities, a_entity);
 }
 
 

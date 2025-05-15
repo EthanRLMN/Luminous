@@ -4,14 +4,15 @@
 #include <string>
 
 #include "EntityIDPool.hpp"
+
+#include <Game/Systems/Component/LightComponent.hpp>
+#include <Game/Systems/Component/ModelComponent.hpp>
 #include "Game/Systems/Component/EntityComponent.hpp"
 #include "Game/Systems/Component/TransformComponent.hpp"
-#include "Game/Systems/Physics/RigidBody.hpp"
-#include <Game/Systems/Component/ModelComponent.hpp>
-#include <Game/Systems/Component/LightComponent.hpp>
 
 class Engine;
 class EntityManager;
+
 
 class Entity : public std::enable_shared_from_this<Entity>
 {
@@ -48,6 +49,7 @@ public:
     inline std::shared_ptr<ModelComponent> Model() const { return GetComponent<ModelComponent>(); }
     inline std::shared_ptr<LightComponent> Light() const { return GetComponent<LightComponent>(); }
     void AddComponent(const std::shared_ptr<EntityComponent>& a_component);
+    void RemoveComponent(const std::shared_ptr<EntityComponent>& a_component);
     void SetActive(bool a_isActive);
 
 

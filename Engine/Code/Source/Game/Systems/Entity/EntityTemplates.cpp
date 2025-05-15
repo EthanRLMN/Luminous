@@ -1,4 +1,6 @@
 #include "Game/Systems/Entity/EntityTemplates.hpp"
+
+#include "Game/Systems/Component/MeshRendererComponent.hpp"
 #include "Game/Systems/Component/ModelComponent.hpp"
 #include "Game/Systems/Entity/EntityFactory.hpp"
 
@@ -40,6 +42,9 @@ void EntityTemplates::DefaultCube()
         l_modelComponent->SetTexturePath("Engine/Assets/Default/Textures/White.png");
         l_entity->AddComponent(l_modelComponent);
 
+        const std::shared_ptr<MeshRendererComponent> l_meshRendererComponent = std::make_shared<MeshRendererComponent>();
+        l_entity->AddComponent(l_meshRendererComponent);
+
         return l_entity;
     });
 }
@@ -56,6 +61,9 @@ void EntityTemplates::DefaultSphere()
         l_modelComponent->SetMeshPath("Engine/Assets/Default/Models/Sphere.fbx");
         l_modelComponent->SetTexturePath("Engine/Assets/Default/Textures/White.png");
         l_entity->AddComponent(l_modelComponent);
+
+        const std::shared_ptr<MeshRendererComponent> l_meshRendererComponent = std::make_shared<MeshRendererComponent>();
+        l_entity->AddComponent(l_meshRendererComponent);
 
         return l_entity;
     });
@@ -74,6 +82,9 @@ void EntityTemplates::DefaultCapsule()
         l_modelComponent->SetTexturePath("Engine/Assets/Default/Textures/White.png");
         l_entity->AddComponent(l_modelComponent);
 
+        const std::shared_ptr<MeshRendererComponent> l_meshRendererComponent = std::make_shared<MeshRendererComponent>();
+        l_entity->AddComponent(l_meshRendererComponent);
+
         return l_entity;
     });
 }
@@ -90,6 +101,9 @@ void EntityTemplates::DefaultCylinder()
         l_modelComponent->SetMeshPath("Engine/Assets/Default/Models/Cylinder.fbx");
         l_modelComponent->SetTexturePath("Engine/Assets/Default/Textures/White.png");
         l_entity->AddComponent(l_modelComponent);
+
+        const std::shared_ptr<MeshRendererComponent> l_meshRendererComponent = std::make_shared<MeshRendererComponent>();
+        l_entity->AddComponent(l_meshRendererComponent);
 
         return l_entity;
     });
@@ -108,6 +122,9 @@ void EntityTemplates::DefaultCone()
         l_modelComponent->SetTexturePath("Engine/Assets/Default/Textures/White.png");
         l_entity->AddComponent(l_modelComponent);
 
+        const std::shared_ptr<MeshRendererComponent> l_meshRendererComponent = std::make_shared<MeshRendererComponent>();
+        l_entity->AddComponent(l_meshRendererComponent);
+
         return l_entity;
     });
 }
@@ -125,6 +142,9 @@ void EntityTemplates::DefaultMonkey()
         l_modelComponent->SetTexturePath("Engine/Assets/Default/Textures/White.png");
         l_entity->AddComponent(l_modelComponent);
 
+        const std::shared_ptr<MeshRendererComponent> l_meshRendererComponent = std::make_shared<MeshRendererComponent>();
+        l_entity->AddComponent(l_meshRendererComponent);
+
         return l_entity;
     });
 }
@@ -137,10 +157,13 @@ void EntityTemplates::DefaultCompanion()
         std::shared_ptr<Entity> l_entity = std::make_shared<Entity>(a_entityManager);
         l_entity->SetName("DefaultCompanion");
 
-        std::shared_ptr<ModelComponent> l_modelComponent = std::make_shared<ModelComponent>();
+        const std::shared_ptr<ModelComponent> l_modelComponent = std::make_shared<ModelComponent>();
         l_modelComponent->SetMeshPath("Engine/Assets/Default/Models/CompanionCube.fbx");
         l_modelComponent->SetTexturePath("Engine/Assets/Default/Textures/CompanionCube.png");
         l_entity->AddComponent(l_modelComponent);
+
+        const std::shared_ptr<MeshRendererComponent> l_meshRendererComponent = std::make_shared<MeshRendererComponent>();
+        l_entity->AddComponent(l_meshRendererComponent);
 
         return l_entity;
     });
@@ -154,10 +177,13 @@ void EntityTemplates::DefaultPlane()
         std::shared_ptr<Entity> l_entity = std::make_shared<Entity>(a_entityManager);
         l_entity->SetName("DefaultPlane");
 
-        std::shared_ptr<ModelComponent> l_modelComponent = std::make_shared<ModelComponent>();
+        const std::shared_ptr<ModelComponent> l_modelComponent = std::make_shared<ModelComponent>();
         l_modelComponent->SetMeshPath("Engine/Assets/Default/Models/Plane.fbx");
         l_modelComponent->SetTexturePath("Engine/Assets/Default/Textures/White.png");
         l_entity->AddComponent(l_modelComponent);
+
+        const std::shared_ptr<MeshRendererComponent> l_meshRendererComponent = std::make_shared<MeshRendererComponent>();
+        l_entity->AddComponent(l_meshRendererComponent);
 
         return l_entity;
     });

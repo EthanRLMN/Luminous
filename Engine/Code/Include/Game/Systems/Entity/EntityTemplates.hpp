@@ -7,14 +7,16 @@ public:
     ~EntityTemplates() = default;
 
     void RegisterEntityTemplates();
+
+
 private:
-    void DefaultEmpty();
-    void DefaultPlane();
-    void DefaultCube();
-    void DefaultSphere();
-    void DefaultCapsule();
-    void DefaultCylinder();
-    void DefaultCone();
-    void DefaultMonkey();
-    void DefaultCompanion();
+    static void DefaultEmpty();
+    static void DefaultPlane();
+    static void DefaultCube();
+    static void DefaultSphere();
+    static void DefaultCapsule();
+    static void DefaultCylinder();
+    static void DefaultCone();
+    static void DefaultMonkey();
+    static void DefaultCompanion();
 };

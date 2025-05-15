@@ -21,6 +21,9 @@ public:
     void Update() const;
     void GameplayStarted() const;
 
+    void RegisterRenderable(const std::shared_ptr<Entity>& a_entity);
+    void UnregisterRenderable(const std::shared_ptr<Entity>& a_entity);
+
     /*          Getters         */
     [[nodiscard]] inline const std::vector<std::shared_ptr<Entity> >& GetEntities() const { return m_entities; }
     [[nodiscard]] inline bool HasEntityByName(const std::string& a_name) const { return GetEntityByName(a_name) != nullptr; }
@@ -54,27 +57,10 @@ public:
     std::shared_ptr<Entity> CreateEntityFromTemplate(const std::string& a_templateName);
 
 
-    template<typename T>
-    inline void NotifyComponentAdded(const std::shared_ptr<Entity>& a_entity)
-    {
-        if constexpr (std::is_same_v<T, MeshRendererComponent>)
-            if (std::ranges::find(m_renderableEntities, a_entity) == m_renderableEntities.end())
-                m_renderableEntities.push_back(a_entity);
-    }
-
-    template<typename T>
-    inline void NotifyComponentRemoved(const std::shared_ptr<Entity>& a_entity)
-    {
-        if constexpr (std::is_same_v<T, MeshRendererComponent>)
-            std::erase_if(m_renderableEntities, [&](const std::shared_ptr<Entity>& l_entity) { return l_entity == a_entity; });
-    }
-
-
 private:
     void UpdateRenderableEntities();
 
     Engine* m_engine{ nullptr };
     std::vector<std::shared_ptr<Entity> > m_entities{};
     std::vector<std::shared_ptr<Entity> > m_renderableEntities{};
-
 };
