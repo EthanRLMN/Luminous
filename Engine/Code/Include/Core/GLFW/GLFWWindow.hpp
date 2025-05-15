@@ -26,7 +26,7 @@ public:
     inline void ProcessEvents() override { glfwWaitEvents(); }
     inline void SetFrameBufferResized(const bool a_isResized) { m_isFrameBufferResized = a_isResized; }
 
-    [[Nodiscard]] inline bool IsFrameBufferResized() const override { return m_isFrameBufferResized; }
+     inline bool IsFrameBufferResized() const override { return m_isFrameBufferResized; }
     [[nodiscard]] inline bool ShouldClose() const override { return glfwWindowShouldClose(m_window); }
     [[nodiscard]] inline float GetOpacity() const override { return glfwGetWindowOpacity(m_window); }
     [[nodiscard]] inline std::string GetTitle() const override { return glfwGetWindowTitle(m_window); }

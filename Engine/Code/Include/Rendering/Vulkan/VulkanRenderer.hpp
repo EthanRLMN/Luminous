@@ -44,6 +44,7 @@ public:
 
     bool bReloadImage = false;
     mutable bool bUsable = false;
+    bool m_recreateDsets = false;
 
     LightData m_lights[MAX_LIGHTS];
 

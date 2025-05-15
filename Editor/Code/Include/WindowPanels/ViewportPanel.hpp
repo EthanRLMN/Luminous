@@ -20,7 +20,7 @@ public:
 
     ImVec2 m_lastSize{ 0.0f, 0.0f };
 
-    VkSampler sampler{};
+    //VkSampler sampler{};
     VkDescriptorSet dSets;
 
     void Init() override {};
