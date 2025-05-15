@@ -233,7 +233,6 @@ void VulkanRenderer::RecordCommandBuffer(const VkCommandBuffer& a_commandBuffer,
                         Maths::Vector3 l_pos = entity->Transform()->GetGlobalPosition();
                         //l_rotQ = Maths::Quaternion::FromEulerAngles(l_rot);
                         Maths::Vector3 l_add = Maths::Vector3(0, entity.get()->GetComponent<RigidbodyComponent>()->GetCapsuleHeight(), 0) * l_rotQ;
-                        Maths::Vector3 l_add2 = Maths::Vector3(-1.68125f, 0.54627f, 1.76777f);
                         if (l_i == 0)
                             l_pos += l_add;
                         else
@@ -261,6 +260,7 @@ void VulkanRenderer::RecordCommandBuffer(const VkCommandBuffer& a_commandBuffer,
                     Maths::Vector3 l_pos2 = entity->Transform()->GetGlobalPosition();
                     Maths::Vector3 l_rot2 = entity->Transform()->GetLocalRotationVec();
                     Maths::Vector3 l_scale2 = entity->Transform()->GetGlobalScale();
+                    l_scale2 = Maths::Vector3(entity.get()->GetComponent<RigidbodyComponent>()->GetCapsuleWidth(), entity.get()->GetComponent<RigidbodyComponent>()->GetCapsuleHeight(), entity.get()->GetComponent<RigidbodyComponent>()->GetCapsuleWidth());
 
                     Maths::Matrix4 l_posMat2 = Maths::Matrix4::Translation(l_pos2);
                     Maths::Matrix4 l_rotMat2 = Maths::Matrix4::RotationXYZ(l_rot);

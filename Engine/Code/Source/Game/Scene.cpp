@@ -29,7 +29,7 @@ void Scene::RegisterScene(EntityManager& a_entityManager)
     a_entityManager.GetEntities()[1].get()->GetComponent<RigidbodyComponent>().get()->Initialize();
 
     a_entityManager.GetEntities()[2].get()->GetComponent<TransformComponent>().get()->SetLocalScale(Maths::Vector3(2.f, 2.5f, 2.f));
-    a_entityManager.GetEntities()[2].get()->GetComponent<TransformComponent>().get()->SetLocalRotationVec(Maths::Vector3(90.f, -13.f, 72.f));
+    a_entityManager.GetEntities()[2].get()->GetComponent<TransformComponent>().get()->SetLocalRotationVec(Maths::Vector3(-18.75f, -55, 42.f));
     a_entityManager.GetEntities()[2].get()->AddComponent(std::make_shared<RigidbodyComponent>());
     a_entityManager.GetEntities()[2].get()->GetComponent<RigidbodyComponent>().get()->SetEngine(engine);
     a_entityManager.GetEntities()[2].get()->GetComponent<RigidbodyComponent>().get()->SetEntity(a_entityManager.GetEntities()[2]);
