@@ -33,7 +33,6 @@
 void VulkanRenderer::Create(IDevice* a_device, ISwapChain* a_swapChain)
 {
     m_cameraEditor.Init(static_cast<float>(a_swapChain->CastVulkan()->GetSwapChainExtent().width) / static_cast<float>(a_swapChain->CastVulkan()->GetSwapChainExtent().height), 80.f, 0.1f, 500.f);
-    CreateDefaultTextureSampler(a_device);
 
     const LightData l_light {
         .m_position = Maths::Vector3(0.0f, 3.0f, 0.0f),
@@ -255,7 +254,7 @@ void VulkanRenderer::CreateViewportImage(IDevice* a_device, ISwapChain* a_swapCh
     const VkExtent2D& l_extent = a_swapChain->CastVulkan()->GetSwapChainExtent();
     SetViewportSize(static_cast<float>(l_extent.width), static_cast<float>(l_extent.height));
 
-    if (m_viewportImage != VK_NULL_HANDLE && m_viewportImageview != VK_NULL_HANDLE && m_viewportMemory != VK_NULL_HANDLE)
+    if (m_viewportImage != nullptr && m_viewportImageview != nullptr && m_viewportMemory != nullptr)
         DestroyViewportImage(a_device);
 
     CreateViewportImageInfo(a_device->CastVulkan()->GetDevice(), a_swapChain->CastVulkan()->GetSwapChainImageFormat());
@@ -274,10 +273,6 @@ void VulkanRenderer::CreateViewportImage(IDevice* a_device, ISwapChain* a_swapCh
     VkImageViewCreateInfo l_viewInfo{};
     ImageViewCreateInfo(l_viewInfo, m_viewportImage, a_swapChain);
     vkCreateImageView(l_device, &l_viewInfo, nullptr, &m_viewportImageview);
-
-    VkSamplerCreateInfo l_samplerInfo{};
-    SamplerCreateInfo(l_samplerInfo);
-    vkCreateSampler(l_device, &l_samplerInfo, nullptr, &m_viewportSampler);
 }
 
 
@@ -304,60 +299,23 @@ void VulkanRenderer::CopyImageToViewport(ISwapChain* a_swapChain, const VkComman
 void VulkanRenderer::DestroyViewportImage(IDevice* a_device)
 {
     const VkDevice& l_device = a_device->CastVulkan()->GetDevice();
-    if (m_viewportImageview != VK_NULL_HANDLE)
+    if (m_viewportImageview != nullptr)
     {
         vkDestroyImageView(l_device, m_viewportImageview, nullptr);
-        m_viewportImageview = VK_NULL_HANDLE;
+        m_viewportImageview = nullptr;
     }
 
-    if (m_viewportImage != VK_NULL_HANDLE)
+    if (m_viewportImage != nullptr)
     {
         vkDestroyImage(l_device, m_viewportImage, nullptr);
-        m_viewportImage = VK_NULL_HANDLE;
+        m_viewportImage = nullptr;
     }
 
-    if (m_viewportSampler != VK_NULL_HANDLE)
-    {
-        vkDestroySampler(l_device, m_viewportSampler, nullptr);
-        m_viewportSampler = VK_NULL_HANDLE;
-    }
-
-    if (m_viewportMemory != VK_NULL_HANDLE)
+    if (m_viewportMemory != nullptr)
     {
         vkFreeMemory(l_device, m_viewportMemory, nullptr);
-        m_viewportMemory = VK_NULL_HANDLE;
+        m_viewportMemory = nullptr;
     }
-
-    if (m_defaultTexSampler != nullptr)
-    {
-        vkDestroySampler(l_device, m_defaultTexSampler, nullptr);
-        DEBUG_LOG_INFO("Default texture sampler has been destroyed.");
-    }
-
-}
-
-void VulkanRenderer::CreateDefaultTextureSampler(IDevice* a_device)
-{
-    VkSamplerCreateInfo l_samplerInfo{};
-    l_samplerInfo.sType = VK_STRUCTURE_TYPE_SAMPLER_CREATE_INFO;
-    l_samplerInfo.magFilter = VK_FILTER_LINEAR;
-    l_samplerInfo.minFilter = VK_FILTER_LINEAR;
-    l_samplerInfo.mipmapMode = VK_SAMPLER_MIPMAP_MODE_LINEAR;
-    l_samplerInfo.addressModeU = VK_SAMPLER_ADDRESS_MODE_CLAMP_TO_EDGE;
-    l_samplerInfo.addressModeV = VK_SAMPLER_ADDRESS_MODE_CLAMP_TO_EDGE;
-    l_samplerInfo.addressModeW = VK_SAMPLER_ADDRESS_MODE_CLAMP_TO_EDGE;
-    l_samplerInfo.anisotropyEnable = VK_FALSE;
-    l_samplerInfo.maxAnisotropy = 1.0f;
-    l_samplerInfo.borderColor = VK_BORDER_COLOR_INT_OPAQUE_BLACK;
-    l_samplerInfo.unnormalizedCoordinates = VK_FALSE;
-    l_samplerInfo.compareEnable = VK_FALSE;
-    l_samplerInfo.compareOp = VK_COMPARE_OP_ALWAYS;
-    l_samplerInfo.mipLodBias = 0.0f;
-    l_samplerInfo.minLod = 0.0f;
-    l_samplerInfo.maxLod = VK_LOD_CLAMP_NONE;
-    l_samplerInfo.pNext = nullptr;
-
-    vkCreateSampler(a_device->CastVulkan()->GetDevice(), &l_samplerInfo, nullptr, &m_defaultTexSampler);
 }
 
 

@@ -37,14 +37,10 @@ public:
 	[[nodiscard]] VkImage GetViewportImage() const { return m_viewportImage; }
 	[[nodiscard]] VkImageView GetViewportImageView() const { return m_viewportImageview; }
 	[[nodiscard]] VkDeviceMemory GetViewportImageMemory() const { return m_viewportMemory; }
-	[[nodiscard]] VkSampler GetViewportImageSampler() const { return m_viewportSampler; }
-    VkSampler GetDefaultTextureSampler() const { return m_defaultTexSampler; }
 
 	void CreateViewportImage(IDevice* a_device, ISwapChain* a_swapChain);
     void CopyImageToViewport(ISwapChain* a_swapChain, const VkCommandBuffer& a_cmdBuffer) const;
     void DestroyViewportImage(IDevice* a_device);
-
-    void CreateDefaultTextureSampler(IDevice* a_device);
 
     bool bReloadImage = false;
     mutable bool bUsable = false;
@@ -73,8 +69,6 @@ private:
     VkImage m_viewportImage { nullptr };
     VkImageView m_viewportImageview { nullptr };
     VkDeviceMemory m_viewportMemory { nullptr };
-    VkSampler m_viewportSampler { nullptr };
-    VkSampler m_defaultTexSampler { nullptr };
 
     float m_viewportWidth { 2560.f };
     float m_viewportHeight { 1440.f };

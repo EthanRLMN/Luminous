@@ -4,7 +4,6 @@
 #include "ICommandPool.hpp"
 #include "IDepthResource.hpp"
 #include "IDevice.hpp"
-#include "ISwapChain.hpp"
 
 #include "Rendering/Vulkan/VulkanTexture.hpp"
 
@@ -13,6 +12,7 @@
 #include "Rendering/Vulkan/VulkanDescriptorSetLayout.hpp"
 #include "Rendering/Vulkan/VulkanDevice.hpp"
 #include "Rendering/Vulkan/VulkanSwapChain.hpp"
+#include "ResourceManager/ResourceManager.hpp"
 
 
 bool VulkanTexture::Create(const IResourceParams& a_params)
@@ -26,7 +26,6 @@ bool VulkanTexture::Create(const IResourceParams& a_params)
 
     CreateTextureImage(l_device, l_commandPool, a_params.m_texturePath);
     CreateTextureImageView(l_device);
-    CreateTextureSampler(l_device);
     DEBUG_LOG_INFO("Vulkan Texture : Texture Created!\n");
 
     CreateDescriptorPool(l_device);
@@ -41,31 +40,25 @@ void VulkanTexture::Destroy(IDevice* a_device)
     const VkDevice l_vkdevice = a_device->CastVulkan()->GetDevice();
     vkDeviceWaitIdle(l_vkdevice);
 
-    if (m_textureImageView != VK_NULL_HANDLE)
+    if (m_textureImageView != nullptr)
     {
         vkDestroyImageView(l_vkdevice, m_textureImageView, nullptr);
-        m_textureImageView = VK_NULL_HANDLE;
+        m_textureImageView = nullptr;
     }
 
-    if (m_textureImage != VK_NULL_HANDLE)
+    if (m_textureImage != nullptr)
     {
         vkDestroyImage(l_vkdevice, m_textureImage, nullptr);
-        m_textureImage = VK_NULL_HANDLE;
+        m_textureImage = nullptr;
     }
 
-    if (m_textureSampler != VK_NULL_HANDLE)
-    {
-        vkDestroySampler(l_vkdevice, m_textureSampler, nullptr);
-        m_textureSampler = VK_NULL_HANDLE;
-    }
-
-    if (m_textureImageMemory != VK_NULL_HANDLE)
+    if (m_textureImageMemory != nullptr)
     {
         vkFreeMemory(l_vkdevice, m_textureImageMemory, nullptr);
-        m_textureImageMemory = VK_NULL_HANDLE;
+        m_textureImageMemory = nullptr;
     }
 
-    DEBUG_LOG_INFO("Vulkan Texture : Texture Destroy!\n");
+    DEBUG_LOG_INFO("Vulkan Texture : A texture has been destroyed!\n");
 }
 
 
@@ -73,7 +66,7 @@ void VulkanTexture::CreateTextureImage(IDevice* a_device, ICommandPool* a_comman
 {
     if (a_device == nullptr)
     {
-        DEBUG_LOG_ERROR("DEVICE IS NULL");
+        DEBUG_LOG_ERROR("Vulkan Texture Image : Could not create Texture Image, cevice is null!\n");
         return;
     }
 
@@ -104,7 +97,6 @@ void VulkanTexture::CreateTextureImage(IDevice* a_device, ICommandPool* a_comman
 
     TransitionImageLayout(l_vkDevice, l_vkGraphicsQueue, l_vkCommandPool, m_textureImage, VK_IMAGE_LAYOUT_UNDEFINED, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, m_mipLevels);
     CopyBufferToImage(l_vkDevice, l_vkGraphicsQueue, l_vkCommandPool, l_stagingBuffer, m_textureImage, static_cast<uint32_t>(l_texWidth), static_cast<uint32_t>(l_texHeight));
-
     vkDestroyBuffer(l_vkDevice, l_stagingBuffer, nullptr);
     vkFreeMemory(l_vkDevice, l_stagingBufferMemory, nullptr);
     GenerateMipMaps(a_device, l_vkGraphicsQueue, a_commandPool->CastVulkan()->GetCommandPool(), m_textureImage, VK_FORMAT_R8G8B8A8_SRGB, l_texWidth, l_texHeight);
@@ -114,35 +106,6 @@ void VulkanTexture::CreateTextureImage(IDevice* a_device, ICommandPool* a_comman
 void VulkanTexture::CreateTextureImageView(IDevice* a_device)
 {
     m_textureImageView = VulkanSwapChain::CreateImageView(m_textureImage, a_device->CastVulkan()->GetDevice(), VK_FORMAT_R8G8B8A8_SRGB, VK_IMAGE_ASPECT_COLOR_BIT, m_mipLevels);
-}
-
-
-void VulkanTexture::CreateTextureSampler(IDevice* a_device)
-{
-    VkPhysicalDeviceProperties l_properties{};
-    vkGetPhysicalDeviceProperties(a_device->CastVulkan()->GetPhysicalDevice(), &l_properties);
-
-    VkSamplerCreateInfo l_samplerInfo{ };
-    l_samplerInfo.sType = VK_STRUCTURE_TYPE_SAMPLER_CREATE_INFO;
-    l_samplerInfo.magFilter = VK_FILTER_LINEAR;
-    l_samplerInfo.minFilter = VK_FILTER_LINEAR;
-    l_samplerInfo.addressModeU = VK_SAMPLER_ADDRESS_MODE_REPEAT;
-    l_samplerInfo.addressModeV = VK_SAMPLER_ADDRESS_MODE_REPEAT;
-    l_samplerInfo.addressModeW = VK_SAMPLER_ADDRESS_MODE_REPEAT;
-    l_samplerInfo.anisotropyEnable = VK_TRUE;
-    l_samplerInfo.maxAnisotropy = l_properties.limits.maxSamplerAnisotropy;
-    l_samplerInfo.borderColor = VK_BORDER_COLOR_INT_OPAQUE_BLACK;
-    l_samplerInfo.unnormalizedCoordinates = VK_FALSE;
-    l_samplerInfo.compareEnable = VK_FALSE;
-    l_samplerInfo.compareOp = VK_COMPARE_OP_ALWAYS;
-    l_samplerInfo.mipmapMode = VK_SAMPLER_MIPMAP_MODE_LINEAR;
-    l_samplerInfo.minLod = 0.0f;
-    l_samplerInfo.maxLod = static_cast<float>(m_mipLevels);
-    l_samplerInfo.mipLodBias = 0.0f;
-    l_samplerInfo.pNext = nullptr;
-
-    if (vkCreateSampler(a_device->CastVulkan()->GetDevice(), &l_samplerInfo, nullptr, &m_textureSampler) != VK_SUCCESS)
-        DEBUG_LOG_ERROR("Vulkan Texture : Failed to create Texture Sampler!\n");
 }
 
 
@@ -168,7 +131,6 @@ void VulkanTexture::CreateDescriptorPool(IDevice* a_device)
 
 void VulkanTexture::CreateDescriptorSets(IDevice* a_device, IDescriptorSetLayout* a_layout)
 {
-
     const std::vector<VkDescriptorSetLayout> l_layouts(1, a_layout->CastVulkan()->GetTextureDescriptorSetLayout());
 
     VkDescriptorSetAllocateInfo l_allocateInfo{ };
@@ -189,7 +151,7 @@ void VulkanTexture::UpdateDescriptorSets(IDevice* a_device) const
     VkDescriptorImageInfo l_imageInfo{};
     l_imageInfo.imageLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
     l_imageInfo.imageView = GetTextureImageView();
-    l_imageInfo.sampler = GetTextureSampler();
+    l_imageInfo.sampler = ResourceManager::GetInstance().GetRendererSampler();
 
     std::array<VkWriteDescriptorSet, 1> l_descriptorWrites{ };
     l_descriptorWrites[0].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;

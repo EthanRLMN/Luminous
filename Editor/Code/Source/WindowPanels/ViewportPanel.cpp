@@ -3,8 +3,9 @@
 
 #include "WindowPanels/ViewportPanel.hpp"
 
-#include "Rendering/Vulkan/VulkanRenderer.hpp"
+#include "Rendering/Vulkan/VulkanSwapChain.hpp"
 #include "Rendering/Vulkan/VulkanTexture.hpp"
+#include "ResourceManager/ResourceManager.hpp"
 
 static const std::filesystem::path s_IconPath = "Editor/Assets/Icons/";
 
@@ -80,7 +81,6 @@ void Viewport::InitIcons()
 {
     Engine* engine = p_editor->GetEngine();
     auto* device = engine->GetDevice();
-    auto* renderer = engine->GetRenderer()->CastVulkan();
 
     m_iconMove = LoadTexture(engine, (s_IconPath / "MoveIcon.png").string());
     m_iconRotate = LoadTexture(engine, (s_IconPath / "RotateIcon.png").string());
@@ -88,14 +88,11 @@ void Viewport::InitIcons()
     m_iconPlay = LoadTexture(engine, (s_IconPath / "PlayIcon.png").string());
     m_iconStop = LoadTexture(engine, (s_IconPath / "StopIcon.png").string());
 
-    auto sampler = renderer->GetDefaultTextureSampler();
-
     auto loadImg = [&](std::shared_ptr<ITexture>& tex, ImTextureID& id)
     {
         tex->CastVulkan()->CreateTextureImageView(device);
-        tex->CastVulkan()->CreateTextureSampler(device);
         id = reinterpret_cast<ImTextureID>(ImGui_ImplVulkan_AddTexture(
-                sampler,
+                ResourceManager::GetInstance().GetStandardSampler(),
                 tex->CastVulkan()->GetTextureImageView(),
                 VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL));
     };
@@ -107,7 +104,7 @@ void Viewport::InitIcons()
     loadImg(m_iconStop, m_iconStopID);
 }
 
-std::shared_ptr<ITexture> Viewport::LoadTexture(Engine* engine, const std::string& path)
+std::shared_ptr<ITexture> Viewport::LoadTexture(const Engine* engine, const std::string& path)
 {
     IResourceParams params{};
     params.m_device = engine->GetDevice();
