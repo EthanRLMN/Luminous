@@ -19,12 +19,12 @@ public:
     void CreateLogicalDevice(const VkSurfaceKHR& a_surface);
     void GetPhysicalDevice(const VkInstance& a_instance, const VkSurfaceKHR& a_surface);
 
-    bool CheckDeviceSuitable(const VkPhysicalDevice& a_device, const VkSurfaceKHR& a_surface);
-    bool CheckDeviceExtensionSupport(const VkPhysicalDevice& a_device);
+    static bool CheckDeviceSuitable(const VkPhysicalDevice& a_device, const VkSurfaceKHR& a_surface);
+    static bool CheckDeviceExtensionSupport(const VkPhysicalDevice& a_device);
 
     [[nodiscard]] VkSampleCountFlagBits GetMSAASamples() const { return m_msaaSamples; }
-    SwapChainDetails GetSwapChainDetails(const VkPhysicalDevice& a_device, const VkSurfaceKHR& a_surface);
-    QueueFamilyIndices GetQueueFamilies(const VkPhysicalDevice& a_device, const VkSurfaceKHR& a_surface);
+    static SwapChainDetails GetSwapChainDetails(const VkPhysicalDevice& a_device, const VkSurfaceKHR& a_surface);
+    static QueueFamilyIndices GetQueueFamilies(const VkPhysicalDevice& a_device, const VkSurfaceKHR& a_surface);
 
     [[nodiscard]] VkDevice GetDevice() const { return m_device; }
     [[nodiscard]] VkPhysicalDevice GetPhysicalDevice() const { return m_physicalDevice; }
