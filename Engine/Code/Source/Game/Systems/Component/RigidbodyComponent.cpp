@@ -139,6 +139,32 @@ void RigidbodyComponent::SetColliderShape()
 
 
         GetEngine()->GetPhysicsSystem()->GetBodyInterface().SetShape(m_rigidbody->GetRigidBody()->GetID(),floor_shape,true,m_active);
+    } else if (m_colliderType == ColliderType::SPHERECOLLIDER)
+    {
+        JPH::SphereShapeSettings settings(l_scale.GetY() + m_sphereSizeOffset);
+        settings.SetEmbedded();
+        JPH::ShapeSettings::ShapeResult floor_shape_result = settings.Create();
+        JPH::ShapeRefC floor_shape = floor_shape_result.Get();
+
+
+        GetEngine()->GetPhysicsSystem()->GetBodyInterface().SetShape(m_rigidbody->GetRigidBody()->GetID(), floor_shape, true, m_active);
+    } else if (m_colliderType == ColliderType::CAPSULECOLLIDER)
+    {
+        float l_maxWidth = l_scale.GetX();
+        if (l_scale.GetZ() > l_scale.GetX())
+            l_maxWidth = l_scale.GetZ();
+        else
+            l_maxWidth = l_scale.GetX();
+
+        JPH::CapsuleShapeSettings settings(l_scale.GetY() + m_capsuleSizeOffset.y, l_maxWidth + m_capsuleSizeOffset.x);
+        settings.SetEmbedded();
+        JPH::ShapeSettings::ShapeResult floor_shape_result = settings.Create();
+        JPH::ShapeRefC floor_shape = floor_shape_result.Get();
+        m_capsuleWidth = l_maxWidth;
+        m_capsuleHeight = l_scale.GetY();
+
+
+        GetEngine()->GetPhysicsSystem()->GetBodyInterface().SetShape(m_rigidbody->GetRigidBody()->GetID(), floor_shape, true, m_active);
     }
 }
 
