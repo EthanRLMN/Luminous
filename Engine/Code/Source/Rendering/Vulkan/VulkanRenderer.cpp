@@ -81,24 +81,20 @@ void VulkanRenderer::DrawFrame(IWindow* a_window, IDevice* a_device, ISwapChain*
     RecordCommandBuffer(a_commandBuffer->CastVulkan()->GetCommandBuffers()[m_currentFrame], a_pipeline->CastVulkan()->GetGraphicsPipeline(), a_pipeline->CastVulkan()->GetPipelineLayout(), l_imageIndex, a_swapChain, a_renderPassManager, a_descriptor, a_frameBufferManager, a_entityManager);
 
     if (vkQueueSubmit(a_device->CastVulkan()->GetGraphicsQueue(), 1, &l_submitInfo, a_synchronization->CastVulkan()->GetFences()[m_currentFrame]) != VK_SUCCESS)
-        DEBUG_LOG_ERROR("Failed to submit draw command buffer");
-
-    VkPresentInfoKHR l_presentInfo{};
-    l_presentInfo.sType = VK_STRUCTURE_TYPE_PRESENT_INFO_KHR;
-    l_presentInfo.pNext = nullptr;
+        DEBUG_LOG_ERROR("Failed to submit draw command buffer!");
 
     const std::vector<VkSwapchainKHR> l_swapChains = { l_swapchain };
-    PresentRendererInfo(l_presentInfo, l_signalSemaphores, l_swapChains);
-    l_presentInfo.pImageIndices = &l_imageIndex;
+    const VkPresentInfoKHR l_presentInfo = PresentRendererInfo(l_signalSemaphores, l_swapChains, l_imageIndex);
 
     l_result = vkQueuePresentKHR(a_device->CastVulkan()->GetPresentationQueue(), &l_presentInfo);
-    if (l_result == VK_ERROR_OUT_OF_DATE_KHR || l_result == VK_SUBOPTIMAL_KHR)
+    if (l_result == VK_ERROR_OUT_OF_DATE_KHR || l_result == VK_SUBOPTIMAL_KHR || a_window->CastGLFW()->IsFrameBufferResized())
     {
-        DEBUG_LOG_ERROR("failed to present swap chain image");
-        this->SetViewportSize(0, 0);
+        a_window->CastGLFW()->SetFrameBufferResized(false);
         RecreateSwapChain(a_window, a_device, a_surface, a_swapChain, a_depthResource, a_frameBufferManager, a_renderPassManager, a_multisampling);
-    } else if (l_result != VK_SUCCESS)
-        DEBUG_LOG_ERROR("failed to present swap chain image");
+        DEBUG_LOG_INFO("Successfully presenteing swap chain image!");
+    }
+    else if (l_result != VK_SUCCESS)
+        DEBUG_LOG_ERROR("Failed to present swap chain image!");
 
     m_currentFrame = (m_currentFrame + 1) % MAX_FRAMES_IN_FLIGHT;
 }
@@ -378,13 +374,18 @@ void VulkanRenderer::SetupSubmitInfo(VkSubmitInfo& a_submitInfo, const std::vect
 }
 
 
-void VulkanRenderer::PresentRendererInfo(VkPresentInfoKHR& a_presentInfo, const std::vector<VkSemaphore>& a_signalSemaphores, const std::vector<VkSwapchainKHR>& a_swapchains)
+VkPresentInfoKHR VulkanRenderer::PresentRendererInfo(const std::vector<VkSemaphore>& a_signalSemaphores, const std::vector<VkSwapchainKHR>& a_swapchains, const uint32_t& a_imageIndex)
 {
-    a_presentInfo.waitSemaphoreCount = 1;
-    a_presentInfo.pWaitSemaphores = a_signalSemaphores.data();
+    VkPresentInfoKHR l_presentInfo{};
 
-    a_presentInfo.swapchainCount = 1;
-    a_presentInfo.pSwapchains = a_swapchains.data();
+    l_presentInfo.sType = VK_STRUCTURE_TYPE_PRESENT_INFO_KHR;
+    l_presentInfo.waitSemaphoreCount = 1;
+    l_presentInfo.pWaitSemaphores = a_signalSemaphores.data();
+    l_presentInfo.swapchainCount = 1;
+    l_presentInfo.pSwapchains = a_swapchains.data();
+    l_presentInfo.pImageIndices = &a_imageIndex;
+
+    return l_presentInfo;
 }
 
 

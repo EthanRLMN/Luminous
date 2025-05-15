@@ -19,6 +19,8 @@ GLFWwindow* GLFWWindow::Initialize(const std::string& a_name, const int a_width,
     else
         m_window = glfwCreateWindow(m_vidMode->width, m_vidMode->height, a_name.c_str(), nullptr, nullptr);
 
+    glfwSetFramebufferSizeCallback(m_window, FramebufferResizeCallback);
+
     if (m_window)
     {
         DEBUG_LOG_INFO("Vulkan Window : Creation successful!\n");
@@ -55,6 +57,15 @@ Maths::Vector2 GLFWWindow::GetSize() const
     int t_x, t_y;
     glfwGetWindowSize(m_window, &t_x, &t_y);
     return Maths::Vector2{ static_cast<float>(t_x), static_cast<float>(t_y) };
+}
+
+
+void GLFWWindow::FramebufferResizeCallback(GLFWwindow* a_window, int a_width, int a_height)
+{
+    static_cast<void>(a_width); static_cast<void>(a_height);
+
+    GLFWWindow* l_window = static_cast<GLFWWindow*>(glfwGetWindowUserPointer(a_window));
+    l_window->m_isFrameBufferResized = true;
 }
 
 

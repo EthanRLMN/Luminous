@@ -23,7 +23,7 @@ public:
 
     void DrawFrame(IWindow* a_window, IDevice* a_device, ISwapChain* a_swapChain, IPipeline* a_pipeline, IBuffer* a_buffer, IRenderPassManager* a_renderPassManager, IDescriptor* a_descriptor, ISynchronization* a_synchronization, ICommandBuffer* a_commandBuffer, IFrameBufferManager* a_frameBufferManager, IDepthResource* a_depthResource, ISurface* a_surface, IMultiSampling* a_multisampling, IInputManager* a_inputManager, EntityManager a_entityManager) override;
     void Destroy() override {};
-    void SetViewportSize(float a_width, float a_height) override { m_viewportWidth = a_width; m_viewportHeight = a_height; };
+    void SetViewportSize(const float a_width, const float a_height) override { m_viewportWidth = a_width; m_viewportHeight = a_height; };
     VulkanRenderer* CastVulkan() override { return this; }
 
 	void RecordCommandBuffer(const VkCommandBuffer& a_commandBuffer, const VkPipeline& a_graphicsPipeline, const VkPipelineLayout& a_pipelineLayout, const uint32_t& a_imageIndex, ISwapChain* a_swapChain, const IRenderPassManager* a_renderPassManager, IDescriptor* a_descriptor, const IFrameBufferManager* a_frameBufferManager, const EntityManager& a_entityManager) const;
@@ -54,12 +54,11 @@ public:
 
 private:
     void SetupSubmitInfo(VkSubmitInfo& a_submitInfo, const std::vector<VkSemaphore>& a_waitSemaphores, const std::array<VkPipelineStageFlags, 1>& a_waitStages, const std::vector<VkCommandBuffer>& a_commandBuffer, const std::vector<VkSemaphore>& a_signalSemaphores) const;
-    static void PresentRendererInfo(VkPresentInfoKHR& a_presentInfo, const std::vector<VkSemaphore>& a_signalSemaphores, const std::vector<VkSwapchainKHR>& a_swapchains);
     static void PresentRenderPassInfo(VkRenderPassBeginInfo& a_renderPassBeginInfo, const VkRenderPass& a_renderPass, const VkFramebuffer& a_framebuffer, const VkExtent2D& a_swapchainExtent, std::array<VkClearValue, 2> a_clearValues);
     static void FillViewportInfo(VkViewport& a_viewport, const VkExtent2D& a_swapChainExtent);
+    static VkPresentInfoKHR PresentRendererInfo(const std::vector<VkSemaphore>& a_signalSemaphores, const std::vector<VkSwapchainKHR>& a_swapchains, const uint32_t& a_imageIndex);
 
     VkResult CreateViewportImageInfo(const VkDevice& a_device, const VkFormat& a_swapchainImageFormat);
-    
     
     static void ImageViewCreateInfo(VkImageViewCreateInfo& a_viewInfo, const VkImage& a_vkImage,ISwapChain* a_swapChain);
     static void SamplerCreateInfo(VkSamplerCreateInfo& a_samplerInfo);
