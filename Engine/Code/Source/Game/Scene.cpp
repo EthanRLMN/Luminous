@@ -20,7 +20,7 @@ void Scene::RegisterScene(EntityManager& a_entityManager)
     {
         const std::shared_ptr<Entity> l_obj = a_entityManager.CreateEntityFromTemplate(EntityManager::GetAvailableTemplates()[i]);
 
-        const Maths::Vector3 l_position = Maths::Vector3(4.0f, 0.0f, 0.0f) * i;
+        const Maths::Vector3 l_position = Maths::Vector3(4.0f, 0.0f, 0.0f) * static_cast<const float>(i);
         l_obj->Transform()->SetLocalPosition(l_position);
     }
 

@@ -6,13 +6,14 @@
 #include "Logger.hpp"
 
 #include "Resources/ModelLoading/AssimpModelLoader.hpp"
+#include <direct.h>
 
 
 void AssimpModelLoader::LoadModel(IMesh* a_mesh, const char* a_file)
 {
     Assimp::Importer l_importer{};
     std::array<char, 1024> l_buffer{};
-    if (getcwd(l_buffer.data(), 1024) != nullptr)
+    if (_getcwd(l_buffer.data(), 1024) != nullptr)
         DEBUG_LOG_INFO("Current working directory: {}\n", l_buffer.data());
 
     DebugExtensionsList(&l_importer);
