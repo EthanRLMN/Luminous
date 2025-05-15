@@ -31,7 +31,10 @@ public:
     inline void SetActive(JPH::EActivation a_active) { m_active = a_active; }
     inline void SetCapsuleWidth(float a_width) { m_capsuleWidth = a_width; }
     inline void SetCapsuleHeight(float a_height) { m_capsuleHeight = a_height; }
-    inline void SetCollider(); //Set Size for a BoxCollider
+    void SetCollider();
+    inline void SetColliderSize(Maths::Vector3 a_boxSize) { m_boxSizeOffset = a_boxSize; SetCollider();} //Set Collider size for a Box
+    inline void SetColliderSize(Maths::Vector2 a_capsuleSize) { m_capsuleSizeOffset = a_capsuleSize; SetCollider(); } //Set Collider size for a Capsule
+    inline void SetColliderSize(float a_sphereSize) { m_sphereSizeOffset = a_sphereSize; SetCollider(); } //Set Collider size for a Sphere
 
     [[nodiscard]] inline std::shared_ptr<Entity> GetEntity() const { return m_entity.lock(); }
     inline ColliderType GetColliderType() { return m_colliderType; }
@@ -56,7 +59,7 @@ private:
     ColliderType m_colliderType = ColliderType::CAPSULECOLLIDER;
     JPH::EActivation m_active = JPH::EActivation::Activate;
 
-    Maths::Vector3 m_boxSizeOffset{ -0.5f, 1.5f, 0.0f };
+    Maths::Vector3 m_boxSizeOffset{ 0.f, 0.f, 0.f };
     float m_sphereSizeOffset{ 2.0f };
     Maths::Vector2 m_capsuleSizeOffset{ 10.f, 5.f };
 };
