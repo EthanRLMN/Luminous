@@ -15,7 +15,7 @@ enum ColliderType
     CAPSULECOLLIDER = 2
 };
 
-class RigidbodyComponent : public EntityComponent
+class  RigidbodyComponent : public EntityComponent
 {
 public:
     ~RigidbodyComponent() override = default;
@@ -31,6 +31,7 @@ public:
     inline void SetActive(JPH::EActivation a_active) { m_active = a_active; }
     inline void SetCapsuleWidth(float a_width) { m_capsuleWidth = a_width; }
     inline void SetCapsuleHeight(float a_height) { m_capsuleHeight = a_height; }
+    inline void SetCollider(); //Set Size for a BoxCollider
 
     [[nodiscard]] inline std::shared_ptr<Entity> GetEntity() const { return m_entity.lock(); }
     inline ColliderType GetColliderType() { return m_colliderType; }
@@ -39,6 +40,8 @@ public:
     inline JPH::EActivation GetActivation() { return m_active; }
     inline float GetCapsuleWidth() { return m_capsuleWidth; }
     inline float GetCapsuleHeight() { return m_capsuleHeight; }
+
+    inline float GetSphereOffset() { return m_sphereSizeOffset; }
 
 private:
     float m_capsuleWidth{ 0.0f };
@@ -50,6 +53,10 @@ private:
     RigidBody* m_rigidbody;
     ColliderType m_colliderType = ColliderType::CAPSULECOLLIDER;
     JPH::EActivation m_active = JPH::EActivation::Activate;
+
+    Maths::Vector3 m_boxSizeOffset{ 0.0f, 0.0f, 0.0f };
+    float m_sphereSizeOffset{ 2.0f };
+    Maths::Vector2 m_capsuleSizeOffset{ 0.0f, 0.0f };
 };
 
 

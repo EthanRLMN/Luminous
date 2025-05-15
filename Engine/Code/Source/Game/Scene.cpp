@@ -21,19 +21,19 @@ void Scene::RegisterScene(EntityManager& a_entityManager)
     a_entityManager.GetEntities()[1].get()->AddComponent(std::make_shared<RigidbodyComponent>());
     a_entityManager.GetEntities()[1].get()->GetComponent<RigidbodyComponent>().get()->SetEngine(engine);
     a_entityManager.GetEntities()[1].get()->GetComponent<RigidbodyComponent>().get()->SetEntity(a_entityManager.GetEntities()[1]);
-    a_entityManager.GetEntities()[1].get()->GetComponent<TransformComponent>().get()->SetLocalRotationVec(Maths::Vector3(45.f, 0.f, 72.f));
-    a_entityManager.GetEntities()[1].get()->GetComponent<TransformComponent>().get()->SetLocalPosition(Maths::Vector3(5.f,0.0f,0.0f));
+    a_entityManager.GetEntities()[1].get()->GetComponent<TransformComponent>().get()->SetLocalRotationVec(Maths::Vector3(0.f, 0.f, 0.f));
+    a_entityManager.GetEntities()[1].get()->GetComponent<TransformComponent>().get()->SetLocalPosition(Maths::Vector3(5.f,10.0f,0.0f));
     a_entityManager.GetEntities()[1].get()->GetComponent<RigidbodyComponent>().get()->SetLayer(Layers::DYNAMIC);
     a_entityManager.GetEntities()[1].get()->GetComponent<RigidbodyComponent>().get()->SetActive(JPH::EActivation::Activate);
     a_entityManager.GetEntities()[1].get()->GetComponent<RigidbodyComponent>().get()->SetColliderType(SPHERECOLLIDER);
     a_entityManager.GetEntities()[1].get()->GetComponent<RigidbodyComponent>().get()->Initialize();
 
     a_entityManager.GetEntities()[2].get()->GetComponent<TransformComponent>().get()->SetLocalScale(Maths::Vector3(2.f, 2.5f, 2.f));
-    a_entityManager.GetEntities()[2].get()->GetComponent<TransformComponent>().get()->SetLocalRotationVec(Maths::Vector3(-18.75f, -55, 42.f));
+    a_entityManager.GetEntities()[2].get()->GetComponent<TransformComponent>().get()->SetLocalRotationVec(Maths::Vector3(0.f, 0.f, 0.f));
     a_entityManager.GetEntities()[2].get()->AddComponent(std::make_shared<RigidbodyComponent>());
     a_entityManager.GetEntities()[2].get()->GetComponent<RigidbodyComponent>().get()->SetEngine(engine);
     a_entityManager.GetEntities()[2].get()->GetComponent<RigidbodyComponent>().get()->SetEntity(a_entityManager.GetEntities()[2]);
-    a_entityManager.GetEntities()[2].get()->GetComponent<TransformComponent>().get()->SetLocalPosition(Maths::Vector3(5.25f, -10.0f, 0.f));
+    a_entityManager.GetEntities()[2].get()->GetComponent<TransformComponent>().get()->SetLocalPosition(Maths::Vector3(8.f, -10.0f, 0.f));
     a_entityManager.GetEntities()[2].get()->GetComponent<RigidbodyComponent>().get()->SetLayer(Layers::STATIC);
     a_entityManager.GetEntities()[2].get()->GetComponent<RigidbodyComponent>().get()->SetActive(JPH::EActivation::DontActivate);
     a_entityManager.GetEntities()[2].get()->GetComponent<RigidbodyComponent>().get()->Initialize();
