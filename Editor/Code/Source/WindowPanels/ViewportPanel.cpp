@@ -13,7 +13,7 @@ void Viewport::Render()
     IWindowPanel::Render();
 
     ImGui::Begin(p_windowIdentifier.c_str(), nullptr, ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoBackground);
-    
+
     ImVec2 avail = ImGui::GetContentRegionAvail();
     float buttonWidth = 40.f;
     float buttonHeight = 40.f;
@@ -36,14 +36,12 @@ void Viewport::Render()
 
     ImGui::SameLine(0, 0.4f * avail.x);
 
-    if (ImGui::ImageButton("Play", m_iconPlayID, buttonSize)) 
+    if (ImGui::ImageButton("Play", m_iconPlayID, buttonSize))
     {
-    
     }
     ImGui::SameLine();
-    if (ImGui::ImageButton("Stop", m_iconStopID, buttonSize)) 
+    if (ImGui::ImageButton("Stop", m_iconStopID, buttonSize))
     {
-    
     }
 
     VkExtent2D l_extent = p_editor->GetEngine()->GetSwapChain()->CastVulkan()->GetSwapChainExtent();
@@ -55,7 +53,7 @@ void Viewport::Render()
     ImVec2 l_avail = ImGui::GetContentRegionAvail();
     float l_fitWidth = l_avail.x;
     float l_fitHeight = l_fitWidth / l_aspectRatio;
-    
+
     if (l_fitHeight > l_avail.y)
     {
         l_fitHeight = l_avail.y;
@@ -69,44 +67,53 @@ void Viewport::Render()
     const float l_offsetY = (l_avail.y - l_imageSize.y) * 0.5f;
 
     ImGui::SetCursorScreenPos(ImVec2(l_screenPos.x + l_offsetX, l_screenPos.y + l_offsetY));
-
-
     ImGui::Image(reinterpret_cast<ImTextureID>(dSets), l_imageSize);
 
-    if (m_camera)
+    float aspectRatio = static_cast<float>(l_extent.width) / static_cast<float>(l_extent.height);
+    m_camera->Update(aspectRatio);
+
+    Maths::Matrix4 view = m_camera->GetViewMatrix();
+    Maths::Matrix4 projection = m_camera->GetProjectionMatrix();
+
+    auto selectedEntity = p_editor->GetSelectedEntity();
+
+    if (selectedEntity)
     {
-        VkExtent2D l_extent = p_editor->GetEngine()->GetSwapChain()->CastVulkan()->GetSwapChainExtent();
-        float aspectRatio = static_cast<float>(l_extent.width) / static_cast<float>(l_extent.height);
-        m_camera->Update(aspectRatio);
-
-        Maths::Matrix4 view = m_camera->GetViewMatrix();
-        Maths::Matrix4 projection = m_camera->GetProjectionMatrix();
-
-        if (p_isEntitySelected)
+        std::shared_ptr<TransformComponent> transform = selectedEntity->GetComponent<TransformComponent>();
+        if (transform)
         {
-            std::shared_ptr<TransformComponent> transform = p_isEntitySelected->GetComponent<TransformComponent>();
-            if (transform)
+            Maths::Matrix4 model = transform->GetGlobalMatrix();
+            float modelMatrix[16];
+            memcpy(modelMatrix, model.Data(), sizeof(float) * 16);
+
+            ImGuizmo::SetOrthographic(false);
+            ImGuizmo::Enable(true);
+            ImGuizmo::SetDrawlist();
+
+            ImVec2 winPos = ImGui::GetWindowPos();
+            ImVec2 winSize = ImGui::GetWindowSize();
+
+            ImGuizmo::SetRect(winPos.x, winPos.y, winSize.x, winSize.y);
+
+            ImGuizmo::Manipulate(
+                    view.Data(),
+                    projection.Data(),
+                    m_currentGizmoOperation,
+                    ImGuizmo::WORLD,
+                    modelMatrix);
+
+            if (ImGuizmo::IsUsing())
             {
-                Maths::Matrix4 model = transform->GetGlobalMatrix();
+                Maths::Matrix4 updatedModel;
+                memcpy(updatedModel.Data(), modelMatrix, sizeof(float) * 16);
 
-                ImGuizmo::Manipulate(
-                        view.Data(),
-                        projection.Data(),
-                        m_currentGizmoOperation,
-                        ImGuizmo::WORLD,
-                        model.Data());
+                Maths::Vector3 pos, scale;
+                Maths::Quaternion rot;
+                updatedModel.Decompose(pos, rot, scale);
 
-                if (ImGuizmo::IsUsing())
-                {
-                    Maths::Vector3 pos, scale;
-                    Maths::Quaternion rot;
-
-                    model.Decompose(pos, rot, scale);
-
-                    transform->SetGlobalPosition(pos);
-                    transform->SetGlobalRotationQuat(rot);
-                    transform->SetGlobalScale(scale);
-                }
+                transform->SetGlobalPosition(pos);
+                transform->SetGlobalRotationQuat(rot);
+                transform->SetGlobalScale(scale);
             }
         }
     }

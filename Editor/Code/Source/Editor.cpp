@@ -106,7 +106,6 @@ void Editor::Update()
     }
 }
 
-
 void Editor::Render() const
 {
     if (!m_engine || !m_engine->IsRunning())
@@ -137,7 +136,6 @@ void Editor::Render() const
 void Editor::CreateWindowPanels()
 {
     RegisterWindow(new MainPanel(this, "Editor"));
-    RegisterWindow(new Viewport(this, "Viewport"));
     RegisterWindow(new FileExplorerPanel(this, "File Explorer"));
 
     auto inspector = new InspectorPanel(this, "Inspector");
@@ -148,6 +146,7 @@ void Editor::CreateWindowPanels()
     RegisterWindow(hierarchy);
 
     RegisterWindow(new ConsolePanel(this, "Console"));
+    RegisterWindow(new Viewport(this, "Viewport"));
 }
 
 
