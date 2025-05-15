@@ -214,12 +214,15 @@ void VulkanRenderer::RecordCommandBuffer(const VkCommandBuffer& a_commandBuffer,
                     
                     Maths::Vector3 l_rot = entity->Transform()->GetLocalRotationVec();
                     Maths::Quaternion l_rotQ = entity->Transform()->GetLocalRotationQuat();
-                    l_rot = Maths::Vector3(-l_rot.x, -l_rot.y, -l_rot.z);
+                    Maths::Quaternion l_rotQ2 = Maths::Quaternion(-l_rotQ.x, -l_rotQ.y, -l_rotQ.z, l_rotQ.w);
+                    l_rot = Maths::Vector3(l_rot.x, l_rot.y, l_rot.z);
+                    l_rot = l_rotQ2.ToEulerAngles(true);
                     Maths::Vector3 l_scale = entity->Transform()->GetGlobalScale();
                     l_scale.x = entity.get()->GetComponent<RigidbodyComponent>()->GetCapsuleWidth();
                     l_scale.y = entity.get()->GetComponent<RigidbodyComponent>()->GetCapsuleWidth();
                     l_scale.z = entity.get()->GetComponent<RigidbodyComponent>()->GetCapsuleWidth();
 
+                    
                     Maths::Matrix4 l_rotMat = Maths::Matrix4::RotationXYZ(l_rot);
                     Maths::Matrix4 l_scaleMat = Maths::Matrix4::Scale(l_scale);
                     
