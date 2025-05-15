@@ -1,9 +1,10 @@
 #pragma once
 
-#include "Systems/Entity/Entity.hpp"
-
 #include <string>
 #include <rfl/json.hpp>
+
+
+#include "Systems/Entity/Entity.hpp"
 
 
 class Engine;
@@ -87,7 +88,7 @@ struct LightComponentData
     Vec3 direction;
     Vec3 color;
 
-    int type;
+    LightType type;
     float intensity;
     float ambientStrength;
     float specularStrength;

@@ -49,7 +49,7 @@ public:
     bool bReloadImage = false;
     mutable bool bUsable = false;
 
-    LightData m_lights[32];
+    LightData m_lights[MAX_LIGHTS];
 
 
 private:

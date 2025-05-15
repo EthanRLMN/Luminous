@@ -42,7 +42,7 @@ struct Light {
 
 layout (std430, set = 0, binding = 2) readonly buffer LightBuffer
 {
-    Light lights[];
+    Light lights[64];
 } lightList;
 
 

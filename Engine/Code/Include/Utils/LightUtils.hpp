@@ -4,9 +4,8 @@
 constexpr unsigned int MAX_LIGHTS { 64 };
 
 
-enum class LightType : unsigned int
+enum class LightType : int
 {
     DIRECTIONAL = 0,
-    POINT = 1,
-    COUNT
+    POINT = 1
 };

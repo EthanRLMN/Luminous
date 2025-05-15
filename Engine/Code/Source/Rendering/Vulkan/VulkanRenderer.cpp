@@ -35,10 +35,10 @@ void VulkanRenderer::Create(IDevice* a_device, ISwapChain* a_swapChain)
     m_cameraEditor.Init(static_cast<float>(a_swapChain->CastVulkan()->GetSwapChainExtent().width) / static_cast<float>(a_swapChain->CastVulkan()->GetSwapChainExtent().height), 80.f, 0.1f, 500.f);
     CreateDefaultTextureSampler(a_device);
 
-    LightData l_light {
+    const LightData l_light {
         .m_position = Maths::Vector3(0.0f, 3.0f, 0.0f),
         .m_color = Maths::Vector3(1.0f, 1.0f, 1.0f),
-        .m_type = 1,
+        .m_type = LightType::DIRECTIONAL,
         .m_intensity = 1.0f
     };
 
