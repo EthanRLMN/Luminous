@@ -1,11 +1,8 @@
 #pragma once
 
 #include "EntityComponent.hpp"
-
 #include "Vector3.hpp"
-
-
-constexpr unsigned int MAX_LIGHTS = 32;
+#include "Utils/LightUtils.hpp"
 
 
 struct alignas(16) LightData
@@ -19,7 +16,7 @@ struct alignas(16) LightData
     Maths::Vector3 m_color{ 1.0f, 1.0f, 1.0f };
     float _pad2 = 0;
 
-    int m_type{ 0 };
+    int m_type { 0 };
     float m_intensity{ 1.0f };
     float m_ambientStrength{ 0.0f };
     float m_specularStrength{ 0.5f };
@@ -36,7 +33,7 @@ struct alignas(16) GpuLightBuffer
     int m_lightCount { 0 };
 
     int _pad[3] { 0 };
-    LightData m_lights[];
+    LightData m_lights[MAX_LIGHTS];
 };
 
 
@@ -44,12 +41,14 @@ struct alignas(16) GpuLightBuffer
 class LightComponent : public EntityComponent
 {
 public:
-    void Initialize() override {};
-    void GameplayStarted() override {};
-    void Update() override {};
+    void Initialize() override {}
+    void GameplayStarted() override {}
+    void Update() override {}
 
-    LightData& GetLight() { return light; };
+    LightData& GetLight() { return light; }
+
+    GpuLightBuffer lightBuff;
 
 private:
-    LightData light{};
+    LightData light {};
 };

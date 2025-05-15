@@ -4,7 +4,6 @@
 #include "Rendering/Vulkan/VulkanRenderInterface.hpp"
 #include "ResourceManager/ResourceManager.hpp"
 
-
 #define JPH_DEBUG_RENDERER
 
 

@@ -1,4 +1,6 @@
 #include "Game/Systems/Entity/Entity.hpp"
+
+#include "Game/Systems/Time.inl"
 #include "Game/Systems/Component/MeshRendererComponent.hpp"
 #include "Game/Systems/Component/TransformComponent.hpp"
 #include "Game/Systems/Entity/EntityManager.hpp"
@@ -23,10 +25,7 @@ void Entity::RemoveComponent(const std::shared_ptr<EntityComponent>& a_component
 }
 
 
-void Entity::SetActive(const bool a_isActive)
-{
-    m_isActive = a_isActive;
-}
+void Entity::SetActive(const bool a_isActive) { m_isActive = a_isActive; }
 
 
 void Entity::Initialize() const

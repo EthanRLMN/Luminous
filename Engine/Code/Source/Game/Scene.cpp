@@ -66,10 +66,8 @@ void Scene::LoadScene(std::string filename, const EntityManager& a_entityManager
         l_entity->SetUUID(l_entityData.entityUUID);
         l_entity->SetActive(l_entityData.isActive);
 
-        for (size_t i = 0; i < l_entityData.components.size(); ++i)
+        for (const SerializedComponent& l_component : l_entityData.components)
         {
-            const SerializedComponent& l_component = l_entityData.components[i];
-
             rfl::visit([&]<typename T0>(T0&& compData)
             {
                 using T = std::decay_t<T0>;
@@ -128,7 +126,7 @@ void Scene::SaveScene(const std::string& filepath, const EntityManager& a_entity
 
         if (const std::shared_ptr<TransformComponent>& l_transform = l_entity->GetComponent<TransformComponent>())
         {
-            TransformComponentData l_transformData;
+            TransformComponentData l_transformData{};
             l_transformData.globalPosition = Vec3(l_transform->GetGlobalPosition());
             l_transformData.globalRotation = Quat(l_transform->GetGlobalRotationQuat());
             l_transformData.globalScale = Vec3(l_transform->GetGlobalScale());
@@ -137,7 +135,7 @@ void Scene::SaveScene(const std::string& filepath, const EntityManager& a_entity
             l_transformData.localScale = Vec3(l_transform->GetLocalScale());
 
             l_datasaver.componentType = "Transform";
-            l_datasaver.components.push_back(l_transformData);
+            l_datasaver.components.emplace_back(l_transformData);
         }
 
         if (const std::shared_ptr<ModelComponent>& l_model = l_entity->GetComponent<ModelComponent>())
@@ -147,12 +145,12 @@ void Scene::SaveScene(const std::string& filepath, const EntityManager& a_entity
             l_modelData.texturePath = l_model->GetTexturePath();
 
             l_datasaver.componentType = "Model";
-            l_datasaver.components.push_back(l_modelData);
+            l_datasaver.components.emplace_back(l_modelData);
         }
 
         if (const std::shared_ptr<LightComponent>& l_light = l_entity->GetComponent<LightComponent>())
         {
-            LightComponentData l_lightData;
+            LightComponentData l_lightData{};
             l_lightData.position = Vec3(l_light->GetLight().m_position);
             l_lightData.direction = Vec3(l_light->GetLight().m_direction);
             l_lightData.color = Vec3(l_light->GetLight().m_color);
@@ -163,7 +161,7 @@ void Scene::SaveScene(const std::string& filepath, const EntityManager& a_entity
             l_lightData.count = l_light->GetLight().m_count;
 
             l_datasaver.componentType = "Light";
-            l_datasaver.components.push_back(l_lightData);
+            l_datasaver.components.emplace_back(l_lightData);
         }
         l_entityData.push_back(l_datasaver);
     }
@@ -173,7 +171,7 @@ void Scene::SaveScene(const std::string& filepath, const EntityManager& a_entity
 
 bool Scene::CheckIfFileDetected(const std::string& a_filename)
 {
-    const std::string filepath = a_filename;
+    const std::string& filepath = a_filename;
 
     if (!std::filesystem::exists(filepath))
     {
