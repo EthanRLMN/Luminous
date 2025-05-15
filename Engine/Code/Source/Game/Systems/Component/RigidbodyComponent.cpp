@@ -38,34 +38,7 @@ void RigidbodyComponent::Initialize()
     JPH::Quat l_rotation = JPH::Quat(l_transform->GetLocalRotationQuat().x, l_transform->GetLocalRotationQuat().y, l_transform->GetLocalRotationQuat().z, l_transform->GetLocalRotationQuat().w);
 
 
-    if (m_colliderType == ColliderType::BOXCOLLIDER)
-    {
-        SetCollider();
-    }
-    else if (m_colliderType == ColliderType::SPHERECOLLIDER)
-    {
-        SetCollider();
-    }
-    else if (m_colliderType == ColliderType::CAPSULECOLLIDER)
-    {
-
-        float l_maxWidth = l_scale.GetX();
-        if (l_scale.GetZ() > l_scale.GetX())
-            l_maxWidth = l_scale.GetZ();
-        else
-            l_maxWidth = l_scale.GetX();
-
-        JPH::CapsuleShapeSettings settings(l_scale.GetY(),l_maxWidth);
-        settings.SetEmbedded();
-        JPH::ShapeSettings::ShapeResult floor_shape_result = settings.Create();
-        JPH::ShapeRefC floor_shape = floor_shape_result.Get();
-        m_capsuleWidth = l_maxWidth;
-        m_capsuleHeight = l_scale.GetY();
-
-
-        m_rigidbody = GetEngine()->GetPhysicsSystem()->CreateRigidBody(floor_shape, l_position, l_rotation, m_layer, m_active);
-        m_rigidbody->SetParentComponent(this);
-    }
+    SetCollider();
 
 	
     //m_rigidbody->SetAllowSleeping(false);
@@ -101,6 +74,24 @@ void RigidbodyComponent::SetCollider()
         settings.SetEmbedded();
         JPH::ShapeSettings::ShapeResult floor_shape_result = settings.Create();
         JPH::ShapeRefC floor_shape = floor_shape_result.Get();
+
+
+        m_rigidbody = GetEngine()->GetPhysicsSystem()->CreateRigidBody(floor_shape, l_position, l_rotation, m_layer, m_active);
+        m_rigidbody->SetParentComponent(this);
+    } else if (m_colliderType == ColliderType::CAPSULECOLLIDER)
+    {
+        float l_maxWidth = l_scale.GetX();
+        if (l_scale.GetZ() > l_scale.GetX())
+            l_maxWidth = l_scale.GetZ();
+        else
+            l_maxWidth = l_scale.GetX();
+
+        JPH::CapsuleShapeSettings settings(l_scale.GetY() + m_capsuleSizeOffset.y, l_maxWidth + m_capsuleSizeOffset.x);
+        settings.SetEmbedded();
+        JPH::ShapeSettings::ShapeResult floor_shape_result = settings.Create();
+        JPH::ShapeRefC floor_shape = floor_shape_result.Get();
+        m_capsuleWidth = l_maxWidth;
+        m_capsuleHeight = l_scale.GetY();
 
 
         m_rigidbody = GetEngine()->GetPhysicsSystem()->CreateRigidBody(floor_shape, l_position, l_rotation, m_layer, m_active);

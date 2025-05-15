@@ -42,6 +42,8 @@ public:
     inline float GetCapsuleHeight() { return m_capsuleHeight; }
 
     inline float GetSphereOffset() { return m_sphereSizeOffset; }
+    inline Maths::Vector3 GetBoxOffset() { return m_boxSizeOffset; }
+    inline Maths::Vector2 GetCapsuleOffset() { return m_capsuleSizeOffset; }
 
 private:
     float m_capsuleWidth{ 0.0f };
@@ -54,9 +56,9 @@ private:
     ColliderType m_colliderType = ColliderType::CAPSULECOLLIDER;
     JPH::EActivation m_active = JPH::EActivation::Activate;
 
-    Maths::Vector3 m_boxSizeOffset{ 0.0f, 0.0f, 0.0f };
+    Maths::Vector3 m_boxSizeOffset{ -0.5f, 1.5f, 0.0f };
     float m_sphereSizeOffset{ 2.0f };
-    Maths::Vector2 m_capsuleSizeOffset{ 0.0f, 0.0f };
+    Maths::Vector2 m_capsuleSizeOffset{ 10.f, 5.f };
 };
 
 

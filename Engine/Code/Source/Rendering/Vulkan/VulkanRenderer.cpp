@@ -185,6 +185,8 @@ void VulkanRenderer::RecordCommandBuffer(const VkCommandBuffer& a_commandBuffer,
                 l_ubo.proj = m_cameraEditor.GetProjectionMatrix();
                 l_ubo.debug = 1;
 
+
+
                 if (entity.get()->GetComponent<RigidbodyComponent>()->GetColliderType() == ColliderType::SPHERECOLLIDER)
                 {
 
@@ -219,9 +221,9 @@ void VulkanRenderer::RecordCommandBuffer(const VkCommandBuffer& a_commandBuffer,
                     l_rot = Maths::Vector3(l_rot.x, l_rot.y, l_rot.z);
                     l_rot = l_rotQ2.ToEulerAngles(true);
                     Maths::Vector3 l_scale = entity->Transform()->GetGlobalScale();
-                    l_scale.x = entity.get()->GetComponent<RigidbodyComponent>()->GetCapsuleWidth();
-                    l_scale.y = entity.get()->GetComponent<RigidbodyComponent>()->GetCapsuleWidth();
-                    l_scale.z = entity.get()->GetComponent<RigidbodyComponent>()->GetCapsuleWidth();
+                    l_scale.x = entity.get()->GetComponent<RigidbodyComponent>()->GetCapsuleWidth() + entity.get()->GetComponent<RigidbodyComponent>()->GetCapsuleOffset().x;
+                    l_scale.y = entity.get()->GetComponent<RigidbodyComponent>()->GetCapsuleWidth() + entity.get()->GetComponent<RigidbodyComponent>()->GetCapsuleOffset().x;
+                    l_scale.z = entity.get()->GetComponent<RigidbodyComponent>()->GetCapsuleWidth() + entity.get()->GetComponent<RigidbodyComponent>()->GetCapsuleOffset().x;
 
                     
                     Maths::Matrix4 l_rotMat = Maths::Matrix4::RotationXYZ(l_rot);
@@ -233,7 +235,7 @@ void VulkanRenderer::RecordCommandBuffer(const VkCommandBuffer& a_commandBuffer,
                     {
                         Maths::Vector3 l_pos = entity->Transform()->GetGlobalPosition();
                         //l_rotQ = Maths::Quaternion::FromEulerAngles(l_rot);
-                        Maths::Vector3 l_add = Maths::Vector3(0, entity.get()->GetComponent<RigidbodyComponent>()->GetCapsuleHeight(), 0) * l_rotQ;
+                        Maths::Vector3 l_add = Maths::Vector3(0, entity.get()->GetComponent<RigidbodyComponent>()->GetCapsuleHeight() + entity.get()->GetComponent<RigidbodyComponent>()->GetCapsuleOffset().y, 0) * l_rotQ;
                         if (l_i == 0)
                             l_pos += l_add;
                         else
@@ -261,7 +263,7 @@ void VulkanRenderer::RecordCommandBuffer(const VkCommandBuffer& a_commandBuffer,
                     Maths::Vector3 l_pos2 = entity->Transform()->GetGlobalPosition();
                     Maths::Vector3 l_rot2 = entity->Transform()->GetGlobalRotationVec();
                     Maths::Vector3 l_scale2 = entity->Transform()->GetGlobalScale();
-                    l_scale2 = Maths::Vector3(entity.get()->GetComponent<RigidbodyComponent>()->GetCapsuleWidth(), entity.get()->GetComponent<RigidbodyComponent>()->GetCapsuleHeight(), entity.get()->GetComponent<RigidbodyComponent>()->GetCapsuleWidth());
+                    l_scale2 = Maths::Vector3(entity.get()->GetComponent<RigidbodyComponent>()->GetCapsuleWidth() + entity.get()->GetComponent<RigidbodyComponent>()->GetCapsuleOffset().x, entity.get()->GetComponent<RigidbodyComponent>()->GetCapsuleHeight() + entity.get()->GetComponent<RigidbodyComponent>()->GetCapsuleOffset().y, entity.get()->GetComponent<RigidbodyComponent>()->GetCapsuleWidth() + entity.get()->GetComponent<RigidbodyComponent>()->GetCapsuleOffset().x);
 
                     Maths::Matrix4 l_posMat2 = Maths::Matrix4::Translation(l_pos2);
                     Maths::Matrix4 l_rotMat2 = Maths::Matrix4::RotationXYZ(l_rot);
@@ -269,6 +271,19 @@ void VulkanRenderer::RecordCommandBuffer(const VkCommandBuffer& a_commandBuffer,
                     Maths::Matrix4 l_modelMatrixSphere2 = Maths::Matrix4::TRS(l_posMat2, l_rotMat2, l_scaleMat2);
 
 
+                    l_ubo.model = l_modelMatrixSphere2.Transpose();
+                } else if (entity.get()->GetComponent<RigidbodyComponent>()->GetColliderType() == ColliderType::BOXCOLLIDER)
+                {
+                    Maths::Vector3 l_rot = entity->Transform()->GetGlobalRotationVec();
+                    Maths::Vector3 l_pos2 = entity->Transform()->GetGlobalPosition();
+                    Maths::Vector3 l_rot2 = entity->Transform()->GetGlobalRotationVec();
+                    Maths::Vector3 l_scale2 = entity->Transform()->GetGlobalScale();
+                    l_scale2 += entity.get()->GetComponent<RigidbodyComponent>()->GetBoxOffset();
+
+                    Maths::Matrix4 l_posMat2 = Maths::Matrix4::Translation(l_pos2);
+                    Maths::Matrix4 l_rotMat2 = Maths::Matrix4::RotationXYZ(l_rot);
+                    Maths::Matrix4 l_scaleMat2 = Maths::Matrix4::Scale(l_scale2);
+                    Maths::Matrix4 l_modelMatrixSphere2 = Maths::Matrix4::TRS(l_posMat2, l_rotMat2, l_scaleMat2);
                     l_ubo.model = l_modelMatrixSphere2.Transpose();
                 }
 
