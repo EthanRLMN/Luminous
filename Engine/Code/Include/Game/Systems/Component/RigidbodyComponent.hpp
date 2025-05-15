@@ -23,16 +23,16 @@ public:
     void GameplayStarted() override{};
     void Update() override;
 
-    
-    
     inline void SetEntity(const std::weak_ptr<Entity>& a_relatedEntity) { m_entity = a_relatedEntity; }
     inline void SetColliderType(ColliderType a_type) { m_colliderType = a_type; }
     inline void SetLayer(JPH::uint8 a_layer) { m_layer = a_layer; }
     inline void SetActive(JPH::EActivation a_active) { m_active = a_active; }
-    inline void SetCapsuleWidth(float a_width) { m_capsuleWidth = a_width; }
-    inline void SetCapsuleHeight(float a_height) { m_capsuleHeight = a_height; }
-    void SetCollider();
-    void SetColliderShape();
+    void InitDebugModels();
+    inline void SetCapsuleWidth(float a_width) { m_capsuleWidth = a_width; } //Dont use this outside of this class
+    inline void SetCapsuleHeight(float a_height) { m_capsuleHeight = a_height; } //Dont use this outside of this class
+    void SetCollider(); //Used to Initialize the collider
+    void SetColliderShape(); //Used to update collider shape with offsets and transform size
+    //Use these to resize collider :
     inline void SetColliderSize(Maths::Vector3 a_boxSize) { m_boxSizeOffset = a_boxSize; SetColliderShape();} //Set Collider size for a Box
     inline void SetColliderSize(Maths::Vector2 a_capsuleSize) { m_capsuleSizeOffset = a_capsuleSize; SetCollider(); } //Set Collider size for a Capsule
     inline void SetColliderSize(float a_sphereSize) { m_sphereSizeOffset = a_sphereSize; SetCollider(); } //Set Collider size for a Sphere
@@ -44,7 +44,6 @@ public:
     inline JPH::EActivation GetActivation() { return m_active; }
     inline float GetCapsuleWidth() { return m_capsuleWidth; }
     inline float GetCapsuleHeight() { return m_capsuleHeight; }
-
     inline float GetSphereOffset() { return m_sphereSizeOffset; }
     inline Maths::Vector3 GetBoxOffset() { return m_boxSizeOffset; }
     inline Maths::Vector2 GetCapsuleOffset() { return m_capsuleSizeOffset; }
