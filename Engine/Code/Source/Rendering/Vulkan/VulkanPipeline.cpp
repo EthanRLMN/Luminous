@@ -91,7 +91,10 @@ void VulkanPipeline::Create(IDevice* a_device, IRenderPass* a_renderPass, IDescr
 
     //Graphic pipeline creation  
     VkGraphicsPipelineCreateInfo l_pipelineCreateInfo{ };
-    PushPipelineInfo(l_pipelineCreateInfo, l_shaderStages, l_vertexInputCreateInfo, l_inputAssembly, l_viewportStateCreateInfo, l_rasterizerCreateInfo, l_multisamplingCreateInfo, l_depthStencil, l_colorBlending, l_dynamicStateCreationInfo, a_renderPass->CastVulkan()->GetRenderPass(), a_device->CastVulkan()->GetDevice());
+    PushPipelineInfo(m_graphicsPipeline,l_pipelineCreateInfo, l_shaderStages, l_vertexInputCreateInfo, l_inputAssembly, l_viewportStateCreateInfo, l_rasterizerCreateInfo, l_multisamplingCreateInfo, l_depthStencil, l_colorBlending, l_dynamicStateCreationInfo, a_renderPass->CastVulkan()->GetRenderPass(), a_device->CastVulkan()->GetDevice());
+
+    VkGraphicsPipelineCreateInfo l_pipelineCreateInfo3{};
+    PushPipelineInfo(m_skyboxPipeline,l_pipelineCreateInfo, l_shaderStages, l_vertexInputCreateInfo, l_inputAssembly, l_viewportStateCreateInfo, l_rasterizerCreateInfo, l_multisamplingCreateInfo, l_depthStencil, l_colorBlending, l_dynamicStateCreationInfo, a_renderPass->CastVulkan()->GetRenderPass(), a_device->CastVulkan()->GetDevice());
 
     DEBUG_LOG_INFO("Vulkan Graphic Pipeline : Pipeline Created!\n");
 }
@@ -248,7 +251,7 @@ void VulkanPipeline::SetupDescriptorSetLayout(const std::vector<VkDescriptorSetL
 }
 
 
-void VulkanPipeline::PushPipelineInfo(VkGraphicsPipelineCreateInfo& a_pipelineCreateInfo, const std::span<VkPipelineShaderStageCreateInfo>& a_shaderStages, const VkPipelineVertexInputStateCreateInfo& a_vertexInputCreateInfo, const VkPipelineInputAssemblyStateCreateInfo& a_inputAssembly, const VkPipelineViewportStateCreateInfo& a_viewportStateCreateInfo, const VkPipelineRasterizationStateCreateInfo& a_rasterizerCreateInfo, const VkPipelineMultisampleStateCreateInfo& a_multisamplingCreateInfo, const VkPipelineDepthStencilStateCreateInfo& a_depthStencil, const VkPipelineColorBlendStateCreateInfo& a_colorBlending, const VkPipelineDynamicStateCreateInfo& a_dynamicStateCreationInfo, const VkRenderPass& a_renderPass, const VkDevice& a_device)
+void VulkanPipeline::PushPipelineInfo(VkPipeline& a_pipeline, VkGraphicsPipelineCreateInfo& a_pipelineCreateInfo, const std::span<VkPipelineShaderStageCreateInfo>& a_shaderStages, const VkPipelineVertexInputStateCreateInfo& a_vertexInputCreateInfo, const VkPipelineInputAssemblyStateCreateInfo& a_inputAssembly, const VkPipelineViewportStateCreateInfo& a_viewportStateCreateInfo, const VkPipelineRasterizationStateCreateInfo& a_rasterizerCreateInfo, const VkPipelineMultisampleStateCreateInfo& a_multisamplingCreateInfo, const VkPipelineDepthStencilStateCreateInfo& a_depthStencil, const VkPipelineColorBlendStateCreateInfo& a_colorBlending, const VkPipelineDynamicStateCreateInfo& a_dynamicStateCreationInfo, const VkRenderPass& a_renderPass, const VkDevice& a_device)
 {
     a_pipelineCreateInfo.sType = VK_STRUCTURE_TYPE_GRAPHICS_PIPELINE_CREATE_INFO;
     a_pipelineCreateInfo.stageCount = 2;
@@ -268,6 +271,6 @@ void VulkanPipeline::PushPipelineInfo(VkGraphicsPipelineCreateInfo& a_pipelineCr
     a_pipelineCreateInfo.basePipelineIndex = -1;
     a_pipelineCreateInfo.pNext = nullptr;
 
-    const VkResult l_result = vkCreateGraphicsPipelines(a_device, nullptr, 1, &a_pipelineCreateInfo, nullptr, &m_graphicsPipeline);
+    const VkResult l_result = vkCreateGraphicsPipelines(a_device, nullptr, 1, &a_pipelineCreateInfo, nullptr, &a_pipeline);
     LOG_ASSERT_ERROR(l_result == VK_SUCCESS, "Vulkan Pipeline: Failed to create a Graphics Pipeline!\n");
 }
