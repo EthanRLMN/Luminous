@@ -12,6 +12,7 @@
 #include "Game/Systems/Entity/Entity.hpp"
 
 class IFrameBuffer;
+class ModelComponent;
 
 
 class VulkanRenderer final : public IRenderer
@@ -27,6 +28,7 @@ public:
     VulkanRenderer* CastVulkan() override { return this; }
 
 	void RecordCommandBuffer(const VkCommandBuffer& a_commandBuffer, const VkPipeline& a_graphicsPipeline, const VkPipelineLayout& a_pipelineLayout, const uint32_t& a_imageIndex, ISwapChain* a_swapChain, const IRenderPassManager* a_renderPassManager, IDescriptor* a_descriptor, const IFrameBufferManager* a_frameBufferManager, const EntityManager& a_entityManager, const VkPipeline& a_wireGraphicsPipeline) const;
+    void DrawModel(ModelComponent* a_model, const VkCommandBuffer& a_commandBuffer, IDescriptor* a_descriptor, const VkPipeline& a_graphicsPipeline, const VkPipelineLayout& a_pipelineLayout, UniformBufferObject a_ubo) const;
 
     void UpdateUniformBuffer(const uint32_t& a_currentFrame, IBuffer* a_buffer, const EntityManager& a_entityManager) const;
 	void RecreateSwapChain(IWindow* a_window, IDevice* a_device, ISurface* a_surface, ISwapChain* a_swapChain, IDepthResource* a_depthResource, const IFrameBufferManager* a_frameBuffer, const IRenderPassManager* a_renderPass, IMultiSampling* a_multisampling);

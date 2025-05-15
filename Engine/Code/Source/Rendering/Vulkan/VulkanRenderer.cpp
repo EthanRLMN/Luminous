@@ -145,6 +145,7 @@ void VulkanRenderer::RecordCommandBuffer(const VkCommandBuffer& a_commandBuffer,
         if (l_renderPass == a_renderPassManager->GetRenderPassAt(0))
         {
 
+            // Draw all the ModelComponents in the Scene
             std::vector<std::shared_ptr<Entity>> entitiesWithModels = a_entityManager.GetEntitiesByComponent<ModelComponent>();
 
             for (const std::shared_ptr<Entity>& entity : entitiesWithModels)
@@ -155,20 +156,13 @@ void VulkanRenderer::RecordCommandBuffer(const VkCommandBuffer& a_commandBuffer,
                 l_ubo.view = m_cameraEditor.GetViewMatrix().Transpose();
                 l_ubo.proj = m_cameraEditor.GetProjectionMatrix();
                 l_ubo.debug = 0;
-                
-                const std::array<VkBuffer, 1> l_vertexBuffers = { entity.get()->GetComponent<ModelComponent>().get()->GetMesh()->CastVulkan()->GetVertexBuffer() };
-                const std::array<VkDeviceSize, 1> l_offsets = { 0 };
-                vkCmdBindVertexBuffers(a_commandBuffer, 0, 1, l_vertexBuffers.data(), l_offsets.data());
-                vkCmdBindIndexBuffer(a_commandBuffer, entity.get()->GetComponent<ModelComponent>().get()->GetMesh()->CastVulkan()->GetIndexBuffer(), 0, VK_INDEX_TYPE_UINT32);
-                std::vector<VkDescriptorSet> sets = { a_descriptor->CastVulkan()->GetDescriptorSet()[m_currentFrame], entity.get()->GetComponent<ModelComponent>().get()->GetTexture()->CastVulkan()->GetDescriptorSet() };
-                vkCmdBindDescriptorSets(a_commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, a_pipelineLayout, 0, static_cast<uint32_t>(sets.size()), sets.data(), 0, nullptr);
-                vkCmdPushConstants(a_commandBuffer, a_pipelineLayout, VK_SHADER_STAGE_VERTEX_BIT, 0, sizeof(UniformBufferObject), &l_ubo);
-                
 
-                vkCmdDrawIndexed(a_commandBuffer, static_cast<uint32_t>(entity.get()->GetComponent<ModelComponent>().get()->GetMesh()->CastVulkan()->GetIndices().size()), 1, 0, 0, 0);
+                DrawModel(entity->GetComponent<ModelComponent>().get(), a_commandBuffer, a_descriptor, a_graphicsPipeline, a_pipelineLayout, l_ubo);
+
             }
 
-            
+
+            // Draw all the Colliders in the Scene (Editor only Debug)
             std::vector<std::shared_ptr<Entity>> entitieswithColliders = a_entityManager.GetEntitiesByComponent<RigidbodyComponent>();
 
             vkCmdBindPipeline(a_commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, a_wireGraphicsPipeline);
@@ -177,40 +171,32 @@ void VulkanRenderer::RecordCommandBuffer(const VkCommandBuffer& a_commandBuffer,
             {
                 UniformBufferObject l_ubo{};
                 const Maths::Matrix4 l_modelMatrix = entity->Transform()->GetGlobalMatrix();
-
-
-
                 l_ubo.model = l_modelMatrix.Transpose();
                 l_ubo.view = m_cameraEditor.GetViewMatrix().Transpose();
                 l_ubo.proj = m_cameraEditor.GetProjectionMatrix();
                 l_ubo.debug = 1;
 
+                TransformComponent* l_transform = entity->Transform().get();
+                RigidbodyComponent* l_rigidbody = entity->GetComponent<RigidbodyComponent>().get();
+                ColliderType l_colliderType = l_rigidbody->GetColliderType();
 
+                Maths::Vector3 l_pos = l_transform->GetGlobalPosition();
+                Maths::Vector3 l_rot = l_transform->GetGlobalRotationVec();
+                Maths::Vector3 l_scale = l_transform->GetGlobalScale();
 
-                if (entity.get()->GetComponent<RigidbodyComponent>()->GetColliderType() == ColliderType::SPHERECOLLIDER)
+                if (l_colliderType == ColliderType::SPHERECOLLIDER)
                 {
-
-                    Maths::Matrix4 l_modelMatrixSphere = entity->Transform()->GetGlobalMatrix();
-
-                    Maths::Vector3 l_pos = entity->Transform()->GetGlobalPosition();
-                    Maths::Quaternion l_rotQuat = entity->Transform()->GetLocalRotationQuat();
-                    Maths::Vector3 l_rot = entity->Transform()->GetLocalRotationVec();
-                    l_rot = Maths::Vector3(l_rot.x, l_rot.y, l_rot.z);
-                    Maths::Vector3 l_scale = entity->Transform()->GetGlobalScale();
-                    l_scale.y = l_scale.y += entity.get()->GetComponent<RigidbodyComponent>()->GetSphereOffset();
-                    l_scale.x = l_scale.y;
-                    l_scale.z = l_scale.y;
+                    float l_radius = l_scale.y += l_rigidbody->GetSphereOffset();
+                    l_scale = Maths::Vector3(l_radius);
 
                     Maths::Matrix4 l_posMat = Maths::Matrix4::Translation(l_pos);
                     Maths::Matrix4 l_rotMat = Maths::Matrix4::RotationXYZ(l_rot);
                     Maths::Matrix4 l_scaleMat = Maths::Matrix4::Scale(l_scale);
-                    Maths::Matrix4 l_modelMatrixSphere2 = Maths::Matrix4::TRS(l_posMat, l_rotMat, l_scaleMat);
+                    Maths::Matrix4 l_modelMatrixSphere = Maths::Matrix4::TRS(l_posMat, l_rotMat, l_scaleMat);
 
-                    l_modelMatrixSphere.mat[0][0] =  l_modelMatrixSphere.mat[1][1];
-                    l_modelMatrixSphere.mat[2][2] = l_modelMatrixSphere.mat[1][1];
-
-                    l_ubo.model = l_modelMatrixSphere2.Transpose();
-                } else if (entity.get()->GetComponent<RigidbodyComponent>()->GetColliderType() == ColliderType::CAPSULECOLLIDER)
+                    l_ubo.model = l_modelMatrixSphere.Transpose();
+                }
+                else if (l_colliderType == ColliderType::CAPSULECOLLIDER)
                 {
 
                     
@@ -254,7 +240,6 @@ void VulkanRenderer::RecordCommandBuffer(const VkCommandBuffer& a_commandBuffer,
                         std::vector<VkDescriptorSet> sets = { a_descriptor->CastVulkan()->GetDescriptorSet()[m_currentFrame], entity.get()->GetComponent<RigidbodyComponent>().get()->GetCapsuleSphereDebug()->GetTexture()->CastVulkan()->GetDescriptorSet() };
                         vkCmdBindDescriptorSets(a_commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, a_pipelineLayout, 0, static_cast<uint32_t>(sets.size()), sets.data(), 0, nullptr);
                         vkCmdPushConstants(a_commandBuffer, a_pipelineLayout, VK_SHADER_STAGE_VERTEX_BIT, 0, sizeof(UniformBufferObject), &l_ubo);
-
                         vkCmdDrawIndexed(a_commandBuffer, static_cast<uint32_t>(entity.get()->GetComponent<RigidbodyComponent>().get()->GetCapsuleSphereDebug()->GetMesh()->CastVulkan()->GetIndices().size()), 1, 0, 0, 0);                        
                     }
 
@@ -272,30 +257,20 @@ void VulkanRenderer::RecordCommandBuffer(const VkCommandBuffer& a_commandBuffer,
 
 
                     l_ubo.model = l_modelMatrixSphere2.Transpose();
-                } else if (entity.get()->GetComponent<RigidbodyComponent>()->GetColliderType() == ColliderType::BOXCOLLIDER)
+                }
+                else if (l_colliderType == ColliderType::BOXCOLLIDER)
                 {
-                    Maths::Vector3 l_rot = entity->Transform()->GetGlobalRotationVec();
-                    Maths::Vector3 l_pos2 = entity->Transform()->GetGlobalPosition();
-                    Maths::Vector3 l_rot2 = entity->Transform()->GetGlobalRotationVec();
-                    Maths::Vector3 l_scale2 = entity->Transform()->GetGlobalScale();
-                    l_scale2 += entity.get()->GetComponent<RigidbodyComponent>()->GetBoxOffset();
+                    l_scale += l_rigidbody->GetBoxOffset();
 
-                    Maths::Matrix4 l_posMat2 = Maths::Matrix4::Translation(l_pos2);
-                    Maths::Matrix4 l_rotMat2 = Maths::Matrix4::RotationXYZ(l_rot);
-                    Maths::Matrix4 l_scaleMat2 = Maths::Matrix4::Scale(l_scale2);
-                    Maths::Matrix4 l_modelMatrixSphere2 = Maths::Matrix4::TRS(l_posMat2, l_rotMat2, l_scaleMat2);
-                    l_ubo.model = l_modelMatrixSphere2.Transpose();
+                    Maths::Matrix4 l_posMat = Maths::Matrix4::Translation(l_pos);
+                    Maths::Matrix4 l_rotMat = Maths::Matrix4::RotationXYZ(l_rot);
+                    Maths::Matrix4 l_scaleMat = Maths::Matrix4::Scale(l_scale);
+                    Maths::Matrix4 l_modelMatrixSphere = Maths::Matrix4::TRS(l_posMat, l_rotMat, l_scaleMat);
+                    l_ubo.model = l_modelMatrixSphere.Transpose();
                 }
 
-                const std::array<VkBuffer, 1> l_vertexBuffers = { entity.get()->GetComponent<RigidbodyComponent>().get()->GetModelDebug()->GetMesh()->CastVulkan()->GetVertexBuffer() };
-                const std::array<VkDeviceSize, 1> l_offsets = { 0 };
-                vkCmdBindVertexBuffers(a_commandBuffer, 0, 1, l_vertexBuffers.data(), l_offsets.data());
-                vkCmdBindIndexBuffer(a_commandBuffer, entity.get()->GetComponent<RigidbodyComponent>().get()->GetModelDebug()->GetMesh()->CastVulkan()->GetIndexBuffer(), 0, VK_INDEX_TYPE_UINT32);
-                std::vector<VkDescriptorSet> sets = { a_descriptor->CastVulkan()->GetDescriptorSet()[m_currentFrame], entity.get()->GetComponent<RigidbodyComponent>().get()->GetModelDebug()->GetTexture()->CastVulkan()->GetDescriptorSet() };
-                vkCmdBindDescriptorSets(a_commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, a_pipelineLayout, 0, static_cast<uint32_t>(sets.size()), sets.data(), 0, nullptr);
-                vkCmdPushConstants(a_commandBuffer, a_pipelineLayout, VK_SHADER_STAGE_VERTEX_BIT, 0, sizeof(UniformBufferObject), &l_ubo);
+                DrawModel(entity.get()->GetComponent<RigidbodyComponent>().get()->GetModelDebug(), a_commandBuffer, a_descriptor, a_graphicsPipeline, a_pipelineLayout, l_ubo);
 
-                vkCmdDrawIndexed(a_commandBuffer, static_cast<uint32_t>(entity.get()->GetComponent<RigidbodyComponent>().get()->GetModelDebug()->GetMesh()->CastVulkan()->GetIndices().size()), 1, 0, 0, 0);
             }
             vkCmdBindPipeline(a_commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, a_graphicsPipeline);
 
@@ -319,6 +294,21 @@ void VulkanRenderer::RecordCommandBuffer(const VkCommandBuffer& a_commandBuffer,
     const VkResult l_result = vkEndCommandBuffer(a_commandBuffer);
     if (l_result != VK_SUCCESS)
         throw std::runtime_error("Failed to stop recording a command buffer ");
+}
+
+void VulkanRenderer::DrawModel(ModelComponent* a_model, const VkCommandBuffer& a_commandBuffer, IDescriptor* a_descriptor, const VkPipeline& a_graphicsPipeline, const VkPipelineLayout& a_pipelineLayout, UniformBufferObject a_ubo) const
+{
+    VulkanMesh* l_mesh = a_model->GetMesh()->CastVulkan();
+    VulkanTexture* l_texture = a_model->GetTexture()->CastVulkan();
+
+    const std::array<VkBuffer, 1> l_vertexBuffers = { l_mesh->GetVertexBuffer() };
+    const std::array<VkDeviceSize, 1> l_offsets = { 0 };
+    vkCmdBindVertexBuffers(a_commandBuffer, 0, 1, l_vertexBuffers.data(), l_offsets.data());
+    vkCmdBindIndexBuffer(a_commandBuffer, l_mesh->GetIndexBuffer(), 0, VK_INDEX_TYPE_UINT32);
+    std::vector<VkDescriptorSet> sets = { a_descriptor->CastVulkan()->GetDescriptorSet()[m_currentFrame], l_texture->GetDescriptorSet() };
+    vkCmdBindDescriptorSets(a_commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, a_pipelineLayout, 0, static_cast<uint32_t>(sets.size()), sets.data(), 0, nullptr);
+    vkCmdPushConstants(a_commandBuffer, a_pipelineLayout, VK_SHADER_STAGE_VERTEX_BIT, 0, sizeof(UniformBufferObject), &a_ubo);
+    vkCmdDrawIndexed(a_commandBuffer, static_cast<uint32_t>(l_mesh->GetIndices().size()), 1, 0, 0, 0);
 }
 
 

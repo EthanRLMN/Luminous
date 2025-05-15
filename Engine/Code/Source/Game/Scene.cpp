@@ -26,7 +26,7 @@ void Scene::RegisterScene(EntityManager& a_entityManager)
     a_entityManager.GetEntities()[1].get()->GetComponent<TransformComponent>().get()->SetLocalPosition(Maths::Vector3(8.f,10.0f,0.0f));
     a_entityManager.GetEntities()[1].get()->GetComponent<RigidbodyComponent>().get()->SetLayer(Layers::DYNAMIC);
     a_entityManager.GetEntities()[1].get()->GetComponent<RigidbodyComponent>().get()->SetActive(JPH::EActivation::Activate);
-    a_entityManager.GetEntities()[1].get()->GetComponent<RigidbodyComponent>().get()->SetColliderType(CAPSULECOLLIDER);
+    a_entityManager.GetEntities()[1].get()->GetComponent<RigidbodyComponent>().get()->SetColliderType(BOXCOLLIDER);
     a_entityManager.GetEntities()[1].get()->GetComponent<RigidbodyComponent>().get()->Initialize();
     
     a_entityManager.GetEntities()[1].get()->GetComponent<TransformComponent>().get()->SetLocalScale(Maths::Vector3(1.f, 1.0f, 1.f));
