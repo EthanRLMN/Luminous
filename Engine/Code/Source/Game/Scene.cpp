@@ -108,6 +108,16 @@ void Scene::LoadScene(std::string filename, const EntityManager& a_entityManager
                         l_light->GetLight().m_count = compData.count;
                     }
                 }
+                else if constexpr (std::is_same_v<T, CameraComponentData>) {
+                    if (const std::shared_ptr<CameraComponent> l_camera = l_entity->GetComponent<CameraComponent>())
+                    {
+                        l_camera->SetIsActive(compData.isActive);
+                        l_camera->SetAspectRatio(compData.aspectRatio);
+                        l_camera->SetFarPlane(compData.farPlane);
+                        l_camera->SetNearPlane(compData.nearPlane);
+                        l_camera->SetFieldOfView(compData.fieldOfView);
+                    }
+                }
             }, l_component);
         }
         ++l_entityIt;
@@ -122,6 +132,7 @@ void Scene::SaveScene(const std::string& filepath, const EntityManager& a_entity
     for (const std::shared_ptr<Entity>& l_entity : a_entityManager.GetEntities())
     {
         EntityData l_datasaver;
+
         l_datasaver.entityName = l_entity->GetName();
         l_datasaver.entityUUID = l_entity->GetUUID();
         l_datasaver.isActive = l_entity->IsActive();
@@ -165,6 +176,20 @@ void Scene::SaveScene(const std::string& filepath, const EntityManager& a_entity
             l_datasaver.componentType = "Light";
             l_datasaver.components.push_back(l_lightData);
         }
+
+        if (const std::shared_ptr<CameraComponent>& l_camera = l_entity->GetComponent<CameraComponent>()) {
+
+            CameraComponentData l_cameraData;
+            l_cameraData.aspectRatio = l_camera->GetAspectRatio();
+            l_cameraData.farPlane = l_camera->GetFarPlane();
+            l_cameraData.nearPlane = l_camera->GetNearPlane();
+            l_cameraData.fieldOfView = l_camera->GetFieldOfView();
+            l_cameraData.isActive = l_camera->GetisActive();
+
+            l_datasaver.componentType = "Camera";
+            l_datasaver.components.push_back(l_cameraData);
+        }
+
         l_entityData.push_back(l_datasaver);
     }
     rfl::json::save(filepath, l_entityData, rfl::json::pretty);

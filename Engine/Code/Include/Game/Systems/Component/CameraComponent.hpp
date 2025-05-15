@@ -16,14 +16,16 @@ public:
     float GetNearPlane() { return m_nearPlane; }
     float GetFarPlane() { return m_farPlane; }
     float GetFieldOfView() { return m_fieldOfView; }
+    float GetAspectRatio() { return m_aspectRatio; }
 
     void SetIsActive(bool a_isActive) { m_isActive = a_isActive; }
     void SetNearPlane(float a_nearPlane) { m_nearPlane = a_nearPlane; }
     void SetFarPlane(float a_farPlane) { m_farPlane = a_farPlane; }
     void SetFieldOfView(float a_fieldofView) { m_fieldOfView = a_fieldofView; }
+    void SetAspectRatio(float a_aspectRatio) { m_aspectRatio = a_aspectRatio; }
 
 private:
-    bool m_isActive;
+    bool m_isActive = true;
     float m_aspectRatio{ 800.0f / 600.0f };
     float m_nearPlane{ 0.1f };
     float m_farPlane{ 100.f };

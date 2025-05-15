@@ -9,6 +9,7 @@
 #include <Game/Systems/Component/ModelComponent.hpp>
 #include "Game/Systems/Component/EntityComponent.hpp"
 #include "Game/Systems/Component/TransformComponent.hpp"
+#include "Game/Systems/Component/CameraComponent.hpp"
 
 class Engine;
 class EntityManager;
@@ -48,6 +49,7 @@ public:
     inline std::shared_ptr<TransformComponent> Transform() const { return GetComponent<TransformComponent>(); }
     inline std::shared_ptr<ModelComponent> Model() const { return GetComponent<ModelComponent>(); }
     inline std::shared_ptr<LightComponent> Light() const { return GetComponent<LightComponent>(); }
+    inline std::shared_ptr<CameraComponent> Camera() const { return GetComponent<CameraComponent>(); }
     void AddComponent(const std::shared_ptr<EntityComponent>& a_component);
     void RemoveComponent(const std::shared_ptr<EntityComponent>& a_component);
     void SetActive(bool a_isActive);

@@ -5,10 +5,7 @@
 #include <string>
 #include <rfl/json.hpp>
 
-
 class Engine;
-
-
 
 
 struct Vec3
@@ -99,10 +96,20 @@ struct LightComponentData
 };
 
 
+struct CameraComponentData
+{
+    bool isActive;
+    float aspectRatio;
+    float nearPlane;
+    float farPlane;
+    float fieldOfView;
+};
+
 using SerializedComponent = rfl::Variant<
     TransformComponentData,
     ModelComponentData,
-    LightComponentData>;
+    LightComponentData,
+    CameraComponentData>;
 
 
 template <typename Archive>
