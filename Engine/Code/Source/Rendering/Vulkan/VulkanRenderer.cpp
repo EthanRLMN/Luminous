@@ -191,8 +191,9 @@ void VulkanRenderer::RecordCommandBuffer(const VkCommandBuffer& a_commandBuffer,
                     Maths::Matrix4 l_modelMatrixSphere = entity->Transform()->GetGlobalMatrix();
 
                     Maths::Vector3 l_pos = entity->Transform()->GetGlobalPosition();
-                    Maths::Vector3 l_rot = entity->Transform()->GetGlobalRotationVec();
-                    l_rot = Maths::Vector3(-l_rot.x, -l_rot.y, -l_rot.z);
+                    Maths::Quaternion l_rotQuat = entity->Transform()->GetLocalRotationQuat();
+                    Maths::Vector3 l_rot = entity->Transform()->GetLocalRotationVec();
+                    l_rot = Maths::Vector3(l_rot.x, l_rot.y, l_rot.z);
                     Maths::Vector3 l_scale = entity->Transform()->GetGlobalScale();
                     l_scale.x = l_scale.y;
                     l_scale.z = l_scale.y;
@@ -211,8 +212,8 @@ void VulkanRenderer::RecordCommandBuffer(const VkCommandBuffer& a_commandBuffer,
 
                     
                     
-                    Maths::Vector3 l_rot = entity->Transform()->GetGlobalRotationVec();
-                    Maths::Quaternion l_rotQ = entity->Transform()->GetGlobalRotationQuat();
+                    Maths::Vector3 l_rot = entity->Transform()->GetLocalRotationVec();
+                    Maths::Quaternion l_rotQ = entity->Transform()->GetLocalRotationQuat();
                     l_rot = Maths::Vector3(-l_rot.x, -l_rot.y, -l_rot.z);
                     Maths::Vector3 l_scale = entity->Transform()->GetGlobalScale();
                     l_scale.x = entity.get()->GetComponent<RigidbodyComponent>()->GetCapsuleWidth();
@@ -223,11 +224,13 @@ void VulkanRenderer::RecordCommandBuffer(const VkCommandBuffer& a_commandBuffer,
                     Maths::Matrix4 l_scaleMat = Maths::Matrix4::Scale(l_scale);
                     
 
-
+                    //l_rot = Maths::Vector3(-l_rot.x, -l_rot.y, -l_rot.z);
                     for (int l_i = 0; l_i < 2; ++l_i)
                     {
                         Maths::Vector3 l_pos = entity->Transform()->GetGlobalPosition();
+                        //l_rotQ = Maths::Quaternion::FromEulerAngles(l_rot);
                         Maths::Vector3 l_add = Maths::Vector3(0, entity.get()->GetComponent<RigidbodyComponent>()->GetCapsuleHeight(), 0) * l_rotQ;
+                        Maths::Vector3 l_add2 = Maths::Vector3(-1.68125f, 0.54627f, 1.76777f);
                         if (l_i == 0)
                             l_pos += l_add;
                         else
@@ -249,7 +252,20 @@ void VulkanRenderer::RecordCommandBuffer(const VkCommandBuffer& a_commandBuffer,
 
                         vkCmdDrawIndexed(a_commandBuffer, static_cast<uint32_t>(entity.get()->GetComponent<RigidbodyComponent>().get()->GetCapsuleSphereDebug()->GetMesh()->CastVulkan()->GetIndices().size()), 1, 0, 0, 0);                        
                     }
-                    l_ubo.model = l_modelMatrix.Transpose();
+
+
+                    
+                    Maths::Vector3 l_pos2 = entity->Transform()->GetGlobalPosition();
+                    Maths::Vector3 l_rot2 = entity->Transform()->GetLocalRotationVec();
+                    Maths::Vector3 l_scale2 = entity->Transform()->GetGlobalScale();
+
+                    Maths::Matrix4 l_posMat2 = Maths::Matrix4::Translation(l_pos2);
+                    Maths::Matrix4 l_rotMat2 = Maths::Matrix4::RotationXYZ(l_rot);
+                    Maths::Matrix4 l_scaleMat2 = Maths::Matrix4::Scale(l_scale2);
+                    Maths::Matrix4 l_modelMatrixSphere2 = Maths::Matrix4::TRS(l_posMat2, l_rotMat2, l_scaleMat2);
+
+
+                    l_ubo.model = l_modelMatrixSphere2.Transpose();
                 }
 
                 const std::array<VkBuffer, 1> l_vertexBuffers = { entity.get()->GetComponent<RigidbodyComponent>().get()->GetModelDebug()->GetMesh()->CastVulkan()->GetVertexBuffer() };

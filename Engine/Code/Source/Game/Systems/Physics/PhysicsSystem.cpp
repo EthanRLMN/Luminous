@@ -177,7 +177,7 @@ RigidBody* PhysicsSystem::CreateRigidBody(const JPH::Shape* a_shape, JPH::Vec3 a
 
     //m_rigidBodies.emplace_back(l_rig);
 
-    
+    JPH::Quat quat = l_body->GetRotation();
 
     m_bodiesToRigidBodies[l_body->GetID()] = l_rig;
 
