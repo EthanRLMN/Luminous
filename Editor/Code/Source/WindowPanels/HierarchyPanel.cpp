@@ -56,20 +56,6 @@ void HierarchyPanel::Render()
             auto newEntity = entityManager->CreateEntityFromTemplate("Companion");
             newEntity->SetName(GenerateUniqueEntityName(newEntityName));
 
-            // Create Components based on the selected template
-            /*switch (selectedEntityTemplate)
-            {
-                case EntityTemplate::Camera:
-                    newEntity->AddComponent<CameraComponent>();
-                    break;
-                case EntityTemplate::Light:
-                    newEntity->AddComponent<LightComponent>();
-                    break;
-                case EntityTemplate::Empty:
-                default:
-                    break;
-            }*/
-
             selectedEntityTemplate = EntityTemplate::None;
             std::memset(newEntityName, 0, sizeof(newEntityName));
             ImGui::CloseCurrentPopup();
@@ -85,6 +71,7 @@ void HierarchyPanel::Render()
 
         ImGui::EndPopup();
     }
+
     BuildHierarchy();
 
     for (const auto& root : m_rootEntities)
@@ -92,35 +79,61 @@ void HierarchyPanel::Render()
         DrawEntityNode(root);
     }
 
+    if (m_entityToReparent)
+    {
+        m_entityToReparent->Transform()->SetParent(m_newParent);
+        BuildHierarchy();
+        m_entityToReparent = nullptr;
+        m_newParent = nullptr;
+    }
+
+    ImGui::Separator();
+    ImGui::Text("Drag entities here to detach them");
+
+    ImGui::BeginChild("##DetachZone", ImVec2(ImGui::GetContentRegionAvail().x, 50), true);
+
+    if (ImGui::BeginDragDropTarget())
+    {
+        if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("ENTITY_DRAG"))
+        {
+            Entity* droppedRawPtr = *(Entity**) payload->Data;
+            m_entityToReparent = p_editor->GetEngine()->GetEntityManager()->GetEntityByRawPointer(droppedRawPtr);
+
+            m_newParent = nullptr;
+        }
+        ImGui::EndDragDropTarget();
+    }
+
+
+    ImGui::EndChild();
+
     ImGui::End();
 }
 
-void HierarchyPanel::DrawEntityNode(const EntityNode& node)
+void HierarchyPanel::DrawEntityNode(const std::shared_ptr<EntityNode>& node)
 {
     ImGuiTreeNodeFlags flags = ImGuiTreeNodeFlags_OpenOnArrow | ImGuiTreeNodeFlags_SpanAvailWidth;
 
-    if (node.children.empty())
+    if (node->children.empty())
         flags |= ImGuiTreeNodeFlags_Leaf;
 
-    if (p_editor->GetSelectedEntity())
+    if (p_editor->GetSelectedEntity() == node->entity)
         flags |= ImGuiTreeNodeFlags_Selected;
 
-
-    bool open = ImGui::TreeNodeEx((void*) node.entity.get(), flags, node.entity->GetName().c_str());
+    bool open = ImGui::TreeNodeEx((void*) node->entity.get(), flags, node->entity->GetName().c_str());
 
     if (ImGui::IsItemClicked() && !ImGui::IsItemToggledOpen())
     {
-
-        p_editor->SetSelectedEntity(node.entity);
+        p_editor->SetSelectedEntity(node->entity);
         if (m_inspectorPanel)
-            m_inspectorPanel->SetSelectedEntity(node.entity);
+            m_inspectorPanel->SetSelectedEntity(node->entity);
     }
 
     if (ImGui::BeginDragDropSource())
     {
-        std::shared_ptr<Entity> dragEntity = node.entity;
-        ImGui::SetDragDropPayload("ENTITY_DRAG", &dragEntity, sizeof(std::shared_ptr<Entity>));
-        ImGui::Text("Move %s", node.entity->GetName().c_str());
+        Entity* rawEntityPtr = node->entity.get();
+        ImGui::SetDragDropPayload("ENTITY_DRAG", &rawEntityPtr, sizeof(Entity*));
+        ImGui::Text("Move %s", node->entity->GetName().c_str());
         ImGui::EndDragDropSource();
     }
 
@@ -128,33 +141,23 @@ void HierarchyPanel::DrawEntityNode(const EntityNode& node)
     {
         if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("ENTITY_DRAG"))
         {
-            std::shared_ptr<Entity> droppedEntity = *(std::shared_ptr<Entity>*) payload->Data;
+            Entity* droppedRawPtr = *(Entity**) payload->Data;
+            auto droppedEntity = p_editor->GetEngine()->GetEntityManager()->GetEntityByRawPointer(droppedRawPtr);
 
-            if (droppedEntity != node.entity && !IsDescendant(node.entity, droppedEntity))
+            if (droppedEntity != node->entity && !IsDescendant(droppedEntity, node->entity))
             {
-                droppedEntity->Transform()->SetParent(node.entity);
-                BuildHierarchy();
+                m_entityToReparent = droppedEntity;
+                m_newParent = node->entity;
             }
         }
 
-        if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("FILE_DRAG"))
-        {
-            const char* droppedPath = static_cast<const char*>(payload->Data);
-            std::string filePath(droppedPath);
-
-            std::string extension = std::filesystem::path(filePath).extension().string();
-            if (extension == ".png" || extension == ".jpg")
-            {
-                std::cout << "Texture dropped on entity: " << filePath << std::endl;
-            }
-        }
 
         ImGui::EndDragDropTarget();
     }
 
     if (open)
     {
-        for (const auto& child : node.children)
+        for (const auto& child : node->children)
         {
             DrawEntityNode(child);
         }
@@ -162,41 +165,43 @@ void HierarchyPanel::DrawEntityNode(const EntityNode& node)
     }
 }
 
-
 void HierarchyPanel::BuildHierarchy()
 {
-    const std::vector<std::shared_ptr<Entity>> allEntities = p_editor->GetEngine()->GetEntityManager()->GetEntities();
+    m_rootEntities.clear();
+    std::unordered_map<Entity*, std::shared_ptr<EntityNode>> nodeMap;
 
-    std::unordered_map<Entity*, EntityNode> entityNodeMap;
+    const auto& allEntities = p_editor->GetEngine()->GetEntityManager()->GetEntities();
 
     for (const auto& entity : allEntities)
     {
-        entityNodeMap[entity.get()] = EntityNode(entity);
+        nodeMap[entity.get()] = std::make_shared<EntityNode>(entity);
     }
 
-    m_rootEntities.clear();
-
     for (const auto& entity : allEntities)
     {
-        const auto& parent = entity->Transform()->GetParent();
+        auto parent = entity->Transform()->GetParent();
         if (parent)
         {
-            entityNodeMap[parent.get()].children.push_back(entityNodeMap[entity.get()]);
+            auto parentNodeIt = nodeMap.find(parent.get());
+            if (parentNodeIt != nodeMap.end())
+            {
+                parentNodeIt->second->children.push_back(nodeMap[entity.get()]);
+            }
         } else
         {
-            m_rootEntities.push_back(entityNodeMap[entity.get()]);
+            m_rootEntities.push_back(nodeMap[entity.get()]);
         }
     }
 }
 
 bool HierarchyPanel::IsDescendant(const std::shared_ptr<Entity>& child, const std::shared_ptr<Entity>& parent) const
 {
-    auto current = child->Transform()->GetParent();
-    while (current)
+    auto currentParent = child->Transform()->GetParent();
+    while (currentParent)
     {
-        if (current == parent)
+        if (currentParent == parent)
             return true;
-        current = current->Transform()->GetParent();
+        currentParent = currentParent->Transform()->GetParent();
     }
     return false;
 }
@@ -207,10 +212,10 @@ std::string HierarchyPanel::GenerateUniqueEntityName(const std::string& baseName
     std::string finalName = baseName;
     auto& entities = p_editor->GetEngine()->GetEntityManager()->GetEntities();
 
-    auto nameExists = [&entities](const std::string& name) {
-        return std::any_of(entities.begin(), entities.end(), [&](const std::shared_ptr<Entity>& e) {
-            return e->GetName() == name;
-        });
+    auto nameExists = [&entities](const std::string& name)
+    {
+        return std::any_of(entities.begin(), entities.end(), [&](const std::shared_ptr<Entity>& e)
+                           { return e->GetName() == name; });
     };
 
     while (nameExists(finalName))

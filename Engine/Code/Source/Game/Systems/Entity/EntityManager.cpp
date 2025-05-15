@@ -31,6 +31,16 @@ std::shared_ptr<Entity> EntityManager::GetFirstEntityByParent(const std::shared_
     return nullptr;
 }
 
+std::shared_ptr<Entity> EntityManager::GetEntityByRawPointer(Entity* rawPtr) const
+{
+    for (const auto& entity : m_entities)
+    {
+        if (entity.get() == rawPtr)
+            return entity;
+    }
+    return nullptr;
+}
+
 
 std::shared_ptr<Entity> EntityManager::CreateEntityFromTemplate(const std::string& a_templateName)
 {

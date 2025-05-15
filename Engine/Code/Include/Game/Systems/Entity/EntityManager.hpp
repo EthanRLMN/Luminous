@@ -29,6 +29,7 @@ public:
 
     [[nodiscard]] std::shared_ptr<Entity> GetEntityByName(const std::string& a_name) const;
     [[nodiscard]] std::shared_ptr<Entity> GetFirstEntityByParent(const std::shared_ptr<Entity>& a_parent) const;
+    [[nodiscard]] std::shared_ptr<Entity> GetEntityByRawPointer(Entity* rawPtr) const;
 
     template<typename T>
     [[nodiscard]] inline std::vector<std::shared_ptr<Entity>> GetEntitiesByComponent() const

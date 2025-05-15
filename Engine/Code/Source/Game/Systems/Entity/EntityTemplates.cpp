@@ -50,7 +50,7 @@ void EntityTemplates::Sphere()
 
         std::shared_ptr<ModelComponent> l_modelComponent = std::make_shared<ModelComponent>();
         l_modelComponent->SetMeshPath("Engine/Assets/Default/Models/VikingRoom.obj");
-        l_modelComponent->SetTexturePath("Engine/Assets/Default/Textures/VikingRoom.png");
+        l_modelComponent->SetTexturePath("Engine/Assets/Default/Textures/viking_room.png");
         l_entity->AddComponent(l_modelComponent);
 
         return l_entity;
