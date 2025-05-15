@@ -37,7 +37,7 @@ bool VulkanTexture::Create(const IResourceParams& a_params)
 
 void VulkanTexture::Destroy(IDevice* a_device)
 {
-    const VkDevice l_vkdevice = a_device->CastVulkan()->GetDevice();
+    const VkDevice& l_vkdevice = a_device->CastVulkan()->GetDevice();
     vkDeviceWaitIdle(l_vkdevice);
 
     if (m_textureImageView != nullptr)
@@ -70,10 +70,10 @@ void VulkanTexture::CreateTextureImage(IDevice* a_device, ICommandPool* a_comman
         return;
     }
 
-    const VkDevice l_vkDevice = a_device->CastVulkan()->GetDevice();
-    const VkPhysicalDevice l_vkPhysicalDevice = a_device->CastVulkan()->GetPhysicalDevice();
-    const VkQueue l_vkGraphicsQueue = a_device->CastVulkan()->GetGraphicsQueue();
-    const VkCommandPool l_vkCommandPool = a_commandPool->CastVulkan()->GetCommandPool();
+    const VkDevice& l_vkDevice = a_device->CastVulkan()->GetDevice();
+    const VkPhysicalDevice& l_vkPhysicalDevice = a_device->CastVulkan()->GetPhysicalDevice();
+    const VkQueue& l_vkGraphicsQueue = a_device->CastVulkan()->GetGraphicsQueue();
+    const VkCommandPool& l_vkCommandPool = a_commandPool->CastVulkan()->GetCommandPool();
 
     int l_texWidth, l_texHeight, l_texChannels = -1;
     stbi_uc* l_pixels = stbi_load(a_path.c_str(), &l_texWidth, &l_texHeight, &l_texChannels, STBI_rgb_alpha);
@@ -197,7 +197,7 @@ void VulkanTexture::CreateBuffer(const VkDevice& a_device, const VkPhysicalDevic
 
 void VulkanTexture::TransitionImageLayout(const VkDevice& a_device, const VkQueue& a_graphicsQueue, const VkCommandPool& a_commandPool, const VkImage& a_image, const VkImageLayout& a_oldLayout, const VkImageLayout& a_newLayout, const uint32_t& a_mipLevels)
 {
-    const VkCommandBuffer l_commandBuffer = BeginSingleTimeCommands(a_device, a_commandPool);
+    const VkCommandBuffer& l_commandBuffer = BeginSingleTimeCommands(a_device, a_commandPool);
     VkImageMemoryBarrier l_barrier{ };
     l_barrier.sType = VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER;
     l_barrier.oldLayout = a_oldLayout;
@@ -286,7 +286,7 @@ void VulkanTexture::EndSingleTimeCommands(const VkDevice& a_device, const VkQueu
 
 void VulkanTexture::CopyBufferToImage(const VkDevice& a_device, const VkQueue& a_graphicsQueue, const VkCommandPool& a_commandPool, const VkBuffer& a_buffer, const VkImage& a_image, const uint32_t& a_width, const uint32_t& a_height)
 {
-    const VkCommandBuffer l_commandBuffer = BeginSingleTimeCommands(a_device, a_commandPool);
+    const VkCommandBuffer& l_commandBuffer = BeginSingleTimeCommands(a_device, a_commandPool);
     VkBufferImageCopy l_bufferImageCopy{};
     l_bufferImageCopy.bufferOffset = 0;
     l_bufferImageCopy.bufferRowLength = 0;
@@ -311,7 +311,7 @@ void VulkanTexture::GenerateMipMaps(IDevice* a_device, const VkQueue& a_graphics
     if (!(l_formatProperties.optimalTilingFeatures & VK_FORMAT_FEATURE_SAMPLED_IMAGE_FILTER_LINEAR_BIT))
         throw std::runtime_error("texture image format does not support linear blitting!");
 
-    const VkCommandBuffer l_commandBuffer = BeginSingleTimeCommands(a_device->CastVulkan()->GetDevice(), a_commandPool);
+    const VkCommandBuffer& l_commandBuffer = BeginSingleTimeCommands(a_device->CastVulkan()->GetDevice(), a_commandPool);
     VkImageMemoryBarrier l_barrier{ };
     l_barrier.sType = VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER;
     l_barrier.image = a_image;
