@@ -4,6 +4,8 @@
 #include "Engine.hpp"
 #include "Jolt/Physics/Collision/Shape/CapsuleShape.h"
 
+#include "Game/Systems/Physics/PhysicsSystem.hpp"
+
 void RigidbodyComponent::Initialize()
 {
 
@@ -48,6 +50,24 @@ void RigidbodyComponent::Initialize()
 
 }
 
+void RigidbodyComponent::Update()
+{
+    if (m_entity.expired())
+        return;
+    if (m_rigidbody == nullptr)
+        return;
+    
+    if (TransformComponent* l_transform = m_entity.lock()->Transform().get())
+    {
+        if (l_transform->GetLocalScale() != m_oldTransformSize)
+        {   
+            SetColliderShape();
+            
+        }
+    }
+
+}
+
 void RigidbodyComponent::SetCollider()
 {
 
@@ -55,7 +75,7 @@ void RigidbodyComponent::SetCollider()
     JPH::Vec3 l_position = JPH::Vec3(l_transform->GetLocalPosition().x, l_transform->GetLocalPosition().y, l_transform->GetLocalPosition().z);
     JPH::Vec3 l_scale = JPH::Vec3(l_transform->GetLocalScale().x, l_transform->GetLocalScale().y , l_transform->GetLocalScale().z);
     JPH::Quat l_rotation = JPH::Quat(l_transform->GetLocalRotationQuat().x, l_transform->GetLocalRotationQuat().y, l_transform->GetLocalRotationQuat().z, l_transform->GetLocalRotationQuat().w);
-
+    m_oldTransformSize = l_transform->GetLocalScale();
 
     if (m_colliderType == ColliderType::BOXCOLLIDER)
     {
@@ -99,5 +119,26 @@ void RigidbodyComponent::SetCollider()
     }
     
 
+}
+
+void RigidbodyComponent::SetColliderShape()
+{
+
+    TransformComponent* l_transform = m_entity.lock().get()->GetComponent<TransformComponent>().get();
+    JPH::Vec3 l_scale = JPH::Vec3(l_transform->GetLocalScale().x, l_transform->GetLocalScale().y, l_transform->GetLocalScale().z);
+
+    if (m_colliderType == ColliderType::BOXCOLLIDER)
+    {
+
+
+        l_scale += JPH::Vec3(m_boxSizeOffset.x, m_boxSizeOffset.y, m_boxSizeOffset.z);
+        JPH::BoxShapeSettings settings(l_scale);
+        settings.SetEmbedded();
+        JPH::ShapeSettings::ShapeResult floor_shape_result = settings.Create();
+        JPH::ShapeRefC floor_shape = floor_shape_result.Get();
+
+
+        GetEngine()->GetPhysicsSystem()->GetBodyInterface().SetShape(m_rigidbody->GetRigidBody()->GetID(),floor_shape,true,m_active);
+    }
 }
 

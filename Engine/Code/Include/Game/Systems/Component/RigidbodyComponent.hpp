@@ -21,7 +21,7 @@ public:
     ~RigidbodyComponent() override = default;
     void Initialize() override;
     void GameplayStarted() override{};
-    void Update() override{};
+    void Update() override;
 
     
     
@@ -32,7 +32,8 @@ public:
     inline void SetCapsuleWidth(float a_width) { m_capsuleWidth = a_width; }
     inline void SetCapsuleHeight(float a_height) { m_capsuleHeight = a_height; }
     void SetCollider();
-    inline void SetColliderSize(Maths::Vector3 a_boxSize) { m_boxSizeOffset = a_boxSize; SetCollider();} //Set Collider size for a Box
+    void SetColliderShape();
+    inline void SetColliderSize(Maths::Vector3 a_boxSize) { m_boxSizeOffset = a_boxSize; SetColliderShape();} //Set Collider size for a Box
     inline void SetColliderSize(Maths::Vector2 a_capsuleSize) { m_capsuleSizeOffset = a_capsuleSize; SetCollider(); } //Set Collider size for a Capsule
     inline void SetColliderSize(float a_sphereSize) { m_sphereSizeOffset = a_sphereSize; SetCollider(); } //Set Collider size for a Sphere
 
@@ -56,12 +57,13 @@ private:
     ModelComponent* m_collisionDebugModel;
     ModelComponent* m_capsuleDebugSphere;
     RigidBody* m_rigidbody;
-    ColliderType m_colliderType = ColliderType::CAPSULECOLLIDER;
+    ColliderType m_colliderType = ColliderType::BOXCOLLIDER;
     JPH::EActivation m_active = JPH::EActivation::Activate;
 
     Maths::Vector3 m_boxSizeOffset{ 0.f, 0.f, 0.f };
     float m_sphereSizeOffset{ 2.0f };
-    Maths::Vector2 m_capsuleSizeOffset{ 10.f, 5.f };
+    Maths::Vector2 m_capsuleSizeOffset{ 1.f, 2.f };
+    Maths::Vector3 m_oldTransformSize{ 0.0f, 0.0f, 0.0f };
 };
 
 

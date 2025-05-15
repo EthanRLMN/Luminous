@@ -10,7 +10,7 @@
 
 
 class RigidbodyComponent;
-
+class PhysicsSystem;
 
 class RigidBody
 {
@@ -115,6 +115,7 @@ public:
 
     inline virtual void OnCollisionExit(RigidBody* a_other) { /*DEBUG_LOG_ERROR("COLLISION ENDED");*/ };
     inline virtual void OnTriggerExit(RigidBody* a_other) { /*DEBUG_LOG_ERROR("TRIGGER ENDED");*/ };
+
 
 private:
     JPH::Body* m_rigidBody { nullptr };
