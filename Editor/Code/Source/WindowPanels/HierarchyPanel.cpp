@@ -87,26 +87,26 @@ void HierarchyPanel::Render()
         m_newParent = nullptr;
     }
 
-    ImGui::Separator();
-    ImGui::Text("Drag entities here to detach them");
+    ImVec2 avail = ImGui::GetContentRegionAvail();
 
-    ImGui::BeginChild("##DetachZone", ImVec2(ImGui::GetContentRegionAvail().x, 50), true);
-
-    if (ImGui::BeginDragDropTarget())
+    if (avail.x > 0.0f && avail.y > 0.0f)
     {
-        if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("ENTITY_DRAG"))
+        ImVec2 detachZoneSize = ImVec2(avail.x, avail.y);
+
+        ImGui::SetCursorPosY(ImGui::GetCursorPosY());
+        ImGui::InvisibleButton("##DetachZone", detachZoneSize);
+
+        if (ImGui::BeginDragDropTarget())
         {
-            Entity* droppedRawPtr = *(Entity**) payload->Data;
-            m_entityToReparent = p_editor->GetEngine()->GetEntityManager()->GetEntityByRawPointer(droppedRawPtr);
-
-            m_newParent = nullptr;
+            if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("ENTITY_DRAG"))
+            {
+                Entity* droppedRawPtr = *(Entity**) payload->Data;
+                m_entityToReparent = p_editor->GetEngine()->GetEntityManager()->GetEntityByRawPointer(droppedRawPtr);
+                m_newParent = nullptr;
+            }
+            ImGui::EndDragDropTarget();
         }
-        ImGui::EndDragDropTarget();
     }
-
-
-    ImGui::EndChild();
-
     ImGui::End();
 }
 
