@@ -9,10 +9,6 @@ void CameraComponent::Initialize() {
     m_projectionMatrix = UpdateProjectionMatrix(m_fieldOfView, m_aspectRatio, m_nearPlane, m_farPlane);
 }
 
-void CameraComponent::GameplayStarted() {
-
-}
-
 void CameraComponent::Update() {
     m_viewMatrix = UpdateViewMatrix(m_eye, m_center, m_worldUp);
 }

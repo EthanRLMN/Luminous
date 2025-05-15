@@ -8,7 +8,7 @@ public:
     CameraComponent() = default;
 
     void Initialize() override;
-    void GameplayStarted() override ;
+    void GameplayStarted() override {};
     void Update() override ;
   
 
@@ -18,11 +18,16 @@ public:
     float GetFieldOfView() { return m_fieldOfView; }
     float GetAspectRatio() { return m_aspectRatio; }
 
+    Maths::Vector3 GetEye() { return m_eye; }
+    Maths::Vector3 GetCenter() { return m_center; }
+
     void SetIsActive(bool a_isActive) { m_isActive = a_isActive; }
     void SetNearPlane(float a_nearPlane) { m_nearPlane = a_nearPlane; }
     void SetFarPlane(float a_farPlane) { m_farPlane = a_farPlane; }
     void SetFieldOfView(float a_fieldofView) { m_fieldOfView = a_fieldofView; }
     void SetAspectRatio(float a_aspectRatio) { m_aspectRatio = a_aspectRatio; }
+    void SetEye(Maths::Vector3 a_eye){m_eye = a_eye;}
+    void SetCenter(Maths::Vector3 a_center) {m_center = a_center;}
 
 private:
     bool m_isActive = true;
@@ -34,6 +39,7 @@ private:
 
     Maths::Matrix4 m_projectionMatrix{ Maths::Matrix4::identity };
     Maths::Matrix4 m_viewMatrix{ Maths::Matrix4::identity };
+
     Maths::Vector3 m_eye{ 0.0f, 0.0f, 5.0f };
     Maths::Vector3 m_center{ 0.0f, 0.0f, 4.0f };
 

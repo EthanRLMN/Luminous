@@ -116,6 +116,8 @@ void Scene::LoadScene(std::string filename, const EntityManager& a_entityManager
                         l_camera->SetFarPlane(compData.farPlane);
                         l_camera->SetNearPlane(compData.nearPlane);
                         l_camera->SetFieldOfView(compData.fieldOfView);
+                        l_camera->SetEye(compData.eye);
+                        l_camera->SetCenter(compData.center);
                     }
                 }
             }, l_component);
@@ -185,6 +187,8 @@ void Scene::SaveScene(const std::string& filepath, const EntityManager& a_entity
             l_cameraData.nearPlane = l_camera->GetNearPlane();
             l_cameraData.fieldOfView = l_camera->GetFieldOfView();
             l_cameraData.isActive = l_camera->GetisActive();
+            l_cameraData.eye = l_camera->GetEye();
+            l_cameraData.center = l_camera->GetCenter();
 
             l_datasaver.componentType = "Camera";
             l_datasaver.components.push_back(l_cameraData);

@@ -103,6 +103,9 @@ struct CameraComponentData
     float nearPlane;
     float farPlane;
     float fieldOfView;
+
+    Vec3 eye;
+    Vec3 center;
 };
 
 using SerializedComponent = rfl::Variant<
