@@ -150,13 +150,15 @@ void VulkanRenderer::RecordCommandBuffer(const VkCommandBuffer& a_commandBuffer,
 
             for (const std::shared_ptr<Entity>& entity : entitiesWithModels)
             {
+                //Set Ubo's values
                 UniformBufferObject l_ubo{};
                 const Maths::Matrix4 l_modelMatrix = entity->Transform()->GetGlobalMatrix();
                 l_ubo.model = l_modelMatrix.Transpose();
                 l_ubo.view = m_cameraEditor.GetViewMatrix().Transpose();
                 l_ubo.proj = m_cameraEditor.GetProjectionMatrix();
-                l_ubo.debug = 0;
+                l_ubo.debug = 0; // Debug = 0 : Light applied to it (Most models)
 
+                //Send the ubo and Draw the Model 
                 DrawModel(entity->GetComponent<ModelComponent>().get(), a_commandBuffer, a_descriptor, a_graphicsPipeline, a_pipelineLayout, l_ubo);
 
             }
@@ -169,13 +171,14 @@ void VulkanRenderer::RecordCommandBuffer(const VkCommandBuffer& a_commandBuffer,
 
             for (const std::shared_ptr<Entity>& entity : entitieswithColliders)
             {
+
+                //Set Ubo's Camera (View/Projection)
                 UniformBufferObject l_ubo{};
-                const Maths::Matrix4 l_modelMatrix = entity->Transform()->GetGlobalMatrix();
-                l_ubo.model = l_modelMatrix.Transpose();
                 l_ubo.view = m_cameraEditor.GetViewMatrix().Transpose();
                 l_ubo.proj = m_cameraEditor.GetProjectionMatrix();
-                l_ubo.debug = 1;
+                l_ubo.debug = 1; //Debug = 1 : No lights applied (Used to debug colliders)
 
+                //Get Basic Components
                 TransformComponent* l_transform = entity->Transform().get();
                 RigidbodyComponent* l_rigidbody = entity->GetComponent<RigidbodyComponent>().get();
                 ColliderType l_colliderType = l_rigidbody->GetColliderType();
@@ -184,11 +187,13 @@ void VulkanRenderer::RecordCommandBuffer(const VkCommandBuffer& a_commandBuffer,
                 Maths::Vector3 l_rot = l_transform->GetGlobalRotationVec();
                 Maths::Vector3 l_scale = l_transform->GetGlobalScale();
 
+                //Check the collider type
                 if (l_colliderType == ColliderType::SPHERECOLLIDER)
                 {
                     float l_radius = l_scale.y += l_rigidbody->GetSphereOffset();
                     l_scale = Maths::Vector3(l_radius);
 
+                    //Matrix recalculation to fit sphere size's norm
                     Maths::Matrix4 l_posMat = Maths::Matrix4::Translation(l_pos);
                     Maths::Matrix4 l_rotMat = Maths::Matrix4::RotationXYZ(l_rot);
                     Maths::Matrix4 l_scaleMat = Maths::Matrix4::Scale(l_scale);
@@ -198,65 +203,48 @@ void VulkanRenderer::RecordCommandBuffer(const VkCommandBuffer& a_commandBuffer,
                 }
                 else if (l_colliderType == ColliderType::CAPSULECOLLIDER)
                 {
+                    //Get basic collider's values
+                    float l_capsuleRadius = l_rigidbody->GetCapsuleWidth();
+                    float l_capsuleHeight = l_rigidbody->GetCapsuleHeight();
+                    Maths::Vector2 l_capsuleSizeOffset = l_rigidbody->GetCapsuleOffset();
 
-                    
-                    
-                    Maths::Vector3 l_rot = entity->Transform()->GetGlobalRotationVec();
-                    Maths::Quaternion l_rotQ = entity->Transform()->GetGlobalRotationQuat();
-                    Maths::Quaternion l_rotQ2 = Maths::Quaternion(-l_rotQ.x, -l_rotQ.y, -l_rotQ.z, l_rotQ.w);
-                    l_rot = Maths::Vector3(l_rot.x, l_rot.y, l_rot.z);
-                    l_rot = l_rotQ2.ToEulerAngles(true);
-                    Maths::Vector3 l_scale = entity->Transform()->GetGlobalScale();
-                    l_scale.x = entity.get()->GetComponent<RigidbodyComponent>()->GetCapsuleWidth() + entity.get()->GetComponent<RigidbodyComponent>()->GetCapsuleOffset().x;
-                    l_scale.y = entity.get()->GetComponent<RigidbodyComponent>()->GetCapsuleWidth() + entity.get()->GetComponent<RigidbodyComponent>()->GetCapsuleOffset().x;
-                    l_scale.z = entity.get()->GetComponent<RigidbodyComponent>()->GetCapsuleWidth() + entity.get()->GetComponent<RigidbodyComponent>()->GetCapsuleOffset().x;
+                    Maths::Quaternion l_rotQuat = l_transform->GetGlobalRotationQuat();
+                    Maths::Quaternion l_rotQuatOpposite = Maths::Quaternion(-l_rotQuat.x, -l_rotQuat.y, -l_rotQuat.z, l_rotQuat.w); //Rotation is the opposite on Jolt : need to reverse the quat rotation
+                    l_rot = l_rotQuatOpposite.ToEulerAngles(true);
+                    Maths::Vector3 l_scale = l_transform->GetGlobalScale();
+                    l_scale = Maths::Vector3(l_capsuleRadius + l_capsuleSizeOffset.x);
 
-                    
                     Maths::Matrix4 l_rotMat = Maths::Matrix4::RotationXYZ(l_rot);
                     Maths::Matrix4 l_scaleMat = Maths::Matrix4::Scale(l_scale);
-                    
 
-                    //l_rot = Maths::Vector3(-l_rot.x, -l_rot.y, -l_rot.z);
+                    //Loop 2 times to draw both tips of the cynlinder (spheres)
                     for (int l_i = 0; l_i < 2; ++l_i)
                     {
-                        Maths::Vector3 l_pos = entity->Transform()->GetGlobalPosition();
-                        //l_rotQ = Maths::Quaternion::FromEulerAngles(l_rot);
-                        Maths::Vector3 l_add = Maths::Vector3(0, entity.get()->GetComponent<RigidbodyComponent>()->GetCapsuleHeight() + entity.get()->GetComponent<RigidbodyComponent>()->GetCapsuleOffset().y, 0) * l_rotQ;
+                        //Calculate offset to position the spheres right
+                        Maths::Vector3 l_add = Maths::Vector3(0, l_capsuleHeight + l_capsuleSizeOffset.y, 0) * l_rotQuat;
                         if (l_i == 0)
                             l_pos += l_add;
                         else
                             l_pos -= l_add;
 
                         Maths::Matrix4 l_posMat = Maths::Matrix4::Translation(l_pos);
-                        
 
-                        Maths::Matrix4 l_modelMatrixSphere2 = Maths::Matrix4::TRS(l_posMat, l_rotMat, l_scaleMat);
-                        l_ubo.model = l_modelMatrixSphere2.Transpose();
+                        Maths::Matrix4 l_modelMatrixSphere = Maths::Matrix4::TRS(l_posMat, l_rotMat, l_scaleMat);
+                        l_ubo.model = l_modelMatrixSphere.Transpose();
 
-                        const std::array<VkBuffer, 1> l_vertexBuffers = { entity.get()->GetComponent<RigidbodyComponent>().get()->GetCapsuleSphereDebug()->GetMesh()->CastVulkan()->GetVertexBuffer() };
-                        const std::array<VkDeviceSize, 1> l_offsets = { 0 };
-                        vkCmdBindVertexBuffers(a_commandBuffer, 0, 1, l_vertexBuffers.data(), l_offsets.data());
-                        vkCmdBindIndexBuffer(a_commandBuffer, entity.get()->GetComponent<RigidbodyComponent>().get()->GetCapsuleSphereDebug()->GetMesh()->CastVulkan()->GetIndexBuffer(), 0, VK_INDEX_TYPE_UINT32);
-                        std::vector<VkDescriptorSet> sets = { a_descriptor->CastVulkan()->GetDescriptorSet()[m_currentFrame], entity.get()->GetComponent<RigidbodyComponent>().get()->GetCapsuleSphereDebug()->GetTexture()->CastVulkan()->GetDescriptorSet() };
-                        vkCmdBindDescriptorSets(a_commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, a_pipelineLayout, 0, static_cast<uint32_t>(sets.size()), sets.data(), 0, nullptr);
-                        vkCmdPushConstants(a_commandBuffer, a_pipelineLayout, VK_SHADER_STAGE_VERTEX_BIT, 0, sizeof(UniformBufferObject), &l_ubo);
-                        vkCmdDrawIndexed(a_commandBuffer, static_cast<uint32_t>(entity.get()->GetComponent<RigidbodyComponent>().get()->GetCapsuleSphereDebug()->GetMesh()->CastVulkan()->GetIndices().size()), 1, 0, 0, 0);                        
+                        DrawModel(l_rigidbody->GetCapsuleSphereDebug(), a_commandBuffer, a_descriptor, a_graphicsPipeline, a_pipelineLayout, l_ubo);
+                        l_pos = l_transform->GetGlobalPosition();
                     }
 
+                    //Setting the values back for the cylinder
+                    l_scale = Maths::Vector3(l_capsuleRadius + l_capsuleSizeOffset.x, l_capsuleHeight + l_capsuleSizeOffset.y, l_capsuleRadius + l_capsuleSizeOffset.x);
 
-                    
-                    Maths::Vector3 l_pos2 = entity->Transform()->GetGlobalPosition();
-                    Maths::Vector3 l_rot2 = entity->Transform()->GetGlobalRotationVec();
-                    Maths::Vector3 l_scale2 = entity->Transform()->GetGlobalScale();
-                    l_scale2 = Maths::Vector3(entity.get()->GetComponent<RigidbodyComponent>()->GetCapsuleWidth() + entity.get()->GetComponent<RigidbodyComponent>()->GetCapsuleOffset().x, entity.get()->GetComponent<RigidbodyComponent>()->GetCapsuleHeight() + entity.get()->GetComponent<RigidbodyComponent>()->GetCapsuleOffset().y, entity.get()->GetComponent<RigidbodyComponent>()->GetCapsuleWidth() + entity.get()->GetComponent<RigidbodyComponent>()->GetCapsuleOffset().x);
+                    Maths::Matrix4 l_posMat = Maths::Matrix4::Translation(l_pos);
+                    l_rotMat = Maths::Matrix4::RotationXYZ(l_rot);
+                    l_scaleMat = Maths::Matrix4::Scale(l_scale);
+                    Maths::Matrix4 l_modelMatrixSphere = Maths::Matrix4::TRS(l_posMat, l_rotMat, l_scaleMat);
 
-                    Maths::Matrix4 l_posMat2 = Maths::Matrix4::Translation(l_pos2);
-                    Maths::Matrix4 l_rotMat2 = Maths::Matrix4::RotationXYZ(l_rot);
-                    Maths::Matrix4 l_scaleMat2 = Maths::Matrix4::Scale(l_scale2);
-                    Maths::Matrix4 l_modelMatrixSphere2 = Maths::Matrix4::TRS(l_posMat2, l_rotMat2, l_scaleMat2);
-
-
-                    l_ubo.model = l_modelMatrixSphere2.Transpose();
+                    l_ubo.model = l_modelMatrixSphere.Transpose();
                 }
                 else if (l_colliderType == ColliderType::BOXCOLLIDER)
                 {
@@ -268,12 +256,11 @@ void VulkanRenderer::RecordCommandBuffer(const VkCommandBuffer& a_commandBuffer,
                     Maths::Matrix4 l_modelMatrixSphere = Maths::Matrix4::TRS(l_posMat, l_rotMat, l_scaleMat);
                     l_ubo.model = l_modelMatrixSphere.Transpose();
                 }
-
+                //Draw the basic shape (sphere,box,cynlinder)
                 DrawModel(entity.get()->GetComponent<RigidbodyComponent>().get()->GetModelDebug(), a_commandBuffer, a_descriptor, a_graphicsPipeline, a_pipelineLayout, l_ubo);
 
             }
             vkCmdBindPipeline(a_commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, a_graphicsPipeline);
-
         }
 
         // Callback ImGui_ImplVulkan_RenderDrawData

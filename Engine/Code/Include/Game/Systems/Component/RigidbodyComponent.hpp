@@ -57,7 +57,7 @@ private:
     ModelComponent* m_collisionDebugModel;
     ModelComponent* m_capsuleDebugSphere;
     RigidBody* m_rigidbody;
-    ColliderType m_colliderType = ColliderType::BOXCOLLIDER;
+    ColliderType m_colliderType = ColliderType::CAPSULECOLLIDER;
     JPH::EActivation m_active = JPH::EActivation::Activate;
 
     Maths::Vector3 m_boxSizeOffset{ 0.f, 0.f, 0.f };
@@ -66,38 +66,3 @@ private:
     Maths::Vector3 m_oldTransformSize{ 0.0f, 0.0f, 0.0f };
 };
 
-
-/*
-class RigidbodyComponent : public std::enable_shared_from_this<RigidbodyComponent>
-{
-public:
-    inline void AddCollisionListener(const std::shared_ptr<ICollisionListener>& a_listener) { m_listeners.push_back(a_listener); }
-
-    void NotifyCollisionEnter(const std::shared_ptr<RigidbodyComponent>& a_other)
-    {
-        for (const std::shared_ptr<ICollisionListener>& l_listener : m_listeners)
-            l_listener->OnCollisionEnter(shared_from_this(), a_other);
-    }
-
-    void NotifyCollisionStay(const std::shared_ptr<RigidbodyComponent>& a_other)
-    {
-        for (const std::shared_ptr<ICollisionListener>& l_listener : m_listeners)
-            l_listener->OnCollisionStay(shared_from_this(), a_other);
-    }
-
-    void NotifyCollisionExit(const std::shared_ptr<RigidbodyComponent>& a_other)
-    {
-        for (const std::shared_ptr<PhysicsCollisionListener>& l_listener : m_listeners)
-            l_listener->OnColl(shared_from_this(), a_other);
-    }
-
-
-    bool IsSimulatingPhysics() const { return m_simulatePhysics; }
-    void SetSimulatingPhysics(const bool a_value) { m_simulatePhysics = a_value; }
-
-
-private:
-    std::vector<std::shared_ptr<ICollisionListener>> m_listeners { };
-    bool m_simulatePhysics { true };
-};
-*/
