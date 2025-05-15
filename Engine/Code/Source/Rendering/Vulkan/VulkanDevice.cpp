@@ -64,6 +64,7 @@ bool VulkanDevice::CheckDeviceSuitable(const VkPhysicalDevice& a_device, const V
 
 	VkPhysicalDeviceFeatures l_deviceFeatures { };
 	vkGetPhysicalDeviceFeatures(a_device, &l_deviceFeatures);
+    
 
 	QueueFamilyIndices l_indices = GetQueueFamilies(a_device, a_surface);
 	bool l_extensionSupported = CheckDeviceExtensionSupport(a_device);
@@ -175,6 +176,7 @@ void VulkanDevice::ProcessLogicalDeviceInfo(const QueueFamilyIndices& a_queueFam
 	VkPhysicalDeviceFeatures l_physicalDeviceFeatures { };
 	l_physicalDeviceFeatures.samplerAnisotropy = VK_TRUE;
     l_physicalDeviceFeatures.sampleRateShading = VK_TRUE;
+    l_physicalDeviceFeatures.fillModeNonSolid = VK_TRUE;
 
 	VkDeviceCreateInfo l_deviceCreateInfo { };
     l_deviceCreateInfo.sType = VK_STRUCTURE_TYPE_DEVICE_CREATE_INFO;
