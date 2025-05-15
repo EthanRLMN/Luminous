@@ -36,8 +36,8 @@ void VulkanRenderer::Create(IDevice* a_device, ISwapChain* a_swapChain)
     CreateDefaultTextureSampler(a_device);
 
     LightData l_light {
-        .m_color = Maths::Vector3(1.0f, 1.0f, 1.0f),
         .m_position = Maths::Vector3(0.0f, 3.0f, 0.0f),
+        .m_color = Maths::Vector3(1.0f, 1.0f, 1.0f),
         .m_type = 1,
         .m_intensity = 1.0f
     };

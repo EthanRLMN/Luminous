@@ -36,7 +36,7 @@ struct alignas(16) GpuLightBuffer
     int m_lightCount { 0 };
 
     int _pad[3] { 0 };
-    LightData m_lights[];
+    LightData m_lights[MAX_LIGHTS];
 };
 
 
