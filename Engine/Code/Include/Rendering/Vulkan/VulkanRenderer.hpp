@@ -24,7 +24,7 @@ public:
 
     void DrawFrame(IWindow* a_window, IDevice* a_device, ISwapChain* a_swapChain, IPipeline* a_pipeline, IBuffer* a_buffer, IRenderPassManager* a_renderPassManager, IDescriptor* a_descriptor, ISynchronization* a_synchronization, ICommandBuffer* a_commandBuffer, IFrameBufferManager* a_frameBufferManager, IDepthResource* a_depthResource, ISurface* a_surface, IMultiSampling* a_multisampling, IInputManager* a_inputManager, EntityManager a_entityManager) override;
     void Destroy() override {};
-    void SetViewportSize(float a_width, float a_height) override { m_viewportWidth = a_width; m_viewportHeight = a_height; };
+    void SetViewportSize(const float a_width, const float a_height) override { m_viewportWidth = a_width; m_viewportHeight = a_height; };
     VulkanRenderer* CastVulkan() override { return this; }
 
 	void RecordCommandBuffer(const VkCommandBuffer& a_commandBuffer, const VkPipeline& a_graphicsPipeline, const VkPipelineLayout& a_pipelineLayout, const uint32_t& a_imageIndex, ISwapChain* a_swapChain, const IRenderPassManager* a_renderPassManager, IDescriptor* a_descriptor, const IFrameBufferManager* a_frameBufferManager, const EntityManager& a_entityManager, const VkPipeline& a_wireGraphicsPipeline) const;
@@ -39,8 +39,6 @@ public:
 	[[nodiscard]] VkImage GetViewportImage() const { return m_viewportImage; }
 	[[nodiscard]] VkImageView GetViewportImageView() const { return m_viewportImageview; }
 	[[nodiscard]] VkDeviceMemory GetViewportImageMemory() const { return m_viewportMemory; }
-	[[nodiscard]] VkSampler GetViewportImageSampler() const { return m_viewportSampler; }
-    VkSampler GetDefaultTextureSampler() const { return m_defaultTexSampler; }
 
 	void CreateViewportImage(IDevice* a_device, ISwapChain* a_swapChain);
     void CopyImageToViewport(ISwapChain* a_swapChain, const VkCommandBuffer& a_cmdBuffer) const;
@@ -50,22 +48,21 @@ public:
 
     bool bReloadImage = false;
     mutable bool bUsable = false;
+    bool m_recreateDsets = false;
 
-    LightComponent m_lights[32];
-    LightComponent m_light;
+    LightData m_lights[MAX_LIGHTS];
 
 
 private:
     void SetupSubmitInfo(VkSubmitInfo& a_submitInfo, const std::vector<VkSemaphore>& a_waitSemaphores, const std::array<VkPipelineStageFlags, 1>& a_waitStages, const std::vector<VkCommandBuffer>& a_commandBuffer, const std::vector<VkSemaphore>& a_signalSemaphores) const;
-    static void PresentRendererInfo(VkPresentInfoKHR& a_presentInfo, const std::vector<VkSemaphore>& a_signalSemaphores, const std::vector<VkSwapchainKHR>& a_swapchains);
     static void PresentRenderPassInfo(VkRenderPassBeginInfo& a_renderPassBeginInfo, const VkRenderPass& a_renderPass, const VkFramebuffer& a_framebuffer, const VkExtent2D& a_swapchainExtent, std::array<VkClearValue, 2> a_clearValues);
     static void FillViewportInfo(VkViewport& a_viewport, const VkExtent2D& a_swapChainExtent);
+    static void PresentRendererInfo(VkPresentInfoKHR& a_presentInfo, const std::vector<VkSemaphore>& a_signalSemaphores, const std::vector<VkSwapchainKHR>& a_swapchains);
 
     VkResult CreateViewportImageInfo(const VkDevice& a_device, const VkFormat& a_swapchainImageFormat);
     
-    
-    void ImageViewCreateInfo(VkImageViewCreateInfo& a_viewInfo, const VkImage& a_vkImage,ISwapChain* a_swapChain);
-    void SamplerCreateInfo(VkSamplerCreateInfo& a_samplerInfo);
+    static void ImageViewCreateInfo(VkImageViewCreateInfo& a_viewInfo, const VkImage& a_vkImage,ISwapChain* a_swapChain);
+    static void SamplerCreateInfo(VkSamplerCreateInfo& a_samplerInfo);
     static void ImageMemoryBarrierSrc(VkImageMemoryBarrier& a_barrierSrc, ISwapChain* a_swapChain, uint32_t a_currentFrame);
     static void ImageMemoryBarrierDst(VkImageMemoryBarrier& a_barrierDst, const VkImage& a_vkImage);
     static void ImageCopyRegion(VkImageCopy& a_copyRegion, float a_viewportWidth, float a_viewportHeight);
@@ -77,8 +74,7 @@ private:
     VkImage m_viewportImage { nullptr };
     VkImageView m_viewportImageview { nullptr };
     VkDeviceMemory m_viewportMemory { nullptr };
-    VkSampler m_viewportSampler { nullptr };
-    VkSampler m_defaultTexSampler { nullptr };
+    VkSampler m_defaultTexSampler{ nullptr };
 
     float m_viewportWidth { 2560.f };
     float m_viewportHeight { 1440.f };

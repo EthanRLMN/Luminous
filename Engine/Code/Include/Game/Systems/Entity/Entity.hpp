@@ -2,13 +2,15 @@
 
 #include <memory>
 #include <string>
-#include <vector>
 
 #include "EntityIDPool.hpp"
+
+#include <Game/Systems/Component/LightComponent.hpp>
+#include <Game/Systems/Component/ModelComponent.hpp>
 #include "Game/Systems/Component/EntityComponent.hpp"
 #include "Game/Systems/Component/TransformComponent.hpp"
-#include "Game/Systems/Physics/RigidBody.hpp"
 
+class Engine;
 class EntityManager;
 
 
@@ -43,8 +45,11 @@ public:
     inline void SetEngine(Engine* a_engine) { m_engine = a_engine; }
     inline void SetName(const std::string& a_newName) { m_name = a_newName; }
     inline void SetUUID(const EntityID a_uuid) { m_uuid = a_uuid; }
-    inline void AddComponent(const std::shared_ptr<EntityComponent>& a_component) { m_components.push_back(a_component); }
     inline std::shared_ptr<TransformComponent> Transform() const { return GetComponent<TransformComponent>(); }
+    inline std::shared_ptr<ModelComponent> Model() const { return GetComponent<ModelComponent>(); }
+    inline std::shared_ptr<LightComponent> Light() const { return GetComponent<LightComponent>(); }
+    void AddComponent(const std::shared_ptr<EntityComponent>& a_component);
+    void RemoveComponent(const std::shared_ptr<EntityComponent>& a_component);
     void SetActive(bool a_isActive);
 
 

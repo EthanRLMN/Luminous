@@ -24,7 +24,7 @@ void VulkanDescriptorSetLayout::Create(IDevice* a_device)
     VkDescriptorSetLayoutBinding l_lightLayoutBinding = {};
     l_lightLayoutBinding.binding = 2;
     l_lightLayoutBinding.descriptorCount = 1;
-    l_lightLayoutBinding.descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
+    l_lightLayoutBinding.descriptorType = VK_DESCRIPTOR_TYPE_STORAGE_BUFFER;
     l_lightLayoutBinding.pImmutableSamplers = nullptr;
     l_lightLayoutBinding.stageFlags = VK_SHADER_STAGE_FRAGMENT_BIT;
 

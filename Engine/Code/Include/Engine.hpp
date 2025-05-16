@@ -48,6 +48,9 @@ public:
 	[[nodiscard]] ICommandBuffer* GetCommandBuffer() const { return m_commandBuffer; }
 	[[nodiscard]] ISynchronization* GetSynchronization() const { return m_synchronization; }
 	[[nodiscard]] IRenderer* GetRenderer() const { return m_renderer; }
+    [[nodiscard]] Scene* GetScene() const { return m_scene; }
+    [[nodiscard]] EntityManager* GetEntityManager() { return &m_entityManager; }
+
     [[nodiscard]] bool IsRunning() const { return m_isRunning; }
     PhysicsSystem* GetPhysicsSystem() const { return m_physicsSystem; }
 

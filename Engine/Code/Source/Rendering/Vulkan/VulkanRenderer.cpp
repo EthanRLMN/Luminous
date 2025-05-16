@@ -41,9 +41,9 @@ void VulkanRenderer::Create(IDevice* a_device, ISwapChain* a_swapChain)
     LightComponent l_light = LightComponent();
     LightComponent l_light2 = LightComponent();
     l_light2.GetLight().m_color = Maths::Vector3(0.0f, 0.0f, 1.0f);
-    l_light2.GetLight().m_type = 1;
+    l_light2.GetLight().m_type = LightType::POINT;
     l_light2.GetLight().m_intensity = 0.0f;
-    m_lights[1] = l_light2;
+    m_lights[1] = l_light2.GetLight();
 
 }
 
@@ -105,6 +105,30 @@ void VulkanRenderer::DrawFrame(IWindow* a_window, IDevice* a_device, ISwapChain*
         DEBUG_LOG_ERROR("failed to present swap chain image");
 
     m_currentFrame = (m_currentFrame + 1) % MAX_FRAMES_IN_FLIGHT;
+}
+
+void VulkanRenderer::CreateDefaultTextureSampler(IDevice* a_device)
+{
+    VkSamplerCreateInfo l_samplerInfo{};
+    l_samplerInfo.sType = VK_STRUCTURE_TYPE_SAMPLER_CREATE_INFO;
+    l_samplerInfo.magFilter = VK_FILTER_LINEAR;
+    l_samplerInfo.minFilter = VK_FILTER_LINEAR;
+    l_samplerInfo.mipmapMode = VK_SAMPLER_MIPMAP_MODE_LINEAR;
+    l_samplerInfo.addressModeU = VK_SAMPLER_ADDRESS_MODE_CLAMP_TO_EDGE;
+    l_samplerInfo.addressModeV = VK_SAMPLER_ADDRESS_MODE_CLAMP_TO_EDGE;
+    l_samplerInfo.addressModeW = VK_SAMPLER_ADDRESS_MODE_CLAMP_TO_EDGE;
+    l_samplerInfo.anisotropyEnable = VK_FALSE;
+    l_samplerInfo.maxAnisotropy = 1.0f;
+    l_samplerInfo.borderColor = VK_BORDER_COLOR_INT_OPAQUE_BLACK;
+    l_samplerInfo.unnormalizedCoordinates = VK_FALSE;
+    l_samplerInfo.compareEnable = VK_FALSE;
+    l_samplerInfo.compareOp = VK_COMPARE_OP_ALWAYS;
+    l_samplerInfo.mipLodBias = 0.0f;
+    l_samplerInfo.minLod = 0.0f;
+    l_samplerInfo.maxLod = VK_LOD_CLAMP_NONE;
+    l_samplerInfo.pNext = nullptr;
+
+    vkCreateSampler(a_device->CastVulkan()->GetDevice(), &l_samplerInfo, nullptr, &m_defaultTexSampler);
 }
 
 
@@ -387,9 +411,10 @@ void VulkanRenderer::CreateViewportImage(IDevice* a_device, ISwapChain* a_swapCh
     ImageViewCreateInfo(l_viewInfo, m_viewportImage, a_swapChain);
     vkCreateImageView(l_device, &l_viewInfo, nullptr, &m_viewportImageview);
 
+    /*
     VkSamplerCreateInfo l_samplerInfo{ };
     SamplerCreateInfo(l_samplerInfo);
-    vkCreateSampler(l_device, &l_samplerInfo, nullptr, &m_viewportSampler);
+    vkCreateSampler(l_device, &l_samplerInfo, nullptr, &m_viewportSampler);*/
 }
 
 
@@ -429,11 +454,12 @@ void VulkanRenderer::DestroyViewportImage(IDevice* a_device)
         m_viewportImage = VK_NULL_HANDLE;
     }
 
+    /*
     if (m_viewportSampler != VK_NULL_HANDLE)
     {
         vkDestroySampler(l_device, m_viewportSampler, nullptr);
         m_viewportSampler = VK_NULL_HANDLE;
-    }
+    }*/
 
     if (m_viewportMemory != VK_NULL_HANDLE)
     {
@@ -447,30 +473,6 @@ void VulkanRenderer::DestroyViewportImage(IDevice* a_device)
         DEBUG_LOG_INFO("Default texture sampler has been destroyed.");
     }
 
-}
-
-void VulkanRenderer::CreateDefaultTextureSampler(IDevice* a_device)
-{
-    VkSamplerCreateInfo l_samplerInfo{ };
-    l_samplerInfo.sType = VK_STRUCTURE_TYPE_SAMPLER_CREATE_INFO;
-    l_samplerInfo.magFilter = VK_FILTER_LINEAR;
-    l_samplerInfo.minFilter = VK_FILTER_LINEAR;
-    l_samplerInfo.mipmapMode = VK_SAMPLER_MIPMAP_MODE_LINEAR;
-    l_samplerInfo.addressModeU = VK_SAMPLER_ADDRESS_MODE_CLAMP_TO_EDGE;
-    l_samplerInfo.addressModeV = VK_SAMPLER_ADDRESS_MODE_CLAMP_TO_EDGE;
-    l_samplerInfo.addressModeW = VK_SAMPLER_ADDRESS_MODE_CLAMP_TO_EDGE;
-    l_samplerInfo.anisotropyEnable = VK_FALSE;
-    l_samplerInfo.maxAnisotropy = 1.0f;
-    l_samplerInfo.borderColor = VK_BORDER_COLOR_INT_OPAQUE_BLACK;
-    l_samplerInfo.unnormalizedCoordinates = VK_FALSE;
-    l_samplerInfo.compareEnable = VK_FALSE;
-    l_samplerInfo.compareOp = VK_COMPARE_OP_ALWAYS;
-    l_samplerInfo.mipLodBias = 0.0f;
-    l_samplerInfo.minLod = 0.0f;
-    l_samplerInfo.maxLod = VK_LOD_CLAMP_NONE;
-    l_samplerInfo.pNext = nullptr;
-
-    vkCreateSampler(a_device->CastVulkan()->GetDevice(), &l_samplerInfo, nullptr, &m_defaultTexSampler);
 }
 
 

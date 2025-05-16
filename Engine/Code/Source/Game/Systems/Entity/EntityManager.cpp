@@ -1,5 +1,5 @@
+#include "Game/Systems/Component/MeshRendererComponent.hpp"
 #include "Game/Systems/Entity/EntityManager.hpp"
-
 #include "Game/Systems/Entity/EntityFactory.hpp"
 
 
@@ -35,9 +35,11 @@ std::shared_ptr<Entity> EntityManager::GetFirstEntityByParent(const std::shared_
 std::shared_ptr<Entity> EntityManager::CreateEntityFromTemplate(const std::string& a_templateName)
 {
     std::shared_ptr<Entity> l_entity = EntityFactory::Get().CreateEntity(a_templateName, *this);
+
     if (l_entity)
     {
         m_entities.push_back(l_entity);
+
         if (m_engine)
         {
             l_entity->SetEngine(m_engine);
@@ -48,10 +50,28 @@ std::shared_ptr<Entity> EntityManager::CreateEntityFromTemplate(const std::strin
 }
 
 
+void EntityManager::RegisterRenderable(const std::shared_ptr<Entity>& a_entity)
+{
+    m_renderableEntities.push_back(a_entity);
+}
+
+
+void EntityManager::UnregisterRenderable(const std::shared_ptr<Entity>& a_entity)
+{
+    std::erase(m_renderableEntities, a_entity);
+}
+
+
 void EntityManager::GameplayStarted() const
 {
     for (const std::shared_ptr<Entity>& l_entity : m_entities)
         l_entity->GameplayStarted();
+}
+
+
+std::vector<std::string> EntityManager::GetAvailableTemplates()
+{
+    return EntityFactory::Get().GetAvailableTemplates();
 }
 
 

@@ -1,21 +1,20 @@
-#include "imgui.h"
-#include "imgui/backends/imgui_impl_vulkan.h"
-
-#include "TextEditorPanel.hpp"
 #include "WindowPanels/FileExplorerPanel.hpp"
 
+#include <filesystem>
 #include <iostream>
+#include <string>
 
 #include "Rendering/Vulkan/VulkanRenderer.hpp"
 #include "Rendering/Vulkan/VulkanTexture.hpp"
+#include "ResourceManager/ResourceManager.hpp"
+#include "backends/imgui_impl_vulkan.h"
 
 
 static const std::filesystem::path s_AssetPath = "Engine/Assets";
 static const std::filesystem::path s_IconPath = "Editor/Assets/Icons/";
 
 
-FileExplorerPanel::FileExplorerPanel(Editor* a_editor, const std::string& a_windowIdentifier) :
-    IWindowPanel(a_editor, a_windowIdentifier)
+FileExplorerPanel::FileExplorerPanel(Editor* a_editor, const std::string& a_windowIdentifier) : IWindowPanel(a_editor, a_windowIdentifier)
 {
     m_currentDirectory = s_AssetPath;
     m_engine = a_editor->GetEngine();
@@ -25,17 +24,14 @@ FileExplorerPanel::FileExplorerPanel(Editor* a_editor, const std::string& a_wind
     m_directoryIconTexture->CastVulkan()->CreateTextureImageView(m_engine->GetDevice());
     m_fileIconTexture->CastVulkan()->CreateTextureImageView(m_engine->GetDevice());
 
-    m_directoryIconTexture->CastVulkan()->CreateTextureSampler(m_engine->GetDevice());
-    m_fileIconTexture->CastVulkan()->CreateTextureSampler(m_engine->GetDevice());
-
     m_directoryDescriptor = reinterpret_cast<ImTextureID>(ImGui_ImplVulkan_AddTexture(
-            m_engine->GetRenderer()->CastVulkan()->GetDefaultTextureSampler(),
+            ResourceManager::GetInstance().GetStandardSampler(),
             m_directoryIconTexture->CastVulkan()->GetTextureImageView(),
             VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL
             ));
 
     m_fileDescriptor = reinterpret_cast<ImTextureID>(ImGui_ImplVulkan_AddTexture(
-            m_engine->GetRenderer()->CastVulkan()->GetDefaultTextureSampler(),
+            ResourceManager::GetInstance().GetStandardSampler(),
             m_fileIconTexture->CastVulkan()->GetTextureImageView(),
             VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL
             ));
@@ -63,7 +59,7 @@ void FileExplorerPanel::Render()
         float thumbnailSize = 64.0f;
         float cellSize = thumbnailSize + padding;
         float panelWidth = ImGui::GetContentRegionAvail().x;
-        int columnCount = (int) (panelWidth / cellSize);
+        int columnCount = static_cast<int>(panelWidth / cellSize);
         if (columnCount < 1)
             columnCount = 1;
 
@@ -77,7 +73,21 @@ void FileExplorerPanel::Render()
 
             ImGui::PushID(filenameString.c_str());
 
-            ImTextureID icon = directoryEntry.is_directory() ? m_directoryDescriptor : m_fileDescriptor;
+            ImTextureID icon;
+            if (directoryEntry.is_directory())
+            {
+                icon = m_directoryDescriptor;
+            } else
+            {
+                std::string extension = path.extension().string();
+                if (extension == ".png" || extension == ".jpg")
+                {
+                    icon = GetOrLoadImageThumbnail(path.string());
+                } else
+                {
+                    icon = m_fileDescriptor;
+                }
+            }
 
             if (ImGui::ImageButton(filenameString.c_str(), icon, ImVec2(thumbnailSize, thumbnailSize)))
             {
@@ -94,12 +104,109 @@ void FileExplorerPanel::Render()
                 }
             }
 
+            if (ImGui::BeginDragDropSource())
+            {
+                std::string fullPath = path.string();
+                ImGui::SetDragDropPayload("FILE_DRAG", fullPath.c_str(), fullPath.size() + 1);
+                ImGui::Text("Drag: %s", filenameString.c_str());
+                ImGui::EndDragDropSource();
+            }
+
             ImGui::TextWrapped("%s", filenameString.c_str());
 
             ImGui::NextColumn();
             ImGui::PopID();
         }
         ImGui::Columns(1);
+    }
+
+    static enum class NewFileType {
+        None,
+        TextFile,
+        CppFile,
+        ShaderFile,
+        Folder
+    } selectedFileType = NewFileType::None;
+
+    static char newFileName[128] = "";
+
+    if (ImGui::BeginPopupContextWindow("FileExplorerContextMenu", ImGuiPopupFlags_MouseButtonRight | ImGuiPopupFlags_NoOpenOverItems))
+    {
+        if (ImGui::BeginMenu("Creer..."))
+        {
+            if (ImGui::MenuItem("Fichier texte"))
+            {
+                selectedFileType = NewFileType::TextFile;
+                ImGui::OpenPopup("CreateFilePopup");
+            }
+            if (ImGui::MenuItem("Fichier C++"))
+            {
+                selectedFileType = NewFileType::CppFile;
+                ImGui::OpenPopup("CreateFilePopup");
+            }
+            if (ImGui::MenuItem("Fichier Shader"))
+            {
+                selectedFileType = NewFileType::ShaderFile;
+                ImGui::OpenPopup("CreateFilePopup");
+            }
+            if (ImGui::MenuItem("Dossier"))
+            {
+                selectedFileType = NewFileType::Folder;
+                ImGui::OpenPopup("CreateFilePopup");
+            }
+            ImGui::EndMenu();
+        }
+        ImGui::EndPopup();
+    }
+
+    if (ImGui::BeginPopupModal("CreateFilePopup", nullptr, ImGuiWindowFlags_AlwaysAutoResize))
+    {
+        ImGui::InputText("Nom", newFileName, IM_ARRAYSIZE(newFileName));
+
+        if (ImGui::Button("Creer") && strlen(newFileName) > 0)
+        {
+            std::filesystem::path targetPath = m_currentDirectory;
+
+            switch (selectedFileType)
+            {
+                case NewFileType::TextFile:
+                    targetPath /= std::string(newFileName) + ".txt";
+                    break;
+                case NewFileType::CppFile:
+                    targetPath /= std::string(newFileName) + ".cpp";
+                    break;
+                case NewFileType::ShaderFile:
+                    targetPath /= std::string(newFileName) + ".glsl";
+                    break;
+                case NewFileType::Folder:
+                    targetPath /= std::string(newFileName);
+                    std::filesystem::create_directory(targetPath);
+                    break;
+                default:
+                    break;
+            }
+
+            if (selectedFileType != NewFileType::Folder && !std::filesystem::exists(targetPath))
+            {
+                std::ofstream ofs(targetPath);
+                ofs << "";
+                ofs.close();
+            }
+
+            selectedFileType = NewFileType::None;
+            std::memset(newFileName, 0, sizeof(newFileName));
+            ImGui::CloseCurrentPopup();
+        }
+
+        ImGui::SameLine();
+        if (ImGui::Button("Annuler"))
+        {
+            selectedFileType = NewFileType::None;
+            std::memset(newFileName, 0, sizeof(newFileName));
+            ImGui::CloseCurrentPopup();
+        }
+
+        ImGui::EndPopup();
     }
 
     ImGui::PopStyleColor();
@@ -120,7 +227,7 @@ void FileExplorerPanel::Destroy()
         m_fileIconTexture->CastVulkan()->Destroy(m_engine->GetDevice());
         m_fileIconTexture.reset();
     }
-
+    m_thumbnailCache.clear();
 }
 
 void FileExplorerPanel::OpenTextEditor(const std::filesystem::path& path)
@@ -151,4 +258,21 @@ std::shared_ptr<ITexture> LoadTexture(Engine* engine, const std::string& path)
     auto texture = std::make_shared<VulkanTexture>();
     texture->CreateTextureImage(params.m_device, params.m_commandPool, params.m_texturePath);
     return texture;
+}
+
+ImTextureID FileExplorerPanel::GetOrLoadImageThumbnail(const std::string& filepath)
+{
+    if (m_thumbnailCache.find(filepath) != m_thumbnailCache.end())
+        return m_thumbnailCache[filepath];
+
+    auto texture = LoadTexture(m_engine, filepath);
+    texture->CastVulkan()->CreateTextureImageView(m_engine->GetDevice());
+
+    ImTextureID descriptor = reinterpret_cast<ImTextureID>(ImGui_ImplVulkan_AddTexture(
+            ResourceManager::GetInstance().GetStandardSampler(),
+            texture->CastVulkan()->GetTextureImageView(),
+            VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL));
+
+    m_thumbnailCache[filepath] = descriptor;
+    return descriptor;
 }

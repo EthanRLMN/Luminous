@@ -30,5 +30,6 @@ public:
 protected:
     Editor* p_editor{ nullptr };
     bool p_isOpen{ true };
+    std::shared_ptr<Entity> p_isEntitySelected{};
     std::string p_windowIdentifier{ std::to_string(rand() % 100) };
 };

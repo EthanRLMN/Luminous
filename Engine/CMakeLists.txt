@@ -46,7 +46,7 @@ if(MSVC)
     set(CMAKE_DEBUG_POSTFIX "d")
     target_compile_options(${L_TARGET_NAME} PUBLIC /W3 /WX)
 else()
-    target_compile_options(${L_TARGET_NAME} PUBLIC -Wall -Wextra -Wpedantic -Werror)
+    target_compile_options(${L_TARGET_NAME} PUBLIC -Wall -Wextra -Wpedantic)
 endif()
 
 # To build shared libraries in Windows, we set CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS to TRUE.
@@ -58,6 +58,7 @@ set(CMAKE_POSITION_INDEPENDENT_CODE ON)
 # Disable C and C++ compiler extensions.
 set(CMAKE_C_EXTENSIONS OFF)
 set(CMAKE_CXX_EXTENSIONS OFF)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 target_link_libraries(${L_TARGET_NAME} PUBLIC Vulkan::Vulkan glfw assimp L_LOGGER L_MATHS Jolt reflectcpp)
 

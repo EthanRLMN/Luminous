@@ -28,7 +28,7 @@ void VulkanPipeline::Create(IDevice* a_device, IRenderPass* a_renderPass, IDescr
     };
 
     VkVertexInputBindingDescription l_bindingDescription{};
-    std::array<VkVertexInputAttributeDescription, 3> l_attributeDescriptions{};
+    std::array<VkVertexInputAttributeDescription, 4> l_attributeDescriptions{};
     VkPipelineVertexInputStateCreateInfo l_vertexInputCreateInfo { };
     l_vertexInputCreateInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_VERTEX_INPUT_STATE_CREATE_INFO;
     l_vertexInputCreateInfo.pNext = nullptr;
