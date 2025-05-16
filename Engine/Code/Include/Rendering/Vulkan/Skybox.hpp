@@ -41,10 +41,12 @@ public:
     void SetupPushConstants(VkPipelineLayoutCreateInfo& a_layout, VkPushConstantRange& a_pushConstant);
     void SetupDescriptorSetLayout(const std::vector<VkDescriptorSetLayout> a_descriptorSetLayouts, VkPipelineLayoutCreateInfo& a_pipelineLayoutInfo, const VkDevice a_device, VkPipelineLayout* a_pipeline_layout);
 
-    VkPipeline m_skyboxPipeline{ nullptr };
+
+    std::span<VkPipelineShaderStageCreateInfo> GetShaderStageCreate(IDevice* a_device);
 
 private:
 
+    VkPipeline m_skyboxPipeline{ nullptr };
 
     std::vector<Maths::Vector3> skyboxVertices = {
         { -1.0f, 1.0f, -1.0f },

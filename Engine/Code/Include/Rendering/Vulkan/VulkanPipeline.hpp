@@ -4,7 +4,7 @@
 
 #include "IPipeline.hpp"
 #include "vulkan/vulkan.h"
-
+#include  "Skybox.hpp"
 
 class IRenderPass;
 
@@ -39,5 +39,6 @@ private:
 
 	VkPipeline m_graphicsPipeline { nullptr };
     VkPipeline m_wireframeGraphicsPipeline{ nullptr };
+    VkPipeline m_skyboxGraphicsPipeline{ nullptr };
 	VkPipelineLayout m_pipelineLayout { nullptr };
 };

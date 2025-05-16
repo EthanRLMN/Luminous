@@ -221,3 +221,21 @@ void Skybox::SetupDescriptorSetLayout(const std::vector<VkDescriptorSetLayout> a
     const VkResult l_result = vkCreatePipelineLayout(a_device, &a_pipelineLayoutInfo, nullptr, a_pipeline_layout);
     LOG_ASSERT_ERROR(l_result == VK_SUCCESS, "Vulkan Pipeline: Failed to create Pipeline layout!\n");
 }
+
+std::span<VkPipelineShaderStageCreateInfo> Skybox::GetShaderStageCreate(IDevice* a_device)
+{
+    IResourceParams l_shaderParams{ a_device };
+    l_shaderParams.m_vertexShaderPath = "Engine/Assets/Default/Shaders/skyboxvert.spv";
+    l_shaderParams.m_fragmentShaderPath = "Engine/Assets/Default/Shaders/skyboxfrag.spv";
+    VulkanShader* l_shader = ResourceManager::GetInstance().LoadResource<VulkanShader>(l_shaderParams);
+
+    // graphics pipeline creation info requires an array of shader
+    std::array<VkPipelineShaderStageCreateInfo, 2> l_shaderStages = {
+        l_shader->GetVertexShaderModule()->CreateStage(VK_SHADER_STAGE_VERTEX_BIT),
+        l_shader->GetFragmentShaderModule()->CreateStage(VK_SHADER_STAGE_FRAGMENT_BIT)
+    };
+
+    return l_shaderStages;
+}
+
+
