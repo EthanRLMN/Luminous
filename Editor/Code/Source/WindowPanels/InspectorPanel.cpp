@@ -49,6 +49,7 @@ void InspectorPanel::Render()
 
         if (p_isEntitySelected)
         {
+            //ImGui::InputText("", );
             if (ImGui::CollapsingHeader("Transform"))
             {
                 if (ImGui::BeginCombo("Transform Mode", m_transformMode == TransformMode::Local ? "Local" : "Global"))
