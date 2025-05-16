@@ -32,7 +32,8 @@ public:
     inline size_t GetEntityCount() const { return m_entities.size(); }
     inline bool IsEmpty() const { return m_entities.empty(); }
     inline bool HasEntity(const std::shared_ptr<Entity>& a_entity) const { return std::ranges::find(m_entities, a_entity) != m_entities.end(); }
-    inline const std::vector<std::shared_ptr<Entity> >& GetRenderableEntities() const { return m_renderableEntities; }
+    inline const std::vector<std::shared_ptr<Entity>>& GetRenderableEntities() const { return m_renderableEntities; }
+    inline const std::vector<std::shared_ptr<Entity>>& GetLightEntities() const { return m_lightEntities; }
     std::shared_ptr<Entity> GetEntityByName(const std::string& a_name) const;
     std::shared_ptr<Entity> GetFirstEntityByParent(const std::shared_ptr<Entity>& a_parent) const;
     static std::vector<std::string> GetAvailableTemplates();

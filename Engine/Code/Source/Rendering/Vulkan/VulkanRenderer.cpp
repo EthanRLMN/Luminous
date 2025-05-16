@@ -1,3 +1,5 @@
+#include <array>
+
 #include "ICommandBuffer.hpp"
 #include "IDepthResource.hpp"
 #include "IDescriptor.hpp"
@@ -29,7 +31,6 @@
 #include "Game/Systems/Entity/EntityManager.hpp"
 
 #include "Matrix4.hpp"
-#include <array>
 
 
 void VulkanRenderer::Create(IDevice* a_device, ISwapChain* a_swapChain)
@@ -38,7 +39,8 @@ void VulkanRenderer::Create(IDevice* a_device, ISwapChain* a_swapChain)
     CreateDefaultTextureSampler(a_device);
 }
 
-void VulkanRenderer::DrawFrame(IWindow* a_window, IDevice* a_device, ISwapChain* a_swapChain, IPipeline* a_pipeline, IBuffer* a_buffer, IRenderPassManager* a_renderPassManager, IDescriptor* a_descriptor, ISynchronization* a_synchronization, ICommandBuffer* a_commandBuffer, IFrameBufferManager* a_frameBufferManager, IDepthResource* a_depthResource, ISurface* a_surface, IMultiSampling* a_multisampling, IInputManager* a_inputManager, EntityManager a_entityManager)
+
+void VulkanRenderer::DrawFrame(IWindow* a_window, IDevice* a_device, ISwapChain* a_swapChain, IPipeline* a_pipeline, IBuffer* a_buffer, IRenderPassManager* a_renderPassManager, IDescriptor* a_descriptor, ISynchronization* a_synchronization, ICommandBuffer* a_commandBuffer, IFrameBufferManager* a_frameBufferManager, IDepthResource* a_depthResource, ISurface* a_surface, IMultiSampling* a_multisampling, IInputManager* a_inputManager, const EntityManager a_entityManager)
 {
     const VkDevice& l_device{ a_device->CastVulkan()->GetDevice() };
     const VkSwapchainKHR& l_swapchain{ a_swapChain->CastVulkan()->GetSwapChain() };
@@ -59,7 +61,7 @@ void VulkanRenderer::DrawFrame(IWindow* a_window, IDevice* a_device, ISwapChain*
     m_cameraEditor.Update(static_cast<float>(a_swapChain->CastVulkan()->GetSwapChainExtent().width) / static_cast<float>(a_swapChain->CastVulkan()->GetSwapChainExtent().height));
     m_cameraEditor.UpdateInput(a_inputManager);
 
-    UpdateUniformBuffer(m_currentFrame, a_buffer,a_entityManager);
+    UpdateSceneData(m_currentFrame, a_buffer,a_entityManager);
     vkResetFences(l_device, 1, &a_synchronization->CastVulkan()->GetFences()[m_currentFrame]);
 
     VkSubmitInfo l_submitInfo{ };
@@ -174,7 +176,7 @@ void VulkanRenderer::RecordCommandBuffer(const VkCommandBuffer& a_commandBuffer,
                 l_ubo.debug = 0; // Debug = 0 : Light applied to it (Most models)
 
                 //Send the ubo and Draw the Model 
-                DrawModel(entity->GetComponent<ModelComponent>().get(), a_commandBuffer, a_descriptor, a_graphicsPipeline, a_pipelineLayout, l_ubo);
+                DrawModel(entity->GetComponent<ModelComponent>().get(), a_commandBuffer, a_descriptor, a_pipelineLayout, l_ubo);
 
             }
 
@@ -224,10 +226,9 @@ void VulkanRenderer::RecordCommandBuffer(const VkCommandBuffer& a_commandBuffer,
                     Maths::Vector2 l_capsuleSizeOffset = l_rigidbody->GetCapsuleOffset();
 
                     Maths::Quaternion l_rotQuat = l_transform->GetGlobalRotationQuat();
-                    Maths::Quaternion l_rotQuatOpposite = Maths::Quaternion(-l_rotQuat.x, -l_rotQuat.y, -l_rotQuat.z, l_rotQuat.w); //Rotation is the opposite on Jolt : need to reverse the quat rotation
+                    Maths::Quaternion l_rotQuatOpposite = Maths::Quaternion(-l_rotQuat.x, -l_rotQuat.y, -l_rotQuat.z, l_rotQuat.w); //Rotation is the opposite on Jolt: need to reverse the quat rotation
                     l_rot = l_rotQuatOpposite.ToEulerAngles(true);
-                    Maths::Vector3 l_colScale = l_transform->GetGlobalScale();
-                    l_colScale = Maths::Vector3(l_capsuleRadius + l_capsuleSizeOffset.x);
+                    Maths::Vector3 l_colScale = Maths::Vector3(l_capsuleRadius + l_capsuleSizeOffset.x);
 
                     Maths::Matrix4 l_rotMat = Maths::Matrix4::RotationXYZ(l_rot);
                     Maths::Matrix4 l_scaleMat = Maths::Matrix4::Scale(l_colScale);
@@ -247,7 +248,7 @@ void VulkanRenderer::RecordCommandBuffer(const VkCommandBuffer& a_commandBuffer,
                         Maths::Matrix4 l_modelMatrixSphere = Maths::Matrix4::TRS(l_posMat, l_rotMat, l_scaleMat);
                         l_ubo.model = l_modelMatrixSphere.Transpose();
 
-                        DrawModel(l_rigidbody->GetCapsuleSphereDebug(), a_commandBuffer, a_descriptor, a_graphicsPipeline, a_pipelineLayout, l_ubo);
+                        DrawModel(l_rigidbody->GetCapsuleSphereDebug(), a_commandBuffer, a_descriptor, a_pipelineLayout, l_ubo);
                         l_pos = l_transform->GetGlobalPosition();
                     }
 
@@ -271,8 +272,8 @@ void VulkanRenderer::RecordCommandBuffer(const VkCommandBuffer& a_commandBuffer,
                     Maths::Matrix4 l_modelMatrixSphere = Maths::Matrix4::TRS(l_posMat, l_rotMat, l_scaleMat);
                     l_ubo.model = l_modelMatrixSphere.Transpose();
                 }
-                //Draw the basic shape (sphere,box,cynlinder)
-                DrawModel(entity.get()->GetComponent<RigidbodyComponent>().get()->GetModelDebug(), a_commandBuffer, a_descriptor, a_graphicsPipeline, a_pipelineLayout, l_ubo);
+                //Draw the basic shape (sphere, box, cynlinder)
+                DrawModel(entity->GetComponent<RigidbodyComponent>()->GetModelDebug(), a_commandBuffer, a_descriptor, a_pipelineLayout, l_ubo);
 
             }
             vkCmdBindPipeline(a_commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, a_graphicsPipeline);
@@ -298,26 +299,36 @@ void VulkanRenderer::RecordCommandBuffer(const VkCommandBuffer& a_commandBuffer,
         throw std::runtime_error("Failed to stop recording a command buffer ");
 }
 
-void VulkanRenderer::DrawModel(ModelComponent* a_model, const VkCommandBuffer& a_commandBuffer, IDescriptor* a_descriptor, const VkPipeline& a_graphicsPipeline, const VkPipelineLayout& a_pipelineLayout, UniformBufferObject a_ubo) const
+void VulkanRenderer::DrawModel(const ModelComponent* a_model, const VkCommandBuffer& a_commandBuffer, IDescriptor* a_descriptor, const VkPipelineLayout& a_pipelineLayout, const UniformBufferObject& a_ubo) const
 {
     VulkanMesh* l_mesh = a_model->GetMesh()->CastVulkan();
-    VulkanTexture* l_texture = a_model->GetTexture()->CastVulkan();
+    const VulkanTexture* l_texture = a_model->GetTexture()->CastVulkan();
 
     const std::array<VkBuffer, 1> l_vertexBuffers = { l_mesh->GetVertexBuffer() };
     const std::array<VkDeviceSize, 1> l_offsets = { 0 };
     vkCmdBindVertexBuffers(a_commandBuffer, 0, 1, l_vertexBuffers.data(), l_offsets.data());
     vkCmdBindIndexBuffer(a_commandBuffer, l_mesh->GetIndexBuffer(), 0, VK_INDEX_TYPE_UINT32);
-    std::vector<VkDescriptorSet> sets = { a_descriptor->CastVulkan()->GetDescriptorSet()[m_currentFrame], l_texture->GetDescriptorSet() };
-    vkCmdBindDescriptorSets(a_commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, a_pipelineLayout, 0, static_cast<uint32_t>(sets.size()), sets.data(), 0, nullptr);
+    const std::vector<VkDescriptorSet> l_sets = { a_descriptor->CastVulkan()->GetDescriptorSet()[m_currentFrame], l_texture->GetDescriptorSet() };
+    vkCmdBindDescriptorSets(a_commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, a_pipelineLayout, 0, static_cast<uint32_t>(l_sets.size()), l_sets.data(), 0, nullptr);
     vkCmdPushConstants(a_commandBuffer, a_pipelineLayout, VK_SHADER_STAGE_VERTEX_BIT, 0, sizeof(UniformBufferObject), &a_ubo);
     vkCmdDrawIndexed(a_commandBuffer, static_cast<uint32_t>(l_mesh->GetIndices().size()), 1, 0, 0, 0);
 }
 
 
-void VulkanRenderer::UpdateUniformBuffer(const uint32_t& a_currentFrame, IBuffer* a_buffer, const EntityManager& a_entityManager) const
+void VulkanRenderer::UpdateSceneData(const uint32_t& a_currentFrame, IBuffer* a_buffer, const EntityManager& a_entityManager)
 {
     a_entityManager.Update();
-    m_gpuLightBuffer;
+
+    m_gpuLightBuffer.m_lightCount = 0;
+    for (const std::shared_ptr<Entity>& l_light : a_entityManager.GetLightEntities())
+    {
+        if (!l_light->IsActive())
+            continue;
+
+        m_gpuLightBuffer.m_lights[m_gpuLightBuffer.m_lightCount] = l_light->GetComponent<LightComponent>()->GetLight();
+        ++m_gpuLightBuffer.m_lightCount;
+    }
+
     memcpy(a_buffer->CastVulkan()->GetLightUniformBuffersMapped()[a_currentFrame], &m_gpuLightBuffer, sizeof(GpuLightBuffer));
 }
 
@@ -401,11 +412,6 @@ void VulkanRenderer::CreateViewportImage(IDevice* a_device, ISwapChain* a_swapCh
     VkImageViewCreateInfo l_viewInfo{ };
     ImageViewCreateInfo(l_viewInfo, m_viewportImage, a_swapChain);
     vkCreateImageView(l_device, &l_viewInfo, nullptr, &m_viewportImageview);
-
-    /*
-    VkSamplerCreateInfo l_samplerInfo{ };
-    SamplerCreateInfo(l_samplerInfo);
-    vkCreateSampler(l_device, &l_samplerInfo, nullptr, &m_viewportSampler);*/
 }
 
 
@@ -433,29 +439,22 @@ void VulkanRenderer::CopyImageToViewport(ISwapChain* a_swapChain, const VkComman
 void VulkanRenderer::DestroyViewportImage(IDevice* a_device)
 {
     const VkDevice& l_device = a_device->CastVulkan()->GetDevice();
-    if (m_viewportImageview != VK_NULL_HANDLE)
+    if (m_viewportImageview != nullptr)
     {
         vkDestroyImageView(l_device, m_viewportImageview, nullptr);
-        m_viewportImageview = VK_NULL_HANDLE;
+        m_viewportImageview = nullptr;
     }
 
-    if (m_viewportImage != VK_NULL_HANDLE)
+    if (m_viewportImage != nullptr)
     {
         vkDestroyImage(l_device, m_viewportImage, nullptr);
-        m_viewportImage = VK_NULL_HANDLE;
+        m_viewportImage = nullptr;
     }
 
-    /*
-    if (m_viewportSampler != VK_NULL_HANDLE)
-    {
-        vkDestroySampler(l_device, m_viewportSampler, nullptr);
-        m_viewportSampler = VK_NULL_HANDLE;
-    }*/
-
-    if (m_viewportMemory != VK_NULL_HANDLE)
+    if (m_viewportMemory != nullptr)
     {
         vkFreeMemory(l_device, m_viewportMemory, nullptr);
-        m_viewportMemory = VK_NULL_HANDLE;
+        m_viewportMemory = nullptr;
     }
 
     if (m_defaultTexSampler != nullptr)
@@ -463,7 +462,6 @@ void VulkanRenderer::DestroyViewportImage(IDevice* a_device)
         vkDestroySampler(l_device, m_defaultTexSampler, nullptr);
         DEBUG_LOG_INFO("Default texture sampler has been destroyed.");
     }
-
 }
 
 
@@ -474,7 +472,6 @@ void VulkanRenderer::SetupSubmitInfo(VkSubmitInfo& a_submitInfo, const std::vect
     a_submitInfo.pWaitDstStageMask = a_waitStages.data();
     a_submitInfo.commandBufferCount = 1;
     a_submitInfo.pCommandBuffers = &a_commandBuffer[m_currentFrame];
-
     a_submitInfo.signalSemaphoreCount = 1;
     a_submitInfo.pSignalSemaphores = a_signalSemaphores.data();
 }
@@ -484,7 +481,6 @@ void VulkanRenderer::PresentRendererInfo(VkPresentInfoKHR& a_presentInfo, const 
 {
     a_presentInfo.waitSemaphoreCount = 1;
     a_presentInfo.pWaitSemaphores = a_signalSemaphores.data();
-
     a_presentInfo.swapchainCount = 1;
     a_presentInfo.pSwapchains = a_swapchains.data();
 }
@@ -571,7 +567,7 @@ void VulkanRenderer::SamplerCreateInfo(VkSamplerCreateInfo& a_samplerInfo)
     a_samplerInfo.pNext = nullptr;
 }
 
-void VulkanRenderer::ImageMemoryBarrierSrc(VkImageMemoryBarrier& a_barrierSrc, ISwapChain* a_swapChain, uint32_t a_currentFrame)
+void VulkanRenderer::ImageMemoryBarrierSrc(VkImageMemoryBarrier& a_barrierSrc, ISwapChain* a_swapChain, const uint32_t a_currentFrame)
 {
     a_barrierSrc.sType = VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER;
     a_barrierSrc.oldLayout = VK_IMAGE_LAYOUT_PRESENT_SRC_KHR;
@@ -595,7 +591,7 @@ void VulkanRenderer::ImageMemoryBarrierDst(VkImageMemoryBarrier& a_barrierDst, c
     a_barrierDst.pNext = nullptr;
 }
 
-void VulkanRenderer::ImageCopyRegion(VkImageCopy& a_copyRegion,float a_viewportWidth,float a_viewportHeight)
+void VulkanRenderer::ImageCopyRegion(VkImageCopy& a_copyRegion, const float a_viewportWidth, const float a_viewportHeight)
 {
     a_copyRegion.srcSubresource = { VK_IMAGE_ASPECT_COLOR_BIT, 0, 0, 1 };
     a_copyRegion.dstSubresource = { VK_IMAGE_ASPECT_COLOR_BIT, 0, 0, 1 };

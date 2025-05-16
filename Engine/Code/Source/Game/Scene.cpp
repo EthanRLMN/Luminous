@@ -17,10 +17,16 @@ void Scene::RegisterScene(EntityManager& a_entityManager)
     LoadScene(filepath, a_entityManager);
 
     const std::shared_ptr<Entity> l_light = a_entityManager.CreateEntityFromTemplate("DefaultSphere");
-    l_light->GetComponent<TransformComponent>().get()->SetLocalPosition(Maths::Vector3(0.f, 10.f, 0.f));
-    l_light->AddComponent(std::make_shared<LightComponent>());
-    l_light->GetComponent<LightComponent>()->GetLight().m_type = LightType::POINT;
-    l_light->GetComponent<LightComponent>()->GetLight().m_color = Maths::Vector3(1.f, 1.f, 1.f);
+    l_light->GetComponent<TransformComponent>()->SetLocalPosition(Maths::Vector3(0.f, 2.f, 3.f));
+    const std::shared_ptr<LightComponent> l_lightComponent = std::make_shared<LightComponent>();
+    l_light->AddComponent(l_lightComponent);
+    l_lightComponent->SetColor(Maths::Vector3(1.0f, 0.0f, 0.0f));
+
+    const std::shared_ptr<Entity> l_light2 = a_entityManager.CreateEntityFromTemplate("DefaultCube");
+    l_light2->GetComponent<TransformComponent>()->SetLocalPosition(Maths::Vector3(4.f, 5.f, 3.f));
+    const std::shared_ptr<LightComponent> l_lightComponent2 = std::make_shared<LightComponent>();
+    l_light2->AddComponent(l_lightComponent2);
+    l_lightComponent2->SetColor(Maths::Vector3(0.0f, 1.0f, 0.0f));
 
 
     for (size_t i = 0; i < EntityManager::GetAvailableTemplates().size(); ++i)
@@ -33,21 +39,21 @@ void Scene::RegisterScene(EntityManager& a_entityManager)
 
     const std::shared_ptr<Entity> collider = a_entityManager.CreateEntityFromTemplate("DefaultCube");
     const std::shared_ptr<Entity> collider2 = a_entityManager.CreateEntityFromTemplate("DefaultCube");
-    collider->GetComponent<TransformComponent>().get()->SetLocalPosition(Maths::Vector3(8.f, 10.0f, 0.0f));
+    collider->Transform()->SetLocalPosition(Maths::Vector3(8.f, 10.0f, 0.0f));
 
     const std::shared_ptr<RigidbodyComponent> l_modelComponent = std::make_shared<RigidbodyComponent>();
     collider->AddComponent(l_modelComponent);
     l_modelComponent->SetEngine(a_entityManager.GetEngine());
     l_modelComponent->SetEntity(collider);
-    collider->GetComponent<TransformComponent>().get()->SetLocalScale(Maths::Vector3(2.f, 2.5f, 2.f));
-    collider->GetComponent<TransformComponent>().get()->SetLocalRotationVec(Maths::Vector3(0.f, 0.f, 0.f));
+    collider->Transform()->SetLocalScale(Maths::Vector3(2.f, 2.5f, 2.f));
+    collider->Transform()->SetLocalRotationVec(Maths::Vector3(0.f, 0.f, 0.f));
 
     l_modelComponent->SetLayer(Layers::DYNAMIC);
     l_modelComponent->SetActive(JPH::EActivation::Activate);
     l_modelComponent->SetColliderType(BOXCOLLIDER);
     l_modelComponent->Initialize();
 
-    collider->GetComponent<TransformComponent>().get()->SetLocalScale(Maths::Vector3(1.f, 1.0f, 1.f));
+    collider->Transform()->SetLocalScale(Maths::Vector3(1.f, 1.0f, 1.f));
     l_modelComponent->SetColliderSize(Maths::Vector3(0.f, 1.f, 0.f));
 
 
@@ -55,15 +61,15 @@ void Scene::RegisterScene(EntityManager& a_entityManager)
     collider2->AddComponent(l_modelComponent2);
     l_modelComponent2->SetEngine(a_entityManager.GetEngine());
     l_modelComponent2->SetEntity(collider2);
-    collider2->GetComponent<TransformComponent>()->SetLocalScale(Maths::Vector3(2.f, 2.5f, 2.f));
-    collider2->GetComponent<TransformComponent>()->SetLocalRotationVec(Maths::Vector3(0.f, 0.f, 0.f));
-    collider2->GetComponent<TransformComponent>()->SetLocalPosition(Maths::Vector3(8.f, 0.f, 0.0f));
+    collider2->Transform()->SetLocalScale(Maths::Vector3(2.f, 2.5f, 2.f));
+    collider2->Transform()->SetLocalRotationVec(Maths::Vector3(0.f, 0.f, 0.f));
+    collider2->Transform()->SetLocalPosition(Maths::Vector3(8.f, 0.f, 0.0f));
     l_modelComponent2->SetLayer(Layers::KINEMATIC);
     l_modelComponent2->SetActive(JPH::EActivation::Activate);
     l_modelComponent2->SetColliderType(BOXCOLLIDER);
     l_modelComponent2->Initialize();
 
-    collider2->GetComponent<TransformComponent>().get()->SetLocalScale(Maths::Vector3(1.f, 1.0f, 1.f));
+    collider2->Transform()->SetLocalScale(Maths::Vector3(1.f, 1.0f, 1.f));
     l_modelComponent2->SetColliderSize(Maths::Vector3(0.f, 1.f, 0.f));
 
 
@@ -229,7 +235,7 @@ void Scene::SaveScene(const std::string& filepath, const EntityManager& a_entity
             l_cameraData.center = Vec3(l_camera->GetCenter().x, l_camera->GetCenter().y, l_camera->GetCenter().z);
 
             l_datasaver.componentType = "Camera";
-            l_datasaver.components.push_back(l_cameraData);
+            l_datasaver.components.emplace_back(l_cameraData);
         }
 
         l_entityData.push_back(l_datasaver);
