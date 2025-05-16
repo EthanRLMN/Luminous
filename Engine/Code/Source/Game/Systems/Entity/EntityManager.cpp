@@ -35,9 +35,11 @@ std::shared_ptr<Entity> EntityManager::GetFirstEntityByParent(const std::shared_
 std::shared_ptr<Entity> EntityManager::CreateEntityFromTemplate(const std::string& a_templateName)
 {
     std::shared_ptr<Entity> l_entity = EntityFactory::Get().CreateEntity(a_templateName, *this);
+
     if (l_entity)
     {
         m_entities.push_back(l_entity);
+
         if (m_engine)
         {
             l_entity->SetEngine(m_engine);

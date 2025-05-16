@@ -15,6 +15,7 @@ public:
             case Layers::STATIC:
                 return a_inLayer2 == BroadPhaseLayers::DYNAMIC;
             case Layers::DYNAMIC:
+            case Layers::KINEMATIC:
             case Layers::SENSOR:
                 return true;
             case Layers::DISABLED:

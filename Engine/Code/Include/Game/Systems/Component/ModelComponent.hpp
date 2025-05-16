@@ -26,6 +26,7 @@ public:
     [[nodiscard]] ITexture* GetTexture() const { return m_texture; };
 
 private:
+    
     IMesh* m_mesh { nullptr };
     ITexture* m_texture { nullptr };
 

@@ -2,6 +2,7 @@
 
 #include "Game/Systems/Component/MeshRendererComponent.hpp"
 #include "Game/Systems/Component/ModelComponent.hpp"
+#include "Game/Systems/Component/RigidbodyComponent.hpp"
 #include "Game/Systems/Entity/EntityFactory.hpp"
 
 
@@ -25,6 +26,15 @@ void EntityTemplates::DefaultEmpty()
     {
         auto l_entity = std::make_shared<Entity>(a_entityManager);
         l_entity->SetName("DefaultEmpty");
+
+        
+        const std::shared_ptr<TransformComponent> l_transform = std::make_shared<TransformComponent>();
+        l_entity->AddComponent(l_transform);
+        l_transform->SetOwner(l_entity);
+
+
+
+
         return l_entity;
     });
 }
@@ -37,6 +47,10 @@ void EntityTemplates::DefaultCube()
         std::shared_ptr<Entity> l_entity = std::make_shared<Entity>(a_entityManager);
         l_entity->SetName("DefaultCube");
 
+        const std::shared_ptr<TransformComponent> l_transform = std::make_shared<TransformComponent>();
+        l_entity->AddComponent(l_transform);
+        l_transform->SetOwner(l_entity);
+
         const std::shared_ptr<ModelComponent> l_modelComponent = std::make_shared<ModelComponent>();
         l_modelComponent->SetMeshPath("Engine/Assets/Default/Models/Cube.fbx");
         l_modelComponent->SetTexturePath("Engine/Assets/Default/Textures/White.png");
@@ -44,6 +58,8 @@ void EntityTemplates::DefaultCube()
 
         const std::shared_ptr<MeshRendererComponent> l_meshRendererComponent = std::make_shared<MeshRendererComponent>();
         l_entity->AddComponent(l_meshRendererComponent);
+
+        
 
         return l_entity;
     });
@@ -56,6 +72,10 @@ void EntityTemplates::DefaultSphere()
     {
         std::shared_ptr<Entity> l_entity = std::make_shared<Entity>(a_entityManager);
         l_entity->SetName("DefaultSphere");
+
+        const std::shared_ptr<TransformComponent> l_transform = std::make_shared<TransformComponent>();
+        l_entity->AddComponent(l_transform);
+        l_transform->SetOwner(l_entity);
 
         const std::shared_ptr<ModelComponent> l_modelComponent = std::make_shared<ModelComponent>();
         l_modelComponent->SetMeshPath("Engine/Assets/Default/Models/Sphere.fbx");
@@ -77,6 +97,10 @@ void EntityTemplates::DefaultCapsule()
         std::shared_ptr<Entity> l_entity = std::make_shared<Entity>(a_entityManager);
         l_entity->SetName("DefaultCapsule");
 
+        const std::shared_ptr<TransformComponent> l_transform = std::make_shared<TransformComponent>();
+        l_entity->AddComponent(l_transform);
+        l_transform->SetOwner(l_entity);
+
         const std::shared_ptr<ModelComponent> l_modelComponent = std::make_shared<ModelComponent>();
         l_modelComponent->SetMeshPath("Engine/Assets/Default/Models/Capsule.fbx");
         l_modelComponent->SetTexturePath("Engine/Assets/Default/Textures/White.png");
@@ -96,6 +120,10 @@ void EntityTemplates::DefaultCylinder()
     {
         std::shared_ptr<Entity> l_entity = std::make_shared<Entity>(a_entityManager);
         l_entity->SetName("DefaultCylinder");
+
+        const std::shared_ptr<TransformComponent> l_transform = std::make_shared<TransformComponent>();
+        l_entity->AddComponent(l_transform);
+        l_transform->SetOwner(l_entity);
 
         const std::shared_ptr<ModelComponent> l_modelComponent = std::make_shared<ModelComponent>();
         l_modelComponent->SetMeshPath("Engine/Assets/Default/Models/Cylinder.fbx");
@@ -117,6 +145,10 @@ void EntityTemplates::DefaultCone()
         std::shared_ptr<Entity> l_entity = std::make_shared<Entity>(a_entityManager);
         l_entity->SetName("DefaultCone");
 
+        const std::shared_ptr<TransformComponent> l_transform = std::make_shared<TransformComponent>();
+        l_entity->AddComponent(l_transform);
+        l_transform->SetOwner(l_entity);
+
         const std::shared_ptr<ModelComponent> l_modelComponent = std::make_shared<ModelComponent>();
         l_modelComponent->SetMeshPath("Engine/Assets/Default/Models/Cone.fbx");
         l_modelComponent->SetTexturePath("Engine/Assets/Default/Textures/White.png");
@@ -136,6 +168,10 @@ void EntityTemplates::DefaultMonkey()
     {
         std::shared_ptr<Entity> l_entity = std::make_shared<Entity>(a_entityManager);
         l_entity->SetName("DefaultMonkey");
+
+        const std::shared_ptr<TransformComponent> l_transform = std::make_shared<TransformComponent>();
+        l_entity->AddComponent(l_transform);
+        l_transform->SetOwner(l_entity);
 
         const std::shared_ptr<ModelComponent> l_modelComponent = std::make_shared<ModelComponent>();
         l_modelComponent->SetMeshPath("Engine/Assets/Default/Models/Monkey.fbx");
@@ -157,6 +193,10 @@ void EntityTemplates::DefaultCompanion()
         std::shared_ptr<Entity> l_entity = std::make_shared<Entity>(a_entityManager);
         l_entity->SetName("DefaultCompanion");
 
+        const std::shared_ptr<TransformComponent> l_transform = std::make_shared<TransformComponent>();
+        l_entity->AddComponent(l_transform);
+        l_transform->SetOwner(l_entity);
+
         const std::shared_ptr<ModelComponent> l_modelComponent = std::make_shared<ModelComponent>();
         l_modelComponent->SetMeshPath("Engine/Assets/Default/Models/CompanionCube.fbx");
         l_modelComponent->SetTexturePath("Engine/Assets/Default/Textures/CompanionCube.png");
@@ -176,6 +216,10 @@ void EntityTemplates::DefaultPlane()
     {
         std::shared_ptr<Entity> l_entity = std::make_shared<Entity>(a_entityManager);
         l_entity->SetName("DefaultPlane");
+
+        const std::shared_ptr<TransformComponent> l_transform = std::make_shared<TransformComponent>();
+        l_entity->AddComponent(l_transform);
+        l_transform->SetOwner(l_entity);
 
         const std::shared_ptr<ModelComponent> l_modelComponent = std::make_shared<ModelComponent>();
         l_modelComponent->SetMeshPath("Engine/Assets/Default/Models/Plane.fbx");

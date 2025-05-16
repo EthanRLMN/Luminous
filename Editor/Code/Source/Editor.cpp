@@ -137,7 +137,6 @@ void Editor::Render() const
 void Editor::CreateWindowPanels()
 {
     RegisterWindow(new MainPanel(this, "Editor"));
-    RegisterWindow(new Viewport(this, "Viewport"));
     RegisterWindow(new FileExplorerPanel(this, "File Explorer"));
 
     auto inspector = new InspectorPanel(this, "Inspector");
@@ -148,6 +147,8 @@ void Editor::CreateWindowPanels()
     RegisterWindow(hierarchy);
 
     RegisterWindow(new ConsolePanel(this, "Console"));
+
+    RegisterWindow(new Viewport(this, "Viewport"));
 }
 
 
@@ -170,6 +171,14 @@ void Editor::DestroyWindowPanels()
     
     m_windows.clear();
 }
+
+
+void Editor::RegisterWindow(IWindowPanel* a_windowPanel)
+{
+    m_windows.push_back(a_windowPanel);
+    a_windowPanel->Init();
+}
+
 
 void Editor::UnregisterWindow(IWindowPanel* a_windowPanel)
 {

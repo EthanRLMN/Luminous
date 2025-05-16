@@ -6,6 +6,7 @@
 
 #include "Rendering/Vulkan/VulkanRenderer.hpp"
 #include "Rendering/Vulkan/VulkanTexture.hpp"
+#include "ResourceManager/ResourceManager.hpp"
 #include "backends/imgui_impl_vulkan.h"
 
 
@@ -23,17 +24,14 @@ FileExplorerPanel::FileExplorerPanel(Editor* a_editor, const std::string& a_wind
     m_directoryIconTexture->CastVulkan()->CreateTextureImageView(m_engine->GetDevice());
     m_fileIconTexture->CastVulkan()->CreateTextureImageView(m_engine->GetDevice());
 
-    m_directoryIconTexture->CastVulkan()->CreateTextureSampler(m_engine->GetDevice());
-    m_fileIconTexture->CastVulkan()->CreateTextureSampler(m_engine->GetDevice());
-
     m_directoryDescriptor = reinterpret_cast<ImTextureID>(ImGui_ImplVulkan_AddTexture(
-            m_engine->GetRenderer()->CastVulkan()->GetDefaultTextureSampler(),
+            ResourceManager::GetInstance().GetStandardSampler(),
             m_directoryIconTexture->CastVulkan()->GetTextureImageView(),
             VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL
             ));
 
     m_fileDescriptor = reinterpret_cast<ImTextureID>(ImGui_ImplVulkan_AddTexture(
-            m_engine->GetRenderer()->CastVulkan()->GetDefaultTextureSampler(),
+            ResourceManager::GetInstance().GetStandardSampler(),
             m_fileIconTexture->CastVulkan()->GetTextureImageView(),
             VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL
             ));
@@ -269,10 +267,9 @@ ImTextureID FileExplorerPanel::GetOrLoadImageThumbnail(const std::string& filepa
 
     auto texture = LoadTexture(m_engine, filepath);
     texture->CastVulkan()->CreateTextureImageView(m_engine->GetDevice());
-    texture->CastVulkan()->CreateTextureSampler(m_engine->GetDevice());
 
     ImTextureID descriptor = reinterpret_cast<ImTextureID>(ImGui_ImplVulkan_AddTexture(
-            m_engine->GetRenderer()->CastVulkan()->GetDefaultTextureSampler(),
+            ResourceManager::GetInstance().GetStandardSampler(),
             texture->CastVulkan()->GetTextureImageView(),
             VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL));
 

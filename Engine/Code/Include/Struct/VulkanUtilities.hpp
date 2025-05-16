@@ -62,4 +62,5 @@ struct UniformBufferObject
     Maths::Matrix4 model { Maths::Matrix4::identity };
     Maths::Matrix4 view { Maths::Matrix4::identity };
     Maths::Matrix4 proj { Maths::Matrix4::identity };
+	alignas(4) int debug;
 };

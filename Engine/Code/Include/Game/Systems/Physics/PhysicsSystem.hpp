@@ -35,7 +35,7 @@ public:
         JPH::uint m_maxContactConstraints { 1024 * 6 }; // Max size of the contact constraint buffer.
 
         float m_gravity { 9.81f }; // Default value for gravity
-        float m_gravityFactor { 1.0f }; // The gravity factor
+        float m_gravityFactor { 0.01f }; // The gravity factor
     };
 
     PhysicsSystem() = default;
@@ -56,6 +56,8 @@ public:
     [[nodiscard]] inline JPH::BodyActivationListener* GetBodyActivationListener() const { return m_bodyActivationListener; }
     [[nodiscard]] inline JPH::ContactListener* GetContactListener() const { return m_collisionListener; }
     [[nodiscard]] inline std::vector<RigidBody*> GetRigidBodies() const { return m_rigidBodies; }
+    [[nodiscard]] inline std::unordered_map<JPH::BodyID, RigidBody*> GetRigidBodyMap() const { return m_bodiesToRigidBodies; }
+
 
 
     void NotifyCollisionEnter(PhysicsCollisionEvent a_collisionEvent, const JPH::BodyID& a_body1, const JPH::BodyID& a_body2);
@@ -63,7 +65,7 @@ public:
 
 
     /*          Body Creation Functions          */
-    RigidBody* CreateRigidBody(const JPH::Shape* a_shape, JPH::uint8 a_layer = Layers::DYNAMIC);
+    RigidBody* CreateRigidBody(const JPH::Shape* a_shape, JPH::Vec3 a_pos = JPH::Vec3(0.0f, 0.0f, 0.0f), JPH::Quat a_rot = JPH::Quat(1.0f, 0.0f, 0.0f, 0.0f), JPH::uint8 a_layer = Layers::DYNAMIC, JPH::EActivation a_activate = JPH::EActivation::Activate);
     RigidBody* CreateBox(Maths::Vector3 a_scale = Maths::Vector3::One);
     inline RigidBody* CreateSphere(const float a_radius = 1.0f) { return CreateRigidBody(new JPH::SphereShape(a_radius)); };
     void RemoveBody(const JPH::BodyID& a_bodyId);
@@ -92,6 +94,10 @@ private:
     //JPH::BodyCreationSettings* m_sphereSettings { nullptr };
 
     std::vector<RigidBody*> m_rigidBodies{};
+    std::unordered_map<JPH::BodyID, RigidBody*> m_bodiesToRigidBodies;
+
+    RigidBody* l_rigidbodySource;
+    RigidBody* l_rigidbodySource2;
 };
 
 

@@ -4,7 +4,7 @@
 #include "Game/Systems/Entity/EntityFactory.hpp"
 #include "Game/Systems/Entity/EntityTemplates.hpp"
 
-
+#include "Game/Systems/Component/RigidbodyComponent.hpp"
 
 void Scene::RegisterScene(EntityManager& a_entityManager)
 {
@@ -16,6 +16,7 @@ void Scene::RegisterScene(EntityManager& a_entityManager)
 
     LoadScene(filepath, a_entityManager);
 
+    
     for (size_t i = 0; i < EntityManager::GetAvailableTemplates().size(); ++i)
     {
         const std::shared_ptr<Entity> l_obj = a_entityManager.CreateEntityFromTemplate(EntityManager::GetAvailableTemplates()[i]);
@@ -23,6 +24,42 @@ void Scene::RegisterScene(EntityManager& a_entityManager)
         const Maths::Vector3 l_position = Maths::Vector3(4.0f, 0.0f, 0.0f) * static_cast<const float>(i);
         l_obj->Transform()->SetLocalPosition(l_position);
     }
+
+    const std::shared_ptr<Entity> collider = a_entityManager.CreateEntityFromTemplate("DefaultCube");
+    const std::shared_ptr<Entity> collider2 = a_entityManager.CreateEntityFromTemplate("DefaultCube");
+    collider->GetComponent<TransformComponent>().get()->SetLocalPosition(Maths::Vector3(8.f, 10.0f, 0.0f));
+    
+    const std::shared_ptr<RigidbodyComponent> l_modelComponent = std::make_shared<RigidbodyComponent>();
+    collider->AddComponent(l_modelComponent);
+    l_modelComponent->SetEngine(a_entityManager.GetEngine());
+    l_modelComponent->SetEntity(collider);
+    collider->GetComponent<TransformComponent>().get()->SetLocalScale(Maths::Vector3(2.f, 2.5f, 2.f));
+    collider->GetComponent<TransformComponent>().get()->SetLocalRotationVec(Maths::Vector3(0.f, 0.f, 0.f));
+    
+    l_modelComponent->SetLayer(Layers::DYNAMIC);
+    l_modelComponent->SetActive(JPH::EActivation::Activate);
+    l_modelComponent->SetColliderType(BOXCOLLIDER);
+    l_modelComponent->Initialize();
+
+    collider->GetComponent<TransformComponent>().get()->SetLocalScale(Maths::Vector3(1.f, 1.0f, 1.f));
+    l_modelComponent->SetColliderSize(Maths::Vector3(0.f, 1.f, 0.f));
+
+
+    const std::shared_ptr<RigidbodyComponent> l_modelComponent2 = std::make_shared<RigidbodyComponent>();
+    collider2->AddComponent(l_modelComponent2);
+    l_modelComponent2->SetEngine(a_entityManager.GetEngine());
+    l_modelComponent2->SetEntity(collider2);
+    collider2->GetComponent<TransformComponent>().get()->SetLocalScale(Maths::Vector3(2.f, 2.5f, 2.f));
+    collider2->GetComponent<TransformComponent>().get()->SetLocalRotationVec(Maths::Vector3(0.f, 0.f, 0.f));
+    collider2->GetComponent<TransformComponent>().get()->SetLocalPosition(Maths::Vector3(8.f, 0.f, 0.0f));
+    l_modelComponent2->SetLayer(Layers::KINEMATIC);
+    l_modelComponent2->SetActive(JPH::EActivation::Activate);
+    l_modelComponent2->SetColliderType(BOXCOLLIDER);
+    l_modelComponent2->Initialize();
+
+    collider2->GetComponent<TransformComponent>().get()->SetLocalScale(Maths::Vector3(1.f, 1.0f, 1.f));
+    l_modelComponent2->SetColliderSize(Maths::Vector3(0.f, 1.f, 0.f));
+
 
     for (const auto& l_entity : EntityManager::GetAvailableTemplates())
         DEBUG_LOG_CRITICAL("{}", l_entity);
@@ -66,10 +103,8 @@ void Scene::LoadScene(std::string filename, const EntityManager& a_entityManager
         l_entity->SetUUID(l_entityData.entityUUID);
         l_entity->SetActive(l_entityData.isActive);
 
-        for (size_t i = 0; i < l_entityData.components.size(); ++i)
+        for (const SerializedComponent& l_component : l_entityData.components)
         {
-            const SerializedComponent& l_component = l_entityData.components[i];
-
             rfl::visit([&]<typename T0>(T0&& compData)
             {
                 using T = std::decay_t<T0>;
@@ -116,8 +151,8 @@ void Scene::LoadScene(std::string filename, const EntityManager& a_entityManager
                         l_camera->SetFarPlane(compData.farPlane);
                         l_camera->SetNearPlane(compData.nearPlane);
                         l_camera->SetFieldOfView(compData.fieldOfView);
-                        l_camera->SetEye(compData.eye);
-                        l_camera->SetCenter(compData.center);
+                        //l_camera->SetEye(Maths::Vector3(compData.eye));
+                        //l_camera->SetCenter(Maths::Vector3(compData.center);
                     }
                 }
             }, l_component);
@@ -141,7 +176,7 @@ void Scene::SaveScene(const std::string& filepath, const EntityManager& a_entity
 
         if (const std::shared_ptr<TransformComponent>& l_transform = l_entity->GetComponent<TransformComponent>())
         {
-            TransformComponentData l_transformData;
+            TransformComponentData l_transformData{};
             l_transformData.globalPosition = Vec3(l_transform->GetGlobalPosition());
             l_transformData.globalRotation = Quat(l_transform->GetGlobalRotationQuat());
             l_transformData.globalScale = Vec3(l_transform->GetGlobalScale());
@@ -150,7 +185,7 @@ void Scene::SaveScene(const std::string& filepath, const EntityManager& a_entity
             l_transformData.localScale = Vec3(l_transform->GetLocalScale());
 
             l_datasaver.componentType = "Transform";
-            l_datasaver.components.push_back(l_transformData);
+            l_datasaver.components.emplace_back(l_transformData);
         }
 
         if (const std::shared_ptr<ModelComponent>& l_model = l_entity->GetComponent<ModelComponent>())
@@ -160,12 +195,12 @@ void Scene::SaveScene(const std::string& filepath, const EntityManager& a_entity
             l_modelData.texturePath = l_model->GetTexturePath();
 
             l_datasaver.componentType = "Model";
-            l_datasaver.components.push_back(l_modelData);
+            l_datasaver.components.emplace_back(l_modelData);
         }
 
         if (const std::shared_ptr<LightComponent>& l_light = l_entity->GetComponent<LightComponent>())
         {
-            LightComponentData l_lightData;
+            LightComponentData l_lightData{};
             l_lightData.position = Vec3(l_light->GetLight().m_position);
             l_lightData.direction = Vec3(l_light->GetLight().m_direction);
             l_lightData.color = Vec3(l_light->GetLight().m_color);
@@ -176,7 +211,7 @@ void Scene::SaveScene(const std::string& filepath, const EntityManager& a_entity
             l_lightData.count = l_light->GetLight().m_count;
 
             l_datasaver.componentType = "Light";
-            l_datasaver.components.push_back(l_lightData);
+            l_datasaver.components.emplace_back(l_lightData);
         }
 
         if (const std::shared_ptr<CameraComponent>& l_camera = l_entity->GetComponent<CameraComponent>()) {
@@ -187,8 +222,8 @@ void Scene::SaveScene(const std::string& filepath, const EntityManager& a_entity
             l_cameraData.nearPlane = l_camera->GetNearPlane();
             l_cameraData.fieldOfView = l_camera->GetFieldOfView();
             l_cameraData.isActive = l_camera->GetisActive();
-            l_cameraData.eye = l_camera->GetEye();
-            l_cameraData.center = l_camera->GetCenter();
+            l_cameraData.eye = Vec3(l_camera->GetEye().x, l_camera->GetEye().y, l_camera->GetEye().z);
+            l_cameraData.center = Vec3(l_camera->GetCenter().x, l_camera->GetCenter().y, l_camera->GetCenter().z);
 
             l_datasaver.componentType = "Camera";
             l_datasaver.components.push_back(l_cameraData);
@@ -202,7 +237,7 @@ void Scene::SaveScene(const std::string& filepath, const EntityManager& a_entity
 
 bool Scene::CheckIfFileDetected(const std::string& a_filename)
 {
-    const std::string filepath = a_filename;
+    const std::string& filepath = a_filename;
 
     if (!std::filesystem::exists(filepath))
     {

@@ -23,8 +23,9 @@ public:
     virtual void SetTitle(const std::string& a_name) = 0;
     virtual void ProcessEvents() = 0;
 
-    [[nodiscard]] virtual float GetOpacity() const = 0;
+    [[nodiscard]] virtual bool IsFrameBufferResized() const = 0;
     [[nodiscard]] virtual bool ShouldClose() const = 0;
+    [[nodiscard]] virtual float GetOpacity() const = 0;
     [[nodiscard]] virtual std::string GetTitle() const = 0;
     [[nodiscard]] virtual Maths::Vector2 GetSize() const = 0;
 

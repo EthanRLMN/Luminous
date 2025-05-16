@@ -3,6 +3,8 @@
 #include <memory>
 
 class Engine;
+#include <algorithm>
+#include <vector>
 class Entity;
 
 class EntityComponent
@@ -28,5 +30,6 @@ protected:
 
 
 private:
+    //std::weak_ptr<Entity> m_entity2{};
     Engine* m_engine { nullptr };
 };

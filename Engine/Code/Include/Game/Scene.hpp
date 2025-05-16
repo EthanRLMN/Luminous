@@ -1,9 +1,11 @@
 #pragma once
 
-#include "Systems/Entity/Entity.hpp"
-
 #include <string>
 #include <rfl/json.hpp>
+
+
+#include "Systems/Entity/Entity.hpp"
+
 
 class Engine;
 
@@ -13,9 +15,9 @@ struct Vec3
     float x, y, z;
 
     Vec3() = default;
-    Vec3(float x, float y, float z) : x(x), y(y), z(z) {}
-    Vec3(const Maths::Vector3& v) : x(v.x), y(v.y), z(v.z) {}
-    operator Maths::Vector3() const { return Maths::Vector3(x, y, z); }
+    Vec3(const float x, const float y, const float z) : x(x), y(y), z(z) {}
+    explicit Vec3(const Maths::Vector3& v) : x(v.x), y(v.y), z(v.z) {}
+    explicit operator Maths::Vector3() const { return Maths::Vector3{x, y, z}; }
 };
 
 
@@ -24,9 +26,9 @@ struct Quat
     float x, y, z, w;
 
     Quat() = default;
-    Quat(float x, float y, float z, float w) : x(x), y(y), z(z), w(w) {}
-    Quat(const Maths::Quaternion& q) : x(q.x), y(q.y), z(q.z), w(q.w) {}
-    operator Maths::Quaternion() const { return Maths::Quaternion(x, y, z, w); }
+    Quat(const float x, const float y, const float z, const float w) : x(x), y(y), z(z), w(w) {}
+    explicit Quat(const Maths::Quaternion& q) : x(q.x), y(q.y), z(q.z), w(q.w) {}
+    explicit operator Maths::Quaternion() const { return Maths::Quaternion{x, y, z, w}; }
 };
 
 
@@ -35,7 +37,7 @@ struct Vec3Helper
     float x, y, z;
 
     static Vec3Helper from_class(const Vec3& v) noexcept { return Vec3Helper{v.x, v.y, v.z}; }
-    Vec3 to_class() const { return Vec3{x, y, z}; }
+    [[nodiscard]] Vec3 to_class() const { return Vec3{x, y, z}; }
 };
 
 
@@ -44,7 +46,7 @@ struct QuatHelper {
 
     static QuatHelper from_class(const Quat& q) noexcept { return QuatHelper{q.x, q.y, q.z, q.w}; }
 
-    Quat to_class() const { return Quat{x, y, z, w}; }
+    [[nodiscard]] Quat to_class() const { return Quat{x, y, z, w}; }
 };
 
 
@@ -54,7 +56,6 @@ struct rfl::parsing::Parser<ReaderType, WriterType, Vec3, ProcessorsType> : Cust
 
 template <class ReaderType, class WriterType, class ProcessorsType>
 struct rfl::parsing::Parser<ReaderType, WriterType, Quat, ProcessorsType> : CustomParser<ReaderType, WriterType, ProcessorsType, Quat, QuatHelper> {};
-
 
 
 struct TransformComponentData
@@ -85,14 +86,14 @@ struct LightComponentData
     Vec3 direction;
     Vec3 color;
 
-    int type;
+    LightType type;
     float intensity;
     float ambientStrength;
     float specularStrength;
     int count;
 
     template <typename Archive>
-    void reflect(Archive& ar) { ar(position, direction, color); }
+    void reflect(Archive& ar) { ar(position, direction, color, type); }
 };
 
 
@@ -157,5 +158,5 @@ public:
     void LoadScene(std::string filename, const EntityManager& a_entityManager);
     void SaveScene(const std::string& filepath, const EntityManager& a_entityManager);
 
-    bool CheckIfFileDetected(const std::string& a_filename);
+    static bool CheckIfFileDetected(const std::string& a_filename);
 };

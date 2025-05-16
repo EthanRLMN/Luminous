@@ -4,8 +4,10 @@
 #include "Rendering/Vulkan/VulkanRenderInterface.hpp"
 #include "ResourceManager/ResourceManager.hpp"
 
-
 #define JPH_DEBUG_RENDERER
+
+
+constexpr SamplingCount MsaaCount = SamplingCount::MSAA_SAMPLECOUNT_4;
 
 
 void Engine::Init()
@@ -20,6 +22,7 @@ void Engine::Init()
 
     Window();
     Input();
+
     PreRender();
     InitPhysics();
 
@@ -141,8 +144,11 @@ void Engine::PreRender()
     m_swapChain->Create(m_window, m_device, m_surface);
 
     m_multiSampling = m_interface->InstantiateMultiSampling();
-    m_multiSampling->SetSampleCount(m_device, SamplingCount::MSAA_SAMPLECOUNT_4);
+    m_multiSampling->SetSampleCount(m_device, MsaaCount);
     m_multiSampling->Create(m_device, m_swapChain);
+
+    ResourceManager::GetInstance().CreateRendererSampler(m_device, MsaaCount);
+    ResourceManager::GetInstance().CreateStandardSampler(m_device);
 
     m_renderPassManager = m_interface->InstantiateRenderPassManager();
     m_renderPassManager->Create(m_swapChain, m_device, false); // Create Main Render Pass

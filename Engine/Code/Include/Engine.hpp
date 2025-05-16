@@ -52,6 +52,7 @@ public:
     [[nodiscard]] EntityManager* GetEntityManager() { return &m_entityManager; }
 
     [[nodiscard]] bool IsRunning() const { return m_isRunning; }
+    PhysicsSystem* GetPhysicsSystem() const { return m_physicsSystem; }
 
 
 private:

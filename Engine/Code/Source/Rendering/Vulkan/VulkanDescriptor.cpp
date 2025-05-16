@@ -47,9 +47,9 @@ void VulkanDescriptor::Destroy(IDevice* a_device)
 void VulkanDescriptor::CreateDescriptorPool(IDevice* a_device)
 {
     std::array<VkDescriptorPoolSize, 2> l_poolSizes{};
-    l_poolSizes[0].type = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
+    l_poolSizes[0].type = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER; // Light
     l_poolSizes[0].descriptorCount = static_cast<uint32_t>(MAX_FRAMES_IN_FLIGHT);
-    l_poolSizes[1].type = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
+    l_poolSizes[1].type = VK_DESCRIPTOR_TYPE_STORAGE_BUFFER; // Light buffer uses storage buffer
     l_poolSizes[1].descriptorCount = static_cast<uint32_t>(MAX_FRAMES_IN_FLIGHT);
 
     VkDescriptorPoolCreateInfo l_poolInfo{ };

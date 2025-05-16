@@ -29,9 +29,6 @@ public:
             const std::shared_ptr<Entity> l_entity = it->second(a_entityManager);
             l_entity->SetUUID(m_idPool.Generate());
 
-            const std::shared_ptr<TransformComponent> l_transform = std::make_shared<TransformComponent>();
-            l_entity->AddComponent(l_transform);
-            l_transform->SetOwner(l_entity);
 
             DEBUG_LOG_INFO("Entity [ Name= {} ] - [ UUID={} ] created!", l_entity->GetName(), l_entity->GetUUID());
 

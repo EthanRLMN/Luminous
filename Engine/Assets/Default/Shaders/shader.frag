@@ -11,6 +11,7 @@ layout (location = 1) in vec2 fragTexCoord;
 layout (location = 2) in vec3 fragNormal;
 layout (location = 3) in vec3 fragColor;
 layout (location = 4) in vec3 viewPos;
+layout (location = 5) flat in int debugCollide;
 
 
 // Output
@@ -42,7 +43,7 @@ struct Light {
 
 layout (std430, set = 0, binding = 2) readonly buffer LightBuffer
 {
-    Light lights[];
+    Light lights[64];
 } lightList;
 
 
@@ -96,7 +97,12 @@ void main()
         else if (l_light.type == 1)
             l_lighting += CalculatePointLight(l_light);
     }
+    vec3 result = l_lighting;
+    outColor = texture(texSampler2,fragTexCoord) * vec4(fragColor * result, 1.0);
+    if (debugCollide == 1)
+    {
+        outColor = texture(texSampler2,fragTexCoord);
+    }
 
-    vec4 l_texColor = texture(texSampler2, fragTexCoord);
-    outColor = l_texColor * vec4(fragColor * l_lighting, 1.0);
+
 }

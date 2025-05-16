@@ -24,11 +24,12 @@ public:
     inline void SetOpacity(const float& a_alpha) override { glfwSetWindowOpacity(m_window, a_alpha); }
     inline void SetTitle(const std::string& a_name) override { glfwSetWindowTitle(m_window, a_name.c_str()); }
     inline void ProcessEvents() override { glfwWaitEvents(); }
+    inline void SetFrameBufferResized(const bool a_isResized) { m_isFrameBufferResized = a_isResized; }
 
+     inline bool IsFrameBufferResized() const override { return m_isFrameBufferResized; }
     [[nodiscard]] inline bool ShouldClose() const override { return glfwWindowShouldClose(m_window); }
     [[nodiscard]] inline float GetOpacity() const override { return glfwGetWindowOpacity(m_window); }
     [[nodiscard]] inline std::string GetTitle() const override { return glfwGetWindowTitle(m_window); }
-
     [[nodiscard]] Maths::Vector2 GetSize() const override;
 
     void GetFrameBufferSize(int* a_width, int* a_height) override { glfwGetFramebufferSize(m_window, a_width, a_height); }
@@ -39,11 +40,11 @@ public:
     
 
 private:
+    static void FramebufferResizeCallback(GLFWwindow* a_window, int a_width, int a_height);
     void RetrieveMonitorInformation();
 
+    bool m_isFrameBufferResized { false };
     GLFWwindow* m_window { nullptr };
     GLFWmonitor* m_monitor { nullptr };
     const GLFWvidmode* m_vidMode { nullptr };
-
-    static float m_lastTime;
 };
