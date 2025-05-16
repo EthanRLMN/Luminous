@@ -49,6 +49,132 @@ void FileExplorerPanel::Render()
         ImGui::Begin(p_windowIdentifier.c_str(), &p_isOpen, ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_AlwaysAutoResize);
         ImGui::PushStyleColor(ImGuiCol_WindowBg, 0xff323432);
 
+        static enum class NewFileType {
+            None,
+            TextFile,
+            CppFile,
+            ShaderFile,
+            Folder
+        } selectedFileType = NewFileType::None;
+
+        static char newFileName[128] = "";
+        static bool showInvalidName = false;
+
+        if (ImGui::IsMouseClicked(ImGuiMouseButton_Right) && ImGui::IsWindowHovered())
+        {
+            ImGui::OpenPopup("FileExplorerContextMenu");
+        }
+
+        if (ImGui::BeginPopup("FileExplorerContextMenu"))
+        {
+            if (ImGui::MenuItem("Create Text File"))
+            {
+                selectedFileType = NewFileType::TextFile;
+            }
+            if (ImGui::MenuItem("Create C++ File"))
+            {
+                selectedFileType = NewFileType::CppFile;
+            }
+            if (ImGui::MenuItem("Create Shader File"))
+            {
+                selectedFileType = NewFileType::ShaderFile;
+            }
+            if (ImGui::MenuItem("Create Folder"))
+            {
+                selectedFileType = NewFileType::Folder;
+            }
+            ImGui::EndPopup();
+        }
+
+        if (selectedFileType != NewFileType::None)
+        {
+            ImGui::Spacing();
+            ImGui::Text("Enter name for new %s:",
+                        selectedFileType == NewFileType::Folder ? "folder" : selectedFileType == NewFileType::TextFile ? "text file"
+                                                                     : selectedFileType == NewFileType::CppFile        ? "C++ file"
+                                                                     : selectedFileType == NewFileType::ShaderFile     ? "shader file"
+                                                                                                                       : "");
+
+            ImGui::InputText("##NewFileNameInput", newFileName, IM_ARRAYSIZE(newFileName));
+
+            if (showInvalidName)
+            {
+                ImGui::TextColored(ImVec4(1.0f, 0.3f, 0.3f, 1.0f), "Invalid or duplicate name.");
+            }
+
+            if (ImGui::Button("Create") && strlen(newFileName) > 0)
+            {
+                std::string nameStr = newFileName;
+                std::filesystem::path targetPath = m_currentDirectory;
+                std::string fileContent;
+
+                if (nameStr.find_first_of("\\/:*?\"<>|") != std::string::npos)
+                {
+                    showInvalidName = true;
+                } else if (!std::filesystem::exists(targetPath))
+                {
+                    showInvalidName = true;
+                } else
+                {
+                    switch (selectedFileType)
+                    {
+                        case NewFileType::TextFile:
+                            targetPath /= nameStr + ".txt";
+                            break;
+                        case NewFileType::CppFile:
+                            targetPath /= nameStr + ".cpp";
+                            fileContent = "#include <iostream>\n\nint main() {\n    std::cout << \"Hello, World!\" << std::endl;\n    return 0;\n}";
+                            break;
+                        case NewFileType::ShaderFile:
+                            targetPath /= nameStr + ".glsl";
+                            fileContent = "// Shader code\n";
+                            break;
+                        case NewFileType::Folder:
+                            targetPath /= nameStr;
+                            break;
+                        default:
+                            break;
+                    }
+
+                    if (std::filesystem::exists(targetPath))
+                    {
+                        showInvalidName = true;
+                    } else
+                    {
+                        try
+                        {
+                            if (selectedFileType == NewFileType::Folder)
+                            {
+                                std::filesystem::create_directory(targetPath);
+                            } else
+                            {
+                                std::ofstream ofs(targetPath);
+                                ofs << fileContent;
+                                ofs.close();
+                                OpenTextEditor(targetPath);
+                            }
+                            selectedFileType = NewFileType::None;
+                            std::memset(newFileName, 0, sizeof(newFileName));
+                            showInvalidName = false;
+                        } catch (const std::exception& e)
+                        {
+                            std::cerr << "Failed to create: " << e.what() << std::endl;
+                            showInvalidName = true;
+                        }
+                    }
+                }
+            }
+
+            ImGui::SameLine();
+            if (ImGui::Button("Cancel"))
+            {
+                selectedFileType = NewFileType::None;
+                std::memset(newFileName, 0, sizeof(newFileName));
+                showInvalidName = false;
+            }
+            ImGui::Separator();
+        }
+
         if (m_currentDirectory != std::filesystem::path(s_AssetPath))
         {
             if (ImGui::Button("<"))
@@ -109,7 +235,7 @@ void FileExplorerPanel::Render()
             if (ImGui::BeginDragDropSource())
             {
                 std::string fullPath = path.string();
-                ImGui::SetDragDropPayload("FILE_DRAG", fullPath.c_str(), fullPath.size() + 1); 
+                ImGui::SetDragDropPayload("FILE_DRAG", fullPath.c_str(), fullPath.size() + 1);
                 ImGui::Text("Drag: %s", filenameString.c_str());
                 ImGui::EndDragDropSource();
             }
@@ -119,100 +245,12 @@ void FileExplorerPanel::Render()
             ImGui::NextColumn();
             ImGui::PopID();
         }
+
         ImGui::Columns(1);
+
+        ImGui::PopStyleColor();
+        ImGui::End();
     }
-
-    static enum class NewFileType {
-        None,
-        TextFile,
-        CppFile,
-        ShaderFile,
-        Folder
-    } selectedFileType = NewFileType::None;
-
-    static char newFileName[128] = "";
-
-    if (ImGui::BeginPopupContextWindow("FileExplorerContextMenu", ImGuiPopupFlags_MouseButtonRight | ImGuiPopupFlags_NoOpenOverItems))
-    {
-        if (ImGui::BeginMenu("Creer..."))
-        {
-            if (ImGui::MenuItem("Fichier texte"))
-            {
-                selectedFileType = NewFileType::TextFile;
-                ImGui::OpenPopup("CreateFilePopup");
-            }
-            if (ImGui::MenuItem("Fichier C++"))
-            {
-                selectedFileType = NewFileType::CppFile;
-                ImGui::OpenPopup("CreateFilePopup");
-            }
-            if (ImGui::MenuItem("Fichier Shader"))
-            {
-                selectedFileType = NewFileType::ShaderFile;
-                ImGui::OpenPopup("CreateFilePopup");
-            }
-            if (ImGui::MenuItem("Dossier"))
-            {
-                selectedFileType = NewFileType::Folder;
-                ImGui::OpenPopup("CreateFilePopup");
-            }
-            ImGui::EndMenu();
-        }
-        ImGui::EndPopup();
-    }
-
-    if (ImGui::BeginPopupModal("CreateFilePopup", nullptr, ImGuiWindowFlags_AlwaysAutoResize))
-    {
-        ImGui::InputText("Nom", newFileName, IM_ARRAYSIZE(newFileName));
-
-        if (ImGui::Button("Creer") && strlen(newFileName) > 0)
-        {
-            std::filesystem::path targetPath = m_currentDirectory;
-
-            switch (selectedFileType)
-            {
-                case NewFileType::TextFile:
-                    targetPath /= std::string(newFileName) + ".txt";
-                    break;
-                case NewFileType::CppFile:
-                    targetPath /= std::string(newFileName) + ".cpp";
-                    break;
-                case NewFileType::ShaderFile:
-                    targetPath /= std::string(newFileName) + ".glsl";
-                    break;
-                case NewFileType::Folder:
-                    targetPath /= std::string(newFileName);
-                    std::filesystem::create_directory(targetPath);
-                    break;
-                default:
-                    break;
-            }
-
-            if (selectedFileType != NewFileType::Folder && !std::filesystem::exists(targetPath))
-            {
-                std::ofstream ofs(targetPath);
-                ofs << "";
-                ofs.close();
-            }
-
-            selectedFileType = NewFileType::None;
-            std::memset(newFileName, 0, sizeof(newFileName));
-            ImGui::CloseCurrentPopup();
-        }
-
-        ImGui::SameLine();
-        if (ImGui::Button("Annuler"))
-        {
-            selectedFileType = NewFileType::None;
-            std::memset(newFileName, 0, sizeof(newFileName));
-            ImGui::CloseCurrentPopup();
-        }
-
-        ImGui::EndPopup();
-    }
-
-    ImGui::PopStyleColor();
-    ImGui::End();
 }
 
 
