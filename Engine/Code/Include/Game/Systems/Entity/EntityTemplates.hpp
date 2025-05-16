@@ -12,12 +12,12 @@ public:
 
 private:
     void Empty();
-    void Plane();
     void Cube();
+    void Plane();
     void Sphere();
-    void Capsule();
-    void Cylinder();
     void Cone();
+    void Cylinder();
+    void Capsule();
     void Monkey();
     void Companion();
 };

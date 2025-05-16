@@ -16,13 +16,18 @@ void HierarchyPanel::Render()
     static enum class EntityTemplate {
         None,
         Empty,
-        Light,
-        Camera
+        Cube,
+        Plane,
+        Sphere,
+        Cone,
+        Cylinder,
+        Capsule,
+        Monkey
     } selectedEntityTemplate = EntityTemplate::None;
 
     static char newEntityName[128] = "New Entity";
 
-    if (ImGui::BeginPopupContextWindow("HierarchyContextMenu", ImGuiPopupFlags_MouseButtonRight | ImGuiPopupFlags_NoOpenOverItems))
+    if (ImGui::BeginPopupContextWindow("HierarchyContextMenu", ImGuiPopupFlags_MouseButtonRight))
     {
         if (ImGui::BeginMenu("Add new Entity..."))
         {
@@ -31,14 +36,39 @@ void HierarchyPanel::Render()
                 selectedEntityTemplate = EntityTemplate::Empty;
                 ImGui::OpenPopup("CreateEntityPopup");
             }
-            if (ImGui::MenuItem("Light"))
+            if (ImGui::MenuItem("Cube"))
             {
-                selectedEntityTemplate = EntityTemplate::Light;
+                selectedEntityTemplate = EntityTemplate::Cube;
                 ImGui::OpenPopup("CreateEntityPopup");
             }
-            if (ImGui::MenuItem("Camera"))
+            if (ImGui::MenuItem("Plane"))
             {
-                selectedEntityTemplate = EntityTemplate::Camera;
+                selectedEntityTemplate = EntityTemplate::Plane;
+                ImGui::OpenPopup("CreateEntityPopup");
+            }
+            if (ImGui::MenuItem("Sphere"))
+            {
+                selectedEntityTemplate = EntityTemplate::Sphere;
+                ImGui::OpenPopup("CreateEntityPopup");
+            }
+            if (ImGui::MenuItem("Cone"))
+            {
+                selectedEntityTemplate = EntityTemplate::Cone;
+                ImGui::OpenPopup("CreateEntityPopup");
+            }
+            if (ImGui::MenuItem("Cylinder"))
+            {
+                selectedEntityTemplate = EntityTemplate::Cylinder;
+                ImGui::OpenPopup("CreateEntityPopup");
+            }
+            if (ImGui::MenuItem("Capsule"))
+            {
+                selectedEntityTemplate = EntityTemplate::Capsule;
+                ImGui::OpenPopup("CreateEntityPopup");
+            }
+            if (ImGui::MenuItem("Monkey"))
+            {
+                selectedEntityTemplate = EntityTemplate::Monkey;
                 ImGui::OpenPopup("CreateEntityPopup");
             }
             ImGui::EndMenu();
