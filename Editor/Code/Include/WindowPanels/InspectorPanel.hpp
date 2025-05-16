@@ -8,6 +8,7 @@
 #include "Game/Systems/Camera/CameraEditor.hpp"
 #include "Game/Systems/Entity/Entity.hpp"
 
+
 class InspectorPanel : public IWindowPanel
 {
 public:

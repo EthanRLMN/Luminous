@@ -2,6 +2,15 @@
 
 #include "imgui.h"
 
+
+enum class TransformMode
+{
+    Local,
+    Global
+};
+
+TransformMode m_transformMode = TransformMode::Local;
+
 void InspectorPanel::MatrixToArray(const Maths::Matrix4& matrix, float out[16])
 {
     for (int row = 0; row < 4; ++row)
@@ -31,11 +40,10 @@ void InspectorPanel::Render()
     {
         ImGui::Begin(p_windowIdentifier.c_str(), nullptr, ImGuiWindowFlags_NoCollapse);
         ImGui::PushStyleColor(ImGuiCol_WindowBg, 0xff323432);
+
         if (ImGui::BeginPopupContextWindow())
         {
-            if (ImGui::MenuItem("Add Component"))
-            {
-            }
+            if (ImGui::MenuItem("Add Component")) {}
             ImGui::EndPopup();
         }
 
@@ -43,13 +51,29 @@ void InspectorPanel::Render()
         {
             if (ImGui::CollapsingHeader("Transform"))
             {
-                Maths::Vector3 position = p_isEntitySelected->Transform()->GetLocalPosition();
-                Maths::Vector3 rotation = p_isEntitySelected->Transform()->GetLocalRotationVec();
-                Maths::Vector3 scale = p_isEntitySelected->Transform()->GetLocalScale();
+                if (ImGui::BeginCombo("Transform Mode", m_transformMode == TransformMode::Local ? "Local" : "Global"))
+                {
+                    if (ImGui::Selectable("Local", m_transformMode == TransformMode::Local))
+                        m_transformMode = TransformMode::Local;
+                    if (ImGui::Selectable("Global", m_transformMode == TransformMode::Global))
+                        m_transformMode = TransformMode::Global;
+                    ImGui::EndCombo();
+                }
+
+                Maths::Vector3 position = (m_transformMode == TransformMode::Local)
+                                                  ? p_isEntitySelected->Transform()->GetLocalPosition()
+                                                  : p_isEntitySelected->Transform()->GetGlobalPosition();
+
+                Maths::Vector3 rotation = (m_transformMode == TransformMode::Local)
+                                                  ? p_isEntitySelected->Transform()->GetLocalRotationVec()
+                                                  : p_isEntitySelected->Transform()->GetGlobalRotationVec();
+
+                Maths::Vector3 scale = (m_transformMode == TransformMode::Local)
+                                               ? p_isEntitySelected->Transform()->GetLocalScale()
+                                               : p_isEntitySelected->Transform()->GetGlobalScale();
 
                 const float inputWidth = 150.0f;
 
-                // Position
                 ImGui::Text("Position");
                 bool posChanged = false;
                 ImGui::PushItemWidth(inputWidth);
@@ -64,11 +88,8 @@ void InspectorPanel::Render()
                 ImGui::Text("Z:");
                 ImGui::SameLine();
                 posChanged |= ImGui::InputFloat("##posZ", &position.z, 0.1f, 1.0f, "%.2f");
-                if (posChanged)
-                    p_isEntitySelected->Transform()->SetLocalPosition(position);
                 ImGui::PopItemWidth();
 
-                // Rotation
                 ImGui::Text("Rotation");
                 bool rotChanged = false;
                 ImGui::PushItemWidth(inputWidth);
@@ -83,11 +104,8 @@ void InspectorPanel::Render()
                 ImGui::Text("Z:");
                 ImGui::SameLine();
                 rotChanged |= ImGui::InputFloat("##rotZ", &rotation.z, 0.1f, 1.0f, "%.2f");
-                if (rotChanged)
-                    p_isEntitySelected->Transform()->SetLocalRotationVec(rotation);
                 ImGui::PopItemWidth();
 
-                // Scale
                 ImGui::Text("Scale");
                 bool scaleChanged = false;
                 ImGui::PushItemWidth(inputWidth);
@@ -102,9 +120,17 @@ void InspectorPanel::Render()
                 ImGui::Text("Z:");
                 ImGui::SameLine();
                 scaleChanged |= ImGui::InputFloat("##scaleZ", &scale.z, 0.1f, 1.0f, "%.2f");
-                if (scaleChanged)
-                    p_isEntitySelected->Transform()->SetLocalScale(scale);
                 ImGui::PopItemWidth();
+
+                if (m_transformMode == TransformMode::Local)
+                {
+                    if (posChanged)
+                        p_isEntitySelected->Transform()->SetLocalPosition(position);
+                    if (rotChanged)
+                        p_isEntitySelected->Transform()->SetLocalRotationVec(rotation);
+                    if (scaleChanged)
+                        p_isEntitySelected->Transform()->SetLocalScale(scale);
+                }
             }
 
             if (ImGui::CollapsingHeader("Mesh Renderer"))
@@ -113,13 +139,10 @@ void InspectorPanel::Render()
                 {
                     std::string meshName = modelComponent->GetMeshPath();
                     std::string textureName = modelComponent->GetTexturePath();
-
                     std::string currentMeshName = meshName.substr(meshName.find_last_of("/\\") + 1);
                     ImGui::Text("Mesh:");
 
-                    if(ImGui::Button((currentMeshName + "##mesh").c_str(), ImVec2(200, 0)))
-                    {
-                    }
+                    if (ImGui::Button((currentMeshName + "##mesh").c_str(), ImVec2(200, 0))) {}
 
                     if (ImGui::BeginDragDropTarget())
                     {
@@ -137,7 +160,6 @@ void InspectorPanel::Render()
                         }
                         ImGui::EndDragDropTarget();
                     }
-
 
                     std::string currentTextureName = textureName.substr(textureName.find_last_of("/\\") + 1);
                     ImGui::Text("Texture:");
@@ -187,8 +209,8 @@ void InspectorPanel::Render()
                     }
                 }
             }
-
         }
+
         ImGui::PopStyleColor();
         ImGui::End();
     }
