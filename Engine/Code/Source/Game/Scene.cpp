@@ -16,6 +16,12 @@ void Scene::RegisterScene(EntityManager& a_entityManager)
 
     LoadScene(filepath, a_entityManager);
 
+    const std::shared_ptr<Entity> l_light = a_entityManager.CreateEntityFromTemplate("DefaultSphere");
+    l_light->GetComponent<TransformComponent>().get()->SetLocalPosition(Maths::Vector3(0.f, 10.f, 0.f));
+    l_light->AddComponent(std::make_shared<LightComponent>());
+    l_light->GetComponent<LightComponent>()->GetLight().m_type = LightType::POINT;
+    l_light->GetComponent<LightComponent>()->GetLight().m_color = Maths::Vector3(1.f, 1.f, 1.f);
+
 
     for (size_t i = 0; i < EntityManager::GetAvailableTemplates().size(); ++i)
     {

@@ -180,11 +180,11 @@ void VulkanRenderer::RecordCommandBuffer(const VkCommandBuffer& a_commandBuffer,
 
 
             // Draw all the Colliders in the Scene (Editor only Debug)
-            std::vector<std::shared_ptr<Entity>> entitieswithColliders = a_entityManager.GetEntitiesByComponent<RigidbodyComponent>();
+            std::vector<std::shared_ptr<Entity>> l_entitiesWithCollider = a_entityManager.GetEntitiesByComponent<RigidbodyComponent>();
 
             vkCmdBindPipeline(a_commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, a_wireGraphicsPipeline);
 
-            for (const std::shared_ptr<Entity>& entity : entitieswithColliders)
+            for (const std::shared_ptr<Entity>& entity : l_entitiesWithCollider)
             {
 
                 //Set Ubo's Camera (View/Projection)
@@ -226,11 +226,11 @@ void VulkanRenderer::RecordCommandBuffer(const VkCommandBuffer& a_commandBuffer,
                     Maths::Quaternion l_rotQuat = l_transform->GetGlobalRotationQuat();
                     Maths::Quaternion l_rotQuatOpposite = Maths::Quaternion(-l_rotQuat.x, -l_rotQuat.y, -l_rotQuat.z, l_rotQuat.w); //Rotation is the opposite on Jolt : need to reverse the quat rotation
                     l_rot = l_rotQuatOpposite.ToEulerAngles(true);
-                    Maths::Vector3 l_scale = l_transform->GetGlobalScale();
-                    l_scale = Maths::Vector3(l_capsuleRadius + l_capsuleSizeOffset.x);
+                    Maths::Vector3 l_colScale = l_transform->GetGlobalScale();
+                    l_colScale = Maths::Vector3(l_capsuleRadius + l_capsuleSizeOffset.x);
 
                     Maths::Matrix4 l_rotMat = Maths::Matrix4::RotationXYZ(l_rot);
-                    Maths::Matrix4 l_scaleMat = Maths::Matrix4::Scale(l_scale);
+                    Maths::Matrix4 l_scaleMat = Maths::Matrix4::Scale(l_colScale);
 
                     //Loop 2 times to draw both tips of the cynlinder (spheres)
                     for (int l_i = 0; l_i < 2; ++l_i)
@@ -317,8 +317,7 @@ void VulkanRenderer::DrawModel(ModelComponent* a_model, const VkCommandBuffer& a
 void VulkanRenderer::UpdateUniformBuffer(const uint32_t& a_currentFrame, IBuffer* a_buffer, const EntityManager& a_entityManager) const
 {
     a_entityManager.Update();
-
-    memcpy(a_buffer->CastVulkan()->GetLightUniformBuffersMapped()[a_currentFrame], const_cast<void*>(static_cast<const void*>(&m_lights)), sizeof(GpuLightBuffer));
+    memcpy(a_buffer->CastVulkan()->GetLightUniformBuffersMapped()[a_currentFrame], &m_gpuLightBuffer, sizeof(GpuLightBuffer));
 }
 
 

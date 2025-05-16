@@ -29,16 +29,14 @@ public:
             const std::shared_ptr<Entity> l_entity = it->second(a_entityManager);
             l_entity->SetUUID(m_idPool.Generate());
 
-
             DEBUG_LOG_INFO("Entity [ Name= {} ] - [ UUID={} ] created!", l_entity->GetName(), l_entity->GetUUID());
-
             return l_entity;
         }
         return nullptr;
     }
 
 
-    [[nodiscard]] inline std::vector<std::string> GetAvailableTemplates() const
+    inline std::vector<std::string> GetAvailableTemplates() const
     {
         std::vector<std::string> l_result {};
 

@@ -50,7 +50,7 @@ public:
     mutable bool bUsable = false;
     bool m_recreateDsets = false;
 
-    GpuLightBuffer m_lights;
+    GpuLightBuffer m_gpuLightBuffer;
 
 
 private:

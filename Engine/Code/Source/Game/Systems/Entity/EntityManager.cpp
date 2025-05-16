@@ -50,18 +50,6 @@ std::shared_ptr<Entity> EntityManager::CreateEntityFromTemplate(const std::strin
 }
 
 
-void EntityManager::RegisterRenderable(const std::shared_ptr<Entity>& a_entity)
-{
-    m_renderableEntities.push_back(a_entity);
-}
-
-
-void EntityManager::UnregisterRenderable(const std::shared_ptr<Entity>& a_entity)
-{
-    std::erase(m_renderableEntities, a_entity);
-}
-
-
 void EntityManager::GameplayStarted() const
 {
     for (const std::shared_ptr<Entity>& l_entity : m_entities)
@@ -84,4 +72,3 @@ std::shared_ptr<Entity> EntityManager::GetEntityByName(const std::string& a_name
     }
     return nullptr;
 }
-

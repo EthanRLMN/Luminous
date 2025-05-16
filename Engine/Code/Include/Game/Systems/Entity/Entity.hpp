@@ -28,7 +28,7 @@ public:
     inline uint16_t GetUUID() const { return m_uuid; }
 
     template<typename T>
-    [[nodiscard]] inline std::shared_ptr<T> GetComponent() const
+    inline std::shared_ptr<T> GetComponent() const
     {
         for (const std::shared_ptr<EntityComponent>& component : m_components)
         {
@@ -39,20 +39,18 @@ public:
         return nullptr;
     }
 
-    [[nodiscard]] inline std::string GetName() const { return m_name; }
-    [[nodiscard]] inline bool IsActive() const { return m_isActive; }
-
-
+    inline std::string GetName() const { return m_name; }
+    inline bool IsActive() const { return m_isActive; }
     inline void SetEngine(Engine* a_engine) { m_engine = a_engine; }
     inline void SetName(const std::string& a_newName) { m_name = a_newName; }
     inline void SetUUID(const EntityID a_uuid) { m_uuid = a_uuid; }
+    inline void SetActive(const bool a_isActive) { m_isActive = a_isActive; }
     inline std::shared_ptr<TransformComponent> Transform() const { return GetComponent<TransformComponent>(); }
     inline std::shared_ptr<ModelComponent> Model() const { return GetComponent<ModelComponent>(); }
     inline std::shared_ptr<LightComponent> Light() const { return GetComponent<LightComponent>(); }
     inline std::shared_ptr<CameraComponent> Camera() const { return GetComponent<CameraComponent>(); }
     void AddComponent(const std::shared_ptr<EntityComponent>& a_component);
     void RemoveComponent(const std::shared_ptr<EntityComponent>& a_component);
-    void SetActive(bool a_isActive);
 
 
 private:

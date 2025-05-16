@@ -21,24 +21,25 @@ public:
     void Update() const;
     void GameplayStarted() const;
 
-    void RegisterRenderable(const std::shared_ptr<Entity>& a_entity);
-    void UnregisterRenderable(const std::shared_ptr<Entity>& a_entity);
+    inline void RegisterRenderable(const std::shared_ptr<Entity>& a_entity) { m_renderableEntities.push_back(a_entity); }
+    inline void UnregisterRenderable(const std::shared_ptr<Entity>& a_entity) { std::erase(m_renderableEntities, a_entity); }
+    inline void RegisterLight(const std::shared_ptr<Entity>& a_entity) { m_lightEntities.push_back(a_entity); }
+    inline void UnregisterLight(const std::shared_ptr<Entity>& a_entity) { std::erase(m_lightEntities, a_entity); }
 
     /*          Getters         */
-    [[nodiscard]] inline const std::vector<std::shared_ptr<Entity> >& GetEntities() const { return m_entities; }
-    [[nodiscard]] inline bool HasEntityByName(const std::string& a_name) const { return GetEntityByName(a_name) != nullptr; }
-    [[nodiscard]] inline size_t GetEntityCount() const { return m_entities.size(); }
-    [[nodiscard]] inline bool IsEmpty() const { return m_entities.empty(); }
-    [[nodiscard]] inline bool HasEntity(const std::shared_ptr<Entity>& a_entity) const { return std::ranges::find(m_entities, a_entity) != m_entities.end(); }
-    [[nodiscard]] inline const std::vector<std::shared_ptr<Entity> >& GetRenderableEntities() const { return m_renderableEntities; }
-    [[nodiscard]] std::shared_ptr<Entity> GetEntityByName(const std::string& a_name) const;
-    [[nodiscard]] std::shared_ptr<Entity> GetFirstEntityByParent(const std::shared_ptr<Entity>& a_parent) const;
-    [[nodiscard]] static std::vector<std::string> GetAvailableTemplates();
-
-    Engine* GetEngine() { return m_engine; }
+    inline const std::vector<std::shared_ptr<Entity> >& GetEntities() const { return m_entities; }
+    inline bool HasEntityByName(const std::string& a_name) const { return GetEntityByName(a_name) != nullptr; }
+    inline size_t GetEntityCount() const { return m_entities.size(); }
+    inline bool IsEmpty() const { return m_entities.empty(); }
+    inline bool HasEntity(const std::shared_ptr<Entity>& a_entity) const { return std::ranges::find(m_entities, a_entity) != m_entities.end(); }
+    inline const std::vector<std::shared_ptr<Entity> >& GetRenderableEntities() const { return m_renderableEntities; }
+    std::shared_ptr<Entity> GetEntityByName(const std::string& a_name) const;
+    std::shared_ptr<Entity> GetFirstEntityByParent(const std::shared_ptr<Entity>& a_parent) const;
+    static std::vector<std::string> GetAvailableTemplates();
+    Engine* GetEngine() const { return m_engine; }
 
     template<typename T>
-    [[nodiscard]] inline std::vector<std::shared_ptr<Entity> > GetEntitiesByComponent() const
+    inline std::vector<std::shared_ptr<Entity> > GetEntitiesByComponent() const
     {
         std::vector<std::shared_ptr<Entity> > l_entitiesWithComponent{};
 
@@ -60,9 +61,8 @@ public:
 
 
 private:
-    void UpdateRenderableEntities();
-
     Engine* m_engine{ nullptr };
-    std::vector<std::shared_ptr<Entity> > m_entities{};
-    std::vector<std::shared_ptr<Entity> > m_renderableEntities{};
+    std::vector<std::shared_ptr<Entity>> m_entities{};
+    std::vector<std::shared_ptr<Entity>> m_renderableEntities{};
+    std::vector<std::shared_ptr<Entity>> m_lightEntities{};
 };
