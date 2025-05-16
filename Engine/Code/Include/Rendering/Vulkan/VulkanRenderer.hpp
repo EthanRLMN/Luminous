@@ -50,7 +50,7 @@ public:
     mutable bool bUsable = false;
     bool m_recreateDsets = false;
 
-    LightData m_lights[MAX_LIGHTS];
+    GpuLightBuffer m_lights;
 
 
 private:

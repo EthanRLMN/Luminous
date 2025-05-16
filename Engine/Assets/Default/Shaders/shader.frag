@@ -33,18 +33,14 @@ struct Light {
     float intensity;
     float ambientStrength;
     float specularStrength;
-
-    int count;
-    int _pad3;
-    int _pad4;
-    int _pad5;
 };
 
 
 layout (std430, set = 0, binding = 2) readonly buffer LightBuffer
 {
+    uint lightCount;
     Light lights[64];
-} lightList;
+} lightBuffer;
 
 
 vec3 ComputeLight(vec3 a_lightColor, vec3 a_lightDir, float a_intensity, float a_ambientStrength, float a_specularStrength)
@@ -88,14 +84,12 @@ void main()
 {
     vec3 l_lighting = vec3(0.0);
     
-    for (int i = 0; i < lightList.lights[0].count; ++i)
+    for (int i = 0; i < lightBuffer.lightCount; ++i)
     {
-        Light l_light = lightList.lights[i];
-
-        if (l_light.type == 0)
-            l_lighting += CalculateDirectional(l_light);
-        else if (l_light.type == 1)
-            l_lighting += CalculatePointLight(l_light);
+        if (lightBuffer.lights[i].type == 0)
+            l_lighting += CalculateDirectional(lightBuffer.lights[i]);
+        else if (lightBuffer.lights[i].type == 1)
+            l_lighting += CalculatePointLight(lightBuffer.lights[i]);
     }
     vec3 result = l_lighting;
     outColor = texture(texSampler2,fragTexCoord) * vec4(fragColor * result, 1.0);
@@ -103,6 +97,4 @@ void main()
     {
         outColor = texture(texSampler2,fragTexCoord);
     }
-
-
 }

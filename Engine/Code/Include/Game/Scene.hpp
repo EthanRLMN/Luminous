@@ -90,7 +90,6 @@ struct LightComponentData
     float intensity;
     float ambientStrength;
     float specularStrength;
-    int count;
 
     template <typename Archive>
     void reflect(Archive& ar) { ar(position, direction, color, type); }

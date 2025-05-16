@@ -16,7 +16,7 @@ void Scene::RegisterScene(EntityManager& a_entityManager)
 
     LoadScene(filepath, a_entityManager);
 
-    
+
     for (size_t i = 0; i < EntityManager::GetAvailableTemplates().size(); ++i)
     {
         const std::shared_ptr<Entity> l_obj = a_entityManager.CreateEntityFromTemplate(EntityManager::GetAvailableTemplates()[i]);
@@ -28,14 +28,14 @@ void Scene::RegisterScene(EntityManager& a_entityManager)
     const std::shared_ptr<Entity> collider = a_entityManager.CreateEntityFromTemplate("DefaultCube");
     const std::shared_ptr<Entity> collider2 = a_entityManager.CreateEntityFromTemplate("DefaultCube");
     collider->GetComponent<TransformComponent>().get()->SetLocalPosition(Maths::Vector3(8.f, 10.0f, 0.0f));
-    
+
     const std::shared_ptr<RigidbodyComponent> l_modelComponent = std::make_shared<RigidbodyComponent>();
     collider->AddComponent(l_modelComponent);
     l_modelComponent->SetEngine(a_entityManager.GetEngine());
     l_modelComponent->SetEntity(collider);
     collider->GetComponent<TransformComponent>().get()->SetLocalScale(Maths::Vector3(2.f, 2.5f, 2.f));
     collider->GetComponent<TransformComponent>().get()->SetLocalRotationVec(Maths::Vector3(0.f, 0.f, 0.f));
-    
+
     l_modelComponent->SetLayer(Layers::DYNAMIC);
     l_modelComponent->SetActive(JPH::EActivation::Activate);
     l_modelComponent->SetColliderType(BOXCOLLIDER);
@@ -49,9 +49,9 @@ void Scene::RegisterScene(EntityManager& a_entityManager)
     collider2->AddComponent(l_modelComponent2);
     l_modelComponent2->SetEngine(a_entityManager.GetEngine());
     l_modelComponent2->SetEntity(collider2);
-    collider2->GetComponent<TransformComponent>().get()->SetLocalScale(Maths::Vector3(2.f, 2.5f, 2.f));
-    collider2->GetComponent<TransformComponent>().get()->SetLocalRotationVec(Maths::Vector3(0.f, 0.f, 0.f));
-    collider2->GetComponent<TransformComponent>().get()->SetLocalPosition(Maths::Vector3(8.f, 0.f, 0.0f));
+    collider2->GetComponent<TransformComponent>()->SetLocalScale(Maths::Vector3(2.f, 2.5f, 2.f));
+    collider2->GetComponent<TransformComponent>()->SetLocalRotationVec(Maths::Vector3(0.f, 0.f, 0.f));
+    collider2->GetComponent<TransformComponent>()->SetLocalPosition(Maths::Vector3(8.f, 0.f, 0.0f));
     l_modelComponent2->SetLayer(Layers::KINEMATIC);
     l_modelComponent2->SetActive(JPH::EActivation::Activate);
     l_modelComponent2->SetColliderType(BOXCOLLIDER);
@@ -74,7 +74,7 @@ void Scene::LoadScene(std::string filename, const EntityManager& a_entityManager
         return;
     }
 
-    const rfl::Result<std::vector<EntityData>> l_result = rfl::json::load<std::vector<EntityData>>(filename);
+    const rfl::Result<std::vector<EntityData> > l_result = rfl::json::load<std::vector<EntityData> >(filename);
     if (!l_result)
     {
         DEBUG_LOG_CRITICAL("Error loading the JSON.");
@@ -140,10 +140,10 @@ void Scene::LoadScene(std::string filename, const EntityManager& a_entityManager
                         l_light->GetLight().m_intensity = compData.intensity;
                         l_light->GetLight().m_ambientStrength = compData.ambientStrength;
                         l_light->GetLight().m_specularStrength = compData.specularStrength;
-                        l_light->GetLight().m_count = compData.count;
                     }
                 }
-                else if constexpr (std::is_same_v<T, CameraComponentData>) {
+                else if constexpr (std::is_same_v<T, CameraComponentData>)
+                {
                     if (const std::shared_ptr<CameraComponent> l_camera = l_entity->GetComponent<CameraComponent>())
                     {
                         l_camera->SetIsActive(compData.isActive);
@@ -151,8 +151,6 @@ void Scene::LoadScene(std::string filename, const EntityManager& a_entityManager
                         l_camera->SetFarPlane(compData.farPlane);
                         l_camera->SetNearPlane(compData.nearPlane);
                         l_camera->SetFieldOfView(compData.fieldOfView);
-                        //l_camera->SetEye(Maths::Vector3(compData.eye));
-                        //l_camera->SetCenter(Maths::Vector3(compData.center);
                     }
                 }
             }, l_component);
@@ -208,15 +206,14 @@ void Scene::SaveScene(const std::string& filepath, const EntityManager& a_entity
             l_lightData.intensity = l_light->GetLight().m_intensity;
             l_lightData.ambientStrength = l_light->GetLight().m_ambientStrength;
             l_lightData.specularStrength = l_light->GetLight().m_specularStrength;
-            l_lightData.count = l_light->GetLight().m_count;
 
             l_datasaver.componentType = "Light";
             l_datasaver.components.emplace_back(l_lightData);
         }
 
-        if (const std::shared_ptr<CameraComponent>& l_camera = l_entity->GetComponent<CameraComponent>()) {
-
-            CameraComponentData l_cameraData;
+        if (const std::shared_ptr<CameraComponent>& l_camera = l_entity->GetComponent<CameraComponent>())
+        {
+            CameraComponentData l_cameraData{};
             l_cameraData.aspectRatio = l_camera->GetAspectRatio();
             l_cameraData.farPlane = l_camera->GetFarPlane();
             l_cameraData.nearPlane = l_camera->GetNearPlane();
