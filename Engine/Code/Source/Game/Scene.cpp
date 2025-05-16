@@ -61,6 +61,13 @@ void Scene::RegisterScene(EntityManager& a_entityManager)
     l_modelComponent2->SetColliderSize(Maths::Vector3(0.f, 1.f, 0.f));
 
 
+
+    const std::shared_ptr<Entity> cam = a_entityManager.CreateEntityFromTemplate("DefaultEmpty");
+    const std::shared_ptr<CameraComponent> l_camComponent = std::make_shared<CameraComponent>();
+    cam->AddComponent(l_camComponent);
+    l_camComponent->Initialize();
+
+
     for (const auto& l_entity : EntityManager::GetAvailableTemplates())
         DEBUG_LOG_CRITICAL("{}", l_entity);
 

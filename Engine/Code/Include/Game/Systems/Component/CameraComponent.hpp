@@ -29,6 +29,9 @@ public:
     void SetEye(Maths::Vector3 a_eye){m_eye = a_eye;}
     void SetCenter(Maths::Vector3 a_center) {m_center = a_center;}
 
+    [[nodiscard]] Maths::Matrix4 GetViewMatrix() const { return m_viewMatrix; }
+    [[nodiscard]] Maths::Matrix4 GetProjectionMatrix() const { return m_projectionMatrix; }
+
 private:
     bool m_isActive = true;
     float m_aspectRatio{ 800.0f / 600.0f };

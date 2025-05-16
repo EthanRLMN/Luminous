@@ -31,6 +31,8 @@
 #include "Matrix4.hpp"
 #include <array>
 
+#include "Engine.hpp"
+
 
 void VulkanRenderer::Create(IDevice* a_device, ISwapChain* a_swapChain)
 {
@@ -169,6 +171,28 @@ void VulkanRenderer::RecordCommandBuffer(const VkCommandBuffer& a_commandBuffer,
         if (l_renderPass == a_renderPassManager->GetRenderPassAt(0))
         {
 
+            //Get Editor/Game Camera
+            std::vector<std::shared_ptr<Entity>> entitiesWithCamera = a_entityManager.GetEntitiesByComponent<CameraComponent>();
+            std::shared_ptr<Entity> l_entity = entitiesWithCamera[0];
+            CameraComponent* l_camcomp = l_entity->GetComponent<CameraComponent>().get();
+
+            Maths::Matrix4 l_cameraViewMatrix;
+            Maths::Matrix4 l_cameraProjMatrix;
+
+            if (l_entity->GetEngine()->InGame())
+            {
+                l_cameraViewMatrix = l_camcomp->GetViewMatrix();
+                l_cameraProjMatrix = l_camcomp->GetProjectionMatrix();
+            }
+            else
+            {
+                l_cameraViewMatrix = m_cameraEditor.GetViewMatrix().Transpose();
+                l_cameraProjMatrix = m_cameraEditor.GetProjectionMatrix();
+            }
+
+            //m_cameraEditor.GetViewMatrix().Print();
+            //l_camcomp->GetViewMatrix().Print();
+
             // Draw all the ModelComponents in the Scene
             std::vector<std::shared_ptr<Entity>> entitiesWithModels = a_entityManager.GetEntitiesByComponent<ModelComponent>();
 
@@ -178,8 +202,8 @@ void VulkanRenderer::RecordCommandBuffer(const VkCommandBuffer& a_commandBuffer,
                 UniformBufferObject l_ubo{};
                 const Maths::Matrix4 l_modelMatrix = entity->Transform()->GetGlobalMatrix();
                 l_ubo.model = l_modelMatrix.Transpose();
-                l_ubo.view = m_cameraEditor.GetViewMatrix().Transpose();
-                l_ubo.proj = m_cameraEditor.GetProjectionMatrix();
+                l_ubo.view = l_cameraViewMatrix;
+                l_ubo.proj = l_cameraProjMatrix;
                 l_ubo.debug = 0; // Debug = 0 : Light applied to it (Most models)
 
                 //Send the ubo and Draw the Model 
@@ -198,8 +222,8 @@ void VulkanRenderer::RecordCommandBuffer(const VkCommandBuffer& a_commandBuffer,
 
                 //Set Ubo's Camera (View/Projection)
                 UniformBufferObject l_ubo{};
-                l_ubo.view = m_cameraEditor.GetViewMatrix().Transpose();
-                l_ubo.proj = m_cameraEditor.GetProjectionMatrix();
+                l_ubo.view = l_cameraViewMatrix;
+                l_ubo.proj = l_cameraProjMatrix;
                 l_ubo.debug = 1; //Debug = 1 : No lights applied (Used to debug colliders)
 
                 //Get Basic Components
