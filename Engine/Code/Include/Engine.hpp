@@ -4,7 +4,6 @@
 #include "ISynchronization.hpp"
 
 #include "Game/Scene.hpp"
-#include "Game/Systems/Entity/Entity.hpp"
 #include "Game/Systems/Entity/EntityManager.hpp"
 #include "Game/Systems/Physics/PhysicsSystem.hpp"
 
@@ -81,7 +80,7 @@ private:
 	PhysicsSystem* m_physicsSystem{ nullptr };
 
     bool m_isRunning { false };
-    bool m_gameRunning{ true };
+    bool m_gameRunning{ false };
 
 	EntityManager m_entityManager;
 };
