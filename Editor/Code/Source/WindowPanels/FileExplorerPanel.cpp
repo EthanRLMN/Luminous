@@ -89,6 +89,23 @@ void FileExplorerPanel::DrawDirectoryTree(const std::filesystem::path& directory
             DrawDirectoryTree(path);
             ImGui::TreePop();
         }
+        if (ImGui::BeginDragDropTarget())
+        {
+            if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("FILE_DRAG"))
+            {
+                const char* sourcePath = static_cast<const char*>(payload->Data);
+                std::filesystem::path destinationPath = path / std::filesystem::path(sourcePath).filename();
+
+                try
+                {
+                    std::filesystem::rename(sourcePath, destinationPath);
+                } catch (const std::exception& e)
+                {
+                    std::cerr << "Moving Error :" << e.what() << std::endl;
+                }
+            }
+            ImGui::EndDragDropTarget();
+        }
     }
 }
 
@@ -143,6 +160,28 @@ void FileExplorerPanel::DrawDirectoryContent()
             else if (path.extension() == ".txt" || path.extension() == ".cpp" || path.extension() == ".hpp")
                 OpenTextEditor(path);
         }
+
+        if (entry.is_directory())
+        {
+            if (ImGui::BeginDragDropTarget())
+            {
+                if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("FILE_DRAG"))
+                {
+                    const char* sourcePath = static_cast<const char*>(payload->Data);
+                    std::filesystem::path destinationPath = path / std::filesystem::path(sourcePath).filename();
+
+                    try
+                    {
+                        std::filesystem::rename(sourcePath, destinationPath);
+                    } catch (const std::exception& e)
+                    {
+                        std::cerr << "Moving Error : " << e.what() << std::endl;
+                    }
+                }
+                ImGui::EndDragDropTarget();
+            }
+        }
+
 
         if (ImGui::BeginPopupContextItem("ItemContextMenu"))
         {
