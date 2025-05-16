@@ -16,7 +16,7 @@ struct alignas(16) LightData
     Maths::Vector3 m_color{ 1.0f, 1.0f, 1.0f };
     float _pad2 = 0;
 
-    LightType m_type { LightType::POINT };
+    LightType m_type { LightType::DIRECTIONAL };
     float m_intensity{ 1.0f };
     float m_ambientStrength{ 0.0f };
     float m_specularStrength{ 0.5f };

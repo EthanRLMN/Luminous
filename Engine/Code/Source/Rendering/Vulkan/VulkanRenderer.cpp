@@ -173,16 +173,35 @@ void VulkanRenderer::RecordCommandBuffer(const VkCommandBuffer& a_commandBuffer,
 
             //Get Editor/Game Camera
             std::vector<std::shared_ptr<Entity>> entitiesWithCamera = a_entityManager.GetEntitiesByComponent<CameraComponent>();
-            std::shared_ptr<Entity> l_entity = entitiesWithCamera[0];
-            CameraComponent* l_camcomp = l_entity->GetComponent<CameraComponent>().get();
+            std::shared_ptr<Entity> l_entity;
+            for (const std::shared_ptr<Entity>& entity : entitiesWithCamera)
+            {
+                if (entity->GetComponent<CameraComponent>()->GetIsMainCamera())
+                {
+                    l_entity = entity;
+                    break;
+                }
+            }
+           
+                
 
             Maths::Matrix4 l_cameraViewMatrix;
             Maths::Matrix4 l_cameraProjMatrix;
 
-            if (l_entity->GetEngine()->InGame())
+            if (a_entityManager.GetEngine()->InGame())
             {
-                l_cameraViewMatrix = l_camcomp->GetViewMatrix();
-                l_cameraProjMatrix = l_camcomp->GetProjectionMatrix();
+                if (l_entity != nullptr)
+                {
+                    CameraComponent* l_camcomp = l_entity->GetComponent<CameraComponent>().get();
+                    l_cameraViewMatrix = l_camcomp->GetViewMatrix();
+                    l_cameraProjMatrix = l_camcomp->GetProjectionMatrix();
+                } else
+                {
+                    l_cameraViewMatrix = Maths::Matrix4::identity;
+                    l_cameraProjMatrix = Maths::Matrix4::identity;
+                    DEBUG_LOG_ERROR("There is no Main Camera in the scene.");
+                }
+                
             }
             else
             {

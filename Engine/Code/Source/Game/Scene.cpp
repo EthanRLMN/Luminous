@@ -66,6 +66,7 @@ void Scene::RegisterScene(EntityManager& a_entityManager)
     const std::shared_ptr<CameraComponent> l_camComponent = std::make_shared<CameraComponent>();
     cam->AddComponent(l_camComponent);
     l_camComponent->Initialize();
+    l_camComponent->ForceSetMainCamera(true);
 
 
     for (const auto& l_entity : EntityManager::GetAvailableTemplates())

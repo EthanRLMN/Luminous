@@ -35,7 +35,7 @@ public:
     [[nodiscard]] std::shared_ptr<Entity> GetFirstEntityByParent(const std::shared_ptr<Entity>& a_parent) const;
     [[nodiscard]] static std::vector<std::string> GetAvailableTemplates();
 
-    Engine* GetEngine() { return m_engine; }
+    Engine* GetEngine() const { return m_engine; }
 
     template<typename T>
     [[nodiscard]] inline std::vector<std::shared_ptr<Entity> > GetEntitiesByComponent() const
