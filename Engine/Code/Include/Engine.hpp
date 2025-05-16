@@ -52,6 +52,7 @@ public:
     [[nodiscard]] EntityManager* GetEntityManager() { return &m_entityManager; }
 
     [[nodiscard]] bool IsRunning() const { return m_isRunning; }
+    [[nodiscard]] bool InGame() const { return m_gameRunning; }
     PhysicsSystem* GetPhysicsSystem() const { return m_physicsSystem; }
 
 
@@ -80,6 +81,7 @@ private:
 	PhysicsSystem* m_physicsSystem{ nullptr };
 
     bool m_isRunning { false };
+    bool m_gameRunning{ true };
 
 	EntityManager m_entityManager;
 };

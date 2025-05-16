@@ -17,6 +17,7 @@ public:
     float GetFarPlane() { return m_farPlane; }
     float GetFieldOfView() { return m_fieldOfView; }
     float GetAspectRatio() { return m_aspectRatio; }
+    bool GetIsMainCamera() { return m_mainCamera; }
 
     Maths::Vector3 GetEye() { return m_eye; }
     Maths::Vector3 GetCenter() { return m_center; }
@@ -28,14 +29,21 @@ public:
     void SetAspectRatio(float a_aspectRatio) { m_aspectRatio = a_aspectRatio; }
     void SetEye(Maths::Vector3 a_eye){m_eye = a_eye;}
     void SetCenter(Maths::Vector3 a_center) {m_center = a_center;}
+    void ForceSetMainCamera(bool a_val) { m_mainCamera = a_val; }
+    void SetMainCamera(bool a_val);
+
+    [[nodiscard]] Maths::Matrix4 GetViewMatrix() const { return m_viewMatrix; }
+    [[nodiscard]] Maths::Matrix4 GetProjectionMatrix() const { return m_projectionMatrix; }
 
 private:
     bool m_isActive = true;
+    bool m_mainCamera = false;
     float m_aspectRatio{ 800.0f / 600.0f };
     float m_nearPlane{ 0.1f };
     float m_farPlane{ 100.f };
     float m_fieldOfView{ 60.0f };
 
+    Maths::Vector3 m_oldOwnerTransform{ 0.0f };
 
     Maths::Matrix4 m_projectionMatrix{ Maths::Matrix4::identity };
     Maths::Matrix4 m_viewMatrix{ Maths::Matrix4::identity };
