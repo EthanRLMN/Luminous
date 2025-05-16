@@ -4,7 +4,7 @@
 
 #include "IPipeline.hpp"
 #include "vulkan/vulkan.h"
-
+#include  "Rendering/Vulkan/Skybox.hpp"
 
 class IRenderPass;
 
@@ -15,7 +15,7 @@ public:
 	void Destroy(IDevice* a_device) override;
 
 	[[nodiscard]] VkPipeline GetGraphicsPipeline() const { return m_graphicsPipeline; }
-	[[nodiscard]] VkPipelineLayout GetPipelineLayout() const { return m_pipelineLayout; };
+	[[nodiscard]] VkPipelineLayout GetPipelineLayout() const { return m_pipelineLayout; }
 
 	VulkanPipeline* CastVulkan() override { return this; }
 
@@ -38,4 +38,5 @@ private:
 	VkPipeline m_graphicsPipeline { nullptr };
 
 	VkPipelineLayout m_pipelineLayout { nullptr };
+   
 };
