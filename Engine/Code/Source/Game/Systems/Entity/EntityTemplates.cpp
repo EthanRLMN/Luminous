@@ -9,6 +9,10 @@ void EntityTemplates::RegisterEntityTemplates()
     Cube();
     Plane();
     Sphere();
+    Cone();
+    Cylinder();
+    Capsule();
+    Monkey();
     Companion();
 }
 
