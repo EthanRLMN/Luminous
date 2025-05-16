@@ -155,6 +155,7 @@ void InspectorPanel::Render()
                             if (pathStr.ends_with(".obj") || pathStr.ends_with(".fbx") || pathStr.ends_with(".gltf"))
                             {
                                 modelComponent->SetMesh(pathStr);
+                                modelComponent->SetMeshPath(pathStr);
                             }
                         }
                         ImGui::EndDragDropTarget();
@@ -202,6 +203,7 @@ void InspectorPanel::Render()
                             {
                                 std::string oldTexture = texturePath;
                                 modelComponent->SetTexture(pathStr);
+                                modelComponent->SetTexturePath(pathStr);
                                 s_textureCache.erase(oldTexture);
                             }
                         }

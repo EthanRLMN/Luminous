@@ -9,7 +9,7 @@ void Scene::RegisterScene(EntityManager& a_entityManager)
     EntityTemplates l_defaultTemplates {};
     l_defaultTemplates.RegisterEntityTemplates();
 
-    a_entityManager.CreateEntityFromTemplate("Cube");
+    a_entityManager.CreateEntityFromTemplate("DefaultCube");
 
 
     for (const auto& l_entity : EntityManager::GetAvailableTemplates())
