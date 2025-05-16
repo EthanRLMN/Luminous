@@ -43,6 +43,7 @@ private:
     float m_farPlane{ 100.f };
     float m_fieldOfView{ 60.0f };
 
+    Maths::Vector3 m_oldOwnerTransform{ 0.0f };
 
     Maths::Matrix4 m_projectionMatrix{ Maths::Matrix4::identity };
     Maths::Matrix4 m_viewMatrix{ Maths::Matrix4::identity };

@@ -14,6 +14,19 @@ void CameraComponent::Initialize() {
 }
 
 void CameraComponent::Update() {
+
+
+
+    if (TransformComponent* l_transform = GetOwner()->GetComponent<TransformComponent>().get())
+    {
+        if (l_transform->GetGlobalPosition() != m_oldOwnerTransform)
+        {
+            m_oldOwnerTransform = l_transform->GetGlobalPosition();
+            m_eye = m_oldOwnerTransform;
+            m_center = m_eye + Maths::Vector3(0, 0, -1) * l_transform->GetGlobalRotationQuat();
+        }
+    }
+
     m_viewMatrix = UpdateViewMatrix(m_eye, m_center, m_worldUp);
 }
 

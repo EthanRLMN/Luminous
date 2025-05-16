@@ -63,10 +63,14 @@ void Scene::RegisterScene(EntityManager& a_entityManager)
 
 
     const std::shared_ptr<Entity> cam = a_entityManager.CreateEntityFromTemplate("DefaultEmpty");
+    cam->GetComponent<TransformComponent>().get()->SetLocalPosition(Maths::Vector3(8.f, 0.f, 0.0f));
+    cam->GetComponent<TransformComponent>().get()->SetLocalRotationVec(Maths::Vector3(0.f, 90.f, 0.f));
     const std::shared_ptr<CameraComponent> l_camComponent = std::make_shared<CameraComponent>();
     cam->AddComponent(l_camComponent);
     l_camComponent->Initialize();
     l_camComponent->ForceSetMainCamera(true);
+    
+    
 
 
     for (const auto& l_entity : EntityManager::GetAvailableTemplates())
