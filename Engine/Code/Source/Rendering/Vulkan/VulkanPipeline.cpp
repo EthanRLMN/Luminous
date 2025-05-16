@@ -14,6 +14,7 @@
 #include "ResourceManager/ResourceManager.hpp"
 
 
+
 void VulkanPipeline::Create(IDevice* a_device, IRenderPass* a_renderPass, IDescriptorSetLayout* a_descriptionSetLayout)
 {
     IResourceParams l_shaderParams{ a_device };
@@ -93,8 +94,8 @@ void VulkanPipeline::Create(IDevice* a_device, IRenderPass* a_renderPass, IDescr
     VkGraphicsPipelineCreateInfo l_pipelineCreateInfo{ };
     PushPipelineInfo(m_graphicsPipeline,l_pipelineCreateInfo, l_shaderStages, l_vertexInputCreateInfo, l_inputAssembly, l_viewportStateCreateInfo, l_rasterizerCreateInfo, l_multisamplingCreateInfo, l_depthStencil, l_colorBlending, l_dynamicStateCreationInfo, a_renderPass->CastVulkan()->GetRenderPass(), a_device->CastVulkan()->GetDevice());
 
-    VkGraphicsPipelineCreateInfo l_pipelineCreateInfo3{};
-    PushPipelineInfo(m_skyboxPipeline,l_pipelineCreateInfo, l_shaderStages, l_vertexInputCreateInfo, l_inputAssembly, l_viewportStateCreateInfo, l_rasterizerCreateInfo, l_multisamplingCreateInfo, l_depthStencil, l_colorBlending, l_dynamicStateCreationInfo, a_renderPass->CastVulkan()->GetRenderPass(), a_device->CastVulkan()->GetDevice());
+   // VkGraphicsPipelineCreateInfo l_pipelineCreateInfo3{};
+    //PushPipelineInfo(m_skyboxPipeline,l_pipelineCreateInfo, l_shaderStages, l_vertexInputCreateInfo, l_inputAssembly, l_viewportStateCreateInfo, l_rasterizerCreateInfo, l_multisamplingCreateInfo, l_depthStencil, l_colorBlending, l_dynamicStateCreationInfo, a_renderPass->CastVulkan()->GetRenderPass(), a_device->CastVulkan()->GetDevice());
 
     DEBUG_LOG_INFO("Vulkan Graphic Pipeline : Pipeline Created!\n");
 }
@@ -274,3 +275,4 @@ void VulkanPipeline::PushPipelineInfo(VkPipeline& a_pipeline, VkGraphicsPipeline
     const VkResult l_result = vkCreateGraphicsPipelines(a_device, nullptr, 1, &a_pipelineCreateInfo, nullptr, &a_pipeline);
     LOG_ASSERT_ERROR(l_result == VK_SUCCESS, "Vulkan Pipeline: Failed to create a Graphics Pipeline!\n");
 }
+
