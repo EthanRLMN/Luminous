@@ -317,6 +317,7 @@ void VulkanRenderer::DrawModel(ModelComponent* a_model, const VkCommandBuffer& a
 void VulkanRenderer::UpdateUniformBuffer(const uint32_t& a_currentFrame, IBuffer* a_buffer, const EntityManager& a_entityManager) const
 {
     a_entityManager.Update();
+    m_gpuLightBuffer;
     memcpy(a_buffer->CastVulkan()->GetLightUniformBuffersMapped()[a_currentFrame], &m_gpuLightBuffer, sizeof(GpuLightBuffer));
 }
 

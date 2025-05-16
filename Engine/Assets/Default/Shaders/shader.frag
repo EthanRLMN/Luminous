@@ -27,7 +27,6 @@ struct Light {
     float _pad1;
 
     vec3 color;
-    float _pad2;
 
     int type;
     float intensity;
