@@ -137,9 +137,10 @@ void InspectorPanel::Render()
             {
                 if (auto modelComponent = p_isEntitySelected->GetComponent<ModelComponent>())
                 {
-                    std::string meshName = modelComponent->GetMeshPath();
-                    std::string textureName = modelComponent->GetTexturePath();
-                    std::string currentMeshName = meshName.substr(meshName.find_last_of("/\\") + 1);
+                    const std::string& meshPath = modelComponent->GetMeshPath();
+                    const std::string& texturePath = modelComponent->GetTexturePath();
+
+                    std::string currentMeshName = meshPath.empty() ? "None" : meshPath.substr(meshPath.find_last_of("/\\") + 1);
                     ImGui::Text("Mesh:");
 
                     if (ImGui::Button((currentMeshName + "##mesh").c_str(), ImVec2(200, 0))) {}
@@ -154,37 +155,35 @@ void InspectorPanel::Render()
                             if (pathStr.ends_with(".obj") || pathStr.ends_with(".fbx") || pathStr.ends_with(".gltf"))
                             {
                                 modelComponent->SetMesh(pathStr);
-                                meshName = modelComponent->GetMeshPath();
-                                currentMeshName = meshName.substr(meshName.find_last_of("/\\") + 1);
                             }
                         }
                         ImGui::EndDragDropTarget();
                     }
 
-                    std::string currentTextureName = textureName.substr(textureName.find_last_of("/\\") + 1);
+                    std::string currentTextureName = texturePath.empty() ? "None" : texturePath.substr(texturePath.find_last_of("/\\") + 1);
                     ImGui::Text("Texture:");
 
                     static std::unordered_map<std::string, ImTextureID> s_textureCache;
 
                     ImTextureID textureID = NULL;
-                    if (!textureName.empty())
+                    if (!texturePath.empty())
                     {
-                        if (s_textureCache.find(textureName) == s_textureCache.end())
+                        if (s_textureCache.find(texturePath) == s_textureCache.end())
                         {
-                            std::shared_ptr<ITexture> texture = LoadTexture(p_editor->GetEngine(), textureName);
+                            std::shared_ptr<ITexture> texture = LoadTexture(p_editor->GetEngine(), texturePath);
                             texture->CastVulkan()->CreateTextureImageView(p_editor->GetEngine()->GetDevice());
                             texture->CastVulkan()->CreateTextureSampler(p_editor->GetEngine()->GetDevice());
 
-                            auto descriptor = reinterpret_cast<ImTextureID>(
+                            textureID = reinterpret_cast<ImTextureID>(
                                     ImGui_ImplVulkan_AddTexture(
                                             p_editor->GetEngine()->GetRenderer()->CastVulkan()->GetDefaultTextureSampler(),
                                             texture->CastVulkan()->GetTextureImageView(),
                                             VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL));
 
-                            s_textureCache[textureName] = descriptor;
+                            s_textureCache[texturePath] = textureID;
                         }
 
-                        textureID = s_textureCache[textureName];
+                        textureID = s_textureCache[texturePath];
                     }
 
                     if (textureID)
@@ -199,18 +198,20 @@ void InspectorPanel::Render()
                             const char* droppedPath = static_cast<const char*>(payload->Data);
                             std::string pathStr = std::string(droppedPath);
 
-                            if (pathStr.ends_with(".png") || pathStr.ends_with(".jpg"))
+                            if (pathStr.ends_with(".png") || pathStr.ends_with(".jpg") || pathStr.ends_with(".jpeg"))
                             {
+                                std::string oldTexture = texturePath;
                                 modelComponent->SetTexture(pathStr);
-                                s_textureCache.erase(textureName);
+                                s_textureCache.erase(oldTexture);
                             }
                         }
                         ImGui::EndDragDropTarget();
                     }
                 }
             }
-        }
 
+
+        }
         ImGui::PopStyleColor();
         ImGui::End();
     }

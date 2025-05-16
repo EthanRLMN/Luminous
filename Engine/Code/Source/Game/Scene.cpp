@@ -10,8 +10,6 @@ void Scene::RegisterScene(EntityManager& a_entityManager)
     l_defaultTemplates.RegisterEntityTemplates();
 
     a_entityManager.CreateEntityFromTemplate("Companion");
-    a_entityManager.CreateEntityFromTemplate("Sphere");
-    a_entityManager.CreateEntityFromTemplate("Companion");
 
 
     for (const auto& l_entity : EntityManager::GetAvailableTemplates())
