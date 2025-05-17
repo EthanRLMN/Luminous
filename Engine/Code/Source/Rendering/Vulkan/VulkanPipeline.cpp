@@ -114,9 +114,7 @@ void VulkanPipeline::Create(IDevice* a_device, IRenderPass* a_renderPass, IDescr
     PushPipelineInfo(m_wireframeGraphicsPipeline, l_pipelineCreateInfo2, l_shaderStages, l_vertexInputCreateInfo, l_inputAssembly, l_viewportStateCreateInfo, l_wireRasterizerCreateInfo, l_multisamplingCreateInfo, l_depthStencil, l_colorBlending, l_dynamicStateCreationInfo, a_renderPass->CastVulkan()->GetRenderPass(), a_device->CastVulkan()->GetDevice());
 
     VkGraphicsPipelineCreateInfo l_pipelineCreateInfo3{};
-    Skybox l_skybox;
-    PushPipelineInfo(m_skyboxGraphicsPipeline, l_pipelineCreateInfo3, l_skybox.GetShaderStageCreate(a_device), l_vertexInputCreateInfo, l_inputAssembly, l_viewportStateCreateInfo, l_rasterizerCreateInfo, l_multisamplingCreateInfo, l_depthStencil, l_colorBlending, l_dynamicStateCreationInfo, a_renderPass->CastVulkan()->GetRenderPass(), a_device->CastVulkan()->GetDevice());
-
+    PushPipelineInfo(m_skyboxGraphicsPipeline, l_pipelineCreateInfo2, l_shaderStages, l_vertexInputCreateInfo, l_inputAssembly, l_viewportStateCreateInfo, l_wireRasterizerCreateInfo, l_multisamplingCreateInfo, l_depthStencil, l_colorBlending, l_dynamicStateCreationInfo, a_renderPass->CastVulkan()->GetRenderPass(), a_device->CastVulkan()->GetDevice());
 
     DEBUG_LOG_INFO("Vulkan Graphic Pipeline : Pipeline Created!\n");
 }
@@ -126,6 +124,7 @@ void VulkanPipeline::Destroy(IDevice* a_device)
 {
     vkDestroyPipeline(a_device->CastVulkan()->GetDevice(), m_graphicsPipeline, nullptr);
     vkDestroyPipeline(a_device->CastVulkan()->GetDevice(), m_wireframeGraphicsPipeline, nullptr);
+    vkDestroyPipeline(a_device->CastVulkan()->GetDevice(), m_skyboxGraphicsPipeline, nullptr);
     vkDestroyPipelineLayout(a_device->CastVulkan()->GetDevice(), m_pipelineLayout, nullptr);
     DEBUG_LOG_INFO("Vulkan Graphic Pipeline : Pipeline destroyed!\n");
 }
