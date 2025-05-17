@@ -28,8 +28,20 @@ add_executable(L_RUNTIME Main.cpp)
 target_include_directories(L_RUNTIME PRIVATE "Engine/Code/Include" "Engine/Code/Interface")
 
 
-# To build shared libraries in Windows, we set CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS to TRUE.
-set(CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS ON)
+
+#---------------------------------------#
+#                COMPILE MODE           #
+#---------------------------------------#
+target_compile_features(L_RUNTIME PUBLIC cxx_std_23)
+
+if(MSVC)
+    set(CMAKE_DEBUG_POSTFIX "d")
+    target_compile_options(L_RUNTIME PUBLIC /W3 /WX)
+else()
+    target_compile_options(L_RUNTIME PUBLIC -Wall -Wextra -Wpedantic)
+endif()
+
+
 
 # Build position independent code.
 set(CMAKE_POSITION_INDEPENDENT_CODE ON)
@@ -37,8 +49,7 @@ set(CMAKE_POSITION_INDEPENDENT_CODE ON)
 # Disable C and C++ compiler extensions.
 set(CMAKE_C_EXTENSIONS OFF)
 set(CMAKE_CXX_EXTENSIONS OFF)
-set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 
 
-target_link_libraries(L_RUNTIME PRIVATE L_ENGINE)
+target_link_libraries(L_RUNTIME PRIVATE L_GAME)

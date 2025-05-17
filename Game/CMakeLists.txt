@@ -36,8 +36,20 @@ add_library(L_GAME SHARED ${L_GAME_SOURCES})
 target_include_directories(L_GAME PUBLIC "Code/Include")
 
 
-# To build shared libraries in Windows, we set CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS to TRUE.
-set(CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS ON)
+
+#---------------------------------------#
+#                COMPILE MODE           #
+#---------------------------------------#
+target_compile_features(L_GAME PUBLIC cxx_std_23)
+
+if(MSVC)
+    set(CMAKE_DEBUG_POSTFIX "d")
+    target_compile_options(L_GAME PUBLIC /W3 /WX)
+else()
+    target_compile_options(L_GAME PUBLIC -Wall -Wextra -Wpedantic)
+endif()
+
+
 
 # Build position independent code.
 set(CMAKE_POSITION_INDEPENDENT_CODE ON)
@@ -45,7 +57,6 @@ set(CMAKE_POSITION_INDEPENDENT_CODE ON)
 # Disable C and C++ compiler extensions.
 set(CMAKE_C_EXTENSIONS OFF)
 set(CMAKE_CXX_EXTENSIONS OFF)
-set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 
 
@@ -61,4 +72,4 @@ set_target_properties(L_GAME PROPERTIES OUTPUT_NAME "${PROJECT_NAME}")
 
 
 
-target_link_libraries(L_GAME PRIVATE L_ENGINE L_LOGGER)
+target_link_libraries(L_GAME PUBLIC L_ENGINE)
