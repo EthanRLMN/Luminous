@@ -77,6 +77,8 @@ void Viewport::Render()
 
     auto selectedEntity = p_editor->GetSelectedEntity();
 
+
+    /*
     if (selectedEntity)
     {
         std::shared_ptr<TransformComponent> transform = selectedEntity->GetComponent<TransformComponent>();
@@ -84,7 +86,7 @@ void Viewport::Render()
         {
             Maths::Matrix4 model = transform->GetGlobalMatrix();
             float modelMatrix[16];
-            memcpy(modelMatrix, model.Data(), sizeof(float) * 16);
+            memcpy(modelMatrix, &model.mat, sizeof(float) * 16);
 
             ImGuizmo::SetOrthographic(false);
             ImGuizmo::Enable(true);
@@ -95,28 +97,24 @@ void Viewport::Render()
 
             ImGuizmo::SetRect(winPos.x, winPos.y, winSize.x, winSize.y);
 
+
+            float viewMatrix[16];
+            memcpy(viewMatrix, &view.mat, sizeof(float) * 16);
+
+            float projMatrix[16];
+            memcpy(projMatrix, &projection.mat, sizeof(float) * 16);
+
+            
             ImGuizmo::Manipulate(
-                    view.Data(),
-                    projection.Data(),
+                    viewMatrix,
+                    projMatrix,
                     m_currentGizmoOperation,
                     ImGuizmo::WORLD,
                     modelMatrix);
-
-            if (ImGuizmo::IsUsing())
-            {
-                Maths::Matrix4 updatedModel;
-                memcpy(updatedModel.Data(), modelMatrix, sizeof(float) * 16);
-
-                Maths::Vector3 pos, scale;
-                Maths::Quaternion rot;
-                updatedModel.Decompose(pos, rot, scale);
-
-                transform->SetGlobalPosition(pos);
-                transform->SetGlobalRotationQuat(rot);
-                transform->SetGlobalScale(scale);
-            }
         }
     }
+    */
+
     ImGui::End();
 }
 
