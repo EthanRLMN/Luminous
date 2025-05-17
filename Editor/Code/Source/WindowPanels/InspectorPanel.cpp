@@ -3,6 +3,8 @@
 #include "imgui.h"
 
 
+#include "ResourceManager/ResourceManager.hpp"
+
 enum class TransformMode
 {
     Local,
@@ -174,11 +176,10 @@ void InspectorPanel::Render()
                         {
                             std::shared_ptr<ITexture> texture = LoadTexture(p_editor->GetEngine(), texturePath);
                             texture->CastVulkan()->CreateTextureImageView(p_editor->GetEngine()->GetDevice());
-                            texture->CastVulkan()->CreateTextureSampler(p_editor->GetEngine()->GetDevice());
 
                             textureID = reinterpret_cast<ImTextureID>(
                                     ImGui_ImplVulkan_AddTexture(
-                                            p_editor->GetEngine()->GetRenderer()->CastVulkan()->GetDefaultTextureSampler(),
+                                            ResourceManager::GetInstance().GetRendererSampler(),
                                             texture->CastVulkan()->GetTextureImageView(),
                                             VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL));
 
@@ -214,6 +215,10 @@ void InspectorPanel::Render()
             }
 
 
+            /*
+            p_isEntitySelected->Transform()->SetLocalPosition(newPosition);
+            p_isEntitySelected->Transform()->SetLocalRotationQuat(Maths::Quaternion::FromEulerAngles(newEuler));
+            p_isEntitySelected->Transform()->SetLocalScale(newScale);*/
         }
         ImGui::PopStyleColor();
         ImGui::End();

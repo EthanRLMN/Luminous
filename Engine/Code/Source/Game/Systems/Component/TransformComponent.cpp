@@ -1,3 +1,5 @@
+#include <algorithm>
+
 #include "Game/Systems/Component/TransformComponent.hpp"
 #include "Game/Systems/Entity/Entity.hpp"
 
@@ -5,7 +7,7 @@
 void TransformComponent::AddChild(const std::shared_ptr<TransformComponent>& a_child) const
 {
     if (a_child)
-        a_child->SetParent(GetEntity());
+        a_child->SetParent(GetOwner());
 }
 
 
@@ -20,7 +22,7 @@ void TransformComponent::RemoveChild(const std::shared_ptr<TransformComponent>& 
 void TransformComponent::SetActive(const bool a_isActive)
 {
     m_isActive = a_isActive;
-    if (const std::shared_ptr<Entity> l_entity = m_entity.lock())
+    if (const std::shared_ptr<Entity> l_entity = p_owner)
         l_entity->SetActive(a_isActive);
 
     if (m_isActive)
@@ -66,10 +68,10 @@ void TransformComponent::SetLocalScale(const Maths::Vector3 a_newScale)
 
 void TransformComponent::SetLocalRotationVec(const Maths::Vector3 a_newRotVec)
 {
-    if (m_localRotation.ToEulerAngles(true) == a_newRotVec)
+    if (m_localRotationVec == a_newRotVec)
         return;
 
-    m_localRotation = Maths::Quaternion::FromEulerAngles(a_newRotVec);
+    m_localRotationVec = a_newRotVec;
     m_requiresUpdate = true;
     UpdateGlobalTransform();
 }
@@ -77,10 +79,10 @@ void TransformComponent::SetLocalRotationVec(const Maths::Vector3 a_newRotVec)
 
 void TransformComponent::SetLocalRotationQuat(const Maths::Quaternion a_newRotQuat)
 {
-    if (m_localRotation == a_newRotQuat)
+    if (m_localRotationQuat == a_newRotQuat)
         return;
 
-    m_localRotation = a_newRotQuat;
+    m_localRotationQuat = a_newRotQuat;
     m_requiresUpdate = true;
     UpdateGlobalTransform();
 }
@@ -99,10 +101,10 @@ void TransformComponent::SetGlobalScale(const Maths::Vector3 a_newScale)
 
 void TransformComponent::SetGlobalRotationVec(const Maths::Vector3 a_newRotVec)
 {
-    if (m_globalRotation.ToEulerAngles(true) == a_newRotVec)
+    if (m_globalRotationVec == a_newRotVec)
         return;
 
-    m_globalRotation = Maths::Quaternion::FromEulerAngles(a_newRotVec);
+    m_globalRotationQuat = Maths::Quaternion::FromEulerAngles(a_newRotVec);
     m_requiresUpdate = true;
     UpdateGlobalTransform();
 }
@@ -110,10 +112,10 @@ void TransformComponent::SetGlobalRotationVec(const Maths::Vector3 a_newRotVec)
 
 void TransformComponent::SetGlobalRotationQuat(const Maths::Quaternion a_newRotQuat)
 {
-    if (m_globalRotation == a_newRotQuat)
+    if (m_globalRotationQuat == a_newRotQuat)
         return;
 
-    m_globalRotation = a_newRotQuat;
+    m_globalRotationQuat = a_newRotQuat;
     m_requiresUpdate = true;
     UpdateGlobalTransform();
 }
@@ -123,7 +125,7 @@ void TransformComponent::SetGlobalMatrix(const Maths::Matrix4& a_newMatrix)
 {
     m_globalMatrix = a_newMatrix;
     m_globalPosition = a_newMatrix.GetTranslation();
-    m_globalRotation = Maths::Quaternion::FromMatrix(a_newMatrix);
+    m_globalRotationQuat = Maths::Quaternion::FromMatrix(a_newMatrix);
     m_globalScale    = a_newMatrix.GetScale();
 
     if (m_parent.lock())
@@ -134,7 +136,7 @@ void TransformComponent::SetGlobalMatrix(const Maths::Matrix4& a_newMatrix)
             const Maths::Matrix4 l_inverseParent = l_parentTransform->GetGlobalMatrix().Inverse();
             m_localMatrix = l_inverseParent * m_globalMatrix;
             m_localPosition = m_localMatrix.GetTranslation();
-            m_localRotation = Maths::Quaternion::FromMatrix(m_localMatrix);
+            m_localRotationQuat = Maths::Quaternion::FromMatrix(m_localMatrix);
             m_localScale    = m_localMatrix.GetScale();
         }
     }
@@ -142,7 +144,7 @@ void TransformComponent::SetGlobalMatrix(const Maths::Matrix4& a_newMatrix)
     {
         m_localMatrix = m_globalMatrix;
         m_localPosition = m_globalPosition;
-        m_localRotation = m_globalRotation;
+        m_localRotationQuat = m_globalRotationQuat;
         m_localScale    = m_globalScale;
     }
     UpdateMatrices();
@@ -151,17 +153,17 @@ void TransformComponent::SetGlobalMatrix(const Maths::Matrix4& a_newMatrix)
 
 void TransformComponent::SetGlobalPosition(const Maths::Vector3 a_newPos)
 {
-    m_globalPosition = a_newPos;
+    if (m_globalPosition == a_newPos)
+        return;
 
+    m_globalPosition = a_newPos;
     if (m_parent.lock())
     {
         const Maths::Matrix4 l_parentGlobalInverse = m_parent.lock()->Transform()->GetGlobalMatrix().Inverse();
-        m_localMatrix = l_parentGlobalInverse * Maths::Matrix4::TRS(a_newPos, m_globalRotation.ToEulerAngles(true), m_globalScale);
+        m_localMatrix = l_parentGlobalInverse * Maths::Matrix4::TRS(a_newPos, m_globalRotationVec, m_globalScale);
     }
-    else
-        m_localMatrix = Maths::Matrix4::TRS(a_newPos, m_globalRotation.ToEulerAngles(true), m_globalScale);
 
-    UpdateGlobalTransform();
+    SetLocalPosition(a_newPos);
 }
 
 
@@ -194,7 +196,7 @@ void TransformComponent::SetParent(const std::shared_ptr<Entity>& a_newParent)
     {
         const std::shared_ptr<TransformComponent> l_newParentTransform = a_newParent->Transform();
         if (l_newParentTransform)
-            l_newParentTransform->m_children.push_back(GetEntity()->Transform());
+            l_newParentTransform->m_children.push_back(GetOwner()->Transform());
     }
 
     UpdateGlobalTransform();
@@ -203,7 +205,7 @@ void TransformComponent::SetParent(const std::shared_ptr<Entity>& a_newParent)
 
 void TransformComponent::SetInterpolatedRotation(const Maths::Quaternion& a_start, const Maths::Quaternion& a_end, const float a_factor)
 {
-    m_localRotation = Maths::Quaternion::Slerp(a_start, a_end, a_factor);
+    m_localRotationQuat = Maths::Quaternion::Slerp(a_start, a_end, a_factor);
     m_requiresUpdate = true;
     UpdateGlobalTransform();
 }
@@ -211,7 +213,7 @@ void TransformComponent::SetInterpolatedRotation(const Maths::Quaternion& a_star
 
 void TransformComponent::UpdateGlobalTransform()
 {
-    if (!m_requiresUpdate || !m_entity.lock() || m_entity.lock() == nullptr || !m_entity.lock()->IsActive())
+    if (!m_requiresUpdate || !p_owner || p_owner == nullptr || !p_owner->IsActive())
         return;
 
     UpdateLocalMatrix();
@@ -227,7 +229,7 @@ void TransformComponent::UpdateGlobalTransform()
     else
         m_globalMatrix = m_localMatrix;
 
-    m_globalMatrix.Decompose(m_globalPosition, m_globalRotation, m_globalScale);
+    m_globalMatrix.Decompose(m_globalPosition, m_globalRotationQuat, m_globalScale);
 
     m_requiresUpdate = false;
     for (const std::shared_ptr<TransformComponent>& l_child : m_children)
@@ -249,7 +251,7 @@ void TransformComponent::UpdateMatrices()
         m_globalMatrix = m_localMatrix;
 
     m_globalPosition = m_globalMatrix.GetTranslation();
-    m_globalRotation = Maths::Quaternion::FromMatrix(m_globalMatrix);
+    m_globalRotationQuat = Maths::Quaternion::FromMatrix(m_globalMatrix);
     m_globalScale = m_globalMatrix.GetScale();
 
     for (const std::shared_ptr<TransformComponent>& l_child : m_children)
@@ -260,5 +262,5 @@ void TransformComponent::UpdateMatrices()
 
 void TransformComponent::UpdateLocalMatrix()
 {
-    m_localMatrix = Maths::Matrix4::TRS(m_localPosition, m_localRotation.ToEulerAngles(true), m_localScale);
+    m_localMatrix = Maths::Matrix4::TRS(m_localPosition, m_localRotationVec, m_localScale);
 }

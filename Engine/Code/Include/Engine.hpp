@@ -4,7 +4,6 @@
 #include "ISynchronization.hpp"
 
 #include "Game/Scene.hpp"
-#include "Game/Systems/Entity/Entity.hpp"
 #include "Game/Systems/Entity/EntityManager.hpp"
 #include "Game/Systems/Physics/PhysicsSystem.hpp"
 
@@ -52,6 +51,8 @@ public:
     [[nodiscard]] EntityManager* GetEntityManager() { return &m_entityManager; }
 
     [[nodiscard]] bool IsRunning() const { return m_isRunning; }
+    [[nodiscard]] bool InGame() const { return m_gameRunning; }
+    PhysicsSystem* GetPhysicsSystem() const { return m_physicsSystem; }
 
 
 private:
@@ -79,6 +80,7 @@ private:
 	PhysicsSystem* m_physicsSystem{ nullptr };
 
     bool m_isRunning { false };
+    bool m_gameRunning{ false };
 
 	EntityManager m_entityManager;
 };

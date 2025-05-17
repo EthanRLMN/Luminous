@@ -1,8 +1,8 @@
 #pragma once
+
 #include "EntityComponent.hpp"
 #include "IMesh.hpp"
 #include "ITexture.hpp"
-#include "ResourceManager/ResourceContext.hpp"
 
 
 class ModelComponent : public EntityComponent
@@ -19,16 +19,16 @@ public:
     void SetMeshPath(const std::string& a_path);
     void SetTexturePath(const std::string& a_path);
 
-    [[nodiscard]] std::string GetMeshPath() const { return m_pendingMeshPath; };
-    [[nodiscard]] std::string GetTexturePath() const { return m_pendingTexturePath; };
+    std::string GetMeshPath() { return m_pendingMeshPath; };
+    std::string GetTexturePath() { return m_pendingTexturePath; };
 
     [[nodiscard]] IMesh* GetMesh() const { return m_mesh; };
     [[nodiscard]] ITexture* GetTexture() const { return m_texture; };
 
 private:
+    
     IMesh* m_mesh { nullptr };
     ITexture* m_texture { nullptr };
-    ResourceContext m_context {};
 
     std::string m_pendingMeshPath {};
     std::string m_pendingTexturePath {};

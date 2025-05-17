@@ -23,7 +23,8 @@ void CameraEditor::Init(const float a_aspectRatio, const float a_fov, const floa
 void CameraEditor::Update(const float a_aspectRatio)
 {
     m_aspectRatio = a_aspectRatio;
-    m_viewMatrix = UpdateViewMatrix(m_eye, m_center, m_worldUp);}
+    m_viewMatrix = UpdateViewMatrix(m_eye, m_center, m_worldUp);
+}
 
 
 void CameraEditor::UpdateInput(IInputManager* a_input)

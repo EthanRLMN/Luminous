@@ -3,8 +3,9 @@
 
 #include "WindowPanels/ViewportPanel.hpp"
 
-#include "Rendering/Vulkan/VulkanRenderer.hpp"
+#include "Rendering/Vulkan/VulkanSwapChain.hpp"
 #include "Rendering/Vulkan/VulkanTexture.hpp"
+#include "ResourceManager/ResourceManager.hpp"
 
 static const std::filesystem::path s_IconPath = "Editor/Assets/Icons/";
 
@@ -44,6 +45,13 @@ void Viewport::Render()
     {
     }
 
+    if (p_editor->GetEngine()->GetRenderer()->CastVulkan()->m_recreateDsets)
+    {
+        p_editor->GetEngine()->GetRenderer()->CastVulkan()->m_recreateDsets = false;
+        dSets = reinterpret_cast<ImTextureID>(ImGui_ImplVulkan_AddTexture(ResourceManager::GetInstance().GetStandardSampler(), p_editor->GetEngine()->GetRenderer()->CastVulkan()->GetViewportImageView(), VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL));
+    };
+
+
     VkExtent2D l_extent = p_editor->GetEngine()->GetSwapChain()->CastVulkan()->GetSwapChainExtent();
 
     float l_texWidth = static_cast<float>(l_extent.width);
@@ -67,7 +75,7 @@ void Viewport::Render()
     const float l_offsetY = (l_avail.y - l_imageSize.y) * 0.5f;
 
     ImGui::SetCursorScreenPos(ImVec2(l_screenPos.x + l_offsetX, l_screenPos.y + l_offsetY));
-    ImGui::Image(reinterpret_cast<ImTextureID>(dSets), l_imageSize);
+    ImGui::Image(dSets, l_imageSize);
 
     float aspectRatio = static_cast<float>(l_extent.width) / static_cast<float>(l_extent.height);
     m_camera->Update(aspectRatio);
@@ -122,7 +130,6 @@ void Viewport::InitIcons()
 {
     Engine* engine = p_editor->GetEngine();
     auto* device = engine->GetDevice();
-    auto* renderer = engine->GetRenderer()->CastVulkan();
 
     m_iconMove = LoadTexture(engine, (s_IconPath / "MoveIcon.png").string());
     m_iconRotate = LoadTexture(engine, (s_IconPath / "RotateIcon.png").string());
@@ -130,14 +137,11 @@ void Viewport::InitIcons()
     m_iconPlay = LoadTexture(engine, (s_IconPath / "PlayIcon.png").string());
     m_iconStop = LoadTexture(engine, (s_IconPath / "StopIcon.png").string());
 
-    auto sampler = renderer->GetDefaultTextureSampler();
-
     auto loadImg = [&](std::shared_ptr<ITexture>& tex, ImTextureID& id)
     {
         tex->CastVulkan()->CreateTextureImageView(device);
-        tex->CastVulkan()->CreateTextureSampler(device);
         id = reinterpret_cast<ImTextureID>(ImGui_ImplVulkan_AddTexture(
-                sampler,
+                ResourceManager::GetInstance().GetStandardSampler(),
                 tex->CastVulkan()->GetTextureImageView(),
                 VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL));
     };
@@ -149,7 +153,7 @@ void Viewport::InitIcons()
     loadImg(m_iconStop, m_iconStopID);
 }
 
-std::shared_ptr<ITexture> Viewport::LoadTexture(Engine* engine, const std::string& path)
+std::shared_ptr<ITexture> Viewport::LoadTexture(const Engine* engine, const std::string& path)
 {
     IResourceParams params{};
     params.m_device = engine->GetDevice();

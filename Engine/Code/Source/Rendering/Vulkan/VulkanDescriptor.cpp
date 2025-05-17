@@ -47,9 +47,9 @@ void VulkanDescriptor::Destroy(IDevice* a_device)
 void VulkanDescriptor::CreateDescriptorPool(IDevice* a_device)
 {
     std::array<VkDescriptorPoolSize, 2> l_poolSizes{};
-    l_poolSizes[0].type = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
+    l_poolSizes[0].type = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER; // Light
     l_poolSizes[0].descriptorCount = static_cast<uint32_t>(MAX_FRAMES_IN_FLIGHT);
-    l_poolSizes[1].type = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
+    l_poolSizes[1].type = VK_DESCRIPTOR_TYPE_STORAGE_BUFFER; // Light buffer uses storage buffer
     l_poolSizes[1].descriptorCount = static_cast<uint32_t>(MAX_FRAMES_IN_FLIGHT);
 
     VkDescriptorPoolCreateInfo l_poolInfo{ };
@@ -140,44 +140,16 @@ void VulkanDescriptor::UpdateDescriptorSets(IDevice* a_device) const
         l_descriptorWrites[0].pBufferInfo = &l_bufferInfo;
         l_descriptorWrites[0].pNext = nullptr;
 
-        /*
-        l_descriptorWrites[1].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
-        l_descriptorWrites[1].dstSet = m_descriptorSets[i];
-        l_descriptorWrites[1].dstBinding = 1;
-        l_descriptorWrites[1].dstArrayElement = 0;
-        l_descriptorWrites[1].descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
-        l_descriptorWrites[1].descriptorCount = 1;
-        l_descriptorWrites[1].pImageInfo = &l_imageInfo;
-        l_descriptorWrites[1].pNext = nullptr;*/
-
         l_descriptorWrites[1].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
         l_descriptorWrites[1].dstSet = m_descriptorSets[i];
         l_descriptorWrites[1].dstBinding = 2;
         l_descriptorWrites[1].dstArrayElement = 0;
-        l_descriptorWrites[1].descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
+        l_descriptorWrites[1].descriptorType = VK_DESCRIPTOR_TYPE_STORAGE_BUFFER;
         l_descriptorWrites[1].descriptorCount = 1;
         l_descriptorWrites[1].pBufferInfo = &l_lightBufferInfo;
         l_descriptorWrites[1].pNext = nullptr;
 
-
         vkUpdateDescriptorSets(a_device->CastVulkan()->GetDevice(), static_cast<uint32_t>(l_descriptorWrites.size()), l_descriptorWrites.data(), 0, nullptr);
         DEBUG_LOG_INFO("Vulkan Descriptors : DescriptorSet updated!\n");
     }
-
-    /*// LIGHT EDIT 99
-    VkDescriptorBufferInfo bufferInfo{};
-    bufferInfo.buffer = m_lightUniformBuffer;
-    bufferInfo.offset = 0;
-    bufferInfo.range = sizeof(LightComponent) * 32 + sizeof(int);
-
-    VkWriteDescriptorSet descriptorWrite{};
-    descriptorWrite.sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
-    descriptorWrite.dstSet = m_lightDescriptorSets;
-    descriptorWrite.dstBinding = 0;
-    descriptorWrite.dstArrayElement = 0;
-    descriptorWrite.descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
-    descriptorWrite.descriptorCount = 1;
-    descriptorWrite.pBufferInfo = &bufferInfo;
-
-    vkUpdateDescriptorSets(a_device->CastVulkan()->GetDevice(), 1, &descriptorWrite, 0, nullptr);*/
 }

@@ -39,29 +39,35 @@ VkPipelineShaderStageCreateInfo VulkanShaderModule::CreateStage(const VkShaderSt
     return l_shaderStageCreateInfo;
 }
 
-void VulkanShaderModule::BindShader(VkVertexInputBindingDescription& a_bindingDescription, std::array<VkVertexInputAttributeDescription, 3>& a_attributeDescriptions, VkPipelineVertexInputStateCreateInfo& a_vertexInputCreateInfo)
+void VulkanShaderModule::BindShader(VkVertexInputBindingDescription& a_bindingDescription, std::array<VkVertexInputAttributeDescription, 4>& a_attributeDescriptions, VkPipelineVertexInputStateCreateInfo& a_vertexInputCreateInfo)
 {
     a_bindingDescription.binding = 0;
     a_bindingDescription.stride = sizeof(Vertex);
     a_bindingDescription.inputRate = VK_VERTEX_INPUT_RATE_VERTEX;
 
     // Position Attributes
-    a_attributeDescriptions[0].binding = 0; // which binding the data is at (should be same above)
+    a_attributeDescriptions[0].binding = 0; // which binding the data is at (should be the same above)
     a_attributeDescriptions[0].location = 0; // location in shader where data will be reset
-    a_attributeDescriptions[0].format = VK_FORMAT_R32G32B32_SFLOAT; // format the date will take (also helps define size of data
-    a_attributeDescriptions[0].offset = offsetof(Vertex, pos); // attribute is defined in the data for single vertex
-
-    // Colour attribute
-    a_attributeDescriptions[1].binding = 0;
-    a_attributeDescriptions[1].location = 1;
-    a_attributeDescriptions[1].format = VK_FORMAT_R32G32B32_SFLOAT;
-    a_attributeDescriptions[1].offset = offsetof(Vertex, color);
+    a_attributeDescriptions[0].format = VK_FORMAT_R32G32B32_SFLOAT; // format the date will take (also helps define the size of data
+    a_attributeDescriptions[0].offset = offsetof(Vertex, pos); // attribute is defined in the data for a single vertex
 
     // Tex Attribute
+    a_attributeDescriptions[1].binding = 0;
+    a_attributeDescriptions[1].location = 1;
+    a_attributeDescriptions[1].format = VK_FORMAT_R32G32_SFLOAT;
+    a_attributeDescriptions[1].offset = offsetof(Vertex, texCoord);
+
+    // Colour attribute
     a_attributeDescriptions[2].binding = 0;
     a_attributeDescriptions[2].location = 2;
     a_attributeDescriptions[2].format = VK_FORMAT_R32G32B32_SFLOAT;
-    a_attributeDescriptions[2].offset = offsetof(Vertex, texCoord);
+    a_attributeDescriptions[2].offset = offsetof(Vertex, normal);
+
+    // Colour attribute
+    a_attributeDescriptions[3].binding = 0;
+    a_attributeDescriptions[3].location = 3;
+    a_attributeDescriptions[3].format = VK_FORMAT_R32G32B32A32_SFLOAT;
+    a_attributeDescriptions[3].offset = offsetof(Vertex, color);
 
     //--vertex Input
     a_vertexInputCreateInfo.vertexBindingDescriptionCount = 1;

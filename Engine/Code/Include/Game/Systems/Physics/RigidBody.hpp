@@ -6,7 +6,11 @@
 #include "Jolt/Physics/Body/BodyCreationSettings.h"
 #include "Jolt/Physics/Body/BodyID.h"
 #include "Jolt/Physics/SoftBody/SoftBodyCreationSettings.h"
+#include "Logger.hpp"
 
+
+class RigidbodyComponent;
+class PhysicsSystem;
 
 class RigidBody
 {
@@ -16,6 +20,8 @@ public:
 
     explicit RigidBody(JPH::Body* a_rigidBody) : m_rigidBody(a_rigidBody) {}
 
+
+    void UpdateToTransform();
     inline void GetSubmergedVolume(const JPH::RVec3Arg a_inSurfacePosition, const JPH::Vec3Arg a_inSurfaceNormal, float& a_outTotalVolume, float& a_outSubmergedVolume, JPH::Vec3& a_outRelativeCenterOfBuoyancy) const { return m_rigidBody->GetSubmergedVolume(a_inSurfacePosition, a_inSurfaceNormal, a_outTotalVolume, a_outSubmergedVolume, a_outRelativeCenterOfBuoyancy); }
     [[nodiscard]] inline float GetFriction() const { return m_rigidBody->GetFriction(); }
     [[nodiscard]] inline float GetRestitution() const { return m_rigidBody->GetRestitution(); }
@@ -69,7 +75,9 @@ public:
     [[nodiscard]] inline const JPH::MotionProperties* GetMotionPropertiesUnchecked() const { return m_rigidBody->GetMotionPropertiesUnchecked(); }
     [[nodiscard]] inline const JPH::MotionProperties* GetMotionProperties() const { return m_rigidBody->GetMotionProperties(); }
     inline static JPH::Body& GetFixedToWorld() { return s_fixedToWorld; }
+    inline RigidbodyComponent* GetParentComponent() { return m_parentComponent; }
 
+    inline void SetParentComponent(RigidbodyComponent* a_parentComponent) { m_parentComponent = a_parentComponent; }
     inline void SetEnhancedInternalEdgeRemoval(const bool a_inApply) const { return m_rigidBody->SetEnhancedInternalEdgeRemoval(a_inApply); }
     inline void SetApplyGyroscopicForce(const bool a_inApply) const { m_rigidBody->SetApplyGyroscopicForce(a_inApply); }
     inline void SetUseManifoldReduction(const bool a_inUseReduction) const { m_rigidBody->SetUseManifoldReduction(a_inUseReduction); }
@@ -102,8 +110,17 @@ public:
     inline void ValidateCachedBounds() const { m_rigidBody->ValidateCachedBounds(); }
     inline void SetUserData(const JPH::uint64 a_inUserData) const { m_rigidBody->SetUserData(a_inUserData); }
 
+    inline virtual void OnCollisionEnter(RigidBody* a_other) { DEBUG_LOG_ERROR("COLLIDED"); };
+    inline virtual void OnTriggerEnter(RigidBody* a_other) { DEBUG_LOG_ERROR("TRIGGERED"); };
+
+    inline virtual void OnCollisionExit(RigidBody* a_other) { /*DEBUG_LOG_ERROR("COLLISION ENDED");*/ };
+    inline virtual void OnTriggerExit(RigidBody* a_other) { /*DEBUG_LOG_ERROR("TRIGGER ENDED");*/ };
+
 
 private:
     JPH::Body* m_rigidBody { nullptr };
+    RigidbodyComponent* m_parentComponent{ nullptr };
     static JPH::Body s_fixedToWorld;
 };
+
+

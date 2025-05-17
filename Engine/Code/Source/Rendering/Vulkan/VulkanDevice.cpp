@@ -64,6 +64,7 @@ bool VulkanDevice::CheckDeviceSuitable(const VkPhysicalDevice& a_device, const V
 
 	VkPhysicalDeviceFeatures l_deviceFeatures { };
 	vkGetPhysicalDeviceFeatures(a_device, &l_deviceFeatures);
+    
 
 	QueueFamilyIndices l_indices = GetQueueFamilies(a_device, a_surface);
 	bool l_extensionSupported = CheckDeviceExtensionSupport(a_device);
@@ -115,12 +116,12 @@ bool VulkanDevice::CheckDeviceExtensionSupport(const VkPhysicalDevice& a_device)
 	std::vector<VkExtensionProperties> l_extensions(l_extensionCount);
 	vkEnumerateDeviceExtensionProperties(a_device, nullptr, &l_extensionCount, l_extensions.data());
 
-	for (const auto& l_deviceExtension : deviceExtensions)
+	for (const char* const& l_deviceExtension : deviceExtensions)
 	{
 		bool l_hasExtension = false;
-		for (const auto& l_extension : l_extensions)
+		for (const auto& [extensionName, specVersion] : l_extensions)
 		{
-			if (strcmp(l_deviceExtension, l_extension.extensionName) == 0)
+			if (strcmp(l_deviceExtension, extensionName) == 0)
 			{
 				l_hasExtension = true;
 				break;
@@ -141,7 +142,7 @@ QueueFamilyIndices VulkanDevice::GetQueueFamilies(const VkPhysicalDevice& a_devi
 	vkGetPhysicalDeviceQueueFamilyProperties(a_device, &l_queueFamilyCount, l_queueFamilyList.data());
 
 	QueueFamilyIndices l_indices { };
-	for (unsigned int i = 0; i < l_queueFamilyList.size(); ++i)
+	for (int i = 0; i < l_queueFamilyList.size(); ++i)
 	{
 		if (l_queueFamilyList[i].queueCount > 0 && l_queueFamilyList[i].queueFlags & VK_QUEUE_GRAPHICS_BIT)
 			l_indices.graphicsFamily = i;
@@ -175,6 +176,7 @@ void VulkanDevice::ProcessLogicalDeviceInfo(const QueueFamilyIndices& a_queueFam
 	VkPhysicalDeviceFeatures l_physicalDeviceFeatures { };
 	l_physicalDeviceFeatures.samplerAnisotropy = VK_TRUE;
     l_physicalDeviceFeatures.sampleRateShading = VK_TRUE;
+    l_physicalDeviceFeatures.fillModeNonSolid = VK_TRUE;
 
 	VkDeviceCreateInfo l_deviceCreateInfo { };
     l_deviceCreateInfo.sType = VK_STRUCTURE_TYPE_DEVICE_CREATE_INFO;

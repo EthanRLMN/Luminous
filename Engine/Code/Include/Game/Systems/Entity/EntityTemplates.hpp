@@ -1,6 +1,5 @@
 #pragma once
 
-
 class EntityTemplates
 {
 public:
@@ -11,13 +10,13 @@ public:
 
 
 private:
-    void Empty();
-    void Cube();
-    void Plane();
-    void Sphere();
-    void Cone();
-    void Cylinder();
-    void Capsule();
-    void Monkey();
-    void Companion();
+    static void DefaultEmpty();
+    static void DefaultPlane();
+    static void DefaultCube();
+    static void DefaultSphere();
+    static void DefaultCapsule();
+    static void DefaultCylinder();
+    static void DefaultCone();
+    static void DefaultMonkey();
+    static void DefaultCompanion();
 };

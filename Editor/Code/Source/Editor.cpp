@@ -146,6 +146,7 @@ void Editor::CreateWindowPanels()
     RegisterWindow(hierarchy);
 
     RegisterWindow(new ConsolePanel(this, "Console"));
+
     RegisterWindow(new Viewport(this, "Viewport"));
 }
 
@@ -169,6 +170,14 @@ void Editor::DestroyWindowPanels()
     
     m_windows.clear();
 }
+
+
+void Editor::RegisterWindow(IWindowPanel* a_windowPanel)
+{
+    m_windows.push_back(a_windowPanel);
+    a_windowPanel->Init();
+}
+
 
 void Editor::UnregisterWindow(IWindowPanel* a_windowPanel)
 {

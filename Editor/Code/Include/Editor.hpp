@@ -2,8 +2,6 @@
 
 #include "Engine.hpp"
 
-
-class ImguiWindow;
 class VulkanInstance;
 class IWindowPanel;
 
@@ -25,13 +23,13 @@ public:
     void RenderWindowPanels() const;
     void DestroyWindowPanels();
 
-    void RegisterWindow(IWindowPanel* a_windowPanel) { m_windows.push_back(a_windowPanel); };
+    void RegisterWindow(IWindowPanel* a_windowPanel);
     void UnregisterWindow(IWindowPanel* a_windowPanel);
     void SetSelectedEntity(const std::shared_ptr<Entity>& entity) { m_selectedEntity = entity; }
     void DeleteSelectedEntity();
 
     void RequestExit() { m_shouldExit = true; }
-    bool ShouldExit() const { return m_shouldExit; }
+    [[nodiscard]] bool ShouldExit() const { return m_shouldExit; }
 
 
     [[nodiscard]] Engine* GetEngine() const { return m_engine; }

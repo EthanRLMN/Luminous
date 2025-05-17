@@ -4,11 +4,10 @@
 #include "Rendering/Vulkan/VulkanRenderInterface.hpp"
 #include "ResourceManager/ResourceManager.hpp"
 
-#include <iostream>
-
-
-
 #define JPH_DEBUG_RENDERER
+
+
+constexpr SamplingCount MsaaCount = SamplingCount::MSAA_SAMPLECOUNT_4;
 
 
 void Engine::Init()
@@ -23,6 +22,7 @@ void Engine::Init()
 
     Window();
     Input();
+
     PreRender();
     InitPhysics();
 
@@ -40,6 +40,16 @@ void Engine::Update()
     m_inputManager->Update();
     m_renderer->DrawFrame(m_window, m_device, m_swapChain, m_pipeline, m_buffer, m_renderPassManager, m_descriptor, m_synchronization, m_commandBuffer, m_frameBufferManager, m_depthResource, m_surface, m_multiSampling, m_inputManager, m_entityManager);
     m_physicsSystem->Update();
+
+    if (m_inputManager->IsKeyPressed(Key::KEY_O))
+    {
+        m_scene->SaveScene("Engine/Assets/Default/Save/Scene.json", m_entityManager);
+    }
+
+    if (m_inputManager->IsKeyPressed(Key::KEY_P))
+    {
+        m_scene->LoadScene("Engine/Assets/Default/Save/Scene.json", m_entityManager);
+    }
 
     m_inputManager->ResetMouseDelta();
     if (m_window->ShouldClose())
@@ -134,8 +144,11 @@ void Engine::PreRender()
     m_swapChain->Create(m_window, m_device, m_surface);
 
     m_multiSampling = m_interface->InstantiateMultiSampling();
-    m_multiSampling->SetSampleCount(m_device, SamplingCount::MSAA_SAMPLECOUNT_4);
+    m_multiSampling->SetSampleCount(m_device, MsaaCount);
     m_multiSampling->Create(m_device, m_swapChain);
+
+    ResourceManager::GetInstance().CreateRendererSampler(m_device, MsaaCount);
+    ResourceManager::GetInstance().CreateStandardSampler(m_device);
 
     m_renderPassManager = m_interface->InstantiateRenderPassManager();
     m_renderPassManager->Create(m_swapChain, m_device, false); // Create Main Render Pass
@@ -179,7 +192,7 @@ void Engine::PreRender()
 
 void Engine::InitPhysics()
 {
-    constexpr PhysicsSystem::Settings l_settings {}; // Init physics system with default settings
+    constexpr PhysicsSystem::Settings l_settings{}; // Init physics system with default settings
     m_physicsSystem->Init(l_settings);
 }
 
@@ -189,7 +202,4 @@ void Engine::DestroyWindow() const
     m_interface->DeleteWindow(m_window);
 }
 
-void Engine::DestroyInput() const
-{
-    m_interface->DeleteInputManager(m_inputManager);
-}
+void Engine::DestroyInput() const { m_interface->DeleteInputManager(m_inputManager); }

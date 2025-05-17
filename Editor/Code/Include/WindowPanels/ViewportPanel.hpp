@@ -1,11 +1,14 @@
 #pragma once
 #include "stb_image.h"
 
-#include "Interface/IWindowPanel.hpp"
-#include "Rendering/Vulkan/VulkanRenderer.hpp"
-#include "Rendering/Vulkan/VulkanDescriptor.hpp"
-#include "Rendering/Vulkan/VulkanSwapChain.hpp"
 #include "backends/imgui_impl_vulkan.h"
+
+#include "Interface/IWindowPanel.hpp"
+#include "Rendering/Vulkan/VulkanDescriptor.hpp"
+#include "Rendering/Vulkan/VulkanRenderer.hpp"
+#include "ResourceManager/ResourceManager.hpp"
+#include "Rendering/Vulkan/VulkanSwapChain.hpp"
+
 #include "InspectorPanel.hpp"
 #include "Game/Systems/Camera/CameraEditor.hpp"
 #include "Game/Systems/Component/TransformComponent.hpp"
@@ -15,8 +18,8 @@ class Viewport : public IWindowPanel
 public:
     explicit Viewport(Editor* a_editor, const std::string& a_windowIdentifier) : IWindowPanel(a_editor, a_windowIdentifier) 
     {
-        dSets = ImGui_ImplVulkan_AddTexture(p_editor->GetEngine()->GetRenderer()->CastVulkan()->GetViewportImageSampler(), p_editor->GetEngine()->GetRenderer()->CastVulkan()->GetViewportImageView(), VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL);
-        InitIcons();
+        //dSets = ImGui_ImplVulkan_AddTexture(ResourceManager::GetInstance().GetStandardSampler(), p_editor->GetEngine()->GetRenderer()->CastVulkan()->GetViewportImageView(), VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL);
+        //InitIcons();
         float aspectRatio = static_cast<float>(
                                     p_editor->GetEngine()->GetSwapChain()->CastVulkan()->GetSwapChainExtent().width) /
                             static_cast<float>(
@@ -28,16 +31,21 @@ public:
 
     ImVec2 m_lastSize{ 0.0f, 0.0f };
 
-    VkSampler sampler{};
-    VkDescriptorSet dSets;
+    //VkSampler sampler{};
+    ImTextureID dSets {};
 
-    void Init() override {};
+    inline void Init() override
+    {
+        InitIcons();
+        dSets = reinterpret_cast<ImTextureID>(ImGui_ImplVulkan_AddTexture(ResourceManager::GetInstance().GetStandardSampler(), p_editor->GetEngine()->GetRenderer()->CastVulkan()->GetViewportImageView(), VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL));
+    };
+
     void Update() override {};
     void Render() override;
     void Destroy() override {};
 
     void InitIcons();
-    std::shared_ptr<ITexture> LoadTexture(Engine* engine, const std::string& path);
+    std::shared_ptr<ITexture> LoadTexture(const Engine* engine, const std::string& path);
 
 private:
     std::shared_ptr<ITexture> m_iconMove, m_iconRotate, m_iconResize, m_iconPlay, m_iconStop;

@@ -1,4 +1,3 @@
-#include <direct.h>
 #include <string>
 
 #include "assimp/Importer.hpp"
@@ -7,12 +6,13 @@
 #include "Logger.hpp"
 
 #include "Resources/ModelLoading/AssimpModelLoader.hpp"
+#include <direct.h>
 
 
 void AssimpModelLoader::LoadModel(IMesh* a_mesh, const char* a_file)
 {
-    Assimp::Importer l_importer { };
-    std::array<char, 1024> l_buffer { };
+    Assimp::Importer l_importer{};
+    std::array<char, 1024> l_buffer{};
     if (_getcwd(l_buffer.data(), 1024) != nullptr)
         DEBUG_LOG_INFO("Current working directory: {}\n", l_buffer.data());
 
@@ -25,8 +25,14 @@ void AssimpModelLoader::LoadModel(IMesh* a_mesh, const char* a_file)
         return;
     }
 
+    if (l_scene->mNumMeshes == 0)
+    {
+        DEBUG_LOG_ERROR("Could not load any mesh from the file: {}", a_file);
+        return;
+    }
+
     const aiMesh* l_mesh = l_scene->mMeshes[0];
-    std::string l_info = std::string(a_file) + " file has been red by the parser.";
+    std::string l_info = std::string(a_file) + " file has been read by the parser.";
     DEBUG_LOG_INFO("{}", l_info);
 
     if (l_mesh)
@@ -43,33 +49,44 @@ void AssimpModelLoader::LoadModel(IMesh* a_mesh, const char* a_file)
 std::vector<Vertex> AssimpModelLoader::SetupVertices(const aiMesh* a_mesh)
 {
     std::vector<Vertex> l_vertices{};
-	for (unsigned int i = 0; i < a_mesh->mNumVertices; ++i)
-	{
-		Vertex l_currentVertex { };
+    for (unsigned int i = 0; i < a_mesh->mNumVertices; ++i)
+    {
+        Vertex l_currentVertex{};
 
-		Maths::Vector3 l_vertPosition { };
-		l_vertPosition.x = a_mesh->mVertices[i].x;
-		l_vertPosition.y = a_mesh->mVertices[i].y;
-		l_vertPosition.z = a_mesh->mVertices[i].z;
-		l_currentVertex.pos = l_vertPosition;
+        l_currentVertex.pos = {
+            a_mesh->mVertices[i].x,
+            a_mesh->mVertices[i].y,
+            a_mesh->mVertices[i].z
+        };
 
-		Maths::Vector2 l_vertTexCoords { };
-		if (a_mesh->mTextureCoords[0])
-		{
-			l_vertTexCoords.x = a_mesh->mTextureCoords[0][i].x;
-			l_vertTexCoords.y = 1.0f - a_mesh->mTextureCoords[0][i].y;
-		} else
-		{
-			l_vertTexCoords.x = 0;
-			l_vertTexCoords.y = 0;
-		}
-		l_currentVertex.texCoord = l_vertTexCoords;
+        if (a_mesh->mTextureCoords[0])
+        {
+            l_currentVertex.texCoord = {
+                a_mesh->mTextureCoords[0][i].x,
+                1.0f - a_mesh->mTextureCoords[0][i].y
+            };
+        }
+        else
+            l_currentVertex.texCoord = { 0.0f, 0.0f };
 
-		Maths::Vector3 l_vertNormals { };
-		l_vertNormals.x = a_mesh->mNormals[i].x;
-		l_vertNormals.y = a_mesh->mNormals[i].y;
-		l_vertNormals.z = a_mesh->mNormals[i].z;
-		l_currentVertex.color = l_vertNormals;
+
+        if (a_mesh->HasNormals())
+        {
+            l_currentVertex.normal = {
+                a_mesh->mNormals[i].x,
+                a_mesh->mNormals[i].y,
+                a_mesh->mNormals[i].z
+            };
+        }
+        else
+            l_currentVertex.normal = { 0.0f, 0.0f, 0.0f };
+
+
+        if (a_mesh->HasVertexColors(0))
+        {
+            const aiColor4D& c = a_mesh->mColors[0][i];
+            l_currentVertex.color = { c.r, c.g, c.b };
+        }
 
         l_vertices.push_back(l_currentVertex);
     }
@@ -79,7 +96,7 @@ std::vector<Vertex> AssimpModelLoader::SetupVertices(const aiMesh* a_mesh)
 
 std::vector<unsigned int> AssimpModelLoader::SetupIndices(const aiMesh* a_mesh)
 {
-    std::vector<unsigned int> l_indices { };
+    std::vector<unsigned int> l_indices{};
     for (unsigned int i = 0; i < a_mesh->mNumFaces; ++i)
     {
         const aiFace l_face = a_mesh->mFaces[i];
@@ -92,7 +109,7 @@ std::vector<unsigned int> AssimpModelLoader::SetupIndices(const aiMesh* a_mesh)
 
 void AssimpModelLoader::DebugExtensionsList(const Assimp::Importer* a_importer)
 {
-    std::string l_extensions { };
+    std::string l_extensions{};
     a_importer->GetExtensionList(l_extensions);
     std::string l_info = "Assimp currently supports : " + l_extensions;
     DEBUG_LOG_INFO("{}", l_info);

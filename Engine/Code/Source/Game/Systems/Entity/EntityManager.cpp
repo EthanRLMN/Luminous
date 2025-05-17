@@ -1,5 +1,5 @@
+#include "Game/Systems/Component/MeshRendererComponent.hpp"
 #include "Game/Systems/Entity/EntityManager.hpp"
-
 #include "Game/Systems/Entity/EntityFactory.hpp"
 
 
@@ -45,9 +45,11 @@ std::shared_ptr<Entity> EntityManager::GetEntityByRawPointer(Entity* rawPtr) con
 std::shared_ptr<Entity> EntityManager::CreateEntityFromTemplate(const std::string& a_templateName)
 {
     std::shared_ptr<Entity> l_entity = EntityFactory::Get().CreateEntity(a_templateName, *this);
+
     if (l_entity)
     {
         m_entities.push_back(l_entity);
+
         if (m_engine)
         {
             l_entity->SetEngine(m_engine);
@@ -80,4 +82,3 @@ std::shared_ptr<Entity> EntityManager::GetEntityByName(const std::string& a_name
     }
     return nullptr;
 }
-

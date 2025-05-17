@@ -8,6 +8,7 @@
 #include "Game/Systems/Component/EntityComponent.hpp"
 #include "Game/Systems/Entity/Entity.hpp"
 
+class MeshRendererComponent;
 class Engine;
 
 class EntityManager
@@ -20,21 +21,29 @@ public:
     void Update() const;
     void GameplayStarted() const;
 
-    [[nodiscard]] inline const std::vector<std::shared_ptr<Entity>>& GetEntities() const { return m_entities; }
-    [[nodiscard]] inline bool HasEntityByName(const std::string& a_name) const { return GetEntityByName(a_name) != nullptr; }
-    [[nodiscard]] inline size_t GetEntityCount() const { return m_entities.size(); }
-    [[nodiscard]] inline bool IsEmpty() const { return m_entities.empty(); }
-    [[nodiscard]] inline bool HasEntity(const std::shared_ptr<Entity>& a_entity) const { return std::ranges::find(m_entities, a_entity) != m_entities.end(); }
-    [[nodiscard]] static std::vector<std::string> GetAvailableTemplates();
+    inline void RegisterRenderable(const std::shared_ptr<Entity>& a_entity) { m_renderableEntities.push_back(a_entity); }
+    inline void UnregisterRenderable(const std::shared_ptr<Entity>& a_entity) { std::erase(m_renderableEntities, a_entity); }
+    inline void RegisterLight(const std::shared_ptr<Entity>& a_entity) { m_lightEntities.push_back(a_entity); }
+    inline void UnregisterLight(const std::shared_ptr<Entity>& a_entity) { std::erase(m_lightEntities, a_entity); }
 
-    [[nodiscard]] std::shared_ptr<Entity> GetEntityByName(const std::string& a_name) const;
-    [[nodiscard]] std::shared_ptr<Entity> GetFirstEntityByParent(const std::shared_ptr<Entity>& a_parent) const;
+    /*          Getters         */
+    inline const std::vector<std::shared_ptr<Entity> >& GetEntities() const { return m_entities; }
+    inline bool HasEntityByName(const std::string& a_name) const { return GetEntityByName(a_name) != nullptr; }
+    inline size_t GetEntityCount() const { return m_entities.size(); }
+    inline bool IsEmpty() const { return m_entities.empty(); }
+    inline bool HasEntity(const std::shared_ptr<Entity>& a_entity) const { return std::ranges::find(m_entities, a_entity) != m_entities.end(); }
+    inline const std::vector<std::shared_ptr<Entity>>& GetRenderableEntities() const { return m_renderableEntities; }
+    inline const std::vector<std::shared_ptr<Entity>>& GetLightEntities() const { return m_lightEntities; }
+    std::shared_ptr<Entity> GetEntityByName(const std::string& a_name) const;
+    std::shared_ptr<Entity> GetFirstEntityByParent(const std::shared_ptr<Entity>& a_parent) const;
     [[nodiscard]] std::shared_ptr<Entity> GetEntityByRawPointer(Entity* rawPtr) const;
+    static std::vector<std::string> GetAvailableTemplates();
+    Engine* GetEngine() const { return m_engine; }
 
     template<typename T>
-    [[nodiscard]] inline std::vector<std::shared_ptr<Entity>> GetEntitiesByComponent() const
+    inline std::vector<std::shared_ptr<Entity> > GetEntitiesByComponent() const
     {
-        std::vector<std::shared_ptr<Entity>> l_entitiesWithComponent{};
+        std::vector<std::shared_ptr<Entity> > l_entitiesWithComponent{};
 
         for (const std::shared_ptr<Entity>& l_entity : m_entities)
         {
@@ -45,14 +54,17 @@ public:
         return l_entitiesWithComponent;
     }
 
-    std::shared_ptr<Entity> CreateEntityFromTemplate(const std::string& a_templateName);
+
+    /*          Setters         */
     inline void RemoveEntity(const std::shared_ptr<Entity>& a_entity) { std::erase(m_entities, a_entity); }
     inline void RemoveEntityByName(const std::string& a_name) { std::erase_if(m_entities, [&](const std::shared_ptr<Entity>& l_entity) { return l_entity->GetName() == a_name; }); }
     inline void Destroy() { m_entities.clear(); }
+    std::shared_ptr<Entity> CreateEntityFromTemplate(const std::string& a_templateName);
 
 
 private:
-    Engine* m_engine { nullptr };
-
-    std::vector<std::shared_ptr<Entity>> m_entities;
+    Engine* m_engine{ nullptr };
+    std::vector<std::shared_ptr<Entity>> m_entities{};
+    std::vector<std::shared_ptr<Entity>> m_renderableEntities{};
+    std::vector<std::shared_ptr<Entity>> m_lightEntities{};
 };
