@@ -49,4 +49,16 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 
 
-target_link_libraries(L_GAME PRIVATE L_ENGINE)
+#---------------------------------------#
+#        EXPORTS / IMPORTS FOR DLL      #
+#---------------------------------------#
+
+# Disable lib prefix
+set_target_properties(L_GAME PROPERTIES PREFIX "")
+
+# Set dll name
+set_target_properties(L_GAME PROPERTIES OUTPUT_NAME "${PROJECT_NAME}")
+
+
+
+target_link_libraries(L_GAME PRIVATE L_ENGINE L_LOGGER)

@@ -1,6 +1,10 @@
 #include <Windows.h>
 #include <iostream>
 
+#ifdef ERROR
+#undef ERROR
+#endif
+
 #include "Engine.hpp"
 #include "IGameModule.hpp"
 
@@ -37,8 +41,9 @@ int main()
     l_gameModule->Start(); // Starts the game
     while (l_engine.IsRunning())
     {
-        l_gameModule->Update();
-        l_gameModule->LateUpdate();
+        l_engine.Update();
+
+        //l_gameModule->Update();
     }
     l_gameModule->End();
 

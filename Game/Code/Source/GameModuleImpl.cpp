@@ -31,3 +31,8 @@ void GameModuleImpl::End()
 {
     DEBUG_LOG_INFO("GAME ENDED!");
 }
+
+
+extern "C" __declspec(dllexport) IGameModule* CreateGameModule() {
+    return new GameModuleImpl();
+}
