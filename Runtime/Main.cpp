@@ -43,7 +43,7 @@ int main()
     {
         l_engine.Update();
 
-        //l_gameModule->Update();
+        l_gameModule->Update();
     }
     l_gameModule->End();
 
