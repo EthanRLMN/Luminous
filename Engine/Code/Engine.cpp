@@ -15,6 +15,10 @@ void Engine::Init()
     Debug::Logger& l_logger = Debug::Logger::GetInstance();
     l_logger.Init("Engine", 1_MiB, 5, true);
 
+
+    if (m_gameCompiled)
+        m_gameRunning = true;
+
     m_interface = new VulkanRenderInterface();
     m_scene = new Scene();
     m_physicsSystem = new PhysicsSystem();
@@ -39,7 +43,9 @@ void Engine::Update()
     m_window->Update();
     m_inputManager->Update();
     m_renderer->DrawFrame(m_window, m_device, m_swapChain, m_pipeline, m_buffer, m_renderPassManager, m_descriptor, m_synchronization, m_commandBuffer, m_frameBufferManager, m_depthResource, m_surface, m_multiSampling, m_inputManager, m_entityManager);
-    m_physicsSystem->Update();
+
+    if (m_launchSettings.m_InGame)
+        m_physicsSystem->Update();
 
     if (m_inputManager->IsKeyPressed(Key::KEY_O))
     {
