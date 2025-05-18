@@ -244,38 +244,31 @@ void TransformComponent::SetParent(const std::shared_ptr<Entity>& a_newParent)
     if (m_parent.lock() == a_newParent)
         return;
 
-    // 1. Mémoriser la transformation globale actuelle (matrice complète)
-    Matrix4 globalMatrixBefore = GetGlobalMatrix();
+    const Matrix4 l_globalMatrixBefore = GetGlobalMatrix();
 
-    // 2. Détacher de l'ancien parent
-    if (std::shared_ptr<Entity> oldParent = m_parent.lock()) {
-        if (std::shared_ptr<TransformComponent> oldTransform = oldParent->Transform()) {
-            std::erase_if(oldTransform->m_children,
-                          [this](const std::shared_ptr<TransformComponent>& c) { return c.get() == this; });
-        }
+    if (const std::shared_ptr<Entity> l_oldParent = m_parent.lock()) {
+        if (const std::shared_ptr<TransformComponent> l_oldTransform = l_oldParent->Transform())
+            std::erase_if(l_oldTransform->m_children, [this](const std::shared_ptr<TransformComponent>& c) { return c.get() == this; });
     }
 
-    // 3. Affecter le nouveau parent
     m_parent = a_newParent;
 
-    std::shared_ptr<TransformComponent> newParentTransform =
-        a_newParent ? a_newParent->Transform() : nullptr;
+    const std::shared_ptr<TransformComponent> l_newParentTransform = a_newParent ? a_newParent->Transform() : nullptr;
 
-    if (newParentTransform) {
-        newParentTransform->m_children.push_back(GetOwner()->Transform());
-        Matrix4 newParentGlobalInverse = newParentTransform->GetGlobalMatrix().Inverse();
-        m_localMatrix = newParentGlobalInverse * globalMatrixBefore;
-    } else {
-        m_localMatrix = globalMatrixBefore;
+    if (l_newParentTransform)
+        {
+        l_newParentTransform->m_children.push_back(GetOwner()->Transform());
+        const Matrix4 l_newParentGlobalInverse = l_newParentTransform->GetGlobalMatrix().Inverse();
+        m_localMatrix = l_newParentGlobalInverse * l_globalMatrixBefore;
     }
+    else
+        m_localMatrix = l_globalMatrixBefore;
 
-    // 4. Décomposer la matrice locale pour MAJ des données locales
     m_localPosition     = m_localMatrix.GetTranslation();
     m_localRotationQuat = Quaternion::FromMatrix(m_localMatrix);
     m_localRotationVec  = m_localRotationQuat.ToEulerAngles(true);
     m_localScale        = m_localMatrix.GetScale();
 
-    // 5. Ne pas recalculer de globale ici. Juste marquer dirty.
     m_requiresUpdate = true;
 }
 
