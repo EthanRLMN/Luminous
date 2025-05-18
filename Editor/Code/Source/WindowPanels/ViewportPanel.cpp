@@ -7,6 +7,10 @@
 #include "Rendering/Vulkan/VulkanTexture.hpp"
 #include "ResourceManager/ResourceManager.hpp"
 
+#include <windows.h>
+#include <filesystem>
+#include <direct.h>
+
 static const std::filesystem::path s_IconPath = "Editor/Assets/Icons/";
 
 void Viewport::Render()
@@ -39,7 +43,30 @@ void Viewport::Render()
 
     if (ImGui::ImageButton("Play", m_iconPlayID, buttonSize)) 
     {
-    
+
+        std::array<char, 1024> l_buffer{};
+        if (_getcwd(l_buffer.data(), 1024) != nullptr)
+            DEBUG_LOG_INFO("Current working directory: {}\n", l_buffer.data());
+
+        const char* exePath = "L_RUNTIME.exe";
+
+        if (std::filesystem::exists(exePath))
+        {
+            STARTUPINFOA si = { sizeof(STARTUPINFOA) };
+            PROCESS_INFORMATION pi;
+
+            if (!CreateProcessA(exePath, NULL, NULL, NULL, FALSE, 0, NULL, NULL, &si, &pi))
+            {
+                MessageBoxA(NULL, "Impossible de lancer la build", "Erreur", MB_OK | MB_ICONERROR);
+                return;
+            }
+
+            CloseHandle(pi.hProcess);
+            CloseHandle(pi.hThread);
+        }
+
+        
+        
     }
     ImGui::SameLine();
     if (ImGui::ImageButton("Stop", m_iconStopID, buttonSize)) 
