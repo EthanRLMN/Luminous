@@ -134,6 +134,16 @@ void InspectorPanel::Render()
                     if (scaleChanged)
                         p_isEntitySelected->Transform()->SetLocalScale(scale);
                 }
+
+                if (m_transformMode == TransformMode::Global)
+                {
+                    if (posChanged)
+                        p_isEntitySelected->Transform()->SetGlobalPosition(position);
+                    if (rotChanged)
+                        p_isEntitySelected->Transform()->SetGlobalRotationVec(rotation);
+                    if (scaleChanged)
+                        p_isEntitySelected->Transform()->SetGlobalScale(scale);
+                }
             }
 
             if (ImGui::CollapsingHeader("Mesh Renderer"))
@@ -172,7 +182,7 @@ void InspectorPanel::Render()
                     ImTextureID textureID = NULL;
                     if (!texturePath.empty())
                     {
-                        if (s_textureCache.find(texturePath) == s_textureCache.end())
+                        if (!s_textureCache.contains(texturePath))
                         {
                             std::shared_ptr<ITexture> texture = LoadTexture(p_editor->GetEngine(), texturePath);
                             texture->CastVulkan()->CreateTextureImageView(p_editor->GetEngine()->GetDevice());

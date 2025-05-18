@@ -8,72 +8,75 @@
 #include "Quaternion.hpp"
 #include "Vector3.hpp"
 
-class Entity;
-
-
 class TransformComponent : public EntityComponent
 {
 public:
-    void Initialize() override{};
-    void GameplayStarted() override{};
-    void Update() override{};
+    void Initialize() override {}
+    void GameplayStarted() override {}
+    void Update() override {}
 
-    [[nodiscard]] inline Maths::Vector3 GetLocalPosition() const { return m_localPosition; }
-    [[nodiscard]] inline Maths::Vector3 GetLocalScale() const { return m_localScale; }
-    [[nodiscard]] inline Maths::Vector3 GetLocalRotationVec() const { return m_localRotationVec; }
-    [[nodiscard]] inline Maths::Quaternion GetLocalRotationQuat() const { return m_localRotationQuat; }
-    [[nodiscard]] inline Maths::Vector3 GetGlobalPosition() const { return m_globalPosition; }
-    [[nodiscard]] inline Maths::Vector3 GetGlobalScale() const { return m_globalScale; }
-    [[nodiscard]] inline Maths::Vector3 GetGlobalRotationVec() const { return m_globalRotationVec; }
-    [[nodiscard]] inline Maths::Quaternion GetGlobalRotationQuat() const { return m_globalRotationQuat; }
-    [[nodiscard]] inline Maths::Matrix4 GetLocalMatrix() const { return m_localMatrix; }
-    [[nodiscard]] inline Maths::Matrix4 GetGlobalMatrix() const { return m_globalMatrix; }
-    [[nodiscard]] inline std::shared_ptr<Entity> GetParent() const { return m_parent.lock(); }
-    [[nodiscard]] inline bool HasParent() const { return m_parent.lock() != nullptr; }
-    [[nodiscard]] inline bool HasChildren() const { return !m_children.empty(); }
-    [[nodiscard]] inline const std::vector<std::shared_ptr<TransformComponent>>& GetChildren() const { return m_children; }
-    [[nodiscard]] inline std::shared_ptr<Entity> GetOwner() const override { return p_owner; }
-    [[nodiscard]] inline bool IsActive() const { return m_isActive; }
+    Maths::Vector3 GetLocalPosition() const;
+    Maths::Vector3 GetLocalScale() const;
+    Maths::Vector3 GetLocalRotationVec() const;
+    Maths::Quaternion GetLocalRotationQuat() const;
 
-    inline void SetOwner(const std::shared_ptr<Entity>& a_relatedEntity) override { p_owner = a_relatedEntity; }
-    void AddChild(const std::shared_ptr<TransformComponent>& a_child) const;
-    void RemoveChild(const std::shared_ptr<TransformComponent>& a_child);
-    void SetActive(bool a_isActive);
-    void SetLocalMatrix(const Maths::Matrix4& a_newMatrix);
-    void SetLocalPosition(Maths::Vector3 a_newPos);
-    void SetLocalScale(Maths::Vector3 a_newScale);
-    void SetLocalRotationVec(Maths::Vector3 a_newRotVec);
-    void SetLocalRotationQuat(Maths::Quaternion a_newRotQuat);
-    void SetGlobalScale(Maths::Vector3 a_newScale);
-    void SetGlobalRotationVec(Maths::Vector3 a_newRotVec);
-    void SetGlobalRotationQuat(Maths::Quaternion a_newRotQuat);
+    Maths::Vector3 GetGlobalPosition();
+    Maths::Vector3 GetGlobalScale();
+    Maths::Vector3 GetGlobalRotationVec();
+    Maths::Quaternion GetGlobalRotationQuat();
+    Maths::Matrix4 GetLocalMatrix();
+    Maths::Matrix4 GetGlobalMatrix();
+
+    std::shared_ptr<Entity> GetParent() const;
+    bool HasParent() const;
+    bool HasChildren() const;
+    const std::vector<std::shared_ptr<TransformComponent> >& GetChildren() const;
+
+    std::shared_ptr<Entity> GetOwner() const override;
+    void SetOwner(const std::shared_ptr<Entity>& a_relatedEntity) override;
+
+    bool IsActive() const;
+    inline void SetActive(const bool a_isActive) { m_isActive = a_isActive; }
+
+    void SetLocalPosition(const Maths::Vector3& a_newPos);
+    void SetLocalScale(const Maths::Vector3& a_newScale);
+    void SetLocalRotationVec(const Maths::Vector3& a_newRotVec);
+    void SetLocalRotationQuat(const Maths::Quaternion& a_newRotQuat);
+
+    void SetGlobalPosition(const Maths::Vector3& a_newPos);
+    void SetGlobalScale(const Maths::Vector3& a_newScale);
+    void SetGlobalRotationVec(const Maths::Vector3& a_newRotVec);
+    void SetGlobalRotationQuat(const Maths::Quaternion& a_newRotQuat);
     void SetGlobalMatrix(const Maths::Matrix4& a_newMatrix);
-    void SetGlobalPosition(Maths::Vector3 a_newPos);
+
+    void AddChild(const std::shared_ptr<TransformComponent>& a_child);
+    void RemoveChild(const std::shared_ptr<TransformComponent>& a_child);
     void SetParent(const std::shared_ptr<Entity>& a_newParent);
     void SetInterpolatedRotation(const Maths::Quaternion& a_start, const Maths::Quaternion& a_end, float a_factor);
 
 
 private:
-    std::weak_ptr<Entity> m_parent {};
-    std::vector<std::shared_ptr<TransformComponent>> m_children;
-
-    Maths::Quaternion m_localRotationQuat { Maths::Quaternion::Identity };
-    Maths::Vector3 m_localRotationVec { Maths::Vector3::Zero };
-    Maths::Vector3 m_localPosition { Maths::Vector3::Zero };
-    Maths::Vector3 m_localScale { Maths::Vector3::One };
-
-    Maths::Quaternion m_globalRotationQuat { Maths::Quaternion::Identity };
-    Maths::Vector3 m_globalRotationVec { Maths::Vector3::Zero };
-    Maths::Vector3 m_globalPosition { Maths::Vector3::Zero };
-    Maths::Vector3 m_globalScale { Maths::Vector3::One };
-
-    Maths::Matrix4 m_localMatrix { Maths::Matrix4::TRS(m_localPosition, m_localRotationVec, m_localScale) };
-    Maths::Matrix4 m_globalMatrix { Maths::Matrix4::TRS(m_globalPosition, m_globalRotationVec, m_globalScale) };
-
+    void MarkDirty();
     void UpdateGlobalTransform();
-    void UpdateMatrices();
     void UpdateLocalMatrix();
+    void DecomposeMatrix(const Maths::Matrix4& matrix);
 
-    bool m_requiresUpdate { false };
-    bool m_isActive { true };
+    std::weak_ptr<Entity> m_parent;
+    std::vector<std::shared_ptr<TransformComponent> > m_children;
+
+    Maths::Vector3 m_localPosition{ Maths::Vector3::Zero };
+    Maths::Vector3 m_localScale{ Maths::Vector3::One };
+    Maths::Quaternion m_localRotationQuat{ Maths::Quaternion::Identity };
+    Maths::Vector3 m_localRotationVec{ Maths::Vector3::Zero };
+
+    Maths::Vector3 m_globalPosition{ Maths::Vector3::Zero };
+    Maths::Vector3 m_globalScale{ Maths::Vector3::One };
+    Maths::Quaternion m_globalRotationQuat{ Maths::Quaternion::Identity };
+    Maths::Vector3 m_globalRotationVec{ Maths::Vector3::Zero };
+
+    Maths::Matrix4 m_localMatrix{ Maths::Matrix4::identity };
+    Maths::Matrix4 m_globalMatrix{ Maths::Matrix4::identity };
+
+    bool m_requiresUpdate{ true };
+    bool m_isActive{ true };
 };
