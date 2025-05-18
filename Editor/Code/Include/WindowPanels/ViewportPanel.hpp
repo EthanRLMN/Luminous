@@ -18,16 +18,8 @@ class Viewport : public IWindowPanel
 public:
     explicit Viewport(Editor* a_editor, const std::string& a_windowIdentifier) : IWindowPanel(a_editor, a_windowIdentifier) 
     {
-        //dSets = ImGui_ImplVulkan_AddTexture(ResourceManager::GetInstance().GetStandardSampler(), p_editor->GetEngine()->GetRenderer()->CastVulkan()->GetViewportImageView(), VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL);
-        //InitIcons();
-        float aspectRatio = static_cast<float>(
-                                    p_editor->GetEngine()->GetSwapChain()->CastVulkan()->GetSwapChainExtent().width) /
-                            static_cast<float>(
-                                    p_editor->GetEngine()->GetSwapChain()->CastVulkan()->GetSwapChainExtent().height);
-        m_camera = std::make_unique<CameraEditor>();
-        m_camera->Init(aspectRatio, 60.0f, 0.1f, 100.0f);
+        m_camera = p_editor->GetEngine()->GetRenderer()->CastVulkan()->GetCamera();
     };
-    
 
     ImVec2 m_lastSize{ 0.0f, 0.0f };
 
@@ -56,5 +48,5 @@ private:
     ImTextureID m_iconStopID = NULL;
 
     ImGuizmo::OPERATION m_currentGizmoOperation = ImGuizmo::TRANSLATE;
-    std::unique_ptr<CameraEditor> m_camera;
+    CameraEditor m_camera;
 };

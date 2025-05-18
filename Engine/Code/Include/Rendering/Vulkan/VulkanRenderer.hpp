@@ -39,6 +39,7 @@ public:
 	[[nodiscard]] VkImage GetViewportImage() const { return m_viewportImage; }
 	[[nodiscard]] VkImageView GetViewportImageView() const { return m_viewportImageview; }
 	[[nodiscard]] VkDeviceMemory GetViewportImageMemory() const { return m_viewportMemory; }
+    inline CameraEditor GetCamera() const { return m_cameraEditor; }
 
 	void CreateViewportImage(IDevice* a_device, ISwapChain* a_swapChain);
     void CopyImageToViewport(ISwapChain* a_swapChain, const VkCommandBuffer& a_cmdBuffer) const;
@@ -70,7 +71,7 @@ private:
 
 	uint32_t m_currentFrame { 0 };
 
-    CameraEditor m_cameraEditor{};
+    CameraEditor m_cameraEditor {};
     VkImage m_viewportImage { nullptr };
     VkImageView m_viewportImageview { nullptr };
     VkDeviceMemory m_viewportMemory { nullptr };

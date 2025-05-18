@@ -11,9 +11,11 @@ static const std::filesystem::path s_IconPath = "Editor/Assets/Icons/";
 
 void Viewport::Render()
 {
+    m_camera = p_editor->GetEngine()->GetRenderer()->CastVulkan()->GetCamera();
     IWindowPanel::Render();
 
     ImGui::Begin(p_windowIdentifier.c_str(), nullptr, ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoBackground);
+    ImGuizmo::BeginFrame();
 
     ImVec2 avail = ImGui::GetContentRegionAvail();
     float buttonWidth = 40.f;
@@ -51,7 +53,6 @@ void Viewport::Render()
         dSets = reinterpret_cast<ImTextureID>(ImGui_ImplVulkan_AddTexture(ResourceManager::GetInstance().GetStandardSampler(), p_editor->GetEngine()->GetRenderer()->CastVulkan()->GetViewportImageView(), VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL));
     };
 
-
     VkExtent2D l_extent = p_editor->GetEngine()->GetSwapChain()->CastVulkan()->GetSwapChainExtent();
 
     float l_texWidth = static_cast<float>(l_extent.width);
@@ -77,22 +78,17 @@ void Viewport::Render()
     ImGui::SetCursorScreenPos(ImVec2(l_screenPos.x + l_offsetX, l_screenPos.y + l_offsetY));
     ImGui::Image(dSets, l_imageSize);
 
-    float aspectRatio = static_cast<float>(l_extent.width) / static_cast<float>(l_extent.height);
-    m_camera->Update(aspectRatio);
+    Maths::Matrix4 view = m_camera.GetViewMatrix().Transpose();
+    Maths::Matrix4 projection = m_camera.GetProjectionMatrix();
 
-    Maths::Matrix4 view = m_camera->GetViewMatrix();
-    Maths::Matrix4 projection = m_camera->GetProjectionMatrix();
+    const auto selectedEntity = p_editor->GetSelectedEntity();
 
-    auto selectedEntity = p_editor->GetSelectedEntity();
-
-
-    /*
     if (selectedEntity)
     {
         std::shared_ptr<TransformComponent> transform = selectedEntity->GetComponent<TransformComponent>();
         if (transform)
         {
-            Maths::Matrix4 model = transform->GetGlobalMatrix();
+            Maths::Matrix4 model = transform->GetGlobalMatrix().Transpose();
             float modelMatrix[16];
             memcpy(modelMatrix, &model.mat, sizeof(float) * 16);
 
@@ -100,10 +96,9 @@ void Viewport::Render()
             ImGuizmo::Enable(true);
             ImGuizmo::SetDrawlist();
 
-            ImVec2 winPos = ImGui::GetWindowPos();
-            ImVec2 winSize = ImGui::GetWindowSize();
+            ImVec2 winPos = ImGui::GetWindowViewport()->Pos;
 
-            ImGuizmo::SetRect(winPos.x, winPos.y, winSize.x, winSize.y);
+            ImGuizmo::SetRect(winPos.x + l_offsetX, winPos.y + l_offsetY, l_imageSize.x, l_imageSize.y);
 
 
             float viewMatrix[16];
@@ -111,35 +106,50 @@ void Viewport::Render()
 
             float projMatrix[16];
             memcpy(projMatrix, &projection.mat, sizeof(float) * 16);
-
             
             ImGuizmo::Manipulate(
                     viewMatrix,
                     projMatrix,
                     m_currentGizmoOperation,
-                    ImGuizmo::WORLD,
+                    ImGuizmo::LOCAL,
                     modelMatrix);
+
+
+            if (ImGuizmo::IsUsing())
+            {
+                // Convert back to Matrix4
+                Maths::Matrix4 newModelMatrix;
+                memcpy(&newModelMatrix.mat, modelMatrix, sizeof(float) * 16);
+
+                // Transpose back to column-major if needed
+                newModelMatrix = newModelMatrix.Transpose();
+
+                // Décomposer la matrice en position / rotation / scale
+                Maths::Vector3 translation, scale;
+                Maths::Quaternion rotation;
+                newModelMatrix.Decompose(translation, rotation, scale);
+
+                transform->SetGlobalPosition(translation);
+                transform->SetGlobalRotationQuat(rotation); // ou quaternion si besoin
+                transform->SetGlobalScale(scale);
+            }
         }
     }
-    */
 
     ImGui::End();
 }
 
 void Viewport::InitIcons()
 {
-    Engine* engine = p_editor->GetEngine();
-    auto* device = engine->GetDevice();
+    m_iconMove = LoadTexture(p_editor->GetEngine(), (s_IconPath / "MoveIcon.png").string());
+    m_iconRotate = LoadTexture(p_editor->GetEngine(), (s_IconPath / "RotateIcon.png").string());
+    m_iconResize = LoadTexture(p_editor->GetEngine(), (s_IconPath / "ResizeIcon.png").string());
+    m_iconPlay = LoadTexture(p_editor->GetEngine(), (s_IconPath / "PlayIcon.png").string());
+    m_iconStop = LoadTexture(p_editor->GetEngine(), (s_IconPath / "StopIcon.png").string());
 
-    m_iconMove = LoadTexture(engine, (s_IconPath / "MoveIcon.png").string());
-    m_iconRotate = LoadTexture(engine, (s_IconPath / "RotateIcon.png").string());
-    m_iconResize = LoadTexture(engine, (s_IconPath / "ResizeIcon.png").string());
-    m_iconPlay = LoadTexture(engine, (s_IconPath / "PlayIcon.png").string());
-    m_iconStop = LoadTexture(engine, (s_IconPath / "StopIcon.png").string());
-
-    auto loadImg = [&](std::shared_ptr<ITexture>& tex, ImTextureID& id)
+    auto loadImg = [&](const std::shared_ptr<ITexture>& tex, ImTextureID& id)
     {
-        tex->CastVulkan()->CreateTextureImageView(device);
+        tex->CastVulkan()->CreateTextureImageView(p_editor->GetEngine()->GetDevice());
         id = reinterpret_cast<ImTextureID>(ImGui_ImplVulkan_AddTexture(
                 ResourceManager::GetInstance().GetStandardSampler(),
                 tex->CastVulkan()->GetTextureImageView(),
