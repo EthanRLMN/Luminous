@@ -8,6 +8,15 @@
 #include "Game/Systems/Physics/PhysicsSystem.hpp"
 
 
+
+
+//Base Editor settings (don't touch)
+struct LaunchSettings
+{
+    bool m_InGame = false;
+    bool m_Compiled = false;
+};
+
 class VulkanRenderInterface;
 
 class Engine
@@ -53,6 +62,9 @@ public:
     [[nodiscard]] bool IsRunning() const { return m_isRunning; }
     [[nodiscard]] bool InGame() const { return m_gameRunning; }
     [[nodiscard]] bool IsCompiled() const { return m_gameCompiled; }
+
+	[[nodiscard]] LaunchSettings GetLaunchSettings() const { return m_launchSettings; }
+    void SetLaunchSettings(LaunchSettings a_settings) { m_launchSettings = a_settings; }
     PhysicsSystem* GetPhysicsSystem() const { return m_physicsSystem; }
 
 
@@ -83,6 +95,8 @@ private:
     bool m_isRunning { false };
     bool m_gameCompiled{ true };
     bool m_gameRunning{ false };
+
+	LaunchSettings m_launchSettings{};
 
 	EntityManager m_entityManager;
 };

@@ -17,6 +17,8 @@ using DestroyFunc = void (*)(IGameModule*);
 int main()
 {
     Engine l_engine;
+    LaunchSettings l_compileLaunchSettings { true, true };
+    l_engine.SetLaunchSettings(l_compileLaunchSettings);
     l_engine.Init();
 
     // This loads the game dll
