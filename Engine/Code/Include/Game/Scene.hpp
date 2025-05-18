@@ -4,6 +4,7 @@
 #include <rfl/json.hpp>
 
 
+
 #include "Systems/Entity/Entity.hpp"
 
 
@@ -18,6 +19,20 @@ struct Vec3
     Vec3(const float x, const float y, const float z) : x(x), y(y), z(z) {}
     explicit Vec3(const Maths::Vector3& v) : x(v.x), y(v.y), z(v.z) {}
     explicit operator Maths::Vector3() const { return Maths::Vector3{x, y, z}; }
+
+};
+
+
+struct Vec2
+{
+    float x, y;
+
+    Vec2() = default;
+    Vec2(const float x, const float y, const float z) :
+        x(x), y(y) {}
+    explicit Vec2(const Maths::Vector2& v) :
+        x(v.x), y(v.y) {}
+    explicit operator Maths::Vector2() const { return Maths::Vector2{ x, y}; }
 };
 
 
@@ -108,11 +123,24 @@ struct CameraComponentData
     Vec3 center;
 };
 
+
+struct RigidbodyComponentData
+{
+    JPH::EActivation isActive;
+    std::weak_ptr<Entity>& entity;
+    ColliderType type;
+    JPH::uint8 layer;
+    Vec3 boxSize;
+    Vec2 capsuleSize;
+    float sphereSize;
+};
+
 using SerializedComponent = rfl::Variant<
     TransformComponentData,
     ModelComponentData,
     LightComponentData,
-    CameraComponentData>;
+    CameraComponentData,
+    RigidbodyComponentData>;
 
 
 template <typename Archive>

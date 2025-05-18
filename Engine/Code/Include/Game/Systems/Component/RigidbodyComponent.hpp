@@ -33,15 +33,16 @@ public:
     void SetCollider(); //Used to Initialize the collider
     void SetColliderShape(); //Used to update collider shape with offsets and transform size
     //Use these to resize collider :
-    inline void SetColliderSize(Maths::Vector3 a_boxSize) { m_boxSizeOffset = a_boxSize; SetColliderShape();} //Set Collider size for a Box
-    inline void SetColliderSize(Maths::Vector2 a_capsuleSize) { m_capsuleSizeOffset = a_capsuleSize; SetCollider(); } //Set Collider size for a Capsule
-    inline void SetColliderSize(float a_sphereSize) { m_sphereSizeOffset = a_sphereSize; SetCollider(); } //Set Collider size for a Sphere
+    inline void SetColliderBoxSize(Maths::Vector3 a_boxSize) { m_boxSizeOffset = a_boxSize; SetColliderShape();} //Set Collider size for a Box
+    inline void SetColliderCapsuleSize(Maths::Vector2 a_capsuleSize) { m_capsuleSizeOffset = a_capsuleSize; SetCollider(); } //Set Collider size for a Capsule
+    inline void SetColliderSphereSize(float a_sphereSize) { m_sphereSizeOffset = a_sphereSize; SetCollider(); } //Set Collider size for a Sphere
 
     [[nodiscard]] inline std::shared_ptr<Entity> GetEntity() const { return m_entity.lock(); }
     inline ColliderType GetColliderType() { return m_colliderType; }
     inline ModelComponent* GetModelDebug() { return m_collisionDebugModel; }
     inline ModelComponent* GetCapsuleSphereDebug() { return m_capsuleDebugSphere; }
     inline JPH::EActivation GetActivation() { return m_active; }
+    inline JPH::uint8 GetLayer() const { return m_layer; }
     inline float GetCapsuleWidth() { return m_capsuleWidth; }
     inline float GetCapsuleHeight() { return m_capsuleHeight; }
     inline float GetSphereOffset() { return m_sphereSizeOffset; }

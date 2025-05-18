@@ -54,7 +54,7 @@ void Scene::RegisterScene(EntityManager& a_entityManager)
     l_modelComponent->Initialize();
 
     collider->Transform()->SetLocalScale(Maths::Vector3(1.f, 1.0f, 1.f));
-    l_modelComponent->SetColliderSize(Maths::Vector3(0.f, 1.f, 0.f));
+    l_modelComponent->SetColliderBoxSize(Maths::Vector3(0.f, 1.f, 0.f));
 
 
     const std::shared_ptr<RigidbodyComponent> l_modelComponent2 = std::make_shared<RigidbodyComponent>();
@@ -70,7 +70,7 @@ void Scene::RegisterScene(EntityManager& a_entityManager)
     l_modelComponent2->Initialize();
 
     collider2->Transform()->SetLocalScale(Maths::Vector3(1.f, 1.0f, 1.f));
-    l_modelComponent2->SetColliderSize(Maths::Vector3(0.f, 1.f, 0.f));
+    l_modelComponent2->SetColliderBoxSize(Maths::Vector3(0.f, 1.f, 0.f));
 
 
     const std::shared_ptr<Entity> cam = a_entityManager.CreateEntityFromTemplate("DefaultEmpty");
@@ -168,7 +168,20 @@ void Scene::LoadScene(std::string filename, const EntityManager& a_entityManager
                         l_camera->SetNearPlane(compData.nearPlane);
                         l_camera->SetFieldOfView(compData.fieldOfView);
                     }
+                } else if constexpr (std::is_same_v<T, RigidbodyComponentData>)
+                {
+                    if (const std::shared_ptr<RigidbodyComponent> l_rigidbody = l_entity->GetComponent<RigidbodyComponent>())
+                    {
+                        l_rigidbody->SetActive(compData.isActive);
+                        l_rigidbody->SetEntity(compData.entity);
+                        l_rigidbody->SetColliderType(compData.type);
+                        l_rigidbody->SetLayer(compData.layer);
+                        l_rigidbody->SetColliderBoxSize(compData.boxSize);
+                        l_rigidbody->SetColliderCapsuleSize(compData.capsuleSize);
+                        l_rigidbody->SetColliderShape(compData.sphereSize);
+                    }
                 }
+
             }, l_component);
         }
         ++l_entityIt;
@@ -240,6 +253,22 @@ void Scene::SaveScene(const std::string& filepath, const EntityManager& a_entity
 
             l_datasaver.componentType = "Camera";
             l_datasaver.components.emplace_back(l_cameraData);
+        }
+
+        if (const std::shared_ptr<RigidbodyComponent>& l_rigidbody = l_entity->GetComponent<RigidbodyComponent>())
+        {
+            RigidbodyComponentData l_rigidbodyData{};
+            
+            l_rigidbodyData.isActive = l_rigidbody->GetActivation();
+            l_rigidbodyData.layer = l_rigidbody->GetLayer();
+            l_rigidbodyData.entity = l_rigidbody->GetEntity();
+            l_rigidbodyData.type = l_rigidbody->GetColliderType();
+            l_rigidbodyData.boxSize = Vec3(l_rigidbody->GetBoxOffset());
+            l_rigidbodyData.capsuleSize = Vec2(l_rigidbody->GetCapsuleOffset());
+            l_rigidbodyData.sphereSize = l_rigidbody->GetSphereOffset();
+
+            l_datasaver.componentType = "Rigidbody";
+            l_datasaver.components.emplace_back(l_rigidbodyData);
         }
 
         l_entityData.push_back(l_datasaver);
