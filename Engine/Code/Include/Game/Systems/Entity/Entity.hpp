@@ -7,10 +7,9 @@
 
 #include <Game/Systems/Component/LightComponent.hpp>
 #include <Game/Systems/Component/ModelComponent.hpp>
+#include "Game/Systems/Component/CameraComponent.hpp"
 #include "Game/Systems/Component/EntityComponent.hpp"
 #include "Game/Systems/Component/TransformComponent.hpp"
-#include "Game/Systems/Component/CameraComponent.hpp"
-#include "Game/Systems/Component/ModelComponent.hpp"
 #include "Game/Systems/Physics/RigidBody.hpp"
 
 class Engine;

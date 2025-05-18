@@ -161,9 +161,9 @@ void Viewport::RenderGizmo(const ViewportImageInfo& a_imageInfo) const
         Maths::Quaternion l_rotation;
         l_newModelMatrix.Decompose(l_translation, l_rotation, l_scale);
 
-        l_transform->SetGlobalPosition(l_translation);
-        l_transform->SetGlobalRotationQuat(l_rotation);
-        l_transform->SetGlobalScale(l_scale);
+        l_transform->SetLocalPosition(l_translation);
+        l_transform->SetLocalRotationQuat(l_rotation);
+        l_transform->SetLocalScale(l_scale);
     }
 }
 

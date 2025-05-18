@@ -39,6 +39,12 @@ void TransformComponent::SetLocalMatrix(const Maths::Matrix4& a_newMatrix)
         return;
 
     m_localMatrix = a_newMatrix;
+
+    m_localPosition     = m_localMatrix.GetTranslation();
+    m_localRotationQuat = Maths::Quaternion::FromMatrix(m_localMatrix);
+    m_localRotationVec  = m_localRotationQuat.ToEulerAngles(true);
+    m_localScale        = m_localMatrix.GetScale();
+
     m_requiresUpdate = true;
     UpdateGlobalTransform();
 }
@@ -72,6 +78,7 @@ void TransformComponent::SetLocalRotationVec(const Maths::Vector3 a_newRotVec)
         return;
 
     m_localRotationVec = a_newRotVec;
+    m_localRotationQuat = Maths::Quaternion::FromEulerAngles(a_newRotVec);
     m_requiresUpdate = true;
     UpdateGlobalTransform();
 }
@@ -83,6 +90,7 @@ void TransformComponent::SetLocalRotationQuat(const Maths::Quaternion a_newRotQu
         return;
 
     m_localRotationQuat = a_newRotQuat;
+    m_localRotationVec  = m_localRotationQuat.ToEulerAngles(true);
     m_requiresUpdate = true;
     UpdateGlobalTransform();
 }
@@ -93,20 +101,13 @@ void TransformComponent::SetGlobalScale(const Maths::Vector3 a_newScale)
     if (m_globalScale == a_newScale)
         return;
 
-    m_globalScale = a_newScale;
-    m_requiresUpdate = true;
-    UpdateGlobalTransform();
+    SetGlobalMatrix(Maths::Matrix4::TRS(m_globalPosition, m_globalRotationQuat, a_newScale));
 }
 
 
 void TransformComponent::SetGlobalRotationVec(const Maths::Vector3 a_newRotVec)
 {
-    if (m_globalRotationVec == a_newRotVec)
-        return;
-
-    m_globalRotationQuat = Maths::Quaternion::FromEulerAngles(a_newRotVec);
-    m_requiresUpdate = true;
-    UpdateGlobalTransform();
+    SetGlobalRotationQuat(Maths::Quaternion::FromEulerAngles(a_newRotVec));
 }
 
 
@@ -115,38 +116,35 @@ void TransformComponent::SetGlobalRotationQuat(const Maths::Quaternion a_newRotQ
     if (m_globalRotationQuat == a_newRotQuat)
         return;
 
-    m_globalRotationQuat = a_newRotQuat;
-    m_requiresUpdate = true;
-    UpdateGlobalTransform();
+    if (m_globalRotationQuat == a_newRotQuat) return;
+    SetGlobalMatrix(Maths::Matrix4::TRS(m_globalPosition, a_newRotQuat, m_globalScale));
 }
 
 
 void TransformComponent::SetGlobalMatrix(const Maths::Matrix4& a_newMatrix)
 {
-    m_globalMatrix = a_newMatrix;
-    m_globalPosition = a_newMatrix.GetTranslation();
+    m_globalMatrix     = a_newMatrix;
+    m_globalPosition   = a_newMatrix.GetTranslation();
     m_globalRotationQuat = Maths::Quaternion::FromMatrix(a_newMatrix);
-    m_globalScale    = a_newMatrix.GetScale();
+    m_globalRotationVec  = m_globalRotationQuat.ToEulerAngles(true);
+    m_globalScale      = a_newMatrix.GetScale();
 
-    if (m_parent.lock())
+    if (const std::shared_ptr<Entity> l_parent = m_parent.lock())
     {
-        const std::shared_ptr<TransformComponent> l_parentTransform = m_parent.lock()->Transform();
+        const std::shared_ptr<TransformComponent> l_parentTransform = l_parent->Transform();
         if (l_parentTransform)
-        {
-            const Maths::Matrix4 l_inverseParent = l_parentTransform->GetGlobalMatrix().Inverse();
-            m_localMatrix = l_inverseParent * m_globalMatrix;
-            m_localPosition = m_localMatrix.GetTranslation();
-            m_localRotationQuat = Maths::Quaternion::FromMatrix(m_localMatrix);
-            m_localScale    = m_localMatrix.GetScale();
-        }
+            m_localMatrix = l_parentTransform->GetGlobalMatrix().Inverse() * m_globalMatrix;
+        else
+            m_localMatrix = m_globalMatrix;
     }
     else
-    {
         m_localMatrix = m_globalMatrix;
-        m_localPosition = m_globalPosition;
-        m_localRotationQuat = m_globalRotationQuat;
-        m_localScale    = m_globalScale;
-    }
+
+    m_localPosition     = m_localMatrix.GetTranslation();
+    m_localRotationQuat = Maths::Quaternion::FromMatrix(m_localMatrix);
+    m_localRotationVec  = m_localRotationQuat.ToEulerAngles(true);
+    m_localScale        = m_localMatrix.GetScale();
+
     UpdateMatrices();
 }
 
@@ -156,14 +154,7 @@ void TransformComponent::SetGlobalPosition(const Maths::Vector3 a_newPos)
     if (m_globalPosition == a_newPos)
         return;
 
-    m_globalPosition = a_newPos;
-    if (m_parent.lock())
-    {
-        const Maths::Matrix4 l_parentGlobalInverse = m_parent.lock()->Transform()->GetGlobalMatrix().Inverse();
-        m_localMatrix = l_parentGlobalInverse * Maths::Matrix4::TRS(a_newPos, m_globalRotationVec, m_globalScale);
-    }
-
-    SetLocalPosition(a_newPos);
+    SetGlobalMatrix(Maths::Matrix4::TRS(a_newPos, m_globalRotationQuat, m_globalScale));
 }
 
 
@@ -172,34 +163,28 @@ void TransformComponent::SetParent(const std::shared_ptr<Entity>& a_newParent)
     if (m_parent.lock() == a_newParent)
         return;
 
-    std::shared_ptr<TransformComponent> l_tempParent = a_newParent ? a_newParent->Transform() : nullptr;
-    while (l_tempParent)
-    {
-        if (l_tempParent.get() == this)
-            return;
+    const Maths::Matrix4 l_oldGlobal = GetGlobalMatrix();
 
-        const std::shared_ptr<Entity> l_tempEntity = l_tempParent->GetParent();
-        l_tempParent = l_tempEntity ? l_tempEntity->Transform() : nullptr;
-    }
-    if (const std::shared_ptr<Entity> l_oldParentEntity = m_parent.lock())
-    {
-        if (const std::shared_ptr<TransformComponent> l_oldTransform = l_oldParentEntity->Transform())
-        {
-            std::vector<std::shared_ptr<TransformComponent>>& children = l_oldTransform->m_children;
-            std::erase_if(children, [this](const std::shared_ptr<TransformComponent>& child) { return child.get() == this; });
-        }
-    }
+    if (const std::shared_ptr<Entity> l_oldParent = m_parent.lock())
+        if (const std::shared_ptr<TransformComponent> l_transform = l_oldParent->Transform())
+            std::erase_if(l_transform->m_children,
+                         [this](auto& c){ return c.get() == this; });
 
     m_parent = a_newParent;
-
-    if (a_newParent)
+    if (const std::shared_ptr<TransformComponent> l_newTransform = a_newParent ? a_newParent->Transform() : nullptr)
     {
-        const std::shared_ptr<TransformComponent> l_newParentTransform = a_newParent->Transform();
-        if (l_newParentTransform)
-            l_newParentTransform->m_children.push_back(GetOwner()->Transform());
+        l_newTransform->m_children.push_back(GetOwner()->Transform());
+        m_localMatrix = l_newTransform->GetGlobalMatrix().Inverse() * l_oldGlobal;
     }
+    else
+        m_localMatrix = l_oldGlobal;
 
-    UpdateGlobalTransform();
+    m_localPosition     = m_localMatrix.GetTranslation();
+    m_localRotationQuat = Maths::Quaternion::FromMatrix(m_localMatrix);
+    m_localRotationVec  = m_localRotationQuat.ToEulerAngles(true);
+    m_localScale        = m_localMatrix.GetScale();
+
+    SetGlobalMatrix(l_oldGlobal);
 }
 
 
@@ -230,6 +215,7 @@ void TransformComponent::UpdateGlobalTransform()
         m_globalMatrix = m_localMatrix;
 
     m_globalMatrix.Decompose(m_globalPosition, m_globalRotationQuat, m_globalScale);
+    m_globalRotationVec = m_globalRotationQuat.ToEulerAngles(true);
 
     m_requiresUpdate = false;
     for (const std::shared_ptr<TransformComponent>& l_child : m_children)
