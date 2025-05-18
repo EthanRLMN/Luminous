@@ -52,17 +52,20 @@ void Viewport::Render()
 
         if (std::filesystem::exists(exePath))
         {
+
+            /*
             STARTUPINFOA si = { sizeof(STARTUPINFOA) };
             PROCESS_INFORMATION pi;
 
             if (!CreateProcessA(exePath, NULL, NULL, NULL, FALSE, 0, NULL, NULL, &si, &pi))
             {
-                MessageBoxA(NULL, "Impossible de lancer la build", "Erreur", MB_OK | MB_ICONERROR);
+                MessageBoxA(NULL, "Can't launch runtime", "Error", MB_OK | MB_ICONERROR);
                 return;
             }
 
             CloseHandle(pi.hProcess);
-            CloseHandle(pi.hThread);
+            CloseHandle(pi.hThread);*/
+            ShellExecute(NULL, "open", exePath, NULL, NULL, SW_SHOWDEFAULT);
         }
 
         
