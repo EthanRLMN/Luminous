@@ -138,6 +138,10 @@ void VulkanRenderer::RecordCommandBuffer(const VkCommandBuffer& a_commandBuffer,
 
     for (IRenderPass* l_renderPass : a_renderPassManager->GetRenderPasses())
     {
+
+        if (l_renderPass == a_renderPassManager->GetRenderPassAt(1) && a_entityManager.GetEngine()->IsCompiled() == true)
+            break;
+
         VkRenderPassBeginInfo l_renderPassBeginInfo { };
         l_renderPassBeginInfo.sType = VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO;
         l_renderPassBeginInfo.pNext = nullptr;
@@ -323,17 +327,19 @@ void VulkanRenderer::RecordCommandBuffer(const VkCommandBuffer& a_commandBuffer,
         }
 
         // Callback ImGui_ImplVulkan_RenderDrawData
+        
         if (l_renderPass == a_renderPassManager->GetRenderPassAt(1))
             if (s_editorGuiCallback)
                 s_editorGuiCallback();
-
+        
         
 
         vkCmdEndRenderPass(a_commandBuffer);
         
         if (l_renderPass == a_renderPassManager->GetRenderPassAt(0))
         {
-            CopyImageToViewport(a_swapChain, a_commandBuffer);           
+            if (a_entityManager.GetEngine()->IsCompiled() == false)
+                CopyImageToViewport(a_swapChain, a_commandBuffer);           
         } 
     }
 

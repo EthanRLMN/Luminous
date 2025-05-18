@@ -15,6 +15,10 @@ void Engine::Init()
     Debug::Logger& l_logger = Debug::Logger::GetInstance();
     l_logger.Init("Engine", 1_MiB, 5, true);
 
+
+    if (m_gameCompiled)
+        m_gameRunning = true;
+
     m_interface = new VulkanRenderInterface();
     m_scene = new Scene();
     m_physicsSystem = new PhysicsSystem();
