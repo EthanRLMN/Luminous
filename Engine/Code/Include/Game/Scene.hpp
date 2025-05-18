@@ -127,7 +127,7 @@ struct CameraComponentData
 struct RigidbodyComponentData
 {
     JPH::EActivation isActive;
-    std::weak_ptr<Entity>& entity;
+    std::weak_ptr<Entity> entity;
     ColliderType type;
     JPH::uint8 layer;
     Vec3 boxSize;
@@ -140,6 +140,9 @@ using SerializedComponent = rfl::Variant<
     ModelComponentData,
     LightComponentData,
     CameraComponentData,
+    JPH::EActivation,
+    ColliderType,
+    JPH::uint8,
     RigidbodyComponentData>;
 
 

@@ -176,9 +176,9 @@ void Scene::LoadScene(std::string filename, const EntityManager& a_entityManager
                         l_rigidbody->SetEntity(compData.entity);
                         l_rigidbody->SetColliderType(compData.type);
                         l_rigidbody->SetLayer(compData.layer);
-                        l_rigidbody->SetColliderBoxSize(compData.boxSize);
-                        l_rigidbody->SetColliderCapsuleSize(compData.capsuleSize);
-                        l_rigidbody->SetColliderShape(compData.sphereSize);
+                        l_rigidbody->SetColliderBoxSize(Maths::Vector3(compData.boxSize));
+                        l_rigidbody->SetColliderCapsuleSize(Maths::Vector2(compData.capsuleSize));
+                        l_rigidbody->SetColliderSphereSize(compData.sphereSize);
                     }
                 }
 
