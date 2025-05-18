@@ -65,7 +65,7 @@ void Viewport::Render()
 
             CloseHandle(pi.hProcess);
             CloseHandle(pi.hThread);*/
-            ShellExecute(NULL, "open", exePath, NULL, NULL, SW_SHOWDEFAULT);
+            ShellExecute(nullptr, "open", exePath, nullptr, nullptr, SW_SHOWDEFAULT);
         }
 
         
