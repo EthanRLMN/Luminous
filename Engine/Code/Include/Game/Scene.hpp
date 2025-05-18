@@ -65,6 +65,54 @@ struct QuatHelper {
 };
 
 
+
+
+struct EActivationHelper
+{
+    int value; 
+
+    static EActivationHelper from_class(const JPH::EActivation& activation) noexcept
+    {
+        return EActivationHelper{ static_cast<int>(activation) }; 
+    }
+
+    [[nodiscard]] JPH::EActivation to_class() const
+    {
+        return static_cast<JPH::EActivation>(value);
+    }
+};
+
+struct ColliderTypeHelper
+{
+    int value; 
+
+    static ColliderTypeHelper from_class(const ColliderType& type) noexcept
+    {
+        return ColliderTypeHelper{ static_cast<int>(type) }; 
+    }
+
+    [[nodiscard]] ColliderType to_class() const
+    {
+        return static_cast<ColliderType>(value); 
+    }
+};
+
+struct Uint8Helper
+{
+    uint8_t value;
+
+    static Uint8Helper from_class(const JPH::uint8& u) noexcept
+    {
+        return Uint8Helper{ static_cast<uint8_t>(u) };
+    }
+
+    [[nodiscard]] JPH::uint8 to_class() const
+    {
+        return static_cast<JPH::uint8>(value);
+    }
+};
+
+
 template <class ReaderType, class WriterType, class ProcessorsType>
 struct rfl::parsing::Parser<ReaderType, WriterType, Vec3, ProcessorsType> : CustomParser<ReaderType, WriterType, ProcessorsType, Vec3, Vec3Helper> {};
 
@@ -72,6 +120,14 @@ struct rfl::parsing::Parser<ReaderType, WriterType, Vec3, ProcessorsType> : Cust
 template <class ReaderType, class WriterType, class ProcessorsType>
 struct rfl::parsing::Parser<ReaderType, WriterType, Quat, ProcessorsType> : CustomParser<ReaderType, WriterType, ProcessorsType, Quat, QuatHelper> {};
 
+template <class ReaderType, class WriterType, class ProcessorsType>
+struct rfl::parsing::Parser<ReaderType, WriterType, JPH::EActivation, ProcessorsType> : CustomParser<ReaderType, WriterType, ProcessorsType, JPH::EActivation, EActivationHelper> {};
+
+template<class ReaderType, class WriterType, class ProcessorsType>
+struct rfl::parsing::Parser<ReaderType, WriterType, ColliderType, ProcessorsType> : CustomParser<ReaderType, WriterType, ProcessorsType, ColliderType, ColliderTypeHelper>{};
+
+template<class ReaderType, class WriterType, class ProcessorsType>
+struct rfl::parsing::Parser<ReaderType, WriterType, JPH::uint8, ProcessorsType> : CustomParser<ReaderType, WriterType, ProcessorsType, JPH::uint8, Uint8Helper>{};
 
 struct TransformComponentData
 {
@@ -126,13 +182,19 @@ struct CameraComponentData
 
 struct RigidbodyComponentData
 {
-    JPH::EActivation isActive;
+    EActivationHelper isActive; 
     std::weak_ptr<Entity> entity;
-    ColliderType type;
-    JPH::uint8 layer;
+    ColliderTypeHelper type; 
+    Uint8Helper layer; 
     Vec3 boxSize;
     Vec2 capsuleSize;
     float sphereSize;
+
+    template<typename Archive>
+    void reflect(Archive& ar)
+    {
+        ar(isActive, entity, type, layer, boxSize, capsuleSize, sphereSize);
+    }
 };
 
 using SerializedComponent = rfl::Variant<

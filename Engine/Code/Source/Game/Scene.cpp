@@ -172,10 +172,10 @@ void Scene::LoadScene(std::string filename, const EntityManager& a_entityManager
                 {
                     if (const std::shared_ptr<RigidbodyComponent> l_rigidbody = l_entity->GetComponent<RigidbodyComponent>())
                     {
-                        l_rigidbody->SetActive(compData.isActive);
+                        l_rigidbody->SetActive(compData.isActive.to_class());
                         l_rigidbody->SetEntity(compData.entity);
-                        l_rigidbody->SetColliderType(compData.type);
-                        l_rigidbody->SetLayer(compData.layer);
+                        l_rigidbody->SetColliderType(compData.type.to_class());
+                        l_rigidbody->SetLayer(compData.layer.to_class());
                         l_rigidbody->SetColliderBoxSize(Maths::Vector3(compData.boxSize));
                         l_rigidbody->SetColliderCapsuleSize(Maths::Vector2(compData.capsuleSize));
                         l_rigidbody->SetColliderSphereSize(compData.sphereSize);
@@ -259,10 +259,10 @@ void Scene::SaveScene(const std::string& filepath, const EntityManager& a_entity
         {
             RigidbodyComponentData l_rigidbodyData{};
             
-            l_rigidbodyData.isActive = l_rigidbody->GetActivation();
-            l_rigidbodyData.layer = l_rigidbody->GetLayer();
+            l_rigidbodyData.isActive = EActivationHelper::from_class(l_rigidbody->GetActivation());
+            l_rigidbodyData.layer = Uint8Helper::from_class(l_rigidbody->GetLayer());
             l_rigidbodyData.entity = l_rigidbody->GetEntity();
-            l_rigidbodyData.type = l_rigidbody->GetColliderType();
+            l_rigidbodyData.type = ColliderTypeHelper::from_class(l_rigidbody->GetColliderType());
             l_rigidbodyData.boxSize = Vec3(l_rigidbody->GetBoxOffset());
             l_rigidbodyData.capsuleSize = Vec2(l_rigidbody->GetCapsuleOffset());
             l_rigidbodyData.sphereSize = l_rigidbody->GetSphereOffset();
