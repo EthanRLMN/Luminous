@@ -19,4 +19,5 @@ private:
     static void DefaultCone();
     static void DefaultMonkey();
     static void DefaultCompanion();
+    static void Skybox();
 };

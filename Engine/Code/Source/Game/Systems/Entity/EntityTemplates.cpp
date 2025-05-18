@@ -17,6 +17,7 @@ void EntityTemplates::RegisterEntityTemplates()
     DefaultMonkey();
     DefaultCompanion();
     DefaultPlane();
+    Skybox();
 }
 
 
@@ -231,4 +232,36 @@ void EntityTemplates::DefaultPlane()
 
         return l_entity;
     });
+}
+
+
+void EntityTemplates::Skybox()
+{
+    EntityFactory::Get().RegisterEntity("Skybox", [](EntityManager& a_entityManager)
+                                        {
+        std::shared_ptr<Entity> l_entity = std::make_shared<Entity>(a_entityManager);
+        l_entity->SetName("Skybox");
+
+
+        const std::shared_ptr<TransformComponent> l_transform = std::make_shared<TransformComponent>();
+        l_entity->AddComponent(l_transform);
+        l_transform->SetOwner(l_entity);
+
+        l_transform->SetLocalPosition(Maths::Vector3(0,0,0));
+        l_transform->SetLocalRotationVec(Maths::Vector3(-90, 0, 0));
+        l_transform->SetLocalScale(Maths::Vector3(-60, -60, -60));
+       
+
+   
+        const std::shared_ptr<ModelComponent> l_modelComponent = std::make_shared<ModelComponent>();
+        l_modelComponent->SetMeshPath("Engine/Assets/Default/Models/SphereInverse.fbx");  
+        l_modelComponent->SetTexturePath("Engine/Assets/Default/Textures/sky_water_landscape.jpg");
+        
+        l_entity->AddComponent(l_modelComponent);
+
+  
+        const std::shared_ptr<MeshRendererComponent> l_meshRendererComponent = std::make_shared<MeshRendererComponent>();
+        l_entity->AddComponent(l_meshRendererComponent);
+
+        return l_entity; });
 }

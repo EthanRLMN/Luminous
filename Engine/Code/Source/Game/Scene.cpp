@@ -80,6 +80,8 @@ void Scene::RegisterScene(EntityManager& a_entityManager)
     cam->AddComponent(l_camComponent);
     l_camComponent->Initialize();
     l_camComponent->ForceSetMainCamera(true);
+
+
 }
 
 void Scene::LoadScene(std::string filename, const EntityManager& a_entityManager)

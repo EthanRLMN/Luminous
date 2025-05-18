@@ -220,9 +220,15 @@ void VulkanRenderer::RecordCommandBuffer(const VkCommandBuffer& a_commandBuffer,
                 l_ubo.proj = l_cameraProjMatrix;
                 l_ubo.debug = 0; // Debug = 0 : Light applied to it (Most models)
 
+                //skybox
+                if (entity->GetName() == "Skybox") 
+                    l_ubo.debug = 1; 
+                 else
+                    l_ubo.debug = 0;
+                
+
                 //Send the ubo and Draw the Model 
                 DrawModel(entity->GetComponent<ModelComponent>().get(), a_commandBuffer, a_descriptor, a_pipelineLayout, l_ubo);
-
             }
 
 
