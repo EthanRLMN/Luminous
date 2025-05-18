@@ -116,7 +116,6 @@ void TransformComponent::SetGlobalRotationQuat(const Maths::Quaternion a_newRotQ
     if (m_globalRotationQuat == a_newRotQuat)
         return;
 
-    if (m_globalRotationQuat == a_newRotQuat) return;
     SetGlobalMatrix(Maths::Matrix4::TRS(m_globalPosition, a_newRotQuat, m_globalScale));
 }
 
@@ -248,5 +247,5 @@ void TransformComponent::UpdateMatrices()
 
 void TransformComponent::UpdateLocalMatrix()
 {
-    m_localMatrix = Maths::Matrix4::TRS(m_localPosition, m_localRotationVec, m_localScale);
+    m_localMatrix = Maths::Matrix4::TRS(m_localPosition, m_localRotationQuat, m_localScale);
 }
