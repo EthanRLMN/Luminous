@@ -126,7 +126,7 @@ void Viewport::RenderGizmo(const ViewportImageInfo& a_imageInfo) const
     if (!l_transform)
         return;
 
-    const Maths::Matrix4 l_model = l_transform->GetGlobalMatrix().Transpose();
+    const Maths::Matrix4 l_model = l_transform->GetLocalMatrix().Transpose();
     const Maths::Matrix4 l_view = m_camera.GetViewMatrix().Transpose();
     const Maths::Matrix4 l_projection = m_camera.GetProjectionMatrix();
 

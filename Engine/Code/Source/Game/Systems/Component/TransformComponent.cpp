@@ -53,6 +53,7 @@ const std::vector<std::shared_ptr<TransformComponent> >& TransformComponent::Get
 std::shared_ptr<Entity> TransformComponent::GetOwner() const { return p_owner; }
 void TransformComponent::SetOwner(const std::shared_ptr<Entity>& a_relatedEntity) { p_owner = a_relatedEntity; }
 bool TransformComponent::IsActive() const { return m_isActive; }
+void TransformComponent::SetActive(const bool a_isActive) { m_isActive = a_isActive; }
 
 
 void TransformComponent::MarkDirty()
@@ -94,16 +95,18 @@ void TransformComponent::UpdateGlobalTransform()
             l_parentTransform->UpdateGlobalTransform();
             m_globalMatrix = l_parentTransform->GetGlobalMatrix() * m_localMatrix;
         }
-    } else { m_globalMatrix = m_localMatrix; }
+        else
+            m_globalMatrix = m_localMatrix;
+    }
+    else
+        m_globalMatrix = m_localMatrix;
 
     DecomposeMatrix(m_globalMatrix);
     m_requiresUpdate = false;
 
     for (std::shared_ptr<TransformComponent>& l_child : m_children)
-    {
         if (l_child)
             l_child->UpdateGlobalTransform();
-    }
 }
 
 
@@ -241,33 +244,39 @@ void TransformComponent::SetParent(const std::shared_ptr<Entity>& a_newParent)
     if (m_parent.lock() == a_newParent)
         return;
 
-    const Matrix4 l_oldGlobal = GetGlobalMatrix();
+    // 1. Mémoriser la transformation globale actuelle (matrice complète)
+    Matrix4 globalMatrixBefore = GetGlobalMatrix();
 
-    const std::shared_ptr<Entity> l_oldParent = m_parent.lock();
-    if (l_oldParent)
-    {
-        const std::shared_ptr<TransformComponent> l_transform = l_oldParent->Transform();
-        if (l_transform)
-        {
-            std::erase_if(l_transform->m_children, [this](const std::shared_ptr<TransformComponent>& c) { return c.get() == this; });
+    // 2. Détacher de l'ancien parent
+    if (std::shared_ptr<Entity> oldParent = m_parent.lock()) {
+        if (std::shared_ptr<TransformComponent> oldTransform = oldParent->Transform()) {
+            std::erase_if(oldTransform->m_children,
+                          [this](const std::shared_ptr<TransformComponent>& c) { return c.get() == this; });
         }
     }
 
+    // 3. Affecter le nouveau parent
     m_parent = a_newParent;
-    const std::shared_ptr<TransformComponent> l_newTransform = a_newParent ? a_newParent->Transform() : nullptr;
-    if (l_newTransform)
-    {
-        l_newTransform->m_children.push_back(GetOwner()->Transform());
-        m_localMatrix = l_newTransform->GetGlobalMatrix().Inverse() * l_oldGlobal;
-    } else
-        m_localMatrix = l_oldGlobal;
 
-    m_localPosition = m_localMatrix.GetTranslation();
+    std::shared_ptr<TransformComponent> newParentTransform =
+        a_newParent ? a_newParent->Transform() : nullptr;
+
+    if (newParentTransform) {
+        newParentTransform->m_children.push_back(GetOwner()->Transform());
+        Matrix4 newParentGlobalInverse = newParentTransform->GetGlobalMatrix().Inverse();
+        m_localMatrix = newParentGlobalInverse * globalMatrixBefore;
+    } else {
+        m_localMatrix = globalMatrixBefore;
+    }
+
+    // 4. Décomposer la matrice locale pour MAJ des données locales
+    m_localPosition     = m_localMatrix.GetTranslation();
     m_localRotationQuat = Quaternion::FromMatrix(m_localMatrix);
-    m_localRotationVec = m_localRotationQuat.ToEulerAngles(true);
-    m_localScale = m_localMatrix.GetScale();
+    m_localRotationVec  = m_localRotationQuat.ToEulerAngles(true);
+    m_localScale        = m_localMatrix.GetScale();
 
-    SetGlobalMatrix(l_oldGlobal);
+    // 5. Ne pas recalculer de globale ici. Juste marquer dirty.
+    m_requiresUpdate = true;
 }
 
 

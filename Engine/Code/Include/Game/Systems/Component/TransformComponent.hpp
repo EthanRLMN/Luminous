@@ -36,7 +36,7 @@ public:
     void SetOwner(const std::shared_ptr<Entity>& a_relatedEntity) override;
 
     bool IsActive() const;
-    inline void SetActive(const bool a_isActive) { m_isActive = a_isActive; }
+    void SetActive(const bool a_isActive);
 
     void SetLocalPosition(const Maths::Vector3& a_newPos);
     void SetLocalScale(const Maths::Vector3& a_newScale);
