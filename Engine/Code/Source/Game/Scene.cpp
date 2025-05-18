@@ -39,22 +39,22 @@ void Scene::RegisterScene(EntityManager& a_entityManager)
 
     const std::shared_ptr<Entity> collider = a_entityManager.CreateEntityFromTemplate("DefaultCube");
     const std::shared_ptr<Entity> collider2 = a_entityManager.CreateEntityFromTemplate("DefaultCube");
-    collider->Transform()->SetLocalPosition(Maths::Vector3(8.f, 10.0f, 0.0f));
+    collider->Transform()->SetLocalPosition(Maths::Vector3(9.5f, 10.0f, 0.0f));
 
     const std::shared_ptr<RigidbodyComponent> l_modelComponent = std::make_shared<RigidbodyComponent>();
     collider->AddComponent(l_modelComponent);
     l_modelComponent->SetEngine(a_entityManager.GetEngine());
     l_modelComponent->SetEntity(collider);
     collider->Transform()->SetLocalScale(Maths::Vector3(2.f, 2.5f, 2.f));
-    collider->Transform()->SetLocalRotationVec(Maths::Vector3(0.f, 0.f, 0.f));
+    collider->Transform()->SetLocalRotationVec(Maths::Vector3(0.f, 0.f, 40.f));
 
     l_modelComponent->SetLayer(Layers::DYNAMIC);
     l_modelComponent->SetActive(JPH::EActivation::Activate);
-    l_modelComponent->SetColliderType(BOXCOLLIDER);
+    l_modelComponent->SetColliderType(SPHERECOLLIDER);
     l_modelComponent->Initialize();
 
-    collider->Transform()->SetLocalScale(Maths::Vector3(1.f, 1.0f, 1.f));
-    l_modelComponent->SetColliderSize(Maths::Vector3(0.f, 1.f, 0.f));
+    collider->Transform()->SetLocalScale(Maths::Vector3(1.5f, 1.0f, 1.5f));
+    l_modelComponent->SetColliderSize(Maths::Vector3(0.f, 0.f, 0.f));
 
 
     const std::shared_ptr<RigidbodyComponent> l_modelComponent2 = std::make_shared<RigidbodyComponent>();
@@ -70,7 +70,7 @@ void Scene::RegisterScene(EntityManager& a_entityManager)
     l_modelComponent2->Initialize();
 
     collider2->Transform()->SetLocalScale(Maths::Vector3(1.f, 1.0f, 1.f));
-    l_modelComponent2->SetColliderSize(Maths::Vector3(0.f, 1.f, 0.f));
+    l_modelComponent2->SetColliderSize(Maths::Vector3(0.f, 0.f, 0.f));
 
 
     const std::shared_ptr<Entity> cam = a_entityManager.CreateEntityFromTemplate("DefaultEmpty");

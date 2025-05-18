@@ -253,6 +253,10 @@ void VulkanRenderer::RecordCommandBuffer(const VkCommandBuffer& a_commandBuffer,
                     float l_radius = l_scale.y += l_rigidbody->GetSphereOffset();
                     l_scale = Maths::Vector3(l_radius);
 
+                     Maths::Quaternion l_rotQuat = l_transform->GetGlobalRotationQuat();
+                    Maths::Quaternion l_rotQuatOpposite = Maths::Quaternion(-l_rotQuat.x, -l_rotQuat.y, -l_rotQuat.z, l_rotQuat.w); // Rotation is the opposite on Jolt: need to reverse the quat rotation
+                    l_rot = l_rotQuatOpposite.ToEulerAngles(true);
+
                     //Matrix recalculation to fit sphere size's norm
                     Maths::Matrix4 l_posMat = Maths::Matrix4::Translation(l_pos);
                     Maths::Matrix4 l_rotMat = Maths::Matrix4::RotationXYZ(l_rot);
@@ -307,6 +311,14 @@ void VulkanRenderer::RecordCommandBuffer(const VkCommandBuffer& a_commandBuffer,
                 }
                 else if (l_colliderType == ColliderType::BOXCOLLIDER)
                 {
+                    
+
+                    l_pos = l_transform->GetGlobalPosition();
+                    l_rot = l_transform->GetGlobalRotationVec();
+                    Maths::Quaternion l_rotQuat = l_transform->GetGlobalRotationQuat();
+                    Maths::Quaternion l_rotQuatOpposite = Maths::Quaternion(-l_rotQuat.x, -l_rotQuat.y, -l_rotQuat.z, l_rotQuat.w); // Rotation is the opposite on Jolt: need to reverse the quat rotation
+                    l_rot = l_rotQuatOpposite.ToEulerAngles(true);
+                    l_scale = l_transform->GetGlobalScale();
                     l_scale += l_rigidbody->GetBoxOffset();
 
                     Maths::Matrix4 l_posMat = Maths::Matrix4::Translation(l_pos);
