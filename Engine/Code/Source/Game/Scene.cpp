@@ -6,6 +6,7 @@
 
 #include "Game/Systems/Component/RigidbodyComponent.hpp"
 #include "Game/Systems/Component/ScriptComponent.hpp"
+#include "Game/Systems/Scripts/PlayerScript.hpp"
 
 #include "Game/Systems/Scripts/ScriptManager.hpp"
 
@@ -92,7 +93,7 @@ void Scene::RegisterScene(EntityManager& a_entityManager)
 
     const std::shared_ptr<Entity> l_entityWithScript = a_entityManager.CreateEntityFromTemplate("DefaultCube");
     const std::shared_ptr<ScriptComponent> l_scriptComponent = std::make_shared<ScriptComponent>();
-    BaseScript* l_script = new BaseScript();
+    PlayerScript* l_script = new PlayerScript();
     l_scriptComponent->SetScript(l_script);
     l_scriptComponent->Initialize();
     l_entityWithScript->AddComponent(l_scriptComponent);
