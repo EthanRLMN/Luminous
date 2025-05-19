@@ -13,50 +13,36 @@ void HierarchyPanel::Render()
 
     m_rootEntities.clear();
 
-    static enum class EntityTemplate {
-        None,
-        Empty,
-        Cube,
-        Plane,
-        Sphere,
-        Cone,
-        Cylinder,
-        Capsule,
-        Monkey,
-        Companion
-    } selectedEntityTemplate = EntityTemplate::None;
-
     static char newEntityName[128] = "New Entity";
 
     if (ImGui::BeginPopupContextWindow("HierarchyContextMenu", ImGuiPopupFlags_MouseButtonRight))
     {
         if (ImGui::BeginMenu("Add new Entity..."))
         {
-            auto createEntity = [&](const std::string& templateName, EntityTemplate type)
+            auto createEntity = [&](const std::string& templateName)
             {
-                selectedEntityTemplate = type;
                 ImGui::OpenPopup("CreateEntityPopup");
                 p_editor->GetEngine()->GetEntityManager()->CreateEntityFromTemplate(templateName);
             };
 
             if (ImGui::MenuItem("Empty"))
-                createEntity("Empty", EntityTemplate::Empty);
+                createEntity("DefaultEmpty");
             if (ImGui::MenuItem("Cube"))
-                createEntity("Cube", EntityTemplate::Cube);
+                createEntity("DefaultCube");
             if (ImGui::MenuItem("Plane"))
-                createEntity("Plane", EntityTemplate::Plane);
+                createEntity("DefaultPlane");
             if (ImGui::MenuItem("Sphere"))
-                createEntity("Sphere", EntityTemplate::Sphere);
+                createEntity("DefaultSphere");
             if (ImGui::MenuItem("Cone"))
-                createEntity("Cone", EntityTemplate::Cone);
+                createEntity("DefaultCone");
             if (ImGui::MenuItem("Cylinder"))
-                createEntity("Cylinder", EntityTemplate::Cylinder);
+                createEntity("DefaultCylinder");
             if (ImGui::MenuItem("Capsule"))
-                createEntity("Capsule", EntityTemplate::Capsule);
+                createEntity("DefaultCapsule");
             if (ImGui::MenuItem("Monkey"))
-                createEntity("Monkey", EntityTemplate::Monkey);
+                createEntity("DefaultMonkey");
             if (ImGui::MenuItem("Companion"))
-                createEntity("Companion", EntityTemplate::Companion);
+                createEntity("DefaultCompanion");
 
             ImGui::EndMenu();
         }
@@ -70,10 +56,9 @@ void HierarchyPanel::Render()
         if (ImGui::Button("Create"))
         {
             auto entityManager = p_editor->GetEngine()->GetEntityManager();
-            auto newEntity = entityManager->CreateEntityFromTemplate("Companion");
+            auto newEntity = entityManager->CreateEntityFromTemplate("DefaultCompanion");
             newEntity->SetName(GenerateUniqueEntityName(newEntityName));
 
-            selectedEntityTemplate = EntityTemplate::None;
             std::memset(newEntityName, 0, sizeof(newEntityName));
             ImGui::CloseCurrentPopup();
         }
@@ -81,7 +66,6 @@ void HierarchyPanel::Render()
         ImGui::SameLine();
         if (ImGui::Button("Cancel"))
         {
-            selectedEntityTemplate = EntityTemplate::None;
             std::memset(newEntityName, 0, sizeof(newEntityName));
             ImGui::CloseCurrentPopup();
         }
@@ -92,9 +76,7 @@ void HierarchyPanel::Render()
     BuildHierarchy();
 
     for (const auto& root : m_rootEntities)
-    {
         DrawEntityNode(root);
-    }
 
     if (m_entityToReparent)
     {
@@ -108,9 +90,7 @@ void HierarchyPanel::Render()
 
     if (avail.x > 0.0f && avail.y > 0.0f)
     {
-        ImVec2 detachZoneSize = ImVec2(avail.x, avail.y);
-        ImGui::SetCursorPosY(ImGui::GetCursorPosY());
-        ImGui::InvisibleButton("##DetachZone", detachZoneSize);
+        ImGui::InvisibleButton("##DetachZone", avail);
 
         if (ImGui::BeginDragDropTarget())
         {
@@ -154,9 +134,9 @@ void HierarchyPanel::Render()
     if (!m_pendingDeletes.empty())
     {
         auto entityManager = p_editor->GetEngine()->GetEntityManager();
-        for (const auto& entity : m_pendingDeletes)
+        for (const auto& e : m_pendingDeletes)
         {
-            entityManager->RemoveEntity(entity);
+            entityManager->RemoveEntity(e);
         }
         m_pendingDeletes.clear();
         BuildHierarchy();
@@ -209,7 +189,6 @@ void HierarchyPanel::DrawEntityNode(const std::shared_ptr<EntityNode>& node)
                 m_newParent = node->entity;
             }
         }
-
         ImGui::EndDragDropTarget();
     }
 
