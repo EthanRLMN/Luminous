@@ -40,6 +40,10 @@ public:
     static std::vector<std::string> GetAvailableTemplates();
     Engine* GetEngine() const { return m_engine; }
 
+    void DestroyLightEntities();
+    void DestroyRenderableEntities();
+    void DestroyAllEntities();
+
     template<typename T>
     inline std::vector<std::shared_ptr<Entity> > GetEntitiesByComponent() const
     {

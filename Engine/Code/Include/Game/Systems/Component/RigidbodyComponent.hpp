@@ -2,6 +2,7 @@
 #include <memory>
 #include <vector>
 
+#include "Engine.hpp"
 #include "Game/Systems/Physics/PhysicsCollisionListener.hpp"
 #include "Game/Systems/Component/ModelComponent.hpp"
 #include "Game/Systems/Physics/RigidBody.hpp"
@@ -24,8 +25,13 @@ public:
     void Update() override;
 
     inline void SetEntity(const std::weak_ptr<Entity>& a_relatedEntity) { m_entity = a_relatedEntity; }
-    inline void SetColliderType(ColliderType a_type) { m_colliderType = a_type; }
-    inline void SetLayer(JPH::uint8 a_layer) { m_layer = a_layer; }
+    inline void SetColliderType(ColliderType a_type)
+    {
+        m_colliderType = a_type;
+
+
+    }
+     void SetLayer(JPH::uint8 a_layer);
     inline void SetActive(JPH::EActivation a_active) { m_active = a_active; }
     void InitDebugModels();
     inline void SetCapsuleWidth(float a_width) { m_capsuleWidth = a_width; } //Dont use this outside of this class
@@ -47,6 +53,7 @@ public:
     inline float GetSphereOffset() { return m_sphereSizeOffset; }
     inline Maths::Vector3 GetBoxOffset() { return m_boxSizeOffset; }
     inline Maths::Vector2 GetCapsuleOffset() { return m_capsuleSizeOffset; }
+    inline JPH::ObjectLayer GetLayer() { return m_layer; }
 
 private:
     float m_capsuleWidth{ 0.0f };

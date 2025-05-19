@@ -73,6 +73,36 @@ std::vector<std::string> EntityManager::GetAvailableTemplates()
 }
 
 
+void EntityManager::DestroyLightEntities()
+{
+    for (const std::shared_ptr<Entity> l_entity : m_lightEntities)
+        l_entity->RemoveAllComponents();
+
+    m_lightEntities.clear();
+}
+
+
+void EntityManager::DestroyRenderableEntities()
+{
+    for (const std::shared_ptr<Entity> l_entity : m_renderableEntities)
+        l_entity->RemoveAllComponents();
+
+    m_renderableEntities.clear();
+}
+
+
+void EntityManager::DestroyAllEntities()
+{
+    DestroyLightEntities();
+    DestroyRenderableEntities();
+
+    for (const std::shared_ptr<Entity> l_entity : m_entities)
+        l_entity->RemoveAllComponents();
+
+    m_entities.clear();
+}
+
+
 std::shared_ptr<Entity> EntityManager::GetEntityByName(const std::string& a_name) const
 {
     for (const std::shared_ptr<Entity>& l_entity : m_entities)

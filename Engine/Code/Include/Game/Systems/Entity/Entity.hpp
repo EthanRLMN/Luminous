@@ -52,6 +52,8 @@ public:
     void AddComponent(const std::shared_ptr<EntityComponent>& a_component);
     void RemoveComponent(const std::shared_ptr<EntityComponent>& a_component);
 
+    void RemoveAllComponents();
+
 
 private:
     Engine* m_engine { nullptr };
