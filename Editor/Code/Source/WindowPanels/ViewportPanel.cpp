@@ -158,8 +158,6 @@ void Viewport::RenderGizmo(const ViewportImageInfo& a_imageInfo) const
         memcpy(&l_newModelMatrix.mat, l_modelMatrix, sizeof(float) * 16);
         l_newModelMatrix = l_newModelMatrix.Transpose();
 
-
-
         if (l_transform->HasParent())
         {
             Maths::Matrix4 l_parentMatrix = l_transform->GetParent()->Transform()->GetGlobalMatrix().Inverse();
