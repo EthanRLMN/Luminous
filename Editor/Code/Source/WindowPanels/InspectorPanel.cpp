@@ -1,9 +1,10 @@
-#include "WindowPanels/InspectorPanel.hpp"
-
+#include "backends/imgui_impl_vulkan.h"
 #include "imgui.h"
 
 
+#include "WindowPanels/InspectorPanel.hpp"
 #include "ResourceManager/ResourceManager.hpp"
+#include "WindowPanels/FileExplorerPanel.hpp"
 
 enum class TransformMode
 {

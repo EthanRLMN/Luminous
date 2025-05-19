@@ -246,7 +246,8 @@ void TransformComponent::SetParent(const std::shared_ptr<Entity>& a_newParent)
 
     const Matrix4 l_globalMatrixBefore = GetGlobalMatrix();
 
-    if (const std::shared_ptr<Entity> l_oldParent = m_parent.lock()) {
+    if (const std::shared_ptr<Entity> l_oldParent = m_parent.lock())
+        {
         if (const std::shared_ptr<TransformComponent> l_oldTransform = l_oldParent->Transform())
             std::erase_if(l_oldTransform->m_children, [this](const std::shared_ptr<TransformComponent>& c) { return c.get() == this; });
     }

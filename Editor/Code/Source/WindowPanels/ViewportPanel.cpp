@@ -3,6 +3,7 @@
 
 #include "WindowPanels/ViewportPanel.hpp"
 
+#include "Rendering/Vulkan/VulkanRenderer.hpp"
 #include "Rendering/Vulkan/VulkanSwapChain.hpp"
 #include "Rendering/Vulkan/VulkanTexture.hpp"
 #include "ResourceManager/ResourceManager.hpp"
@@ -161,9 +162,23 @@ void Viewport::RenderGizmo(const ViewportImageInfo& a_imageInfo) const
         Maths::Quaternion l_rotation;
         l_newModelMatrix.Decompose(l_translation, l_rotation, l_scale);
 
-        l_transform->SetLocalPosition(l_translation);
-        l_transform->SetLocalRotationQuat(l_rotation);
-        l_transform->SetLocalScale(l_scale);
+        switch (m_currentGizmoOperation)
+        {
+            case ImGuizmo::TRANSLATE:
+                l_transform->SetLocalPosition(l_translation);
+                break;
+
+            case ImGuizmo::ROTATE:
+                l_transform->SetLocalRotationQuat(l_rotation);
+                break;
+
+            case ImGuizmo::SCALE:
+                l_transform->SetLocalScale(l_scale);
+                break;
+
+            default:
+                break;
+        }
     }
 }
 
