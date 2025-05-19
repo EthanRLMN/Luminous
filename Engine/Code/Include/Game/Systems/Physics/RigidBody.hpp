@@ -110,8 +110,8 @@ public:
     inline void ValidateCachedBounds() const { m_rigidBody->ValidateCachedBounds(); }
     inline void SetUserData(const JPH::uint64 a_inUserData) const { m_rigidBody->SetUserData(a_inUserData); }
 
-    inline virtual void OnCollisionEnter(RigidBody* a_other) { DEBUG_LOG_ERROR("COLLIDED"); };
-    inline virtual void OnTriggerEnter(RigidBody* a_other) { DEBUG_LOG_ERROR("TRIGGERED"); };
+    inline virtual void OnCollisionEnter(RigidBody* a_other) { DEBUG_LOG_VERBOSE("COLLIDED"); };
+    inline virtual void OnTriggerEnter(RigidBody* a_other) { DEBUG_LOG_VERBOSE("TRIGGERED"); };
 
     inline virtual void OnCollisionExit(RigidBody* a_other) { /*DEBUG_LOG_ERROR("COLLISION ENDED");*/ };
     inline virtual void OnTriggerExit(RigidBody* a_other) { /*DEBUG_LOG_ERROR("TRIGGER ENDED");*/ };

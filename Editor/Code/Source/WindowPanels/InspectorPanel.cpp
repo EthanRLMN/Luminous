@@ -1,10 +1,11 @@
-#include "WindowPanels/InspectorPanel.hpp"
-
+#include "backends/imgui_impl_vulkan.h"
 #include "imgui.h"
 #include "Game/Systems/Component/RigidbodyComponent.hpp"
 
 
+#include "WindowPanels/InspectorPanel.hpp"
 #include "ResourceManager/ResourceManager.hpp"
+#include "WindowPanels/FileExplorerPanel.hpp"
 
 enum class TransformMode
 {
@@ -52,7 +53,6 @@ void InspectorPanel::Render()
 
         if (p_isEntitySelected)
         {
-            //ImGui::InputText("", );
             if (ImGui::CollapsingHeader("Transform"))
             {
                 if (ImGui::BeginCombo("Transform Mode", m_transformMode == TransformMode::Local ? "Local" : "Global"))

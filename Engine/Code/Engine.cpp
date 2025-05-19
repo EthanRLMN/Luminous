@@ -39,17 +39,17 @@ void Engine::Update()
     m_window->Update();
     m_inputManager->Update();
     m_renderer->DrawFrame(m_window, m_device, m_swapChain, m_pipeline, m_buffer, m_renderPassManager, m_descriptor, m_synchronization, m_commandBuffer, m_frameBufferManager, m_depthResource, m_surface, m_multiSampling, m_inputManager, m_entityManager);
+    
     m_physicsSystem->Update();
 
-    if (m_inputManager->IsKeyPressed(Key::KEY_O))
-    {
-        m_scene->SaveScene("Engine/Assets/Default/Save/Scene.json", m_entityManager);
-    }
 
-    if (m_inputManager->IsKeyPressed(Key::KEY_P))
+    /*
+    if (m_inputManager->IsKeyDown(Key::KEY_L))
     {
-        m_scene->LoadScene("Engine/Assets/Default/Save/Scene.json", m_entityManager);
-    }
+        Maths::Vector3 pos = m_entityManager.GetEntityByName("penismusic")->Transform()->GetGlobalPosition();
+        m_entityManager.GetEntityByName("penismusic")->Transform()->SetGlobalPosition(pos + Maths::Vector3(1, 0, 0));
+    }*/
+
 
     m_inputManager->ResetMouseDelta();
     if (m_window->ShouldClose())

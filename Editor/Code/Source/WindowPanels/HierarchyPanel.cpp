@@ -13,79 +13,37 @@ void HierarchyPanel::Render()
 
     m_rootEntities.clear();
 
-    static enum class EntityTemplate {
-        None,
-        Empty,
-        Cube,
-        Plane,
-        Sphere,
-        Cone,
-        Cylinder,
-        Capsule,
-        Monkey,
-        Companion
-    } selectedEntityTemplate = EntityTemplate::None;
-
     static char newEntityName[128] = "New Entity";
 
     if (ImGui::BeginPopupContextWindow("HierarchyContextMenu", ImGuiPopupFlags_MouseButtonRight))
     {
         if (ImGui::BeginMenu("Add new Entity..."))
         {
+            auto createEntity = [&](const std::string& templateName)
+            {
+                ImGui::OpenPopup("CreateEntityPopup");
+                p_editor->GetEngine()->GetEntityManager()->CreateEntityFromTemplate(templateName);
+            };
+
             if (ImGui::MenuItem("Empty"))
-            {
-                selectedEntityTemplate = EntityTemplate::Empty;
-                ImGui::OpenPopup("CreateEntityPopup");
-                p_editor->GetEngine()->GetEntityManager()->CreateEntityFromTemplate("DefaultEmpty");
-            }
+                createEntity("DefaultEmpty");
             if (ImGui::MenuItem("Cube"))
-            {
-                selectedEntityTemplate = EntityTemplate::Cube;
-                ImGui::OpenPopup("CreateEntityPopup");
-                p_editor->GetEngine()->GetEntityManager()->CreateEntityFromTemplate("DefaultCube");
-            }
+                createEntity("DefaultCube");
             if (ImGui::MenuItem("Plane"))
-            {
-                selectedEntityTemplate = EntityTemplate::Plane;
-                ImGui::OpenPopup("CreateEntityPopup");
-                p_editor->GetEngine()->GetEntityManager()->CreateEntityFromTemplate("DefaultPlane");
-            }
+                createEntity("DefaultPlane");
             if (ImGui::MenuItem("Sphere"))
-            {
-                selectedEntityTemplate = EntityTemplate::Sphere;
-                ImGui::OpenPopup("CreateEntityPopup");
-                p_editor->GetEngine()->GetEntityManager()->CreateEntityFromTemplate("DefaultSphere");
-            }
+                createEntity("DefaultSphere");
             if (ImGui::MenuItem("Cone"))
-            {
-                selectedEntityTemplate = EntityTemplate::Cone;
-                ImGui::OpenPopup("CreateEntityPopup");
-                p_editor->GetEngine()->GetEntityManager()->CreateEntityFromTemplate("DefaultCone");    
-            }
+                createEntity("DefaultCone");
             if (ImGui::MenuItem("Cylinder"))
-            {
-                selectedEntityTemplate = EntityTemplate::Cylinder;
-                ImGui::OpenPopup("CreateEntityPopup");
-                p_editor->GetEngine()->GetEntityManager()->CreateEntityFromTemplate("DefaultCylinder");
-            }
+                createEntity("DefaultCylinder");
             if (ImGui::MenuItem("Capsule"))
-            {
-                selectedEntityTemplate = EntityTemplate::Capsule;
-                ImGui::OpenPopup("CreateEntityPopup");
-                p_editor->GetEngine()->GetEntityManager()->CreateEntityFromTemplate("DefaultCapsule");
-            }
+                createEntity("DefaultCapsule");
             if (ImGui::MenuItem("Monkey"))
-            {
-                selectedEntityTemplate = EntityTemplate::Monkey;
-                ImGui::OpenPopup("CreateEntityPopup");
-                p_editor->GetEngine()->GetEntityManager()->CreateEntityFromTemplate("DefaultMonkey");
-            }
+                createEntity("DefaultMonkey");
             if (ImGui::MenuItem("Companion"))
-            {
-                selectedEntityTemplate = EntityTemplate::Companion;
-                ImGui::OpenPopup("CreateEntityPopup");
-                p_editor->GetEngine()->GetEntityManager()->CreateEntityFromTemplate("DefaultCompanion");
-            }
+                createEntity("DefaultCompanion");
+
             ImGui::EndMenu();
         }
         ImGui::EndPopup();
@@ -98,10 +56,9 @@ void HierarchyPanel::Render()
         if (ImGui::Button("Create"))
         {
             auto entityManager = p_editor->GetEngine()->GetEntityManager();
-            auto newEntity = entityManager->CreateEntityFromTemplate("Companion");
+            auto newEntity = entityManager->CreateEntityFromTemplate("DefaultCompanion");
             newEntity->SetName(GenerateUniqueEntityName(newEntityName));
 
-            selectedEntityTemplate = EntityTemplate::None;
             std::memset(newEntityName, 0, sizeof(newEntityName));
             ImGui::CloseCurrentPopup();
         }
@@ -109,7 +66,6 @@ void HierarchyPanel::Render()
         ImGui::SameLine();
         if (ImGui::Button("Cancel"))
         {
-            selectedEntityTemplate = EntityTemplate::None;
             std::memset(newEntityName, 0, sizeof(newEntityName));
             ImGui::CloseCurrentPopup();
         }
@@ -120,9 +76,7 @@ void HierarchyPanel::Render()
     BuildHierarchy();
 
     for (const auto& root : m_rootEntities)
-    {
         DrawEntityNode(root);
-    }
 
     if (m_entityToReparent)
     {
@@ -136,10 +90,7 @@ void HierarchyPanel::Render()
 
     if (avail.x > 0.0f && avail.y > 0.0f)
     {
-        ImVec2 detachZoneSize = ImVec2(avail.x, avail.y);
-
-        ImGui::SetCursorPosY(ImGui::GetCursorPosY());
-        ImGui::InvisibleButton("##DetachZone", detachZoneSize);
+        ImGui::InvisibleButton("##DetachZone", avail);
 
         if (ImGui::BeginDragDropTarget())
         {
@@ -152,11 +103,54 @@ void HierarchyPanel::Render()
             ImGui::EndDragDropTarget();
         }
     }
+
+    if (m_showRenamePopup && m_entityToRename)
+    {
+        ImGui::OpenPopup("RenameEntityPopup");
+        m_showRenamePopup = false;
+    }
+
+    if (ImGui::BeginPopupModal("RenameEntityPopup", nullptr, ImGuiWindowFlags_AlwaysAutoResize))
+    {
+        ImGui::InputText("New name", m_renameBuffer, IM_ARRAYSIZE(m_renameBuffer));
+
+        if (ImGui::Button("OK"))
+        {
+            m_entityToRename->SetName(GenerateUniqueEntityName(m_renameBuffer));
+            m_entityToRename = nullptr;
+            ImGui::CloseCurrentPopup();
+        }
+
+        ImGui::SameLine();
+        if (ImGui::Button("Cancel"))
+        {
+            m_entityToRename = nullptr;
+            ImGui::CloseCurrentPopup();
+        }
+
+        ImGui::EndPopup();
+    }
+
+    if (!m_pendingDeletes.empty())
+    {
+        auto entityManager = p_editor->GetEngine()->GetEntityManager();
+        for (const auto& e : m_pendingDeletes)
+        {
+            entityManager->RemoveEntity(e);
+        }
+        m_pendingDeletes.clear();
+        BuildHierarchy();
+    }
+
     ImGui::End();
 }
 
+
 void HierarchyPanel::DrawEntityNode(const std::shared_ptr<EntityNode>& node)
 {
+    if (!node || !node->entity)
+        return;
+
     ImGuiTreeNodeFlags flags = ImGuiTreeNodeFlags_OpenOnArrow | ImGuiTreeNodeFlags_SpanAvailWidth;
 
     if (node->children.empty())
@@ -195,9 +189,25 @@ void HierarchyPanel::DrawEntityNode(const std::shared_ptr<EntityNode>& node)
                 m_newParent = node->entity;
             }
         }
-
-
         ImGui::EndDragDropTarget();
+    }
+
+    if (ImGui::BeginPopupContextItem("EntityContextMenu"))
+    {
+        if (ImGui::MenuItem("Rename"))
+        {
+            m_entityToRename = node->entity;
+            std::memset(m_renameBuffer, 0, sizeof(m_renameBuffer));
+            strncpy_s(m_renameBuffer, m_entityToRename->GetName().c_str(), sizeof(m_renameBuffer) - 1);
+            m_showRenamePopup = true;
+        }
+
+        if (ImGui::MenuItem("Delete"))
+        {
+            m_pendingDeletes.push_back(node->entity);
+        }
+
+        ImGui::EndPopup();
     }
 
     if (open)
@@ -209,6 +219,7 @@ void HierarchyPanel::DrawEntityNode(const std::shared_ptr<EntityNode>& node)
         ImGui::TreePop();
     }
 }
+
 
 void HierarchyPanel::BuildHierarchy()
 {

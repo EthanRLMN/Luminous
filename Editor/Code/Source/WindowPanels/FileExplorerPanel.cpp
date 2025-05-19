@@ -187,12 +187,14 @@ void FileExplorerPanel::DrawDirectoryContent()
 
             if (ImGui::MenuItem("Rename"))
             {
-                renaming = true;
-                renamePath = rightClickedPath;
-                std::memset(renameBuffer, 0, sizeof(renameBuffer));
-                strncpy_s(renameBuffer, renamePath.filename().string().c_str(), sizeof(renameBuffer) - 1);
-                showRenameInvalid = false;
+                m_renamePath = rightClickedPath;
+                std::memset(m_renameBuffer, 0, sizeof(m_renameBuffer));
+                strncpy_s(m_renameBuffer, m_renamePath.filename().string().c_str(), sizeof(m_renameBuffer) - 1);
+                m_showRenameInvalid = false;
+
+                openRenamePopup = true;
             }
+
 
             if (ImGui::MenuItem("Delete"))
             {
@@ -310,45 +312,12 @@ void FileExplorerPanel::DrawDirectoryContent()
         }
     }
 
-    if (renaming)
+    if (openRenamePopup)
     {
-        ImGui::Separator();
-        ImGui::Text("Rename \"%s\" to:", renamePath.filename().string().c_str());
-        ImGui::InputText("##RenameInput", renameBuffer, IM_ARRAYSIZE(renameBuffer));
-
-        if (showRenameInvalid)
-            ImGui::TextColored(ImVec4(1, 0.3f, 0.3f, 1), "Invalid or duplicate name.");
-
-        if (ImGui::Button("OK"))
-        {
-            std::string newName = renameBuffer;
-            std::filesystem::path newPath = renamePath.parent_path() / newName;
-
-            if (newName.empty() || newName.find_first_of("\\/:*?\"<>|") != std::string::npos || std::filesystem::exists(newPath))
-                showRenameInvalid = true;
-            else
-            {
-                try
-                {
-                    std::filesystem::rename(renamePath, newPath);
-                    renaming = false;
-                    showRenameInvalid = false;
-                    std::memset(renameBuffer, 0, sizeof(renameBuffer));
-                } catch (...)
-                {
-                    showRenameInvalid = true;
-                }
-            }
-        }
-
-        ImGui::SameLine();
-        if (ImGui::Button("Cancel"))
-        {
-            renaming = false;
-            showRenameInvalid = false;
-            std::memset(renameBuffer, 0, sizeof(renameBuffer));
-        }
+        ImGui::OpenPopup("Rename File");
+        openRenamePopup = false;
     }
+    HandleRenamePopup();
 }
 
 void FileExplorerPanel::OpenTextEditor(const std::filesystem::path& path)
@@ -413,4 +382,51 @@ void FileExplorerPanel::Destroy()
     }
 
     m_thumbnailCache.clear();
+}
+
+void FileExplorerPanel::HandleRenamePopup()
+{
+    if (ImGui::BeginPopupModal("Rename File", nullptr, ImGuiWindowFlags_AlwaysAutoResize))
+    {
+        ImGui::Text("Rename \"%s\" to:", m_renamePath.filename().string().c_str());
+        ImGui::InputText("##RenameInput", m_renameBuffer, IM_ARRAYSIZE(m_renameBuffer));
+
+        if (m_showRenameInvalid)
+            ImGui::TextColored(ImVec4(1, 0.3f, 0.3f, 1), "Invalid or duplicate name.");
+
+        if (ImGui::Button("OK"))
+        {
+            std::string newName = m_renameBuffer;
+            std::filesystem::path newPath = m_renamePath.parent_path() / newName;
+
+            if (newName.empty() || newName.find_first_of("\\/:*?\"<>|") != std::string::npos || std::filesystem::exists(newPath))
+            {
+                m_showRenameInvalid = true;
+            } else
+            {
+                try
+                {
+                    std::filesystem::rename(m_renamePath, newPath);
+                    m_showRenameInvalid = false;
+                    std::memset(m_renameBuffer, 0, sizeof(m_renameBuffer));
+                    ImGui::CloseCurrentPopup();
+
+                } catch (const std::exception& e)
+                {
+                    std::cerr << "Rename Error: " << e.what() << std::endl;
+                    m_showRenameInvalid = true;
+                }
+            }
+        }
+
+        ImGui::SameLine();
+        if (ImGui::Button("Cancel"))
+        {
+            m_showRenameInvalid = false;
+            std::memset(m_renameBuffer, 0, sizeof(m_renameBuffer));
+            ImGui::CloseCurrentPopup();
+        }
+
+        ImGui::EndPopup();
+    }
 }
