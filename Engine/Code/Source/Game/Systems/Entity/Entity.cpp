@@ -25,18 +25,21 @@ void Entity::RemoveComponent(const std::shared_ptr<EntityComponent>& a_component
     a_component->SetOwner(nullptr);
     m_components.erase(std::ranges::find(m_components, a_component));
 
-    if (a_component == std::dynamic_pointer_cast<MeshRendererComponent>(a_component))
+    if (std::dynamic_pointer_cast<MeshRendererComponent>(a_component))
         m_entityManager.UnregisterRenderable(shared_from_this());
 
-    if (a_component == std::dynamic_pointer_cast<LightComponent>(a_component))
+    if (std::dynamic_pointer_cast<LightComponent>(a_component))
         m_entityManager.UnregisterLight(shared_from_this());
 }
 
 
 void Entity::RemoveAllComponents()
 {
-    for (const std::shared_ptr<EntityComponent>& l_component : m_components)
+    auto componentsCopy = m_components;
+    for (const auto& l_component : componentsCopy)
+    {
         RemoveComponent(l_component);
+    }
 }
 
 
