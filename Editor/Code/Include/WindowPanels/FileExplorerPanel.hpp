@@ -1,7 +1,7 @@
 #pragma once
 
-#include "Interface/IWindowPanel.hpp"
 #include "TextEditorPanel.hpp"
+#include "Interface/IWindowPanel.hpp"
 
 class FileExplorerPanel : public IWindowPanel
 {
