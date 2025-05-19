@@ -13,6 +13,8 @@ void ConsolePanel::Render()
         ImGui::Begin(p_windowIdentifier.c_str(), nullptr, ImGuiWindowFlags_NoCollapse);
         ImGui::PushStyleColor(ImGuiCol_WindowBg, 0xff323432);
 
+        ImGui::Checkbox("Scroll", &m_autoScroll);
+
         const std::vector<Debug::Logger::LogEntry>& logBuffer = Debug::Logger::GetInstance().GetLogBuffer();
 
         if (ImGui::BeginChild("ScrollingRegion", ImVec2(0, 0), false, ImGuiWindowFlags_HorizontalScrollbar))
@@ -22,6 +24,8 @@ void ConsolePanel::Render()
                 ImVec4 color = GetColorForLogLevel(line.level);
                 ImGui::TextColored(color, "%s", line.message.c_str());
             }
+            if (m_autoScroll && ImGui::GetScrollY() >= ImGui::GetScrollMaxY())
+                ImGui::SetScrollHereY(1.0f);
         }
         ImGui::EndChild();
 
