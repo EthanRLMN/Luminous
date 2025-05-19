@@ -34,6 +34,13 @@ void Entity::RemoveComponent(const std::shared_ptr<EntityComponent>& a_component
 }
 
 
+void Entity::RemoveAllComponents()
+{
+    for (const std::shared_ptr<EntityComponent>& l_component : m_components)
+        RemoveComponent(l_component);
+}
+
+
 void Entity::Initialize() const
 {
     for (const std::shared_ptr<EntityComponent>& l_component : m_components)
