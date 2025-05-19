@@ -328,6 +328,8 @@ void VulkanRenderer::RecordCommandBuffer(const VkCommandBuffer& a_commandBuffer,
                     l_ubo.model = l_modelMatrixSphere.Transpose();
                 }
                 //Draw the basic shape (sphere, box, cynlinder)
+
+
                 DrawModel(entity->GetComponent<RigidbodyComponent>()->GetModelDebug(), a_commandBuffer, a_descriptor, a_pipelineLayout, l_ubo);
 
             }
