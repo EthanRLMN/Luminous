@@ -18,5 +18,5 @@ private:
     static ImVec4 GetColorForLogLevel(Debug::LogLevel a_level);
 
     std::vector<std::string> m_items {};
-    bool m_scrollToBottom { false };
+    bool m_autoScroll { true };
 };
