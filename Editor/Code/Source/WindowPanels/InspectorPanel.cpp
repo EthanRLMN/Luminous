@@ -69,9 +69,34 @@ void InspectorPanel::Render()
                     auto lightComponent = std::make_shared<LightComponent>();
                     p_isEntitySelected->AddComponent(lightComponent);
                 }
-                if (ImGui::MenuItem("Rigidbody"))
+                if (ImGui::MenuItem("Box RigidBody"))
                 {
                     auto rigidbodyComponent = std::make_shared<RigidbodyComponent>();
+
+                    rigidbodyComponent->SetEngine(p_isEntitySelected->GetEngine());
+                    rigidbodyComponent->SetEntity(p_isEntitySelected);
+                    rigidbodyComponent->SetColliderType(BOXCOLLIDER);
+                    rigidbodyComponent->Initialize();
+                    p_isEntitySelected->AddComponent(std::static_pointer_cast<EntityComponent>(rigidbodyComponent));
+                }
+                if (ImGui::MenuItem("Sphere RigidBody"))
+                {
+                    auto rigidbodyComponent = std::make_shared<RigidbodyComponent>();
+
+                    rigidbodyComponent->SetEngine(p_isEntitySelected->GetEngine());
+                    rigidbodyComponent->SetEntity(p_isEntitySelected);
+                    rigidbodyComponent->SetColliderType(SPHERECOLLIDER);
+                    rigidbodyComponent->Initialize();
+                    p_isEntitySelected->AddComponent(std::static_pointer_cast<EntityComponent>(rigidbodyComponent));
+                }
+                if (ImGui::MenuItem("Capsule RigidBody"))
+                {
+                    auto rigidbodyComponent = std::make_shared<RigidbodyComponent>();
+
+                    rigidbodyComponent->SetEngine(p_isEntitySelected->GetEngine());
+                    rigidbodyComponent->SetEntity(p_isEntitySelected);
+                    rigidbodyComponent->SetColliderType(CAPSULECOLLIDER);
+                    rigidbodyComponent->Initialize();
                     p_isEntitySelected->AddComponent(std::static_pointer_cast<EntityComponent>(rigidbodyComponent));
                 }
                 if (ImGui::MenuItem("Camera"))
@@ -300,6 +325,34 @@ void InspectorPanel::Render()
                     ImGui::Text("Light Type");
                     bTypeChanged |= ImGui::InputInt("##type", &l_typeInt);
 
+
+                    if (l_lightType == LightType::DIRECTIONAL)
+                    {
+                        const float inputWidth = 150.0f;
+
+                        Maths::Vector3 l_direction = p_isEntitySelected->GetComponent<LightComponent>()->GetDirection();
+ 
+                        // --- Position
+                        ImGui::Text("Direction");
+                        bool posChanged = false;
+                        ImGui::PushItemWidth(inputWidth);
+                        ImGui::Text("X:");
+                        ImGui::SameLine();
+                        posChanged |= ImGui::InputFloat("##posX", &l_direction.x, 0.1f, 1.0f, "%.2f");
+                        ImGui::SameLine();
+                        ImGui::Text("Y:");
+                        ImGui::SameLine();
+                        posChanged |= ImGui::InputFloat("##posY", &l_direction.y, 0.1f, 1.0f, "%.2f");
+                        ImGui::SameLine();
+                        ImGui::Text("Z:");
+                        ImGui::SameLine();
+                        posChanged |= ImGui::InputFloat("##posZ", &l_direction.z, 0.1f, 1.0f, "%.2f");
+
+                        if(posChanged)
+                            p_isEntitySelected->GetComponent<LightComponent>()->SetDirection(l_direction);
+                    }
+
+
                     if (l_typeInt < 0)
                         l_typeInt = 0;
                     else if (l_typeInt > 1)
@@ -519,6 +572,60 @@ void InspectorPanel::Render()
                     ImGui::EndPopup();
                 }*/
             }
+
+
+            if (auto modelComponent = p_isEntitySelected->GetComponent<CameraComponent>())
+            {
+                if (ImGui::CollapsingHeader("Camera Component"))
+                {
+                    float l_near = p_isEntitySelected->GetComponent<CameraComponent>()->GetNearPlane();
+                    bool bNearChanged = false;
+                    ImGui::Text("Near Plane");
+                    bNearChanged |= ImGui::InputFloat("##near", &l_near, 0.1f, 1.0f, "%.2f");
+
+                    float l_far = p_isEntitySelected->GetComponent<CameraComponent>()->GetFarPlane();
+                    bool bFarChanged = false;
+                    ImGui::Text("Far Plane");
+                    bFarChanged |= ImGui::InputFloat("##far", &l_far, 0.1f, 1.0f, "%.2f");
+
+                    float l_fov = p_isEntitySelected->GetComponent<CameraComponent>()->GetFieldOfView();
+                    bool bFovChanged = false;
+                    ImGui::Text("Field of View");
+                    bFovChanged |= ImGui::InputFloat("##fov", &l_fov, 0.1f, 1.0f, "%.2f");
+
+                    float l_aspectRatio = p_isEntitySelected->GetComponent<CameraComponent>()->GetAspectRatio();
+                    bool bAspectRatioChanged = false;
+                    ImGui::Text("Aspect Ratio");
+                    bAspectRatioChanged |= ImGui::InputFloat("##aspectratio", &l_aspectRatio, 0.1f, 1.0f, "%.2f");
+                    
+                    bool l_mainCamera = p_isEntitySelected->GetComponent<CameraComponent>()->GetIsMainCamera();
+                    bool bMainCameraChanged = false;
+                    ImGui::Text("Main Camera");
+                    bMainCameraChanged |= ImGui::Checkbox("##maincam", &l_mainCamera);
+
+
+                    if (bNearChanged)
+                        p_isEntitySelected->GetComponent<CameraComponent>()->SetNearPlane(l_near);
+
+                    if (bFarChanged)
+                        p_isEntitySelected->GetComponent<CameraComponent>()->SetFarPlane(l_far);
+
+                    if (bFovChanged)
+                        p_isEntitySelected->GetComponent<CameraComponent>()->SetFieldOfView(l_fov);
+
+                    if (bAspectRatioChanged)
+                        p_isEntitySelected->GetComponent<CameraComponent>()->SetAspectRatio(l_aspectRatio);
+
+                    if (bMainCameraChanged)
+                        p_isEntitySelected->GetComponent<CameraComponent>()->ForceSetMainCamera(l_mainCamera);
+
+                }
+            }
+
+            /*
+            p_isEntitySelected->Transform()->SetLocalPosition(newPosition);
+            p_isEntitySelected->Transform()->SetLocalRotationQuat(Maths::Quaternion::FromEulerAngles(newEuler));
+            p_isEntitySelected->Transform()->SetLocalScale(newScale);*/
         }
         ImGui::PopStyleColor();
         ImGui::End();

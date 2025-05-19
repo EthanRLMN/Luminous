@@ -31,6 +31,8 @@ public:
 
 
     }
+
+    void UpdateTransform();
      void SetLayer(JPH::uint8 a_layer);
     inline void SetActive(JPH::EActivation a_active) { m_active = a_active; }
     void InitDebugModels();
@@ -70,5 +72,7 @@ private:
     float m_sphereSizeOffset{ 2.0f };
     Maths::Vector2 m_capsuleSizeOffset{ 1.f, 2.f };
     Maths::Vector3 m_oldTransformSize{ 0.0f, 0.0f, 0.0f };
+    Maths::Vector3 m_oldPosition{ 0.0f, 0.0f, 0.0f };
+    Maths::Vector3 m_oldRotation{ 0.f, 0.f, 0.f };
 };
 
