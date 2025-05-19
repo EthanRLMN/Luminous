@@ -1,7 +1,5 @@
 #include "backends/imgui_impl_vulkan.h"
 #include "imgui.h"
-#include "Game/Systems/Component/RigidbodyComponent.hpp"
-
 
 #include "Game/Systems/Component/CameraComponent.hpp"
 #include "Game/Systems/Component/LightComponent.hpp"
@@ -49,13 +47,21 @@ void InspectorPanel::Render()
         ImGui::Begin(p_windowIdentifier.c_str(), nullptr, ImGuiWindowFlags_NoCollapse);
         ImGui::PushStyleColor(ImGuiCol_WindowBg, 0xff323432);
 
-        if (ImGui::BeginPopupContextWindow())
+        if (ImGui::IsWindowHovered(ImGuiHoveredFlags_AllowWhenBlockedByPopup) && ImGui::IsMouseClicked(ImGuiMouseButton_Right))
+        {
+            if (!ImGui::IsAnyItemHovered())
+            {
+                ImGui::OpenPopup("AddComponentPopup");
+            }
+        }
+
+        if (ImGui::BeginPopup("AddComponentPopup"))
         {
             if (ImGui::BeginMenu("Add new Component..."))
             {
                 if (ImGui::MenuItem("Mesh renderer"))
                 {
-                    auto meshRendererComponent = std::make_shared<MeshRendererComponent>();
+                    auto meshRendererComponent = std::make_shared<ModelComponent>();
                     p_isEntitySelected->AddComponent(std::static_pointer_cast<EntityComponent>(meshRendererComponent));
                 }
                 if (ImGui::MenuItem("Light"))
@@ -78,9 +84,9 @@ void InspectorPanel::Render()
             ImGui::EndPopup();
         }
 
+
         if (p_isEntitySelected)
         {
-            // ------------------- Transform ---------------------
             if (ImGui::CollapsingHeader("Transform"))
             {
                 if (ImGui::BeginCombo("Transform Mode", m_transformMode == TransformMode::Local ? "Local" : "Global"))
@@ -106,7 +112,6 @@ void InspectorPanel::Render()
 
                 const float inputWidth = 150.0f;
 
-                // --- Position
                 ImGui::Text("Position");
                 bool posChanged = false;
                 ImGui::PushItemWidth(inputWidth);
@@ -122,7 +127,6 @@ void InspectorPanel::Render()
                 ImGui::SameLine();
                 posChanged |= ImGui::InputFloat("##posZ", &position.z, 0.1f, 1.0f, "%.2f");
 
-                // --- Rotation
                 ImGui::Text("Rotation");
                 bool rotChanged = false;
                 ImGui::Text("X:");
@@ -137,7 +141,6 @@ void InspectorPanel::Render()
                 ImGui::SameLine();
                 rotChanged |= ImGui::InputFloat("##rotZ", &rotation.z, 0.1f, 1.0f, "%.2f");
 
-                // --- Scale
                 ImGui::Text("Scale");
                 bool scaleChanged = false;
                 ImGui::Text("X:");
@@ -172,7 +175,6 @@ void InspectorPanel::Render()
                 }
             }
 
-            // ------------------- Mesh Renderer ---------------------
             if (ImGui::CollapsingHeader("Mesh Renderer"))
             {
                 if (auto modelComponent = p_isEntitySelected->GetComponent<ModelComponent>())
@@ -248,40 +250,51 @@ void InspectorPanel::Render()
                         }
                         ImGui::EndDragDropTarget();
                     }
+                    if (ImGui::BeginPopupContextItem("DeleteComponents"))
+                    {
+                        if (ImGui::MenuItem("Delete Component"))
+                        {
+                            auto component = p_isEntitySelected->GetComponent<ModelComponent>();
+                            if (component)
+                            {
+                                p_isEntitySelected->RemoveComponent(component);
+                            }
+                        }
+                        ImGui::EndPopup();
+                    }
                 }
             }
 
-            if (auto modelComponent = p_isEntitySelected->GetComponent<LightComponent>())
+            if (auto lightComponent = p_isEntitySelected->GetComponent<LightComponent>())
             {
                 if (ImGui::CollapsingHeader("Light Component"))
                 {
 
                     float l_color[3];
-                    l_color[0] = p_isEntitySelected->GetComponent<LightComponent>()->GetColor().x;
-                    l_color[1] = p_isEntitySelected->GetComponent<LightComponent>()->GetColor().y;
-                    l_color[2] = p_isEntitySelected->GetComponent<LightComponent>()->GetColor().z;
+                    l_color[0] = lightComponent->GetColor().x;
+                    l_color[1] = lightComponent->GetColor().y;
+                    l_color[2] = lightComponent->GetColor().z;
                     bool bColorChanged = false;
                     ImGui::Text("Color");
-                    
+
                     bColorChanged |= ImGui::ColorPicker3("##color", l_color);
 
-
-                    float l_intensity = p_isEntitySelected->GetComponent<LightComponent>()->GetIntensity();
+                    float l_intensity = lightComponent->GetIntensity();
                     bool bIntensityChanged = false;
                     ImGui::Text("Intensity");
                     bIntensityChanged |= ImGui::InputFloat("##intensity", &l_intensity, 0.1f, 1.0f, "%.2f");
 
-                    float l_ambient = p_isEntitySelected->GetComponent<LightComponent>()->GetAmbientStrength();
+                    float l_ambient = lightComponent->GetAmbientStrength();
                     bool bAmbientChanged = false;
                     ImGui::Text("AmbientStrength");
                     bAmbientChanged |= ImGui::InputFloat("##ambient", &l_ambient, 0.1f, 1.0f, "%.2f");
 
-                    float l_specular = p_isEntitySelected->GetComponent<LightComponent>()->GetSpecularStrength();
+                    float l_specular = lightComponent->GetSpecularStrength();
                     bool bSpecularChanged = false;
                     ImGui::Text("SpecularStrength");
                     bSpecularChanged |= ImGui::InputFloat("##specular", &l_specular, 0.1f, 1.0f, "%.2f");
 
-                    LightType l_lightType = p_isEntitySelected->GetComponent<LightComponent>()->GetType();
+                    LightType l_lightType = lightComponent->GetType();
                     int l_typeInt = static_cast<int>(l_lightType);
                     bool bTypeChanged = false;
                     ImGui::Text("Light Type");
@@ -292,29 +305,38 @@ void InspectorPanel::Render()
                     else if (l_typeInt > 1)
                         l_typeInt = 1;
 
-
                     if (bIntensityChanged)
-                        p_isEntitySelected->GetComponent<LightComponent>()->SetIntensity(l_intensity);
+                        lightComponent->SetIntensity(l_intensity);
 
                     if (bAmbientChanged)
-                        p_isEntitySelected->GetComponent<LightComponent>()->SetAmbientStrength(l_ambient);
+                        lightComponent->SetAmbientStrength(l_ambient);
 
                     if (bSpecularChanged)
-                        p_isEntitySelected->GetComponent<LightComponent>()->SetSpecularStrength(l_specular);
+                        lightComponent->SetSpecularStrength(l_specular);
 
                     if (bTypeChanged)
-                        p_isEntitySelected->GetComponent<LightComponent>()->SetType(static_cast<LightType>(l_typeInt));
+                        lightComponent->SetType(static_cast<LightType>(l_typeInt));
 
                     if (bColorChanged)
-                        p_isEntitySelected->GetComponent<LightComponent>()->SetColor(Maths::Vector3(l_color[0], l_color[1], l_color[2]));
-
+                        lightComponent->SetColor(Maths::Vector3(l_color[0], l_color[1], l_color[2]));
+                }
+                if (ImGui::BeginPopupContextItem("DeleteComponents"))
+                {
+                    if (ImGui::MenuItem("Delete Component"))
+                    {
+                        auto component = p_isEntitySelected->GetComponent<LightComponent>();
+                        if (component)
+                        {
+                            p_isEntitySelected->RemoveComponent(component);
+                        }
+                    }
+                    ImGui::EndPopup();
                 }
             }
-            
 
-            if (auto modelComponent = p_isEntitySelected->GetComponent<RigidbodyComponent>())
+            if (auto rigidbodyComponent = p_isEntitySelected->GetComponent<RigidbodyComponent>())
             {
-                ColliderType l_type = p_isEntitySelected->GetComponent<RigidbodyComponent>()->GetColliderType();
+                ColliderType l_type = rigidbodyComponent->GetColliderType();
                 std::string typeString = "";
                 if (l_type == BOXCOLLIDER)
                     typeString = "Box ";
@@ -323,7 +345,7 @@ void InspectorPanel::Render()
                 else if (l_type == CAPSULECOLLIDER)
                     typeString = "Capsule ";
 
-                if (ImGui::CollapsingHeader((typeString +"Rigidbody Component").c_str()))
+                if (ImGui::CollapsingHeader((typeString + "Rigidbody Component").c_str()))
                 {
 
                     if (l_type == BOXCOLLIDER)
@@ -358,14 +380,13 @@ void InspectorPanel::Render()
                         {
                             l_layerInt = 0;
                             l_layerString = "Layer : Dynamic";
-                        }
-                        else if (l_layer == Layers::KINEMATIC)
+                        } else if (l_layer == Layers::KINEMATIC)
                         {
                             l_layerInt = 1;
                             l_layerString = "Layer : Kinematic";
                         }
                         ImGui::Text(l_layerString.c_str());
-                            
+
                         layerChanged |= ImGui::InputInt("##layer", &l_layerInt);
 
                         if (l_layerInt < 0)
@@ -380,19 +401,12 @@ void InspectorPanel::Render()
                             l_finalLayer = Layers::KINEMATIC;
 
 
-
-
-
-
-
-
                         if (layerChanged)
                             p_isEntitySelected->GetComponent<RigidbodyComponent>()->SetLayer(l_finalLayer);
 
                         if (posChanged)
                             p_isEntitySelected->GetComponent<RigidbodyComponent>()->SetColliderSize(l_boxSizeOffset);
-                    }
-                    else if (l_type == SPHERECOLLIDER)
+                    } else if (l_type == SPHERECOLLIDER)
                     {
 
                         float l_sphereOffset = p_isEntitySelected->GetComponent<RigidbodyComponent>()->GetSphereOffset();
@@ -436,8 +450,7 @@ void InspectorPanel::Render()
                         if (layerChanged)
                             p_isEntitySelected->GetComponent<RigidbodyComponent>()->SetLayer(l_finalLayer);
 
-                    }
-                    else if (l_type == CAPSULECOLLIDER)
+                    } else if (l_type == CAPSULECOLLIDER)
                     {
 
                         Maths::Vector2 l_capsuleSizeOffset = p_isEntitySelected->GetComponent<RigidbodyComponent>()->GetCapsuleOffset();
@@ -489,27 +502,28 @@ void InspectorPanel::Render()
                             p_isEntitySelected->GetComponent<RigidbodyComponent>()->SetLayer(l_finalLayer);
 
 
-                         if (posChanged)
+                        if (posChanged)
                             p_isEntitySelected->GetComponent<RigidbodyComponent>()->SetColliderSize(l_capsuleSizeOffset);
-
                     }
-
-                    
-
+                    if (ImGui::BeginPopupContextItem("DeleteComponents"))
+                    {
+                        if (ImGui::MenuItem("Delete Component"))
+                        {
+                            auto component = p_isEntitySelected->GetComponent<RigidbodyComponent>();
+                            if (component)
+                            {
+                                p_isEntitySelected->RemoveComponent(component);
+                            }
+                        }
+                        ImGui::EndPopup();
+                    }
                 }
             }
-
-            /*
-            p_isEntitySelected->Transform()->SetLocalPosition(newPosition);
-            p_isEntitySelected->Transform()->SetLocalRotationQuat(Maths::Quaternion::FromEulerAngles(newEuler));
-            p_isEntitySelected->Transform()->SetLocalScale(newScale);*/
         }
-
         ImGui::PopStyleColor();
         ImGui::End();
     }
 }
-
 
 
 std::array<float, 16> InspectorPanel::ToFloatArray(const Maths::Matrix4& matrix)
