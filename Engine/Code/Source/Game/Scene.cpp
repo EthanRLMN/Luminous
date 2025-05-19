@@ -39,7 +39,6 @@ void Scene::RegisterScene(EntityManager& a_entityManager)
 
     const std::shared_ptr<Entity> collider = a_entityManager.CreateEntityFromTemplate("DefaultCube");
     const std::shared_ptr<Entity> collider2 = a_entityManager.CreateEntityFromTemplate("DefaultCube");
-    collider2->SetName("penismusic");
     collider->Transform()->SetLocalPosition(Maths::Vector3(9.5f, 10.0f, 0.0f));
 
     const std::shared_ptr<RigidbodyComponent> l_modelComponent = std::make_shared<RigidbodyComponent>();
