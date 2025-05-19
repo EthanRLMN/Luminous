@@ -142,10 +142,10 @@ QueueFamilyIndices VulkanDevice::GetQueueFamilies(const VkPhysicalDevice& a_devi
 	vkGetPhysicalDeviceQueueFamilyProperties(a_device, &l_queueFamilyCount, l_queueFamilyList.data());
 
 	QueueFamilyIndices l_indices { };
-	for (int i = 0; i < l_queueFamilyList.size(); ++i)
+	for (size_t i = 0; i < l_queueFamilyList.size(); ++i)
 	{
 		if (l_queueFamilyList[i].queueCount > 0 && l_queueFamilyList[i].queueFlags & VK_QUEUE_GRAPHICS_BIT)
-			l_indices.graphicsFamily = i;
+			l_indices.graphicsFamily = static_cast<int>(i);
 
 		VkBool32 l_presentationSupport = false;
 		vkGetPhysicalDeviceSurfaceSupportKHR(a_device, 1, a_surface, &l_presentationSupport);

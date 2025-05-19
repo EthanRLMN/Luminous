@@ -14,5 +14,7 @@ class MainPanel : public IWindowPanel
     void Destroy() override {};
 
 private:
+    bool RunCommand(const std::string& a_cmd);
     void HelpContextMenu();
+    std::string m_scenePath = "Engine/Assets/Default/Save/Scene1.json";
 };

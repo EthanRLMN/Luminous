@@ -1,7 +1,7 @@
 #pragma once
 
-#include "Interface/IWindowPanel.hpp"
 #include "TextEditorPanel.hpp"
+#include "Interface/IWindowPanel.hpp"
 
 class FileExplorerPanel : public IWindowPanel
 {
@@ -19,7 +19,9 @@ private:
     void DrawDirectoryTreeRecursive(const std::filesystem::path& directory);
     void DrawDirectoryContent();
     void OpenTextEditor(const std::filesystem::path& path);
+    void HandleRenamePopup();
     ImTextureID GetOrLoadImageThumbnail(const std::string& filepath);
+
 
     Engine* m_engine = nullptr;
 
@@ -34,6 +36,13 @@ private:
     std::unordered_map<std::string, ImTextureID> m_thumbnailCache;
 
     std::unique_ptr<TextEditorPanel> m_textEditorPanel;
+
+    bool m_renaming = false;
+    std::filesystem::path m_renamePath;
+    char m_renameBuffer[128] = {};
+    bool m_showRenameInvalid = false;
+
+    bool openRenamePopup = false;
 };
 
 std::shared_ptr<ITexture> LoadTexture(Engine* engine, const std::string& path);

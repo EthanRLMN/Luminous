@@ -1,13 +1,10 @@
 #pragma once
 #include <memory>
 #include <string>
-#include <unordered_set>
 #include <vector>
 
-#include "Game/Scene.hpp"
-#include "Game/Systems/Entity/Entity.hpp"
-#include "Game/Systems/Entity/EntityManager.hpp"
 #include "InspectorPanel.hpp"
+#include "Game/Systems/Entity/Entity.hpp"
 #include "Interface/IWindowPanel.hpp"
 
 class HierarchyPanel : public IWindowPanel
@@ -30,8 +27,7 @@ private:
         std::vector<std::shared_ptr<EntityNode>> children;
 
         EntityNode() = default;
-        EntityNode(std::shared_ptr<Entity> entity) :
-            entity(std::move(entity)) {}
+        explicit EntityNode(std::shared_ptr<Entity> entity) : entity(std::move(entity)) {}
     };
 
     std::vector<std::shared_ptr<EntityNode>> m_rootEntities;
@@ -42,6 +38,12 @@ private:
 
     bool m_isCreatingEntity = false;
     char m_newEntityName[256] = "New Entity";
+
+    std::shared_ptr<Entity> m_entityToRename = nullptr;
+    std::shared_ptr<Entity> m_entityToDelete = nullptr;
+    char m_renameBuffer[128] = {};
+    bool m_showRenamePopup = false;
+    std::vector<std::shared_ptr<Entity>> m_pendingDeletes;
 
     void BuildHierarchy();
     void DrawEntityNode(const std::shared_ptr<EntityNode>& node);

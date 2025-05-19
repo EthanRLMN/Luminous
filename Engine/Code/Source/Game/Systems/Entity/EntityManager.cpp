@@ -31,12 +31,12 @@ std::shared_ptr<Entity> EntityManager::GetFirstEntityByParent(const std::shared_
     return nullptr;
 }
 
-std::shared_ptr<Entity> EntityManager::GetEntityByRawPointer(Entity* rawPtr) const
+std::shared_ptr<Entity> EntityManager::GetEntityByRawPointer(const Entity* rawPtr) const
 {
-    for (const auto& entity : m_entities)
+    for (const std::shared_ptr<Entity>& l_entity : m_entities)
     {
-        if (entity.get() == rawPtr)
-            return entity;
+        if (l_entity.get() == rawPtr)
+            return l_entity;
     }
     return nullptr;
 }
@@ -70,6 +70,36 @@ void EntityManager::GameplayStarted() const
 std::vector<std::string> EntityManager::GetAvailableTemplates()
 {
     return EntityFactory::Get().GetAvailableTemplates();
+}
+
+
+void EntityManager::DestroyLightEntities()
+{
+    for (const std::shared_ptr<Entity>& l_entity : m_lightEntities)
+        l_entity->RemoveAllComponents();
+
+    m_lightEntities.clear();
+}
+
+
+void EntityManager::DestroyRenderableEntities()
+{
+    for (const std::shared_ptr<Entity>& l_entity : m_renderableEntities)
+        l_entity->RemoveAllComponents();
+
+    m_renderableEntities.clear();
+}
+
+
+void EntityManager::DestroyAllEntities()
+{
+    DestroyLightEntities();
+    DestroyRenderableEntities();
+
+    for (const std::shared_ptr<Entity>& l_entity : m_entities)
+        l_entity->RemoveAllComponents();
+
+    m_entities.clear();
 }
 
 

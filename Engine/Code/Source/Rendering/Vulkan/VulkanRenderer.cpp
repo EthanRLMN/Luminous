@@ -37,7 +37,7 @@
 
 void VulkanRenderer::Create(IDevice* a_device, ISwapChain* a_swapChain)
 {
-    m_cameraEditor.Init(static_cast<float>(a_swapChain->CastVulkan()->GetSwapChainExtent().width) / static_cast<float>(a_swapChain->CastVulkan()->GetSwapChainExtent().height),60.f, 0.1f, 100.f);
+    m_cameraEditor.Init(static_cast<float>(a_swapChain->CastVulkan()->GetSwapChainExtent().width) / static_cast<float>(a_swapChain->CastVulkan()->GetSwapChainExtent().height), 80.f, 0.1f, 1000.f);
     CreateDefaultTextureSampler(a_device);
 }
 
@@ -179,12 +179,15 @@ void VulkanRenderer::RecordCommandBuffer(const VkCommandBuffer& a_commandBuffer,
                     break;
                 }
             }
+           
+                
 
             Maths::Matrix4 l_cameraViewMatrix;
             Maths::Matrix4 l_cameraProjMatrix;
 
             if (a_entityManager.GetEngine()->GetLaunchSettings().m_InGame)
             {
+
                 if (l_entity != nullptr)
                 {
                     CameraComponent* l_camcomp = l_entity->GetComponent<CameraComponent>().get();
@@ -233,121 +236,129 @@ void VulkanRenderer::RecordCommandBuffer(const VkCommandBuffer& a_commandBuffer,
 
 
             // Draw all the Colliders in the Scene (Editor only Debug)
+            std::vector<std::shared_ptr<Entity>> l_entitiesWithCollider = a_entityManager.GetEntitiesByComponent<RigidbodyComponent>();
 
-            if (!a_entityManager.GetEngine()->GetLaunchSettings().m_InGame)
+            vkCmdBindPipeline(a_commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, a_wireGraphicsPipeline);
+
+            for (const std::shared_ptr<Entity>& entity : l_entitiesWithCollider)
             {
-                std::vector<std::shared_ptr<Entity>> l_entitiesWithCollider = a_entityManager.GetEntitiesByComponent<RigidbodyComponent>();
 
-                vkCmdBindPipeline(a_commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, a_wireGraphicsPipeline);
+                //Set Ubo's Camera (View/Projection)
+                UniformBufferObject l_ubo{};
+                l_ubo.view = l_cameraViewMatrix;
+                l_ubo.proj = l_cameraProjMatrix;
+                l_ubo.debug = 1; //Debug = 1 : No lights applied (Used to debug colliders)
 
-                for (const std::shared_ptr<Entity>& entity : l_entitiesWithCollider)
+                //Get Basic Components
+                TransformComponent* l_transform = entity->Transform().get();
+                RigidbodyComponent* l_rigidbody = entity->GetComponent<RigidbodyComponent>().get();
+                ColliderType l_colliderType = l_rigidbody->GetColliderType();
+
+                Maths::Vector3 l_pos = l_transform->GetGlobalPosition();
+                Maths::Vector3 l_rot = l_transform->GetGlobalRotationVec();
+                Maths::Vector3 l_scale = l_transform->GetGlobalScale();
+
+                //Check the collider type
+                if (l_colliderType == ColliderType::SPHERECOLLIDER)
                 {
+                    float l_radius = l_scale.y += l_rigidbody->GetSphereOffset();
+                    l_scale = Maths::Vector3(l_radius);
 
-                    // Set Ubo's Camera (View/Projection)
-                    UniformBufferObject l_ubo{};
-                    l_ubo.view = l_cameraViewMatrix;
-                    l_ubo.proj = l_cameraProjMatrix;
-                    l_ubo.debug = 1; // Debug = 1 : No lights applied (Used to debug colliders)
+                     Maths::Quaternion l_rotQuat = l_transform->GetGlobalRotationQuat();
+                    Maths::Quaternion l_rotQuatOpposite = Maths::Quaternion(-l_rotQuat.x, -l_rotQuat.y, -l_rotQuat.z, l_rotQuat.w); // Rotation is the opposite on Jolt: need to reverse the quat rotation
+                    l_rot = l_rotQuatOpposite.ToEulerAngles(true);
 
-                    // Get Basic Components
-                    TransformComponent* l_transform = entity->Transform().get();
-                    RigidbodyComponent* l_rigidbody = entity->GetComponent<RigidbodyComponent>().get();
-                    ColliderType l_colliderType = l_rigidbody->GetColliderType();
+                    //Matrix recalculation to fit sphere size's norm
+                    Maths::Matrix4 l_posMat = Maths::Matrix4::Translation(l_pos);
+                    Maths::Matrix4 l_rotMat = Maths::Matrix4::RotationXYZ(l_rot);
+                    Maths::Matrix4 l_scaleMat = Maths::Matrix4::Scale(l_scale);
+                    Maths::Matrix4 l_modelMatrixSphere = Maths::Matrix4::TRS(l_posMat, l_rotMat, l_scaleMat);
 
-                    Maths::Vector3 l_pos = l_transform->GetGlobalPosition();
-                    Maths::Vector3 l_rot = l_transform->GetGlobalRotationVec();
-                    Maths::Vector3 l_scale = l_transform->GetGlobalScale();
-
-                    // Check the collider type
-                    if (l_colliderType == ColliderType::SPHERECOLLIDER)
-                    {
-                        float l_radius = l_scale.y += l_rigidbody->GetSphereOffset();
-                        l_scale = Maths::Vector3(l_radius);
-
-                        // Matrix recalculation to fit sphere size's norm
-                        Maths::Matrix4 l_posMat = Maths::Matrix4::Translation(l_pos);
-                        Maths::Matrix4 l_rotMat = Maths::Matrix4::RotationXYZ(l_rot);
-                        Maths::Matrix4 l_scaleMat = Maths::Matrix4::Scale(l_scale);
-                        Maths::Matrix4 l_modelMatrixSphere = Maths::Matrix4::TRS(l_posMat, l_rotMat, l_scaleMat);
-
-                        l_ubo.model = l_modelMatrixSphere.Transpose();
-                    } else if (l_colliderType == ColliderType::CAPSULECOLLIDER)
-                    {
-                        // Get basic collider's values
-                        float l_capsuleRadius = l_rigidbody->GetCapsuleWidth();
-                        float l_capsuleHeight = l_rigidbody->GetCapsuleHeight();
-                        Maths::Vector2 l_capsuleSizeOffset = l_rigidbody->GetCapsuleOffset();
-
-                        Maths::Quaternion l_rotQuat = l_transform->GetGlobalRotationQuat();
-                        Maths::Quaternion l_rotQuatOpposite = Maths::Quaternion(-l_rotQuat.x, -l_rotQuat.y, -l_rotQuat.z, l_rotQuat.w); // Rotation is the opposite on Jolt: need to reverse the quat rotation
-                        l_rot = l_rotQuatOpposite.ToEulerAngles(true);
-                        Maths::Vector3 l_colScale = Maths::Vector3(l_capsuleRadius + l_capsuleSizeOffset.x);
-
-                        Maths::Matrix4 l_rotMat = Maths::Matrix4::RotationXYZ(l_rot);
-                        Maths::Matrix4 l_scaleMat = Maths::Matrix4::Scale(l_colScale);
-
-                        // Loop 2 times to draw both tips of the cynlinder (spheres)
-                        for (int l_i = 0; l_i < 2; ++l_i)
-                        {
-                            // Calculate offset to position the spheres right
-                            Maths::Vector3 l_add = Maths::Vector3(0, l_capsuleHeight + l_capsuleSizeOffset.y, 0) * l_rotQuat;
-                            if (l_i == 0)
-                                l_pos += l_add;
-                            else
-                                l_pos -= l_add;
-
-                            Maths::Matrix4 l_posMat = Maths::Matrix4::Translation(l_pos);
-
-                            Maths::Matrix4 l_modelMatrixSphere = Maths::Matrix4::TRS(l_posMat, l_rotMat, l_scaleMat);
-                            l_ubo.model = l_modelMatrixSphere.Transpose();
-
-                            DrawModel(l_rigidbody->GetCapsuleSphereDebug(), a_commandBuffer, a_descriptor, a_pipelineLayout, l_ubo);
-                            l_pos = l_transform->GetGlobalPosition();
-                        }
-
-                        // Setting the values back for the cylinder
-                        l_scale = Maths::Vector3(l_capsuleRadius + l_capsuleSizeOffset.x, l_capsuleHeight + l_capsuleSizeOffset.y, l_capsuleRadius + l_capsuleSizeOffset.x);
-
-                        Maths::Matrix4 l_posMat = Maths::Matrix4::Translation(l_pos);
-                        l_rotMat = Maths::Matrix4::RotationXYZ(l_rot);
-                        l_scaleMat = Maths::Matrix4::Scale(l_scale);
-                        Maths::Matrix4 l_modelMatrixSphere = Maths::Matrix4::TRS(l_posMat, l_rotMat, l_scaleMat);
-
-                        l_ubo.model = l_modelMatrixSphere.Transpose();
-                    } else if (l_colliderType == ColliderType::BOXCOLLIDER)
-                    {
-                        l_scale += l_rigidbody->GetBoxOffset();
-
-                        Maths::Matrix4 l_posMat = Maths::Matrix4::Translation(l_pos);
-                        Maths::Matrix4 l_rotMat = Maths::Matrix4::RotationXYZ(l_rot);
-                        Maths::Matrix4 l_scaleMat = Maths::Matrix4::Scale(l_scale);
-                        Maths::Matrix4 l_modelMatrixSphere = Maths::Matrix4::TRS(l_posMat, l_rotMat, l_scaleMat);
-                        l_ubo.model = l_modelMatrixSphere.Transpose();
-                    }
-                    // Draw the basic shape (sphere, box, cynlinder)
-                    DrawModel(entity->GetComponent<RigidbodyComponent>()->GetModelDebug(), a_commandBuffer, a_descriptor, a_pipelineLayout, l_ubo);
+                    l_ubo.model = l_modelMatrixSphere.Transpose();
                 }
-                vkCmdBindPipeline(a_commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, a_graphicsPipeline);
-            }
-                
+                else if (l_colliderType == ColliderType::CAPSULECOLLIDER)
+                {
+                    //Get basic collider's values
+                    float l_capsuleRadius = l_rigidbody->GetCapsuleWidth();
+                    float l_capsuleHeight = l_rigidbody->GetCapsuleHeight();
+                    Maths::Vector2 l_capsuleSizeOffset = l_rigidbody->GetCapsuleOffset();
 
-            
+                    Maths::Quaternion l_rotQuat = l_transform->GetGlobalRotationQuat();
+                    Maths::Quaternion l_rotQuatOpposite = Maths::Quaternion(-l_rotQuat.x, -l_rotQuat.y, -l_rotQuat.z, l_rotQuat.w); //Rotation is the opposite on Jolt: need to reverse the quat rotation
+                    l_rot = l_rotQuatOpposite.ToEulerAngles(true);
+                    Maths::Vector3 l_colScale = Maths::Vector3(l_capsuleRadius + l_capsuleSizeOffset.x);
+
+                    Maths::Matrix4 l_rotMat = Maths::Matrix4::RotationXYZ(l_rot);
+                    Maths::Matrix4 l_scaleMat = Maths::Matrix4::Scale(l_colScale);
+
+                    //Loop 2 times to draw both tips of the cynlinder (spheres)
+                    for (int l_i = 0; l_i < 2; ++l_i)
+                    {
+                        //Calculate offset to position the spheres right
+                        Maths::Vector3 l_add = Maths::Vector3(0, l_capsuleHeight + l_capsuleSizeOffset.y, 0) * l_rotQuat;
+                        if (l_i == 0)
+                            l_pos += l_add;
+                        else
+                            l_pos -= l_add;
+
+                        Maths::Matrix4 l_posMat = Maths::Matrix4::Translation(l_pos);
+
+                        Maths::Matrix4 l_modelMatrixSphere = Maths::Matrix4::TRS(l_posMat, l_rotMat, l_scaleMat);
+                        l_ubo.model = l_modelMatrixSphere.Transpose();
+
+                        DrawModel(l_rigidbody->GetCapsuleSphereDebug(), a_commandBuffer, a_descriptor, a_pipelineLayout, l_ubo);
+                        l_pos = l_transform->GetGlobalPosition();
+                    }
+
+                    //Setting the values back for the cylinder
+                    l_scale = Maths::Vector3(l_capsuleRadius + l_capsuleSizeOffset.x, l_capsuleHeight + l_capsuleSizeOffset.y, l_capsuleRadius + l_capsuleSizeOffset.x);
+
+                    Maths::Matrix4 l_posMat = Maths::Matrix4::Translation(l_pos);
+                    l_rotMat = Maths::Matrix4::RotationXYZ(l_rot);
+                    l_scaleMat = Maths::Matrix4::Scale(l_scale);
+                    Maths::Matrix4 l_modelMatrixSphere = Maths::Matrix4::TRS(l_posMat, l_rotMat, l_scaleMat);
+
+                    l_ubo.model = l_modelMatrixSphere.Transpose();
+                }
+                else if (l_colliderType == ColliderType::BOXCOLLIDER)
+                {
+                    
+
+                    l_pos = l_transform->GetGlobalPosition();
+                    l_rot = l_transform->GetGlobalRotationVec();
+                    Maths::Quaternion l_rotQuat = l_transform->GetGlobalRotationQuat();
+                    Maths::Quaternion l_rotQuatOpposite = Maths::Quaternion(-l_rotQuat.x, -l_rotQuat.y, -l_rotQuat.z, l_rotQuat.w); // Rotation is the opposite on Jolt: need to reverse the quat rotation
+                    l_rot = l_rotQuatOpposite.ToEulerAngles(true);
+                    l_scale = l_transform->GetGlobalScale();
+                    l_scale += l_rigidbody->GetBoxOffset();
+
+                    Maths::Matrix4 l_posMat = Maths::Matrix4::Translation(l_pos);
+                    Maths::Matrix4 l_rotMat = Maths::Matrix4::RotationXYZ(l_rot);
+                    Maths::Matrix4 l_scaleMat = Maths::Matrix4::Scale(l_scale);
+                    Maths::Matrix4 l_modelMatrixSphere = Maths::Matrix4::TRS(l_posMat, l_rotMat, l_scaleMat);
+                    l_ubo.model = l_modelMatrixSphere.Transpose();
+                }
+                //Draw the basic shape (sphere, box, cynlinder)
+
+
+                DrawModel(entity->GetComponent<RigidbodyComponent>()->GetModelDebug(), a_commandBuffer, a_descriptor, a_pipelineLayout, l_ubo);
+
+            }
+            vkCmdBindPipeline(a_commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, a_graphicsPipeline);
         }
 
         // Callback ImGui_ImplVulkan_RenderDrawData
-        
         if (l_renderPass == a_renderPassManager->GetRenderPassAt(1))
             if (s_editorGuiCallback)
                 s_editorGuiCallback();
-        
+
         
 
         vkCmdEndRenderPass(a_commandBuffer);
         
         if (l_renderPass == a_renderPassManager->GetRenderPassAt(0))
         {
-            if (a_entityManager.GetEngine()->GetLaunchSettings().m_Compiled == false)
-                CopyImageToViewport(a_swapChain, a_commandBuffer);           
+            CopyImageToViewport(a_swapChain, a_commandBuffer);           
         } 
     }
 

@@ -2,6 +2,7 @@
 #include <memory>
 #include <vector>
 
+#include "Engine.hpp"
 #include "Game/Systems/Physics/PhysicsCollisionListener.hpp"
 #include "Game/Systems/Component/ModelComponent.hpp"
 #include "Game/Systems/Physics/RigidBody.hpp"
@@ -24,8 +25,15 @@ public:
     void Update() override;
 
     inline void SetEntity(const std::weak_ptr<Entity>& a_relatedEntity) { m_entity = a_relatedEntity; }
-    inline void SetColliderType(ColliderType a_type) { m_colliderType = a_type; }
-    inline void SetLayer(JPH::uint8 a_layer) { m_layer = a_layer; }
+    inline void SetColliderType(ColliderType a_type)
+    {
+        m_colliderType = a_type;
+
+
+    }
+
+    void UpdateTransform();
+     void SetLayer(JPH::uint8 a_layer);
     inline void SetActive(JPH::EActivation a_active) { m_active = a_active; }
     void InitDebugModels();
     inline void SetCapsuleWidth(float a_width) { m_capsuleWidth = a_width; } //Dont use this outside of this class
@@ -34,8 +42,8 @@ public:
     void SetColliderShape(); //Used to update collider shape with offsets and transform size
     //Use these to resize collider :
     inline void SetColliderSize(Maths::Vector3 a_boxSize) { m_boxSizeOffset = a_boxSize; SetColliderShape();} //Set Collider size for a Box
-    inline void SetColliderSize(Maths::Vector2 a_capsuleSize) { m_capsuleSizeOffset = a_capsuleSize; SetCollider(); } //Set Collider size for a Capsule
-    inline void SetColliderSize(float a_sphereSize) { m_sphereSizeOffset = a_sphereSize; SetCollider(); } //Set Collider size for a Sphere
+    inline void SetColliderSize(Maths::Vector2 a_capsuleSize) { m_capsuleSizeOffset = a_capsuleSize; SetColliderShape(); } //Set Collider size for a Capsule
+    inline void SetColliderSize(float a_sphereSize) { m_sphereSizeOffset = a_sphereSize; SetColliderShape(); } //Set Collider size for a Sphere
 
     [[nodiscard]] inline std::shared_ptr<Entity> GetEntity() const { return m_entity.lock(); }
     inline ColliderType GetColliderType() { return m_colliderType; }
@@ -47,6 +55,7 @@ public:
     inline float GetSphereOffset() { return m_sphereSizeOffset; }
     inline Maths::Vector3 GetBoxOffset() { return m_boxSizeOffset; }
     inline Maths::Vector2 GetCapsuleOffset() { return m_capsuleSizeOffset; }
+    inline JPH::ObjectLayer GetLayer() { return m_layer; }
 
 private:
     float m_capsuleWidth{ 0.0f };
@@ -63,5 +72,7 @@ private:
     float m_sphereSizeOffset{ 2.0f };
     Maths::Vector2 m_capsuleSizeOffset{ 1.f, 2.f };
     Maths::Vector3 m_oldTransformSize{ 0.0f, 0.0f, 0.0f };
+    Maths::Vector3 m_oldPosition{ 0.0f, 0.0f, 0.0f };
+    Maths::Vector3 m_oldRotation{ 0.f, 0.f, 0.f };
 };
 

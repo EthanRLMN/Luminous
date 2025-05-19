@@ -36,9 +36,13 @@ public:
     inline const std::vector<std::shared_ptr<Entity>>& GetLightEntities() const { return m_lightEntities; }
     std::shared_ptr<Entity> GetEntityByName(const std::string& a_name) const;
     std::shared_ptr<Entity> GetFirstEntityByParent(const std::shared_ptr<Entity>& a_parent) const;
-    [[nodiscard]] std::shared_ptr<Entity> GetEntityByRawPointer(Entity* rawPtr) const;
+    [[nodiscard]] std::shared_ptr<Entity> GetEntityByRawPointer(const Entity* rawPtr) const;
     static std::vector<std::string> GetAvailableTemplates();
     Engine* GetEngine() const { return m_engine; }
+
+    void DestroyLightEntities();
+    void DestroyRenderableEntities();
+    void DestroyAllEntities();
 
     template<typename T>
     inline std::vector<std::shared_ptr<Entity> > GetEntitiesByComponent() const

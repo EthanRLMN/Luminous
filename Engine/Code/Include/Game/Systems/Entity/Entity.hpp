@@ -7,10 +7,9 @@
 
 #include <Game/Systems/Component/LightComponent.hpp>
 #include <Game/Systems/Component/ModelComponent.hpp>
+#include "Game/Systems/Component/CameraComponent.hpp"
 #include "Game/Systems/Component/EntityComponent.hpp"
 #include "Game/Systems/Component/TransformComponent.hpp"
-#include "Game/Systems/Component/CameraComponent.hpp"
-#include "Game/Systems/Component/ModelComponent.hpp"
 #include "Game/Systems/Physics/RigidBody.hpp"
 
 class Engine;
@@ -52,6 +51,8 @@ public:
     inline std::shared_ptr<CameraComponent> Camera() const { return GetComponent<CameraComponent>(); }
     void AddComponent(const std::shared_ptr<EntityComponent>& a_component);
     void RemoveComponent(const std::shared_ptr<EntityComponent>& a_component);
+
+    void RemoveAllComponents();
 
 
 private:

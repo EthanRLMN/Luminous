@@ -31,30 +31,30 @@ void Scene::RegisterScene(EntityManager& a_entityManager)
 
     for (size_t i = 0; i < EntityManager::GetAvailableTemplates().size(); ++i)
     {
-        const std::shared_ptr<Entity> l_obj = a_entityManager.CreateEntityFromTemplate(EntityManager::GetAvailableTemplates()[i]);
+        //const std::shared_ptr<Entity> l_obj = a_entityManager.CreateEntityFromTemplate(EntityManager::GetAvailableTemplates()[i]);
 
-        const Maths::Vector3 l_position = Maths::Vector3(4.0f, 0.0f, 0.0f) * static_cast<const float>(i);
-        l_obj->Transform()->SetLocalPosition(l_position);
+        //const Maths::Vector3 l_position = Maths::Vector3(4.0f, 0.0f, 0.0f) * static_cast<const float>(i);
+        //l_obj->Transform()->SetLocalPosition(l_position);
     }
 
     const std::shared_ptr<Entity> collider = a_entityManager.CreateEntityFromTemplate("DefaultCube");
     const std::shared_ptr<Entity> collider2 = a_entityManager.CreateEntityFromTemplate("DefaultCube");
-    collider->Transform()->SetLocalPosition(Maths::Vector3(8.f, 10.0f, 0.0f));
+    collider->Transform()->SetLocalPosition(Maths::Vector3(9.5f, 10.0f, 0.0f));
 
     const std::shared_ptr<RigidbodyComponent> l_modelComponent = std::make_shared<RigidbodyComponent>();
     collider->AddComponent(l_modelComponent);
     l_modelComponent->SetEngine(a_entityManager.GetEngine());
     l_modelComponent->SetEntity(collider);
     collider->Transform()->SetLocalScale(Maths::Vector3(2.f, 2.5f, 2.f));
-    collider->Transform()->SetLocalRotationVec(Maths::Vector3(0.f, 0.f, 0.f));
+    collider->Transform()->SetLocalRotationVec(Maths::Vector3(0.f, 0.f, 40.f));
 
     l_modelComponent->SetLayer(Layers::DYNAMIC);
     l_modelComponent->SetActive(JPH::EActivation::Activate);
-    l_modelComponent->SetColliderType(BOXCOLLIDER);
+    l_modelComponent->SetColliderType(SPHERECOLLIDER);
     l_modelComponent->Initialize();
 
-    collider->Transform()->SetLocalScale(Maths::Vector3(1.f, 1.0f, 1.f));
-    l_modelComponent->SetColliderSize(Maths::Vector3(0.f, 1.f, 0.f));
+    collider->Transform()->SetLocalScale(Maths::Vector3(1.5f, 1.0f, 1.5f));
+    l_modelComponent->SetColliderSize(Maths::Vector3(0.f, 0.f, 0.f));
 
 
     const std::shared_ptr<RigidbodyComponent> l_modelComponent2 = std::make_shared<RigidbodyComponent>();
@@ -70,7 +70,7 @@ void Scene::RegisterScene(EntityManager& a_entityManager)
     l_modelComponent2->Initialize();
 
     collider2->Transform()->SetLocalScale(Maths::Vector3(1.f, 1.0f, 1.f));
-    l_modelComponent2->SetColliderSize(Maths::Vector3(0.f, 1.f, 0.f));
+    l_modelComponent2->SetColliderSize(Maths::Vector3(0.f, 0.f, 0.f));
 
 
     const std::shared_ptr<Entity> cam = a_entityManager.CreateEntityFromTemplate("DefaultEmpty");
@@ -236,7 +236,7 @@ void Scene::SaveScene(const std::string& filepath, const EntityManager& a_entity
             l_cameraData.farPlane = l_camera->GetFarPlane();
             l_cameraData.nearPlane = l_camera->GetNearPlane();
             l_cameraData.fieldOfView = l_camera->GetFieldOfView();
-            l_cameraData.isActive = l_camera->GetisActive();
+            l_cameraData.isActive = l_camera->IsActive();
             l_cameraData.eye = Vec3(l_camera->GetEye().x, l_camera->GetEye().y, l_camera->GetEye().z);
             l_cameraData.center = Vec3(l_camera->GetCenter().x, l_camera->GetCenter().y, l_camera->GetCenter().z);
 
@@ -256,9 +256,9 @@ bool Scene::CheckIfFileDetected(const std::string& a_filename)
 
     if (!std::filesystem::exists(filepath))
     {
-        DEBUG_LOG_ERROR("File Not Detected");
+        DEBUG_LOG_ERROR("[SCENE] Could not find a proper scene file to load!");
         return false;
     }
-    DEBUG_LOG_ERROR("File Detected");
+    DEBUG_LOG_INFO("[SCENE] File `{}` found! Loading...", a_filename);
     return true;
 }

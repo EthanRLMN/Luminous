@@ -2,6 +2,7 @@
 
 #include "Interface/IWindowPanel.hpp"
 
+
 class ConsolePanel : public IWindowPanel
 {
 public:
@@ -14,8 +15,8 @@ public:
 
 
 private:
-    void AddLog(const std::string& a_log);
+    static ImVec4 GetColorForLogLevel(Debug::LogLevel a_level);
 
-    std::vector<std::string> m_items;
-    std::string m_inputBuffer;
+    std::vector<std::string> m_items {};
+    bool m_autoScroll { true };
 };

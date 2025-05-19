@@ -12,25 +12,20 @@ void MainPanel::Render()
     {
         if (ImGui::BeginMenu("File"))
         {
-            if(ImGui::MenuItem("New Project", "CTRL + N"))
+            if(ImGui::MenuItem("Save Scene", "CTRL + S"))
             {
-
-            }
-            if(ImGui::MenuItem("Open Project...", "CTRL + O"))
-            {
-
+                p_editor->GetEngine()->GetScene()->SaveScene(m_scenePath, *p_editor->GetEngine()->GetEntityManager());
             }
 
-            ImGui::Separator();
-            if(ImGui::MenuItem("Save All", "CTRL + S"))
+            if (ImGui::MenuItem("Load Scene", "CTRL + L"))
             {
-
+                p_editor->GetEngine()->GetScene()->LoadScene(m_scenePath, *p_editor->GetEngine()->GetEntityManager());
             }
 
             ImGui::Separator();
             if(ImGui::MenuItem("Build Project", "CTRL + B"))
             {
-
+                
             }
 
             ImGui::Separator();
@@ -40,61 +35,12 @@ void MainPanel::Render()
             }
             ImGui::EndMenu();
         }
-
-        if (ImGui::BeginMenu("Edit"))
-        {
-            if(ImGui::MenuItem("Undo", "CTRL + Z"))
-            {
-
-            }
-            if (ImGui::MenuItem("Redo", "CTRL + Y"))
-            {
-
-            }
-
-            ImGui::Separator();
-            if(ImGui::MenuItem("Cut", "CTRL + X"))
-            {
-
-            }
-            if(ImGui::MenuItem("Copy", "CTRL + C"))
-            {
-
-            }
-            if(ImGui::MenuItem("Paste", "CTRL + V"))
-            {
-
-            }
-            if(ImGui::MenuItem("Duplicate", "CTRL + D"))
-            {
-
-            }
-            if (ImGui::MenuItem("Delete", "DEL"))
-            {
-
-            }
-
-            ImGui::EndMenu();
-        }
-
-        if (ImGui::BeginMenu("Window"))
-        {
-            if(ImGui::MenuItem("Scene"))
-            {
-
-            }
-            if(ImGui::MenuItem("Game"))
-            {
-
-            }
-            ImGui::EndMenu();
-        }
-
         HelpContextMenu();
 
         ImGui::EndMainMenuBar();
     }
 }
+
 
 void MainPanel::HelpContextMenu()
 {
@@ -107,4 +53,15 @@ void MainPanel::HelpContextMenu()
         }
         ImGui::EndMenu();
     }
+}
+
+
+bool MainPanel::RunCommand(const std::string& a_cmd)
+{
+#ifdef _WIN32
+    std::string l_fullCmd = "cmd /C " + a_cmd;
+#else
+    std::string l_fullCmd = a_cmd;
+#endif
+    return std::system(l_fullCmd.c_str()) == 0;
 }
