@@ -254,9 +254,9 @@ bool Scene::CheckIfFileDetected(const std::string& a_filename)
 
     if (!std::filesystem::exists(filepath))
     {
-        DEBUG_LOG_ERROR("File Not Detected");
+        DEBUG_LOG_ERROR("[SCENE] Could not find a proper scene file to load!");
         return false;
     }
-    DEBUG_LOG_ERROR("File Detected");
+    DEBUG_LOG_INFO("[SCENE] File `{}` found! Loading...", a_filename);
     return true;
 }
