@@ -505,19 +505,19 @@ void InspectorPanel::Render()
                         if (posChanged)
                             p_isEntitySelected->GetComponent<RigidbodyComponent>()->SetColliderSize(l_capsuleSizeOffset);
                     }
-                    if (ImGui::BeginPopupContextItem("DeleteComponents"))
-                    {
-                        if (ImGui::MenuItem("Delete Component"))
-                        {
-                            auto component = p_isEntitySelected->GetComponent<RigidbodyComponent>();
-                            if (component)
-                            {
-                                p_isEntitySelected->RemoveComponent(component);
-                            }
-                        }
-                        ImGui::EndPopup();
-                    }
                 }
+                /* if (ImGui::BeginPopupContextItem("DeleteComponents"))
+                {
+                    if (ImGui::MenuItem("Delete Component"))
+                    {
+                        auto component = p_isEntitySelected->GetComponent<RigidbodyComponent>();
+                        if (component)
+                        {
+                            p_isEntitySelected->RemoveComponent(component);
+                        }
+                    }
+                    ImGui::EndPopup();
+                }*/
             }
         }
         ImGui::PopStyleColor();
