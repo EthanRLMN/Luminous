@@ -21,6 +21,8 @@ struct IResourceParams
     //TODO: Add default values as a backup to avoid potential issues
     std::string m_meshPath { "Engine/Assets/Default/Models/Cube.fbx" };
     std::string m_texturePath { "Engine/Assets/Default/Textures/Dummy.png" };
+    std::string m_scriptPath{ "Engine/Scripts/" };
+    std::string m_scriptName{ "NewScript.hpp" };
     std::string m_vertexShaderPath { "" };
     std::string m_fragmentShaderPath { "" };
     std::string m_tesselationShaderPath { "" };
