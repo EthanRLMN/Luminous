@@ -41,6 +41,7 @@ void MainPanel::Render()
     }
 }
 
+
 void MainPanel::HelpContextMenu()
 {
     if (ImGui::BeginMenu("Help"))
@@ -52,4 +53,10 @@ void MainPanel::HelpContextMenu()
         }
         ImGui::EndMenu();
     }
+}
+
+
+bool MainPanel::RunCommand(const std::string& a_cmd)
+{
+
 }
