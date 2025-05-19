@@ -234,7 +234,7 @@ void Scene::SaveScene(const std::string& filepath, const EntityManager& a_entity
             l_cameraData.farPlane = l_camera->GetFarPlane();
             l_cameraData.nearPlane = l_camera->GetNearPlane();
             l_cameraData.fieldOfView = l_camera->GetFieldOfView();
-            l_cameraData.isActive = l_camera->GetisActive();
+            l_cameraData.isActive = l_camera->IsActive();
             l_cameraData.eye = Vec3(l_camera->GetEye().x, l_camera->GetEye().y, l_camera->GetEye().z);
             l_cameraData.center = Vec3(l_camera->GetCenter().x, l_camera->GetCenter().y, l_camera->GetCenter().z);
 

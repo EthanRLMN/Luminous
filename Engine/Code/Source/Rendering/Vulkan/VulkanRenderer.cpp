@@ -37,7 +37,7 @@
 
 void VulkanRenderer::Create(IDevice* a_device, ISwapChain* a_swapChain)
 {
-    m_cameraEditor.Init(static_cast<float>(a_swapChain->CastVulkan()->GetSwapChainExtent().width) / static_cast<float>(a_swapChain->CastVulkan()->GetSwapChainExtent().height),60.f, 0.1f, 100.f);
+    m_cameraEditor.Init(static_cast<float>(a_swapChain->CastVulkan()->GetSwapChainExtent().width) / static_cast<float>(a_swapChain->CastVulkan()->GetSwapChainExtent().height), 80.f, 0.1f, 1000.f);
     CreateDefaultTextureSampler(a_device);
 }
 

@@ -103,8 +103,6 @@ void RigidbodyComponent::InitDebugModels()
 
 void RigidbodyComponent::SetCollider()
 {
-
-    Entity* l_entity = m_entity.lock().get();
     TransformComponent* l_transform = m_entity.lock().get()->GetComponent<TransformComponent>().get();
     JPH::Vec3 l_position = JPH::Vec3(l_transform->GetLocalPosition().x, l_transform->GetLocalPosition().y, l_transform->GetLocalPosition().z);
     JPH::Vec3 l_scale = JPH::Vec3(l_transform->GetLocalScale().x, l_transform->GetLocalScale().y , l_transform->GetLocalScale().z);
@@ -122,7 +120,8 @@ void RigidbodyComponent::SetCollider()
 
         m_rigidbody = GetEngine()->GetPhysicsSystem()->CreateRigidBody(floor_shape, l_position, l_rotation, m_layer, m_active);
         m_rigidbody->SetParentComponent(this); 
-    } else if (m_colliderType == ColliderType::SPHERECOLLIDER)
+    }
+    else if (m_colliderType == ColliderType::SPHERECOLLIDER)
     {
         JPH::SphereShapeSettings settings(l_scale.GetY() + m_sphereSizeOffset);
         settings.SetEmbedded();
@@ -132,7 +131,8 @@ void RigidbodyComponent::SetCollider()
 
         m_rigidbody = GetEngine()->GetPhysicsSystem()->CreateRigidBody(floor_shape, l_position, l_rotation, m_layer, m_active);
         m_rigidbody->SetParentComponent(this);
-    } else if (m_colliderType == ColliderType::CAPSULECOLLIDER)
+    }
+    else if (m_colliderType == ColliderType::CAPSULECOLLIDER)
     {
         float l_maxWidth = l_scale.GetX();
         if (l_scale.GetZ() > l_scale.GetX())

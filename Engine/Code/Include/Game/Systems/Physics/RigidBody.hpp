@@ -16,7 +16,7 @@ class RigidBody
 {
 public:
     RigidBody() = default;
-    ~RigidBody() = default;
+    virtual ~RigidBody() = default;
 
     explicit RigidBody(JPH::Body* a_rigidBody) : m_rigidBody(a_rigidBody) {}
 
@@ -75,7 +75,7 @@ public:
     [[nodiscard]] inline const JPH::MotionProperties* GetMotionPropertiesUnchecked() const { return m_rigidBody->GetMotionPropertiesUnchecked(); }
     [[nodiscard]] inline const JPH::MotionProperties* GetMotionProperties() const { return m_rigidBody->GetMotionProperties(); }
     inline static JPH::Body& GetFixedToWorld() { return s_fixedToWorld; }
-    inline RigidbodyComponent* GetParentComponent() { return m_parentComponent; }
+    inline RigidbodyComponent* GetParentComponent() const { return m_parentComponent; }
 
     inline void SetParentComponent(RigidbodyComponent* a_parentComponent) { m_parentComponent = a_parentComponent; }
     inline void SetEnhancedInternalEdgeRemoval(const bool a_inApply) const { return m_rigidBody->SetEnhancedInternalEdgeRemoval(a_inApply); }
@@ -107,14 +107,13 @@ public:
     inline void MoveKinematic(const JPH::RVec3Arg a_inTargetPosition, const JPH::QuatArg a_inTargetRotation, const float a_inDeltaTime) const { m_rigidBody->MoveKinematic(a_inTargetPosition, a_inTargetRotation, a_inDeltaTime); }
     [[nodiscard]] inline bool ApplyBuoyancyImpulse(const JPH::RVec3Arg a_inSurfacePosition, const JPH::Vec3Arg a_inSurfaceNormal, const float a_inBuoyancy, const float a_inLinearDrag, const float a_inAngularDrag, const JPH::Vec3Arg a_inFluidVelocity, const JPH::Vec3Arg a_inGravity, const float a_inDeltaTime) const { return m_rigidBody->ApplyBuoyancyImpulse(a_inSurfacePosition, a_inSurfaceNormal, a_inBuoyancy, a_inLinearDrag, a_inAngularDrag, a_inFluidVelocity, a_inGravity, a_inDeltaTime); }
     [[nodiscard]] inline bool ApplyBuoyancyImpulse(const float a_inTotalVolume, const float a_inSubmergedVolume, const JPH::Vec3Arg a_inRelativeCenterOfBuoyancy, const float a_inBuoyancy, const float a_inLinearDrag, const float a_inAngularDrag, const JPH::Vec3Arg a_inFluidVelocity, const JPH::Vec3Arg a_inGravity, const float a_inDeltaTime) const { return m_rigidBody->ApplyBuoyancyImpulse(a_inTotalVolume, a_inSubmergedVolume, a_inRelativeCenterOfBuoyancy, a_inBuoyancy, a_inLinearDrag, a_inAngularDrag, a_inFluidVelocity, a_inGravity, a_inDeltaTime); }
-    inline void ValidateCachedBounds() const { m_rigidBody->ValidateCachedBounds(); }
     inline void SetUserData(const JPH::uint64 a_inUserData) const { m_rigidBody->SetUserData(a_inUserData); }
 
-    inline virtual void OnCollisionEnter(RigidBody* a_other) { DEBUG_LOG_VERBOSE("COLLIDED"); };
-    inline virtual void OnTriggerEnter(RigidBody* a_other) { DEBUG_LOG_VERBOSE("TRIGGERED"); };
+    inline virtual void OnCollisionEnter(RigidBody* a_other) { static_cast<void>(a_other); DEBUG_LOG_VERBOSE("COLLIDED"); }
+    inline virtual void OnTriggerEnter(RigidBody* a_other) { static_cast<void>(a_other); DEBUG_LOG_VERBOSE("TRIGGERED"); }
 
-    inline virtual void OnCollisionExit(RigidBody* a_other) { /*DEBUG_LOG_ERROR("COLLISION ENDED");*/ };
-    inline virtual void OnTriggerExit(RigidBody* a_other) { /*DEBUG_LOG_ERROR("TRIGGER ENDED");*/ };
+    inline virtual void OnCollisionExit(RigidBody* a_other) { static_cast<void>(a_other); }
+    inline virtual void OnTriggerExit(RigidBody* a_other) { static_cast<void>(a_other); }
 
 
 private:
