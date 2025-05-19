@@ -3,9 +3,13 @@
 #include "Game/Systems/Component/RigidbodyComponent.hpp"
 
 
-#include "WindowPanels/InspectorPanel.hpp"
+#include "Game/Systems/Component/CameraComponent.hpp"
+#include "Game/Systems/Component/LightComponent.hpp"
+#include "Game/Systems/Component/MeshRendererComponent.hpp"
+#include "Game/Systems/Component/RigidbodyComponent.hpp"
 #include "ResourceManager/ResourceManager.hpp"
 #include "WindowPanels/FileExplorerPanel.hpp"
+#include "WindowPanels/InspectorPanel.hpp"
 
 enum class TransformMode
 {
@@ -47,12 +51,36 @@ void InspectorPanel::Render()
 
         if (ImGui::BeginPopupContextWindow())
         {
-            if (ImGui::MenuItem("Add Component")) {}
+            if (ImGui::BeginMenu("Add new Component..."))
+            {
+                if (ImGui::MenuItem("Mesh renderer"))
+                {
+                    auto meshRendererComponent = std::make_shared<MeshRendererComponent>();
+                    p_isEntitySelected->AddComponent(std::static_pointer_cast<EntityComponent>(meshRendererComponent));
+                }
+                if (ImGui::MenuItem("Light"))
+                {
+                    auto lightComponent = std::make_shared<LightComponent>();
+                    p_isEntitySelected->AddComponent(lightComponent);
+                }
+                if (ImGui::MenuItem("Rigidbody"))
+                {
+                    auto rigidbodyComponent = std::make_shared<RigidbodyComponent>();
+                    p_isEntitySelected->AddComponent(std::static_pointer_cast<EntityComponent>(rigidbodyComponent));
+                }
+                if (ImGui::MenuItem("Camera"))
+                {
+                    auto cameraComponent = std::make_shared<CameraComponent>();
+                    p_isEntitySelected->AddComponent(cameraComponent);
+                }
+                ImGui::EndMenu();
+            }
             ImGui::EndPopup();
         }
 
         if (p_isEntitySelected)
         {
+            // ------------------- Transform ---------------------
             if (ImGui::CollapsingHeader("Transform"))
             {
                 if (ImGui::BeginCombo("Transform Mode", m_transformMode == TransformMode::Local ? "Local" : "Global"))
@@ -78,6 +106,7 @@ void InspectorPanel::Render()
 
                 const float inputWidth = 150.0f;
 
+                // --- Position
                 ImGui::Text("Position");
                 bool posChanged = false;
                 ImGui::PushItemWidth(inputWidth);
@@ -92,11 +121,10 @@ void InspectorPanel::Render()
                 ImGui::Text("Z:");
                 ImGui::SameLine();
                 posChanged |= ImGui::InputFloat("##posZ", &position.z, 0.1f, 1.0f, "%.2f");
-                ImGui::PopItemWidth();
 
+                // --- Rotation
                 ImGui::Text("Rotation");
                 bool rotChanged = false;
-                ImGui::PushItemWidth(inputWidth);
                 ImGui::Text("X:");
                 ImGui::SameLine();
                 rotChanged |= ImGui::InputFloat("##rotX", &rotation.x, 0.1f, 1.0f, "%.2f");
@@ -108,11 +136,10 @@ void InspectorPanel::Render()
                 ImGui::Text("Z:");
                 ImGui::SameLine();
                 rotChanged |= ImGui::InputFloat("##rotZ", &rotation.z, 0.1f, 1.0f, "%.2f");
-                ImGui::PopItemWidth();
 
+                // --- Scale
                 ImGui::Text("Scale");
                 bool scaleChanged = false;
-                ImGui::PushItemWidth(inputWidth);
                 ImGui::Text("X:");
                 ImGui::SameLine();
                 scaleChanged |= ImGui::InputFloat("##scaleX", &scale.x, 0.1f, 1.0f, "%.2f");
@@ -134,9 +161,7 @@ void InspectorPanel::Render()
                         p_isEntitySelected->Transform()->SetLocalRotationVec(rotation);
                     if (scaleChanged)
                         p_isEntitySelected->Transform()->SetLocalScale(scale);
-                }
-
-                if (m_transformMode == TransformMode::Global)
+                } else
                 {
                     if (posChanged)
                         p_isEntitySelected->Transform()->SetGlobalPosition(position);
@@ -147,6 +172,7 @@ void InspectorPanel::Render()
                 }
             }
 
+            // ------------------- Mesh Renderer ---------------------
             if (ImGui::CollapsingHeader("Mesh Renderer"))
             {
                 if (auto modelComponent = p_isEntitySelected->GetComponent<ModelComponent>())
@@ -478,10 +504,13 @@ void InspectorPanel::Render()
             p_isEntitySelected->Transform()->SetLocalRotationQuat(Maths::Quaternion::FromEulerAngles(newEuler));
             p_isEntitySelected->Transform()->SetLocalScale(newScale);*/
         }
+
         ImGui::PopStyleColor();
         ImGui::End();
     }
 }
+
+
 
 std::array<float, 16> InspectorPanel::ToFloatArray(const Maths::Matrix4& matrix)
 {
