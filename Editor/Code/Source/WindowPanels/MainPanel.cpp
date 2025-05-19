@@ -22,9 +22,14 @@ void MainPanel::Render()
             }
 
             ImGui::Separator();
-            if(ImGui::MenuItem("Save All", "CTRL + S"))
+            if(ImGui::MenuItem("Save Scene", "CTRL + S"))
             {
+                p_editor->GetEngine()->GetScene()->SaveScene(m_scenePath, *p_editor->GetEngine()->GetEntityManager());
+            }
 
+            if (ImGui::MenuItem("Load Scene", "CTRL + L"))
+            {
+                p_editor->GetEngine()->GetScene()->LoadScene(m_scenePath, *p_editor->GetEngine()->GetEntityManager());
             }
 
             ImGui::Separator();
