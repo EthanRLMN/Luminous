@@ -127,7 +127,7 @@ void Viewport::RenderGizmo(const ViewportImageInfo& a_imageInfo) const
     if (!l_transform)
         return;
 
-    const Maths::Matrix4 l_model = l_transform->GetLocalMatrix().Transpose();
+    const Maths::Matrix4 l_model = l_transform->GetGlobalMatrix().Transpose();
     const Maths::Matrix4 l_view = m_camera.GetViewMatrix().Transpose();
     const Maths::Matrix4 l_projection = m_camera.GetProjectionMatrix();
 
@@ -149,7 +149,7 @@ void Viewport::RenderGizmo(const ViewportImageInfo& a_imageInfo) const
         l_viewMatrix,
         l_projMatrix,
         m_currentGizmoOperation,
-        ImGuizmo::LOCAL,
+        ImGuizmo::WORLD,
         l_modelMatrix);
 
     if (ImGuizmo::IsUsing())
@@ -157,6 +157,14 @@ void Viewport::RenderGizmo(const ViewportImageInfo& a_imageInfo) const
         Maths::Matrix4 l_newModelMatrix;
         memcpy(&l_newModelMatrix.mat, l_modelMatrix, sizeof(float) * 16);
         l_newModelMatrix = l_newModelMatrix.Transpose();
+
+
+
+        if (l_transform->HasParent())
+        {
+            Maths::Matrix4 l_parentMatrix = l_transform->GetParent()->Transform()->GetGlobalMatrix().Inverse();
+            l_newModelMatrix = l_parentMatrix * l_newModelMatrix;
+        }
 
         Maths::Vector3 l_translation, l_scale;
         Maths::Quaternion l_rotation;

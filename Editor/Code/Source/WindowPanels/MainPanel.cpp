@@ -69,10 +69,6 @@ void MainPanel::Render()
             {
 
             }
-            if (ImGui::MenuItem("Delete", "DEL"))
-            {
-
-            }
 
             ImGui::EndMenu();
         }
