@@ -9,6 +9,8 @@
 
 #include "Game/Systems/Scripts/ScriptManager.hpp"
 
+#include "Game/Systems/Scripts/PlayerScript.hpp"
+
 void Scene::RegisterScene(EntityManager& a_entityManager)
 {
     const std::string filepath = "Engine/Assets/Default/Save/Scene.json";
@@ -40,10 +42,13 @@ void Scene::RegisterScene(EntityManager& a_entityManager)
         //l_obj->Transform()->SetLocalPosition(l_position);
     }
 
+
+    /*
     const std::shared_ptr<Entity> collider = a_entityManager.CreateEntityFromTemplate("DefaultCube");
     const std::shared_ptr<Entity> collider2 = a_entityManager.CreateEntityFromTemplate("DefaultCube");
     collider->Transform()->SetLocalPosition(Maths::Vector3(9.5f, 10.0f, 0.0f));
 
+    /*
     const std::shared_ptr<RigidbodyComponent> l_modelComponent = std::make_shared<RigidbodyComponent>();
     collider->AddComponent(l_modelComponent);
     l_modelComponent->SetEngine(a_entityManager.GetEngine());
@@ -73,29 +78,84 @@ void Scene::RegisterScene(EntityManager& a_entityManager)
     l_modelComponent2->Initialize();
 
     collider2->Transform()->SetLocalScale(Maths::Vector3(1.f, 1.0f, 1.f));
-    l_modelComponent2->SetColliderSize(Maths::Vector3(0.f, 0.f, 0.f));
+    l_modelComponent2->SetColliderSize(Maths::Vector3(0.f, 0.f, 0.f));*/
 
 
+    /*
     const std::shared_ptr<Entity> cam = a_entityManager.CreateEntityFromTemplate("DefaultEmpty");
     cam->GetComponent<TransformComponent>()->SetLocalPosition(Maths::Vector3(0.f, 0.f, -15.0f));
     cam->GetComponent<TransformComponent>()->SetLocalRotationVec(Maths::Vector3(0.f, 180.f, 0.f));
     const std::shared_ptr<CameraComponent> l_camComponent = std::make_shared<CameraComponent>();
     cam->AddComponent(l_camComponent);
     l_camComponent->Initialize();
-    l_camComponent->ForceSetMainCamera(true);
+    l_camComponent->ForceSetMainCamera(true);*/
 
 
 
-    //Scripts :
-    //ScriptManager l_scriptManager = ScriptManager();
-    //l_scriptManager.CompileScriptToDLL("PlayerScript.cpp", "PlayerScript.dll");
-
+    
+    /*
     const std::shared_ptr<Entity> l_entityWithScript = a_entityManager.CreateEntityFromTemplate("DefaultCube");
     const std::shared_ptr<ScriptComponent> l_scriptComponent = std::make_shared<ScriptComponent>();
     BaseScript* l_script = new BaseScript();
     l_scriptComponent->SetScript(l_script);
     l_scriptComponent->Initialize();
-    l_entityWithScript->AddComponent(l_scriptComponent);
+    l_entityWithScript->AddComponent(l_scriptComponent);*/
+
+    //--PLAYER INSTANTIATE--
+    const std::shared_ptr<Entity> l_Player = a_entityManager.CreateEntityFromTemplate("DefaultEmpty");
+    l_Player->SetName("Player");
+
+    
+
+    
+
+    //-- Player Collider --
+     const std::shared_ptr<RigidbodyComponent> l_playerCollider = std::make_shared<RigidbodyComponent>();
+    l_playerCollider->SetColliderType(CAPSULECOLLIDER);
+     l_Player->AddComponent(l_playerCollider);
+    l_playerCollider->SetEngine(a_entityManager.GetEngine());
+     l_playerCollider->SetEntity(l_Player);
+    l_playerCollider->SetLayer(Layers::DYNAMIC);
+    l_playerCollider->Initialize();
+    l_playerCollider->GetRigidbody()->GetRigidBody()->GetMotionProperties()->SetInverseInertia(JPH::Vec3(0.f,1.f,0.f), JPH::Quat::sIdentity());
+    l_playerCollider->GetRigidbody()->GetRigidBody()->SetAllowSleeping(false);
+    JPH::MassProperties massProps = l_playerCollider->GetRigidbody()->GetShape()->GetMassProperties();
+    l_Player->GetEngine()->GetPhysicsSystem()->GetBodyInterface().SetGravityFactor(l_playerCollider->GetRigidbody()->GetRigidBodyID(), 0.1f);
+    
+   // -- Player Script --
+    const std::shared_ptr<ScriptComponent> l_scriptComponent = std::make_shared<ScriptComponent>();
+    BaseScript* l_script = new PlayerScript();
+
+    l_Player->AddComponent(l_scriptComponent);
+    l_scriptComponent->SetScript(l_script);
+    l_scriptComponent->Initialize();
+
+    //For Camera
+    const std::shared_ptr<Entity> l_Head = a_entityManager.CreateEntityFromTemplate("DefaultEmpty");
+    l_Head->SetName("PlayerHead");
+    l_Head->Transform()->SetParent(l_Player);
+
+    //--PLAYER CAMERA--
+    const std::shared_ptr<CameraComponent> l_camComponent = std::make_shared<CameraComponent>();
+    l_Head->AddComponent(l_camComponent);
+
+    l_camComponent->Initialize();
+    l_camComponent->ForceSetMainCamera(true);
+
+
+
+    //-- TEST PLATFORM--
+    const std::shared_ptr<Entity> l_testPlatform = a_entityManager.CreateEntityFromTemplate("DefaultCube");
+    l_testPlatform->SetName("Platform");
+    l_testPlatform->GetComponent<TransformComponent>()->SetLocalPosition(Maths::Vector3(0.f, -6.f, 0.f));
+    l_testPlatform->GetComponent<TransformComponent>()->SetLocalScale(Maths::Vector3(10.f, 0.5f, 10.f));
+    const std::shared_ptr<RigidbodyComponent> l_platCollider = std::make_shared<RigidbodyComponent>();
+    l_platCollider->SetColliderType(BOXCOLLIDER);
+    l_platCollider->SetLayer(Layers::STATIC);
+    l_testPlatform->AddComponent(l_platCollider);
+    l_platCollider->SetEngine(a_entityManager.GetEngine());
+    l_platCollider->SetEntity(l_testPlatform);
+    l_platCollider->Initialize();
     
 
 }

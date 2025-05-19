@@ -56,6 +56,7 @@ public:
     inline Maths::Vector3 GetBoxOffset() { return m_boxSizeOffset; }
     inline Maths::Vector2 GetCapsuleOffset() { return m_capsuleSizeOffset; }
     inline JPH::ObjectLayer GetLayer() { return m_layer; }
+    inline RigidBody* GetRigidbody() { return m_rigidbody; }
 
 private:
     float m_capsuleWidth{ 0.0f };

@@ -29,7 +29,7 @@ void RigidbodyComponent::Update()
 
          if (l_transform->GetLocalPosition() != m_oldPosition || l_transform->GetLocalRotationVec() != m_oldRotation)
         {
-            UpdateTransform();
+            //UpdateTransform();
         }
 
         

@@ -38,16 +38,22 @@ void Engine::Update()
 
     m_window->Update();
     m_inputManager->Update();
+
+
+    /*
+    if (m_inputManager->IsKeyDown(Key::KEY_W))
+    {
+        std::shared_ptr<TransformComponent> m_transform = m_entityManager.GetEntityByName("Player")->Transform();
+        m_transform->SetGlobalPosition(m_transform->GetGlobalPosition() + Maths::Vector3(0.f, 0.f, 0.2f));
+    }*/
+
     m_renderer->DrawFrame(m_window, m_device, m_swapChain, m_pipeline, m_buffer, m_renderPassManager, m_descriptor, m_synchronization, m_commandBuffer, m_frameBufferManager, m_depthResource, m_surface, m_multiSampling, m_inputManager, m_entityManager);
 
-    
-    if (m_launchSettings.m_InGame)
+    m_physicsSystem->Update();
+   if (!m_launchSettings.m_InGame)
     {
-        m_physicsSystem->Update();
+        
     }
-    
-
-
     
 
 
