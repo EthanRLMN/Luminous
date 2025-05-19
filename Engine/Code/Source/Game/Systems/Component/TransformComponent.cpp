@@ -244,7 +244,7 @@ void TransformComponent::SetParent(const std::shared_ptr<Entity>& a_newParent)
     if (m_parent.lock() == a_newParent)
         return;
 
-    const Matrix4 l_globalMatrixBefore = GetLocalMatrix();
+    const Matrix4 l_oldLocalMatrix = GetLocalMatrix();
 
     if (const std::shared_ptr<Entity> l_oldParent = m_parent.lock())
         {
@@ -253,17 +253,16 @@ void TransformComponent::SetParent(const std::shared_ptr<Entity>& a_newParent)
         }
 
     m_parent = a_newParent;
-
     const std::shared_ptr<TransformComponent> l_newParentTransform = a_newParent ? a_newParent->Transform() : nullptr;
 
     if (l_newParentTransform)
         {
         l_newParentTransform->m_children.push_back(GetOwner()->Transform());
         const Matrix4 l_newParentGlobalInverse = l_newParentTransform->GetGlobalMatrix().Inverse();
-        m_localMatrix = l_newParentGlobalInverse * l_globalMatrixBefore;
+        m_localMatrix = l_newParentGlobalInverse * l_oldLocalMatrix;
     }
     else
-        m_localMatrix = l_globalMatrixBefore;
+        m_localMatrix = GetGlobalMatrix();
 
     m_localPosition     = m_localMatrix.GetTranslation();
     m_localRotationQuat = Quaternion::FromMatrix(m_localMatrix);
