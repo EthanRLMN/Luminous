@@ -1,6 +1,7 @@
 #include "WindowPanels/InspectorPanel.hpp"
 
 #include "imgui.h"
+#include "Game/Systems/Component/RigidbodyComponent.hpp"
 
 
 #include "ResourceManager/ResourceManager.hpp"
@@ -285,7 +286,192 @@ void InspectorPanel::Render()
             }
             
 
+            if (auto modelComponent = p_isEntitySelected->GetComponent<RigidbodyComponent>())
+            {
+                ColliderType l_type = p_isEntitySelected->GetComponent<RigidbodyComponent>()->GetColliderType();
+                std::string typeString = "";
+                if (l_type == BOXCOLLIDER)
+                    typeString = "Box ";
+                else if (l_type == SPHERECOLLIDER)
+                    typeString = "Sphere ";
+                else if (l_type == CAPSULECOLLIDER)
+                    typeString = "Capsule ";
 
+                if (ImGui::CollapsingHeader((typeString +"Rigidbody Component").c_str()))
+                {
+
+                    if (l_type == BOXCOLLIDER)
+                    {
+                        Maths::Vector3 l_boxSizeOffset = p_isEntitySelected->GetComponent<RigidbodyComponent>()->GetBoxOffset();
+                        const float inputWidth = 150.0f;
+
+                        float l_min = -0.8f;
+
+                        ImGui::Text("Box Size Offset");
+                        bool posChanged = false;
+                        ImGui::PushItemWidth(inputWidth);
+                        ImGui::Text("X:");
+                        ImGui::SameLine();
+                        posChanged |= ImGui::InputFloat("##posX", &l_boxSizeOffset.x, 0.1f, 1.0f, "%.2f");
+                        ImGui::SameLine();
+                        ImGui::Text("Y:");
+                        ImGui::SameLine();
+                        posChanged |= ImGui::InputFloat("##posY", &l_boxSizeOffset.y, 0.1f, 1.0f, "%.2f");
+                        ImGui::SameLine();
+                        ImGui::Text("Z:");
+                        ImGui::SameLine();
+                        posChanged |= ImGui::InputFloat("##posZ", &l_boxSizeOffset.z, 0.1f, 1.0f, "%.2f");
+                        ImGui::PopItemWidth();
+
+
+                        std::string l_layerString = "";
+                        JPH::ObjectLayer l_layer = p_isEntitySelected->GetComponent<RigidbodyComponent>()->GetLayer();
+                        int l_layerInt;
+                        bool layerChanged = false;
+                        if (l_layer == Layers::DYNAMIC)
+                        {
+                            l_layerInt = 0;
+                            l_layerString = "Layer : Dynamic";
+                        }
+                        else if (l_layer == Layers::KINEMATIC)
+                        {
+                            l_layerInt = 1;
+                            l_layerString = "Layer : Kinematic";
+                        }
+                        ImGui::Text(l_layerString.c_str());
+                            
+                        layerChanged |= ImGui::InputInt("##layer", &l_layerInt);
+
+                        if (l_layerInt < 0)
+                            l_layerInt = 0;
+                        else if (l_layerInt > 1)
+                            l_layerInt = 1;
+
+                        JPH::uint8 l_finalLayer;
+                        if (l_layerInt == 0)
+                            l_finalLayer = Layers::DYNAMIC;
+                        else
+                            l_finalLayer = Layers::KINEMATIC;
+
+
+
+
+
+
+
+
+                        if (layerChanged)
+                            p_isEntitySelected->GetComponent<RigidbodyComponent>()->SetLayer(l_finalLayer);
+
+                        if (posChanged)
+                            p_isEntitySelected->GetComponent<RigidbodyComponent>()->SetColliderSize(l_boxSizeOffset);
+                    }
+                    else if (l_type == SPHERECOLLIDER)
+                    {
+
+                        float l_sphereOffset = p_isEntitySelected->GetComponent<RigidbodyComponent>()->GetSphereOffset();
+                        bool bSizeOffsetChange = false;
+                        ImGui::Text("Sphere size offset");
+                        bSizeOffsetChange |= ImGui::InputFloat("##spheresize", &l_sphereOffset, 0.1f, 1.0f, "%.2f");
+
+
+                        std::string l_layerString = "";
+                        JPH::ObjectLayer l_layer = p_isEntitySelected->GetComponent<RigidbodyComponent>()->GetLayer();
+                        int l_layerInt;
+                        bool layerChanged = false;
+                        if (l_layer == Layers::DYNAMIC)
+                        {
+                            l_layerInt = 0;
+                            l_layerString = "Layer : Dynamic";
+                        } else if (l_layer == Layers::KINEMATIC)
+                        {
+                            l_layerInt = 1;
+                            l_layerString = "Layer : Kinematic";
+                        }
+                        ImGui::Text(l_layerString.c_str());
+
+                        layerChanged |= ImGui::InputInt("##layer", &l_layerInt);
+
+                        if (l_layerInt < 0)
+                            l_layerInt = 0;
+                        else if (l_layerInt > 1)
+                            l_layerInt = 1;
+
+                        JPH::uint8 l_finalLayer;
+                        if (l_layerInt == 0)
+                            l_finalLayer = Layers::DYNAMIC;
+                        else
+                            l_finalLayer = Layers::KINEMATIC;
+
+
+                        if (bSizeOffsetChange)
+                            p_isEntitySelected->GetComponent<RigidbodyComponent>()->SetColliderSize(l_sphereOffset);
+
+                        if (layerChanged)
+                            p_isEntitySelected->GetComponent<RigidbodyComponent>()->SetLayer(l_finalLayer);
+
+                    }
+                    else if (l_type == CAPSULECOLLIDER)
+                    {
+
+                        Maths::Vector2 l_capsuleSizeOffset = p_isEntitySelected->GetComponent<RigidbodyComponent>()->GetCapsuleOffset();
+                        const float inputWidth = 150.0f;
+
+                        float l_min = -0.8f;
+
+                        ImGui::Text("Capsule Size Offset");
+                        bool posChanged = false;
+                        ImGui::PushItemWidth(inputWidth);
+                        ImGui::Text("Radius:");
+                        ImGui::SameLine();
+                        posChanged |= ImGui::InputFloat("##posX", &l_capsuleSizeOffset.x, 0.1f, 1.0f, "%.2f");
+                        ImGui::SameLine();
+                        ImGui::Text("Height:");
+                        ImGui::SameLine();
+                        posChanged |= ImGui::InputFloat("##posY", &l_capsuleSizeOffset.y, 0.1f, 1.0f, "%.2f");
+
+
+                        std::string l_layerString = "";
+                        JPH::ObjectLayer l_layer = p_isEntitySelected->GetComponent<RigidbodyComponent>()->GetLayer();
+                        int l_layerInt;
+                        bool layerChanged = false;
+                        if (l_layer == Layers::DYNAMIC)
+                        {
+                            l_layerInt = 0;
+                            l_layerString = "Layer : Dynamic";
+                        } else if (l_layer == Layers::KINEMATIC)
+                        {
+                            l_layerInt = 1;
+                            l_layerString = "Layer : Kinematic";
+                        }
+                        ImGui::Text(l_layerString.c_str());
+
+                        layerChanged |= ImGui::InputInt("##layer", &l_layerInt);
+
+                        if (l_layerInt < 0)
+                            l_layerInt = 0;
+                        else if (l_layerInt > 1)
+                            l_layerInt = 1;
+
+                        JPH::uint8 l_finalLayer;
+                        if (l_layerInt == 0)
+                            l_finalLayer = Layers::DYNAMIC;
+                        else
+                            l_finalLayer = Layers::KINEMATIC;
+
+                        if (layerChanged)
+                            p_isEntitySelected->GetComponent<RigidbodyComponent>()->SetLayer(l_finalLayer);
+
+
+                         if (posChanged)
+                            p_isEntitySelected->GetComponent<RigidbodyComponent>()->SetColliderSize(l_capsuleSizeOffset);
+
+                    }
+
+                    
+
+                }
+            }
 
             /*
             p_isEntitySelected->Transform()->SetLocalPosition(newPosition);
