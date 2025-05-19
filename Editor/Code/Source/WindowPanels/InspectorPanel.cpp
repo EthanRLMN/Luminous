@@ -2,7 +2,6 @@
 
 #include "imgui.h"
 
-
 #include "ResourceManager/ResourceManager.hpp"
 
 enum class TransformMode
@@ -51,7 +50,6 @@ void InspectorPanel::Render()
 
         if (p_isEntitySelected)
         {
-            //ImGui::InputText("", );
             if (ImGui::CollapsingHeader("Transform"))
             {
                 if (ImGui::BeginCombo("Transform Mode", m_transformMode == TransformMode::Local ? "Local" : "Global"))
@@ -223,12 +221,6 @@ void InspectorPanel::Render()
                     }
                 }
             }
-
-
-            /*
-            p_isEntitySelected->Transform()->SetLocalPosition(newPosition);
-            p_isEntitySelected->Transform()->SetLocalRotationQuat(Maths::Quaternion::FromEulerAngles(newEuler));
-            p_isEntitySelected->Transform()->SetLocalScale(newScale);*/
         }
         ImGui::PopStyleColor();
         ImGui::End();

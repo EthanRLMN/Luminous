@@ -43,6 +43,12 @@ private:
     bool m_isCreatingEntity = false;
     char m_newEntityName[256] = "New Entity";
 
+    std::shared_ptr<Entity> m_entityToRename = nullptr;
+    std::shared_ptr<Entity> m_entityToDelete = nullptr;
+    char m_renameBuffer[128] = {};
+    bool m_showRenamePopup = false;
+    std::vector<std::shared_ptr<Entity>> m_pendingDeletes;
+
     void BuildHierarchy();
     void DrawEntityNode(const std::shared_ptr<EntityNode>& node);
     bool IsDescendant(const std::shared_ptr<Entity>& child, const std::shared_ptr<Entity>& parent) const;
