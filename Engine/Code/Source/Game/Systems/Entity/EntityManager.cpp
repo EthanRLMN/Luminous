@@ -93,6 +93,9 @@ void EntityManager::DestroyRenderableEntities()
 
 void EntityManager::DestroyAllEntities()
 {
+    DestroyLightEntities();
+    DestroyRenderableEntities();
+
     for (const std::shared_ptr<Entity> l_entity : m_entities)
         l_entity->RemoveAllComponents();
 
