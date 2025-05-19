@@ -36,55 +36,55 @@ void HierarchyPanel::Render()
             {
                 selectedEntityTemplate = EntityTemplate::Empty;
                 ImGui::OpenPopup("CreateEntityPopup");
-                p_editor->GetEngine()->GetEntityManager()->CreateEntityFromTemplate("Empty");
+                p_editor->GetEngine()->GetEntityManager()->CreateEntityFromTemplate("DefaultEmpty");
             }
             if (ImGui::MenuItem("Cube"))
             {
                 selectedEntityTemplate = EntityTemplate::Cube;
                 ImGui::OpenPopup("CreateEntityPopup");
-                p_editor->GetEngine()->GetEntityManager()->CreateEntityFromTemplate("Cube");
+                p_editor->GetEngine()->GetEntityManager()->CreateEntityFromTemplate("DefaultCube");
             }
             if (ImGui::MenuItem("Plane"))
             {
                 selectedEntityTemplate = EntityTemplate::Plane;
                 ImGui::OpenPopup("CreateEntityPopup");
-                p_editor->GetEngine()->GetEntityManager()->CreateEntityFromTemplate("Plane");
+                p_editor->GetEngine()->GetEntityManager()->CreateEntityFromTemplate("DefaultPlane");
             }
             if (ImGui::MenuItem("Sphere"))
             {
                 selectedEntityTemplate = EntityTemplate::Sphere;
                 ImGui::OpenPopup("CreateEntityPopup");
-                p_editor->GetEngine()->GetEntityManager()->CreateEntityFromTemplate("Sphere");
+                p_editor->GetEngine()->GetEntityManager()->CreateEntityFromTemplate("DefaultSphere");
             }
             if (ImGui::MenuItem("Cone"))
             {
                 selectedEntityTemplate = EntityTemplate::Cone;
                 ImGui::OpenPopup("CreateEntityPopup");
-                p_editor->GetEngine()->GetEntityManager()->CreateEntityFromTemplate("Cone");    
+                p_editor->GetEngine()->GetEntityManager()->CreateEntityFromTemplate("DefaultCone");    
             }
             if (ImGui::MenuItem("Cylinder"))
             {
                 selectedEntityTemplate = EntityTemplate::Cylinder;
                 ImGui::OpenPopup("CreateEntityPopup");
-                p_editor->GetEngine()->GetEntityManager()->CreateEntityFromTemplate("Cylinder");
+                p_editor->GetEngine()->GetEntityManager()->CreateEntityFromTemplate("DefaultCylinder");
             }
             if (ImGui::MenuItem("Capsule"))
             {
                 selectedEntityTemplate = EntityTemplate::Capsule;
                 ImGui::OpenPopup("CreateEntityPopup");
-                p_editor->GetEngine()->GetEntityManager()->CreateEntityFromTemplate("Capsule");
+                p_editor->GetEngine()->GetEntityManager()->CreateEntityFromTemplate("DefaultCapsule");
             }
             if (ImGui::MenuItem("Monkey"))
             {
                 selectedEntityTemplate = EntityTemplate::Monkey;
                 ImGui::OpenPopup("CreateEntityPopup");
-                p_editor->GetEngine()->GetEntityManager()->CreateEntityFromTemplate("Monkey");
+                p_editor->GetEngine()->GetEntityManager()->CreateEntityFromTemplate("DefaultMonkey");
             }
             if (ImGui::MenuItem("Companion"))
             {
                 selectedEntityTemplate = EntityTemplate::Companion;
                 ImGui::OpenPopup("CreateEntityPopup");
-                p_editor->GetEngine()->GetEntityManager()->CreateEntityFromTemplate("Companion");
+                p_editor->GetEngine()->GetEntityManager()->CreateEntityFromTemplate("DefaultCompanion");
             }
             ImGui::EndMenu();
         }

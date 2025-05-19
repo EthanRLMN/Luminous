@@ -31,10 +31,10 @@ void Scene::RegisterScene(EntityManager& a_entityManager)
 
     for (size_t i = 0; i < EntityManager::GetAvailableTemplates().size(); ++i)
     {
-        const std::shared_ptr<Entity> l_obj = a_entityManager.CreateEntityFromTemplate(EntityManager::GetAvailableTemplates()[i]);
+        //const std::shared_ptr<Entity> l_obj = a_entityManager.CreateEntityFromTemplate(EntityManager::GetAvailableTemplates()[i]);
 
-        const Maths::Vector3 l_position = Maths::Vector3(4.0f, 0.0f, 0.0f) * static_cast<const float>(i);
-        l_obj->Transform()->SetLocalPosition(l_position);
+        //const Maths::Vector3 l_position = Maths::Vector3(4.0f, 0.0f, 0.0f) * static_cast<const float>(i);
+        //l_obj->Transform()->SetLocalPosition(l_position);
     }
 
     const std::shared_ptr<Entity> collider = a_entityManager.CreateEntityFromTemplate("DefaultCube");
