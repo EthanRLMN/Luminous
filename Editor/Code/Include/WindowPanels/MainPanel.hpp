@@ -15,4 +15,5 @@ class MainPanel : public IWindowPanel
 
 private:
     void HelpContextMenu();
+    std::string m_scenePath = "Engine/Assets/Default/Save/Scene1.json";
 };
