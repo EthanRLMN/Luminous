@@ -17,9 +17,10 @@ void CameraComponent::Update()
 {
     if (TransformComponent* l_transform = GetOwner()->GetComponent<TransformComponent>().get())
     {
-        if (l_transform->GetGlobalPosition() != m_oldOwnerTransform)
+        if (l_transform->GetGlobalPosition() != m_oldOwnerTransform || l_transform->GetGlobalRotationQuat() != m_oldOwnerRot)
         {
             m_oldOwnerTransform = l_transform->GetGlobalPosition();
+            m_oldOwnerRot = l_transform->GetGlobalRotationQuat();
             m_eye = m_oldOwnerTransform;
             m_center = m_eye + Maths::Vector3(0, 0, -1) * l_transform->GetGlobalRotationQuat();
         }

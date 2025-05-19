@@ -1,5 +1,6 @@
 #pragma once
 #include "EntityComponent.hpp"
+#include "Quaternion.hpp"
 #include "Game/Systems/Camera/Camera.hpp"
 
 class CameraComponent : public Camera, public EntityComponent
@@ -43,6 +44,7 @@ private:
     float m_fieldOfView{ 80.0f };
 
     Maths::Vector3 m_oldOwnerTransform { 0.0f };
+    Maths::Quaternion m_oldOwnerRot{ Maths::Quaternion::Identity };
 
     Maths::Matrix4 m_projectionMatrix { Maths::Matrix4::identity };
     Maths::Matrix4 m_viewMatrix { Maths::Matrix4::identity };
