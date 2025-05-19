@@ -26,8 +26,29 @@ void RigidbodyComponent::Update()
             SetColliderShape();
             
         }
+
+         if (l_transform->GetLocalPosition() != m_oldPosition || l_transform->GetLocalRotationVec() != m_oldRotation)
+        {
+            UpdateTransform();
+        }
+
+        
     }
 
+}
+
+void RigidbodyComponent::UpdateTransform()
+{
+    TransformComponent* l_transform = m_entity.lock()->Transform().get();
+    m_oldPosition = l_transform->GetLocalPosition();
+    m_oldRotation = l_transform->GetLocalRotationVec();
+
+    JPH::Vec3 l_position = JPH::Vec3(l_transform->GetLocalPosition().x, l_transform->GetLocalPosition().y, l_transform->GetLocalPosition().z);
+    JPH::Quat l_rotation = JPH::Quat(l_transform->GetLocalRotationQuat().x, l_transform->GetLocalRotationQuat().y, l_transform->GetLocalRotationQuat().z, l_transform->GetLocalRotationQuat().w);
+    m_oldTransformSize = l_transform->GetLocalScale();
+
+    GetEngine()->GetPhysicsSystem()->GetBodyInterface().SetPosition(m_rigidbody->GetRigidBody()->GetID(), l_position,m_active);
+    GetEngine()->GetPhysicsSystem()->GetBodyInterface().SetRotation(m_rigidbody->GetRigidBody()->GetID(), l_rotation, m_active);
 }
 
 void RigidbodyComponent::SetLayer(JPH::uint8 a_layer)
