@@ -30,6 +30,29 @@ void RigidbodyComponent::Update()
 
 }
 
+void RigidbodyComponent::SetLayer(JPH::uint8 a_layer)
+{
+    m_layer = a_layer;
+    if (m_rigidbody)
+    {
+        GetEngine()->GetPhysicsSystem()->GetBodyInterface().SetObjectLayer(m_rigidbody->GetRigidBody()->GetID(), m_layer);
+        JPH::EMotionType l_motionType = JPH::EMotionType::Static;
+
+
+        if (m_layer == Layers::DYNAMIC)
+        {
+            GetEngine()->GetPhysicsSystem()->GetBodyInterface().ActivateBody(m_rigidbody->GetRigidBody()->GetID());
+            l_motionType = JPH::EMotionType::Dynamic;
+        } else if (m_layer == Layers::KINEMATIC)
+        {
+            GetEngine()->GetPhysicsSystem()->GetBodyInterface().DeactivateBody(m_rigidbody->GetRigidBody()->GetID());
+            l_motionType = JPH::EMotionType::Kinematic;
+        } else
+            l_motionType = JPH::EMotionType::Static;
+        m_rigidbody->SetMotionType(l_motionType);
+    }
+}
+
 void RigidbodyComponent::InitDebugModels()
 {
     m_collisionDebugModel = new ModelComponent();
