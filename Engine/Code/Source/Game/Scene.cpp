@@ -20,6 +20,8 @@ void Scene::RegisterScene(EntityManager& a_entityManager)
 
     LoadScene(filepath, a_entityManager);
 
+    const std::shared_ptr<Entity> l_skybox = a_entityManager.CreateEntityFromTemplate("Skybox");
+
     const std::shared_ptr<Entity> l_light = a_entityManager.CreateEntityFromTemplate("DefaultSphere");
     l_light->GetComponent<TransformComponent>()->SetLocalPosition(Maths::Vector3(0.f, 2.f, 3.f));
     const std::shared_ptr<LightComponent> l_lightComponent = std::make_shared<LightComponent>();
@@ -31,15 +33,6 @@ void Scene::RegisterScene(EntityManager& a_entityManager)
     const std::shared_ptr<LightComponent> l_lightComponent2 = std::make_shared<LightComponent>();
     l_light2->AddComponent(l_lightComponent2);
     l_lightComponent2->SetColor(Maths::Vector3(0.0f, 1.0f, 0.0f));
-
-
-    for (size_t i = 0; i < EntityManager::GetAvailableTemplates().size(); ++i)
-    {
-        //const std::shared_ptr<Entity> l_obj = a_entityManager.CreateEntityFromTemplate(EntityManager::GetAvailableTemplates()[i]);
-
-        //const Maths::Vector3 l_position = Maths::Vector3(4.0f, 0.0f, 0.0f) * static_cast<const float>(i);
-        //l_obj->Transform()->SetLocalPosition(l_position);
-    }
 
     const std::shared_ptr<Entity> collider = a_entityManager.CreateEntityFromTemplate("DefaultCube");
     const std::shared_ptr<Entity> collider2 = a_entityManager.CreateEntityFromTemplate("DefaultCube");

@@ -248,8 +248,8 @@ void EntityTemplates::Skybox()
         l_transform->SetOwner(l_entity);
 
         l_transform->SetLocalPosition(Maths::Vector3(0,0,0));
-        l_transform->SetLocalRotationVec(Maths::Vector3(-90, 0, 0));
-        l_transform->SetLocalScale(Maths::Vector3(-60, -60, -60));
+        l_transform->SetLocalRotationVec(Maths::Vector3(-90, 0, 180));
+        l_transform->SetLocalScale(Maths::Vector3(-90, -90, -90));
        
 
    
