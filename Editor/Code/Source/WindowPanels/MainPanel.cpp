@@ -58,5 +58,10 @@ void MainPanel::HelpContextMenu()
 
 bool MainPanel::RunCommand(const std::string& a_cmd)
 {
-
+#ifdef _WIN32
+    std::string l_fullCmd = "cmd /C " + a_cmd;
+#else
+    std::string l_fullCmd = a_cmd;
+#endif
+    return std::system(l_fullCmd.c_str()) == 0;
 }
