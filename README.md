@@ -49,8 +49,8 @@ TODO
 
 
 ## Team Members
-- Landry Yame - ROLES
-- Aodrenn Letourneur Hugon - ROLES
-- Maxence Lieval - ROLES
-- Ethan Ruhlmann - ROLES
+- Landry Yame - Vulkan Setup and Programming
+- Aodrenn Letourneur Hugon - Vulkan Programming, Jolt Implementation, Shader Programming and UML creation
+- Maxence Lieval - UI Programming
+- Ethan Ruhlmann - Vulkan Setup & Programming, Jolt Implementation, UML Creation and UI Programming
 <br><br>
