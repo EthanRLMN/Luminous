@@ -4,6 +4,11 @@
 <br>
 
 
+![Demo Image Standard Scene](https://i.imgur.com/SGXEmDp.png)
+![Demo Image Multiple Scene Objects](https://i.imgur.com/Q3nOERC.png)
+![Demo Image Custom Lights](https://i.imgur.com/mcFzFRe.png)
+
+
 - ### Libraries and APIs Used
   - [Vulkan](https://docs.vulkan.org/spec/latest/index.html) v1.4.304
   - [Assimp](https://github.com/assimp/assimp) v5.4.3
@@ -40,11 +45,6 @@
   - Run the `Build.bat` file and execute the `Build Project` command (type `1` in the command prompt)
   - Once project is built, it will automatically open the .sln
   - Simply select the Build Type (Debug or Release) and compile the L_EDITOR project
-<br><br>
-
-
-## Documentation
-TODO
 <br><br>
 
 
